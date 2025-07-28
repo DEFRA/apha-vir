@@ -1,0 +1,160 @@
+﻿using System.Data;
+using Apha.VIR.Core.Entities;
+using Apha.VIR.Core.Interfaces;
+using Apha.VIR.DataAccess.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+
+namespace Apha.VIR.DataAccess.Repositories
+{
+    public class LookupRepository : ILookupRepository
+    {
+        private readonly VIRDbContext _context;
+
+        public LookupRepository(VIRDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public async Task<IEnumerable<Lookup>> GetAllLookupsAsync()
+        {
+            return await _context.Lookups.FromSqlInterpolated($"EXEC spHostBreedGetAll").ToListAsync();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+            if(lookup != null)
+            {
+                return await _context.Set<LookupItem>()
+                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+            }
+            throw new NotImplementedException();
+        }       
+
+        public async Task InsertLookupEntryAsync(Guid LookupId, LookupItem Item)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+
+            var parameters = new[]
+            {
+                new SqlParameter("@ID", Item.Id),
+                new SqlParameter("@Name", Item.Name),
+                new SqlParameter("@AltName", Item.AlternateName),
+                new SqlParameter("@Parent", Item.ParentName),
+                new SqlParameter("@Active", Item.Active),
+                new SqlParameter  {
+                    ParameterName = "@LastModified",
+                    SqlDbType = SqlDbType.Timestamp,
+                    Direction = ParameterDirection.Output                   
+                }
+            };
+
+            await _context.Database
+                .ExecuteSqlRawAsync($"EXEC {lookup.InsertCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);            
+        }
+
+        public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+            
+            var parameters = new[]
+             {
+                new SqlParameter("@ID", Item.Id),
+                new SqlParameter("@Name", Item.Name),
+                new SqlParameter("@AltName", Item.AlternateName),
+                new SqlParameter("@Parent", Item.ParentName),
+                new SqlParameter("@Active", Item.Active),
+                new SqlParameter  {
+                    ParameterName = "@LastModified",
+                    SqlDbType = SqlDbType.Timestamp,
+                    Direction = ParameterDirection.Output
+                }
+            };
+
+            await _context.Database
+                .ExecuteSqlRawAsync($"EXEC {lookup.UpdateCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);           
+        }
+
+        public async Task DeleeLookupEntryAsync(Guid LookupId, LookupItem Item)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+
+            var parameters = new[]
+             {
+                new SqlParameter("@ID", Item.Id),                
+                new SqlParameter  {
+                    ParameterName = "@LastModified",
+                    SqlDbType = SqlDbType.Timestamp,
+                    Direction = ParameterDirection.Output
+                }
+            };
+
+            await _context.Database
+                .ExecuteSqlRawAsync($"EXEC {lookup.UpdateCommand} @ID, @LastModified OUT", parameters);
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllVirusFamiliesAsync()
+        {
+            return (await _context.Set<LookupItem>()
+                .FromSqlRaw($"EXEC spVirusFamilyGetAll").ToListAsync())
+                .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllVirusTypesAsync()
+        {
+            return (await _context.Set<LookupItem>()
+                   .FromSqlRaw($"EXEC spVirusTypeGetAll").ToListAsync())
+                   .Where(vt => vt.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(string? virusFamily)
+        {
+            return (await _context.Set<LookupItem>()
+                    .FromSqlInterpolated($"EXEC spVirusTypeGetByParent @Parent = {virusFamily}").ToListAsync())
+                     .Where(vt => vt.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllHostSpeciesAsync()
+        {
+            return (await _context.Set<LookupItem>()
+                .FromSqlRaw($"EXEC spHostSpeciesGetAll").ToListAsync())
+                .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsAsync()
+        {
+            return (await _context.Set<LookupItem>()
+             .FromSqlRaw($"EXEC spHostBreedGetAll").ToListAsync())
+             .Where(vf => vf.Active).ToList();            
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsByParentAsync(string? hostSpecies)
+        {
+            return (await _context.Set<LookupItem>()
+                   .FromSqlInterpolated($"EXEC spHostBreedGetByParent @Parent = {hostSpecies}").ToListAsync())
+                   .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllCountriesAsync()
+        {
+            return (await _context.Set<LookupItem>()
+             .FromSqlRaw($"EXEC spCountryGetAll").ToListAsync())
+             .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllHostPurposesAsync()
+        {
+            return (await _context.Set<LookupItem>()
+               .FromSqlRaw($"EXEC spHostPurposeGetAll").ToListAsync())
+               .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllSampleTypesAsync()
+        {
+            return (await _context.Set<LookupItem>()
+                .FromSqlRaw($"EXEC spSampleTypeGetAll").ToListAsync())
+                .Where(vf => vf.Active).ToList();
+        }
+    }
+}

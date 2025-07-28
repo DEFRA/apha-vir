@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Home | Virus Isolates Repository";
+}
+<div class="text-start">
+    <h3>Welcome to the home page of the Avian Virology Isolates Repository system.</h3>
+
+    <p>
+        This system holds information on virus isolates and is used to register, update, dispatch and search isolates. Click on one of the links below to start using the system.
+    </p>
+    <nav>
+        <ul class="link-list">
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="Home" asp-action="Index">Register or Update Submission, Samples and Isolates</a>
+            </li>
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="SearchRepository" asp-action="Index">Search Repository</a>
+            </li>
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="Home" asp-action="Index">Relocate Virus Isolates</a>
+            </li>
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="Home" asp-action="Index">Produce Reports</a>
+            </li>            
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="Lookup" asp-action="lookup">Maintain Look-up Data</a>
+            </li>
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="Characteristics" asp-action="Index">Maintain Virus Characteristics</a>
+            </li>
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="Home" asp-action="Index">Maintain Sender Information</a>
+            </li>
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="Home" asp-action="Index">View Audit Logs</a>
+            </li>           
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a asp-controller="System" asp-action="Information">System Information</a>
+            </li>           
+        </ul>
+    </nav>
+</div>

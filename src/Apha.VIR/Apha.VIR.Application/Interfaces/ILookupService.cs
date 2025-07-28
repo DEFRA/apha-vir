@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Apha.VIR.Application.DTOs;
+using Apha.VIR.Core.Entities;
+
+namespace Apha.VIR.Application.Interfaces
+{
+    public interface ILookupService
+    {
+        Task<IEnumerable<LookupDTO>> GetAllLookupsAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId);
+        Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
+        Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
+        Task DeleeLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
+        Task<IEnumerable<LookupItemDTO>> GetAllVirusFamiliesAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(string? virusFamily);
+        Task<IEnumerable<LookupItemDTO>> GetAllHostSpeciesAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(string? hostSpecies);
+        Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();
+    }
+}

@@ -1,0 +1,78 @@
+﻿@{
+	var breadcrumbs = new List<(string Text, string Url)>
+	{
+		("Home", "/"),
+
+	};
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Apha.VIR.Web</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap-grid.min.css" />
+	@* <link rel="stylesheet" href="~/css/vla.css" /> *@
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/Apha.VIR.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+	<div>
+		<header>
+			<div class="master_header_top">
+				<div class="d-flex justify-content-between">
+					<div>
+						<a asp-controller="Home" asp-action="Index">Home</a>
+						&nbsp;|&nbsp;
+						<a href="#" target="_blank">Help</a>
+						&nbsp;|&nbsp;
+						<a asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+					</div>
+					<div>
+						<span id="lblEnvironment" class="Version">test System Environment</span>
+					</div>
+				</div>
+			</div>
+			<div class="master_header_middle">
+				<div class="UserRole">
+					<span id="lblUser">@ViewBag.User</span><br />
+					<span id="lblName">@ViewBag.Name</span><br />
+					<span id="lblRole">@ViewBag.Role</span>
+				</div>
+				<div class="Title">Virus Isolates Repository</div>
+			</div>
+			<nav class="master_header_bottom" aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					@foreach (var crumb in breadcrumbs)
+
+					{
+						<li class="breadcrumb-item"><a href="@crumb.Url">@crumb.Text</a></li>
+					}
+
+				</ol>
+			</nav>
+		</header>
+
+		<main class="master_content pb-3" role="main">
+			@RenderBody()
+		</main>
+
+		<div class="master_footerfake">
+			&nbsp;
+		</div>
+		<footer class="master_footer">
+			<div>
+				<span>Copyright © 2007 Veterinary Laboratories Agency</span>
+			</div>
+		</footer>
+	</div>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Styles", required: false)
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
+</html>

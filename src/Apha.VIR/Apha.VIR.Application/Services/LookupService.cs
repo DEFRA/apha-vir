@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Core.Entities;
+using Apha.VIR.Core.Interfaces;
+using AutoMapper;
+
+namespace Apha.VIR.Application.Services
+{
+    public class LookupService : ILookupService
+    {
+        private readonly ILookupRepository _lookupRepository;
+        private readonly IMapper _mapper;
+
+        public LookupService(ILookupRepository lookupRepository, IMapper mapper)
+        {
+            _lookupRepository = lookupRepository ?? throw new ArgumentNullException(nameof(lookupRepository));
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<LookupDTO>> GetAllLookupsAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupDTO>>(await _lookupRepository.GetAllLookupsAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId)
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllLookupEntriesAsync(LookupId));
+        }
+
+        public async Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
+        {
+            var itemData =  _mapper.Map<LookupItem>(Item);
+            await _lookupRepository.InsertLookupEntryAsync(LookupId, itemData);
+        }
+        
+        public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
+        {
+            var itemData = _mapper.Map<LookupItem>(Item);
+            await _lookupRepository.UpdateLookupEntryAsync(LookupId, itemData);
+        }
+
+        public async Task DeleeLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
+        {
+            var itemData = _mapper.Map<LookupItem>(Item);
+            await _lookupRepository.DeleeLookupEntryAsync(LookupId, itemData);
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllVirusFamiliesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllVirusFamiliesAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllVirusTypesAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(string? virusFamily)
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllVirusTypesByParentAsync(virusFamily));
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllHostSpeciesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostSpeciesAsync());        
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(string? hostSpecies)
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsByParentAsync(hostSpecies));
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllCountriesAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostPurposesAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllSampleTypesAsync());
+        }
+    }
+}

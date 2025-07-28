@@ -1,0 +1,75 @@
+using Apha.VIR.Application.Mappings;
+using Apha.VIR.Application.Validation;
+using Apha.VIR.DataAccess.Data;
+using Apha.VIR.Web.Extensions;
+using Apha.VIR.Web.Mappings;
+using Apha.VIR.Web.Middleware;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+
+var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Host.UseSerilog((ctx, lc) =>
+    {
+        lc.WriteTo.Console();
+        string srvpath = ctx.Configuration.GetValue<string>("AppSettings:LosgPath") ?? string.Empty;
+        string logpath = $"{(ctx.HostingEnvironment.IsDevelopment() ? "Logs" : srvpath)}\\Logsample.log";
+        lc.WriteTo.File(logpath, Serilog.Events.LogEventLevel.Verbose, rollingInterval: RollingInterval.Day);
+    });
+}
+else
+{
+    Serilog.Debugging.SelfLog.Enable(Console.Error);
+    builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+    {
+        loggerConfiguration.UseAwsCloudWatch(builder.Configuration);
+    });
+}
+
+// Add database context
+builder.Services.AddDbContext<VIRDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WeatherForecastConnectionString")
+    ?? throw new InvalidOperationException("Connection string 'WeatherForecastConnectionString' not found.")));
+
+builder.Services.AddAutoMapper(typeof(EntityMapper).Assembly);
+builder.Services.AddAutoMapper(typeof(ViewModelMapper).Assembly);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Register Services and Repositories
+builder.Services.AddApplicationServices();
+
+// Register Authentication services
+builder.Services.AddAuthenticationServices(builder.Configuration);
+
+var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+app.UseHsts();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+await app.RunAsync();
