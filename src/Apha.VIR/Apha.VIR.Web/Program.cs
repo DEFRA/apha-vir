@@ -45,6 +45,7 @@ builder.Services.AddApplicationServices();
 
 // Register Authentication services
 builder.Services.AddAuthenticationServices(builder.Configuration);
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -67,7 +68,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapHealthChecks("/health");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
