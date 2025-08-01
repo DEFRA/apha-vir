@@ -1,11 +1,16 @@
 name: Dev Build and Sonar Analysis
 on:
   workflow_dispatch:
-  # push:
+  push:
+    branches:
+      - 'feature/*'
+      - 'fix/*'
+      - 'docs/*'
+      - main
+
+  # pull_request:
   #   branches:
-  #     - 'feature/*'
-  #     - 'fix/*'
-  #     - 'docs/*'
+  #     - main      
 env:
   REPOSITORY: apha/vir
 jobs:
@@ -17,6 +22,7 @@ jobs:
       contents: read
     outputs:
       image_tag: ${{ steps.imgtag.outputs.image_tag }}
+      should_push: ${{ steps.check_commit.outputs.should_push }}
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -59,6 +65,7 @@ jobs:
         shell: pwsh
         run: |
           "shortsha=$($env:GITHUB_SHA.Substring(0, 8))" >> $env:GITHUB_OUTPUT
+
       - name: Compose image tag
         id: imgtag
         shell: pwsh
@@ -67,33 +74,61 @@ jobs:
           steps.shortsha.outputs.shortsha }}"
 
           "image_tag=$imageTag" >> $env:GITHUB_OUTPUT
+
       - name: Print Docker image tag
         shell: pwsh
         run: |
           echo "Image Tag: ${{ steps.imgtag.outputs.image_tag }}"
+
+      - name: Check last commit message for 'ecrpush'
+        id: check_commit
+        shell: bash
+        run: |
+          COMMIT_MSG="$(git log -1 --pretty=%B)"
+          echo "Last commit message: $COMMIT_MSG"
+          if [[ "$COMMIT_MSG" == *"ecrpush"* ]]; then
+            echo "should_push=true"
+            echo "should_push=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_push=false"
+            echo "should_push=false" >> $GITHUB_OUTPUT
+          fi
+    
+
       - name: Start Sonar Analysis
         shell: pwsh
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin `
-            /k:"DEFRA_apha-bst" `
+            /k:"DEFRA_apha-vir" `
             /o:"defra" `
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
             /d:sonar.host.url="https://sonarcloud.io" `
             /v:"${{ steps.imgtag.outputs.image_tag }}" `
-            /d:sonar.branch.name="${{ github.ref_name }}" 
-            
+            /d:sonar.cs.cobertura.reportsPaths="coverage/Cobertura.xml" `
+            /d:sonar.branch.name="${{ github.ref_name }}"
+            #/d:sonar.cs.opencover.reportsPaths=**/TestResults/**/coverage.cobertura.xml `
       - name: Restore NuGet packages
         shell: pwsh
-        run: dotnet restore src/Apha.BST.sln
+        run: dotnet restore src/Apha.VIR.sln
       - name: Build Solution
         shell: pwsh
-        run: dotnet build src/Apha.BST.sln --configuration Release
-      - name: Run Unit Tests
+        run: dotnet build src/Apha.VIR.sln --configuration Release
+      - name: Run Unit Tests with Coverage
         shell: pwsh
-        run: dotnet test src/Apha.BST.sln --no-build --configuration Release --logger
-          trx
+        run: >
+          dotnet test src/apha.vir.sln --no-build --configuration Release `
+            --collect:"XPlat Code Coverage" --settings src/coverlet.runsettings
+
+      - name: Convert coverage to Cobertura
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:Cobertura
+          #reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:OpenCover
+      - name: List coverage files
+        shell: pwsh
+        run: Get-ChildItem -Recurse -Filter "*cobertura.xml"
       - name: End Sonar Analysis
         shell: pwsh
         env:
@@ -104,19 +139,12 @@ jobs:
     name: Push Docker Image
     needs: build-and-analyze
     runs-on: ubuntu-latest
+    if: ${{ needs.build-and-analyze.outputs.should_push == 'true' }}
     permissions:
       id-token: write
       contents: read
     
     steps:
-
-      # - name: Set branch name from input or context
-      #   id: extract_branch
-      #   run: |
-      #     BRANCH_NAME="${{ github.ref_name }}"
-      #     echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-      #     echo "BRANCH_NAME=$BRANCH_NAME"
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -213,9 +241,9 @@ jobs:
       - name: Run container locally
         run: |
           image_tag=${{ needs.build-and-analyze.outputs.image_tag }}
-          docker build -t bst:$image_tag .
+          docker build -t vir:$image_tag .
           echo "Running local image: $image_tag"
-          docker run -d --name test-container -p 8080:8080 bst:$image_tag
+          docker run -d --name test-container -p 8080:8080 vir:$image_tag
       - name: Wait for service to start
         run: >
           echo "Waiting for the service to start..."

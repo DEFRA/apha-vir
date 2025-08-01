@@ -1,5 +1,9 @@
 # -------- Base runtime image --------
-FROM defradigital/dotnetcore-development AS base
+# Allow parent image version to be set at build time
+ARG PARENT_VERSION=dotnet8.0
+
+
+FROM defradigital/dotnetcore-development:$PARENT_VERSION AS base
 WORKDIR /app
 EXPOSE 8080
 USER app
@@ -9,25 +13,18 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy solution and project files for caching
-# COPY src/Apha.VIR.sln ./
-# COPY src/Apha.VIR/Apha.VIR.Web/Apha.VIR.Web.csproj Apha.VIR/Apha.VIR.Web/
-# COPY src/Apha.VIR/Apha.VIR.Core/Apha.VIR.Core.csproj Apha.VIR/Apha.VIR.Core/
-# COPY src/Apha.VIR/Apha.VIR.Application/Apha.VIR.Application.csproj Apha.VIR/Apha.VIR.Application/
-# COPY src/Apha.VIR/Apha.VIR.DataAccess/Apha.VIR.DataAccess.csproj Apha.VIR/Apha.VIR.DataAccess/
-# (skip UnitTests for now unless you're testing in Docker)
 
-# Copy full source
+# Copy application source files
 COPY src/. .
 
-# Restore dependencies
+# Restore dependencies for application
 RUN dotnet restore Apha.VIR.sln
 
 
 
 # Build
 RUN dotnet build Apha.VIR/Apha.VIR.Web/Apha.VIR.Web.csproj \
-    -c $BUILD_CONFIGURATION -o /app/build
+    -c "$BUILD_CONFIGURATION" -o /app/build
 
 
 
@@ -35,11 +32,19 @@ RUN dotnet build Apha.VIR/Apha.VIR.Web/Apha.VIR.Web.csproj \
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish Apha.VIR/Apha.VIR.Web/Apha.VIR.Web.csproj \
-    -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+    -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 # -------- Final runtime image --------
 FROM base AS final
+
+# Redefine work directory 
 WORKDIR /app
+
+# Copy published output from the publish stage
 COPY --from=publish /app/publish .
 
+# Explicitly specify user again (even though base already has it)
+USER app
+
+# Define entry point
 ENTRYPOINT ["dotnet", "Apha.VIR.Web.dll"]
