@@ -117,9 +117,10 @@ jobs:
         run: dotnet build src/Apha.VIR.sln --configuration Release
       - name: Run Unit Tests with Coverage
         shell: pwsh
-        run: >
-          dotnet test src/apha.vir.sln --no-build --configuration Release `
-            --collect:"XPlat Code Coverage" --settings src/coverlet.runsettings
+        run: |
+          # dotnet test src/apha.vir.sln --no-build --configuration Release `
+          #   --collect:"XPlat Code Coverage" --settings src/coverlet.runsettings
+          dotnet test src/apha.vir.sln --no-build --configuration Release
 
       - name: Convert coverage to Cobertura
         run: |
