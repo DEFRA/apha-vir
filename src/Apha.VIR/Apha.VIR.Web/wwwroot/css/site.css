@@ -1,0 +1,434 @@
+body {
+    background-color: #ffffff;
+    color: #333333;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: small;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    /*    overflow: hidden;*/
+}
+
+.width-90 {
+    width: 90%
+}
+
+.width-80 {
+    width: 80%
+}
+
+.width-22 {
+    width: 22%;
+}
+
+.width-25 {
+    width: 25%;
+}
+/*Layout*/
+.master_header_top {
+    background-color: #99cc00;
+    padding: 5px 4px 6px 14px;
+    font-size: 0.8em;
+    color: #ffffff;
+}
+
+    .master_header_top a {
+        color: #0b2677
+    }
+
+        .master_header_top a:link {
+            color: #0b2677;
+            text-decoration: none
+        }
+
+        .master_header_top a:visited {
+            color: #0b2677;
+            text-decoration: none
+        }
+
+        .master_header_top a:hover {
+            color: #0b2677;
+            text-decoration: underline
+        }
+
+.Version {
+    text-align: left;
+    color: #ffffff;
+    margin-right: 4px;
+    font-weight: bold;
+    border: red solid 1px;
+    background-color: Black;
+    cursor: default;
+}
+
+.master_header_middle {
+    background-image: url('/Images/intravet_banner.png');
+    background-repeat: no-repeat;
+    position: relative;
+    height: 72px;
+    background-color: #0b2677;
+    width: 100%;
+    overflow: visible;
+}
+
+    .master_header_middle .UserRole {
+        margin: 12px 12px 6px 0px;
+        padding: 4px 10px 4px 10px;
+        float: right;
+        border-left: 1px solid #6bc4d2;
+        border-right: 1px solid #6bc4d2;
+        text-align: left;
+        color: #ffffff;
+        cursor: default;
+    }
+
+    .master_header_middle .Title {
+        position: absolute;
+        left: 210px;
+        top: 10px;
+        font-family: Times New Roman;
+        font-size: 30pt;
+        font-weight: bold;
+        color: #ffffff;
+        cursor: default;
+    }
+
+.master_header_bottom {
+    background-color: #99cc00;
+    padding: 5px 4px 6px 14px;
+    font-size: 0.8em;
+    color: #0b2677;
+}
+
+.breadcrumb {
+    color: #0b2677;
+    /*    font-size: 0.9em;*/
+    padding: 0;
+    margin: 0;
+}
+
+    .breadcrumb li {
+        display: inline;
+    }
+
+        .breadcrumb li + li:before {
+            content: ">";
+            padding-right: 5px;
+        }
+
+        .breadcrumb li a {
+            color: #0b2677;
+            text-decoration: none;
+        }
+
+            .breadcrumb li a:link {
+                color: #0b2677;
+                text-decoration: none
+            }
+
+            .breadcrumb li a:visited {
+                color: #0b2677;
+                text-decoration: none
+            }
+
+            .breadcrumb li a:hover {
+                color: #0b2677;
+                text-decoration: underline
+            }
+
+
+.master_content {
+    margin: 10px 10px 10px 10px;
+    padding: 0px 0px 0px 0px;
+    width: 95%;
+}
+
+.master_footer {
+    bottom: 0px;
+    width: 100%;
+    font-size: 0.8em;
+    color: #333333;
+    background-color: #FFFFFF;
+    padding: 12px 14px 12px 14px;
+    border-top: 1px solid #BCD0F1;
+}
+
+.master_footerfake {
+    font-size: 0.8em;
+    padding: 20px 14px 12px 14px;
+}
+/*End of layout*/
+
+/* Grid Table of search Repo  */
+.search-repository-label {
+    color: Navy;
+    font-weight: bold;
+    margin-right: 25%;
+}
+
+.searchRepo-grid-table {
+    width: 100%;
+}
+
+    .searchRepo-grid-table table {
+        border-collapse: collapse;
+    }
+
+        .searchRepo-grid-table table thead tr th {
+            text-wrap-mode: nowrap;
+            padding-bottom: 10px;
+            background-color: Navy;
+            border: 1px solid white;
+            align-items: center
+        }
+
+            .searchRepo-grid-table table thead tr th a {
+                color: White;
+            }
+
+        .searchRepo-grid-table table tr td {
+            border: 1px solid black;
+            border-spacing: 0;
+        }
+
+
+    .searchRepo-grid-table tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+.no-label {
+    display: inline-block;
+    border-color: Green;
+    border-width: 1px;
+    border-style: Solid;
+    font-family: Verdana;
+    font-size: Small;
+    font-weight: normal;
+}
+
+.yes-label {
+    display: inline-block;
+    border-color: Red;
+    border-width: 1px;
+    border-style: Solid;
+    font-family: Verdana;
+    font-size: Small;
+    font-weight: normal;
+}
+
+.searchRepo-grid-table tr form button:hover {
+    text-decoration-line: underline
+}
+
+.custom-underline-hover {
+    text-decoration: none;
+    font-size: small;
+    color: #000040;
+}
+
+
+/*End of Grid Table of search Repo*/
+
+/*Home Page*/
+.link-list {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0
+}
+
+    .link-list li {
+        padding-bottom: 2px
+    }
+
+    /* Links and list items */
+    .link-list a {
+        color: #0000FF;
+        padding: 5px
+    }
+
+        .link-list a:hover,
+        .link-list a:focus,
+        .link-list a:visited {
+            color: #0000FF;
+            text-decoration: underline;
+        }
+/* End of home page */
+
+/*select dropdown*/
+.select-dropdown {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: auto;
+    font-family: Verdana;
+    width: 100%;
+    background-color: white;
+    height: fit-content;
+}
+
+.word-break {
+    word-break: break-word;
+    word-spacing: normal;
+    max-width: 25%;
+}
+
+.textInput {
+    font-family: Verdana;
+    width: 100%;
+    background-color: white;
+    height: fit-content;
+}
+
+.small-select-dropdown {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: auto;
+    font-family: Verdana;
+    width: 40%;
+    background-color: white;
+    height: fit-content;
+}
+
+.label-style {
+    min-width: 25%;
+    word-wrap: break-word;
+    white-space: normal;
+    height: fit-content;
+}
+
+.hidden {
+    display: none;
+}
+/*Search repository table*/
+.search-repository-container {
+    width: 100%;
+    height: 100%;
+}
+
+    .search-repository-container table {
+        table-layout: fixed;
+        width: 90%;
+    }
+
+        .search-repository-container table tr td {
+            width: 50%;
+            padding: 7px;
+        }
+
+        .search-repository-container table tr table {
+            width: 100%;
+            height: fit-content;
+        }
+
+        .search-repository-container table tr td table tbody tr {
+            min-width: 100%
+        }
+
+            .search-repository-container table tr td table tbody tr td {
+                padding-right: 10px;
+                width: 50%;
+            }
+
+                .search-repository-container table tr td table tbody tr td div {
+                    display: flex;
+                    flex-wrap: wrap;
+                }
+
+                    .search-repository-container table tr td table tbody tr td div div {
+                        display: flex;
+                        justify-content: start;
+                        align-items: center;
+                        padding-right: 5px;
+                    }
+
+.sp-button {
+    color: #0000FF;
+    text-decoration: none;
+}
+
+    .sp-button:hover {
+        color: #0000FF;
+        text-decoration: underline;
+    }
+
+.search-repository-calender {
+    width: 100%
+}
+
+    .search-repository-calender tr td {
+        width: 32%;
+    }
+
+.spvalidation {
+    color: Red;
+    font-weight: bold;
+}
+
+    .spvalidation ul {
+        list-style-type: none;
+    }
+
+/*End of search repository*/
+/*--Isolate details*/
+.id-box-title {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    background-color: #0b2677;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.id-box_body {
+    padding-top: 0px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    border: #0b2677 1px solid;
+}
+
+    .id-box_body a {
+        color: #0000FF;
+        text-decoration: none;
+    }
+
+    .id-box_body table {
+        border-collapse: collapse;
+        width: 80%;
+        height: auto
+    }
+        /*    .id-box_body table tr td  {
+        width: 25%
+    }*/
+        .id-box_body table tr td textarea {
+            width: 100%
+        }
+
+.help-section {
+    width: 100%;
+    border-top: 1px solid #BCD0F1;
+    font-weight: bold;
+    color: #0b2677;
+    margin: 4px 0 0 0;
+    padding: 0 0 0 0;
+    font-size: 1em;
+    clear: both;
+}
+
+.validation {
+    color: Red;
+    font-weight: bold;
+}
+
+    .validation ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0
+    }
+
+        .validation ul li::before {
+            content: "\002D ";
+        }
