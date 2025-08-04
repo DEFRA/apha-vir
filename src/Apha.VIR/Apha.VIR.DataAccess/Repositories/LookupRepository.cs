@@ -36,6 +36,11 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
+            if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
+                throw new ArgumentException("Stored procedure name is required.");
+
+            var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
+
             var parameters = new[]
             {
                 new SqlParameter("@ID", Item.Id),
@@ -50,14 +55,18 @@ namespace Apha.VIR.DataAccess.Repositories
                 }
             };
 
-            await _context.Database
-                .ExecuteSqlRawAsync($"EXEC {lookup?.InsertCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);            
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
         public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
-            
+
+            if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
+                throw new ArgumentException("Stored procedure name is required.");
+
+            var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
+
             var parameters = new[]
              {
                 new SqlParameter("@ID", Item.Id),
@@ -72,13 +81,17 @@ namespace Apha.VIR.DataAccess.Repositories
                 }
             };
 
-            await _context.Database
-                .ExecuteSqlRawAsync($"EXEC {lookup?.UpdateCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);           
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
         public async Task DeleeLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+
+            if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
+                throw new ArgumentException("Stored procedure name is required.");
+
+            var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @LastModified OUT";
 
             var parameters = new[]
              {
@@ -89,9 +102,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     Direction = ParameterDirection.Output
                 }
             };
-
-            await _context.Database
-                .ExecuteSqlRawAsync($"EXEC {lookup?.UpdateCommand} @ID, @LastModified OUT", parameters);
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllVirusFamiliesAsync()
