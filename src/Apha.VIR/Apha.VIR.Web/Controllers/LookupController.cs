@@ -8,12 +8,10 @@ namespace Apha.VIR.Web.Controllers
     public class LookupController : Controller
     {
         private readonly ILookupService _lookupService;
-        readonly ILogger<LookupController> _logger;
         private readonly IMapper _mapper;
-        public LookupController(ILookupService lookupService, IMapper mapper, ILogger<LookupController> logger)
+        public LookupController(ILookupService lookupService, IMapper mapper)
         {
             _lookupService = lookupService;
-            _logger = logger;
             _mapper = mapper;
         }
         public async Task<IActionResult> GetLookup()
