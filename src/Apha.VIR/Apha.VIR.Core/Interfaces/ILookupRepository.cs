@@ -8,7 +8,7 @@ namespace Apha.VIR.Core.Interfaces
         Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId);
         Task InsertLookupEntryAsync(Guid LookupId, LookupItem Item);
         Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item);
-        Task DeleeLookupEntryAsync(Guid LookupId, LookupItem Item);
+        Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item);
         Task<IEnumerable<LookupItem>> GetAllVirusFamiliesAsync();
         Task<IEnumerable<LookupItem>> GetAllVirusTypesAsync();
         Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(string? virusFamily);

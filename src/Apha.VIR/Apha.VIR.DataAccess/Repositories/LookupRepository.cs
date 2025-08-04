@@ -37,7 +37,7 @@ namespace Apha.VIR.DataAccess.Repositories
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
             if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
-                throw new ArgumentException("Stored procedure name is required.");
+                throw new ArgumentException("Lookup Insert Stored procedure name is required.");
 
             var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
 
@@ -63,7 +63,7 @@ namespace Apha.VIR.DataAccess.Repositories
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
             if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
-                throw new ArgumentException("Stored procedure name is required.");
+                throw new ArgumentException("Lookup update Stored procedure name is required.");
 
             var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
 
@@ -84,12 +84,12 @@ namespace Apha.VIR.DataAccess.Repositories
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
-        public async Task DeleeLookupEntryAsync(Guid LookupId, LookupItem Item)
+        public async Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
             if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
-                throw new ArgumentException("Stored procedure name is required.");
+                throw new ArgumentException("Lookup delete Stored procedure name is required.");
 
             var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @LastModified OUT";
 

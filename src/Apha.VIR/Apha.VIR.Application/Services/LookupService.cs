@@ -47,7 +47,7 @@ namespace Apha.VIR.Application.Services
         public async Task DeleeLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
         {
             var itemData = _mapper.Map<LookupItem>(Item);
-            await _lookupRepository.DeleeLookupEntryAsync(LookupId, itemData);
+            await _lookupRepository.DeleteLookupEntryAsync(LookupId, itemData);
         }
 
         public async Task<IEnumerable<LookupItemDTO>> GetAllVirusFamiliesAsync()
