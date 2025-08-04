@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -31,8 +32,10 @@ namespace Apha.VIR.DataAccess.Repositories
                    .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
             }
             throw new NotImplementedException();
-        }       
+        }
 
+        [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
+         Justification = "Stored procedure name is validated against a whitelist from the database.")]
         public async Task InsertLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
@@ -69,6 +72,8 @@ namespace Apha.VIR.DataAccess.Repositories
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
+        [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
+         Justification = "Stored procedure name is validated against a whitelist from the database.")]
         public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
@@ -104,6 +109,8 @@ namespace Apha.VIR.DataAccess.Repositories
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
+        [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
+         Justification = "Stored procedure name is validated against a whitelist from the database.")]
         public async Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
  
