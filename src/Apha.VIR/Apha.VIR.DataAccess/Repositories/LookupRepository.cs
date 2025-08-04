@@ -51,7 +51,7 @@ namespace Apha.VIR.DataAccess.Repositories
             };
 
             await _context.Database
-                .ExecuteSqlRawAsync($"EXEC {lookup.InsertCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);            
+                .ExecuteSqlRawAsync($"EXEC {lookup?.InsertCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);            
         }
 
         public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item)
@@ -73,7 +73,7 @@ namespace Apha.VIR.DataAccess.Repositories
             };
 
             await _context.Database
-                .ExecuteSqlRawAsync($"EXEC {lookup.UpdateCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);           
+                .ExecuteSqlRawAsync($"EXEC {lookup?.UpdateCommand} @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT", parameters);           
         }
 
         public async Task DeleeLookupEntryAsync(Guid LookupId, LookupItem Item)
@@ -91,7 +91,7 @@ namespace Apha.VIR.DataAccess.Repositories
             };
 
             await _context.Database
-                .ExecuteSqlRawAsync($"EXEC {lookup.UpdateCommand} @ID, @LastModified OUT", parameters);
+                .ExecuteSqlRawAsync($"EXEC {lookup?.UpdateCommand} @ID, @LastModified OUT", parameters);
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllVirusFamiliesAsync()
