@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Security;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
@@ -36,10 +37,20 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
-            if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
+            var allowedProcedures = (await _context.Lookups.ToListAsync())
+                                .Select(l => l.InsertCommand)
+                                .Where(cmd => !string.IsNullOrWhiteSpace(cmd))
+                                .Distinct()
+                                .ToList();
+
+            if (string.IsNullOrWhiteSpace(lookup?.InsertCommand))
                 throw new ArgumentException("Lookup Insert Stored procedure name is required.");
 
-            var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
+            if (!allowedProcedures.Contains(lookup.InsertCommand))
+                throw new SecurityException($"Stored procedure '{lookup.InsertCommand}' is not allowed.");
+
+
+            var sql = $"EXEC [{lookup.InsertCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
 
             var parameters = new[]
             {
@@ -62,8 +73,17 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
+            var allowedProcedures = (await _context.Lookups.ToListAsync())
+                                .Select(l => l.UpdateCommand)
+                                .Where(cmd => !string.IsNullOrWhiteSpace(cmd))
+                                .Distinct()
+                                .ToList();
+
             if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
                 throw new ArgumentException("Lookup update Stored procedure name is required.");
+
+            if (!allowedProcedures.Contains(lookup.UpdateCommand))
+                throw new SecurityException($"Stored procedure '{lookup.UpdateCommand}' is not allowed.");
 
             var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
 
@@ -86,12 +106,23 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
+ 
+            var allowedProcedures = (await _context.Lookups.ToListAsync())
+                                    .Select(l => l.DeleteCommand)
+                                    .Where(cmd => !string.IsNullOrWhiteSpace(cmd))
+                                    .Distinct()
+                                    .ToList();
+
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
-            if (string.IsNullOrWhiteSpace(lookup?.UpdateCommand))
+            if (string.IsNullOrWhiteSpace(lookup?.DeleteCommand))
                 throw new ArgumentException("Lookup delete Stored procedure name is required.");
 
-            var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @LastModified OUT";
+            if (!allowedProcedures.Contains(lookup.DeleteCommand))
+                throw new SecurityException($"Stored procedure '{lookup.UpdateCommand}' is not allowed.");
+            
+
+            var sql = $"EXEC [{lookup.DeleteCommand}] @ID, @LastModified OUT";
 
             var parameters = new[]
              {
