@@ -11,12 +11,17 @@ namespace Apha.VIR.Core.Interfaces
         Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item);
         Task<IEnumerable<LookupItem>> GetAllVirusFamiliesAsync();
         Task<IEnumerable<LookupItem>> GetAllVirusTypesAsync();
-        Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(string? virusFamily);
+        Task<IEnumerable<LookupItemByParent>> GetAllVirusTypesByParentAsync(string? virusFamily);
         Task<IEnumerable<LookupItem>> GetAllHostSpeciesAsync();
         Task<IEnumerable<LookupItem>> GetAllHostBreedsAsync();
-        Task<IEnumerable<LookupItem>> GetAllHostBreedsByParentAsync(string? hostSpecies);
+        Task<IEnumerable<LookupItemByParent>> GetAllHostBreedsByParentAsync(string? hostSpecies);
         Task<IEnumerable<LookupItem>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItem>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItem>> GetAllSampleTypesAsync();
+        Task<IEnumerable<LookupItem>> GetAllWorkGroupsAsync();
+        Task<IEnumerable<LookupItem>> GetAllStaffAsync();
+        Task<IEnumerable<LookupItem>> GetAllViabilityAsync();
+
+
     }
 }

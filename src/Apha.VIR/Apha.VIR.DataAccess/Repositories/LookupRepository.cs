@@ -157,9 +157,9 @@ namespace Apha.VIR.DataAccess.Repositories
                    .Where(vt => vt.Active).ToList();
         }
 
-        public async Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(string? virusFamily)
+        public async Task<IEnumerable<LookupItemByParent>> GetAllVirusTypesByParentAsync(string? virusFamily)
         {
-            return (await _context.Set<LookupItem>()
+            return (await _context.Set<LookupItemByParent>()
                     .FromSqlInterpolated($"EXEC spVirusTypeGetByParent @Parent = {virusFamily}").ToListAsync())
                      .Where(vt => vt.Active).ToList();
         }
@@ -178,9 +178,9 @@ namespace Apha.VIR.DataAccess.Repositories
              .Where(vf => vf.Active).ToList();            
         }
 
-        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsByParentAsync(string? hostSpecies)
+        public async Task<IEnumerable<LookupItemByParent>> GetAllHostBreedsByParentAsync(string? hostSpecies)
         {
-            return (await _context.Set<LookupItem>()
+            return (await _context.Set<LookupItemByParent>()
                    .FromSqlInterpolated($"EXEC spHostBreedGetByParent @Parent = {hostSpecies}").ToListAsync())
                    .Where(vf => vf.Active).ToList();
         }
@@ -204,6 +204,27 @@ namespace Apha.VIR.DataAccess.Repositories
             return (await _context.Set<LookupItem>()
                 .FromSqlRaw($"EXEC spSampleTypeGetAll").ToListAsync())
                 .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllWorkGroupsAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spWorkgroupsGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllStaffAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spStaffGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllViabilityAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spViabilityGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
         }
     }
 }

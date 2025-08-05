@@ -48,8 +48,8 @@ public class VirusCharacteristicMap : IEntityTypeConfiguration<VirusCharacterist
            .IsRowVersion()
            .IsConcurrencyToken();
 
-        entity.Property(e => e.DataType)
-            .HasColumnName("DataType");
+        entity.Property(e => e.VirusCharacteristicTypeName)
+            .HasColumnName("VirusCharacteristicTypeName");
 
     }
 }

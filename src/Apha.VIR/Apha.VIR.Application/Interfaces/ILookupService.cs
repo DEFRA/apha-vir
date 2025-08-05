@@ -24,5 +24,9 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllStaffAsync();
+
+        Task<IEnumerable<LookupItem>> GetAllViabilityAsync();
     }
 }

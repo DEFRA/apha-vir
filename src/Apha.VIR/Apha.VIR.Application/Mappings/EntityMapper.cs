@@ -8,9 +8,12 @@ namespace Apha.VIR.Application.Mappings
     {
         public EntityMapper()
         {
+            // CreateMap<SourceType, DestinationType>();
             CreateMap<Lookup, LookupDTO>().ReverseMap();
             CreateMap<LookupItem, LookupItemDTO>().ReverseMap();
+            CreateMap<LookupItemByParent, LookupItemDTO>().ReverseMap();
             CreateMap<VirusCharacteristic, VirusCharacteristicDTO>().ReverseMap();
+            CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>().ReverseMap();
         }
     }
 }

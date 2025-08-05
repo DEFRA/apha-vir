@@ -14,5 +14,5 @@ public class VirusCharacteristic
     public int? Length { get; set; }
     public int? CharacteristicIndex { get; set; }
     public byte[] LastModified { get; set; } = null!;
-    public string DataType { get; set; } = null!;
+    public string VirusCharacteristicTypeName { get; set; } = null!;
 }

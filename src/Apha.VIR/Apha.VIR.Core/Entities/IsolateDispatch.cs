@@ -3,18 +3,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Apha.VIR.Core.Entities;
 
-public class IsolateDispatchInfo
+//USe for Add/Edit
+public class IsolateDispatch
 {
+    public Guid? DispatchId { get; set; }
+    public Guid? DispatchIsolateId { get; set; }
 
+ 
     public string? AVNumber { get; set; } = null!;
 
     public string? Nomenclature { get; set; } = null!;
 
-    public Guid? IsolateId { get; set; }
+    public bool ValidToIssue { get; set; }
 
-    public Guid? DispatchId { get; set; }
-
-    public int? NoOfAliquots { get; set; }
+    public Guid? ViabilityId { get; set; }
+    public int NoOfAliquotsToBeDispatched { get; set; }
+    public int NoOfAliquots { get; set; }
 
     public int? PassageNumber { get; set; }
 
@@ -31,8 +35,6 @@ public class IsolateDispatchInfo
 
     public string? DispatchedByName { get; set; } = null!;
     public Guid? DispatchedById { get; set; } = null!;
-
-    public Guid? DispatchIsolateId { get; set; }
 
     public Byte[]? LastModified { get; set; }
 }
