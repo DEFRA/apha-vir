@@ -3,8 +3,9 @@
     var nomenclature = Model?.Nomenclature ?? string.Empty;
 }
 
-@if (hasRecords)
+@if (hasRecords && Model.DispatchHistoryRecords != null)
 {
+    var records = Model.DispatchHistoryRecords;
     <p>
         <strong>@nomenclature</strong>
     </p>
@@ -26,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.DispatchHistoryRecords)
+                @foreach (var item in records)
                 {
                     var strLastModified = item.LastModified != null ? Convert.ToBase64String(item.LastModified) : string.Empty;
 
