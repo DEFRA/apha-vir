@@ -36,14 +36,14 @@ namespace Apha.VIR.Application.Mappings
              .ForMember(dest => dest.IsolationMethod, opt => opt.MapFrom(src => src.IsolationMethodName))
              .ForMember(dest => dest.Freezer, opt => opt.MapFrom(src => src.FreezerName))
              .ForMember(dest => dest.Tray, opt => opt.MapFrom(src => src.TrayName))
-             .ForMember(dest => dest.IsMixedIsolate, opt => opt.MapFrom(src => src.IsMixedIsolate ? "Yes" : "No"))
-             .ForMember(dest => dest.ValidToIssue, opt => opt.MapFrom(src => (src.ValidToIssue ?? false) ? "Yes" : "No"))
-             .ForMember(dest => dest.OriginalSampleAvailable, opt => opt.MapFrom(src => src.OriginalSampleAvailable ? "Yes" : "No"))
-             .ForMember(dest => dest.AntiserumProduced, opt => opt.MapFrom(src => src.AntiserumProduced ? "Yes" : "No"))
-             .ForMember(dest => dest.OriginalSampleAvailable, opt => opt.MapFrom(src => src.OriginalSampleAvailable ? "Yes" : "No"))
-             .ForMember(dest => dest.AntigenProduced, opt => opt.MapFrom(src => src.AntigenProduced ? "Yes" : "No"))
-             .ForMember(dest => dest.MTA, opt => opt.MapFrom(src => src.MaterialTransferAgreement ? "Yes" : "No"))
-             .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => src.ReceivedDate.HasValue ? src.ReceivedDate.Value.ToString("dd/MM/yyyy") : ""));
+             .ForMember(dest => dest.IsMixedIsolate, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.IsMixedIsolate)))
+             .ForMember(dest => dest.ValidToIssue, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.ValidToIssue)))
+             .ForMember(dest => dest.OriginalSampleAvailable, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.OriginalSampleAvailable)))
+             .ForMember(dest => dest.AntiserumProduced, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.AntiserumProduced)))
+             .ForMember(dest => dest.OriginalSampleAvailable, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.OriginalSampleAvailable)))
+             .ForMember(dest => dest.AntigenProduced, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.AntigenProduced)))
+             .ForMember(dest => dest.MTA, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.MaterialTransferAgreement)))
+             .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => MappingHelper.ToDateStringFormat(src.ReceivedDate)));
         }
     }
 }

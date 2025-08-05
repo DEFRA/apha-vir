@@ -2,7 +2,7 @@
 {
     public class PaginationParameters<TFilter>
     {
-        public TFilter Filter { get; set; }
+        public TFilter? Filter { get; set; }
         public string? GlobalSearch { get; set; }
         public string? SortBy { get; set; }
         public bool Descending { get; set; }

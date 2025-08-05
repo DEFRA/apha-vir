@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Web.Models;
@@ -19,8 +18,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
     {
         private readonly IVirusCharacteristicService _mockVirusCharacteristicService;
         private readonly IIsolateSearchService _mockIsolateSearchService;
-        private readonly ILookupService _mockLookupService;
-        private readonly ILogger<SearchRepositoryController> _logger;
+        private readonly ILookupService _mockLookupService;        
         private readonly IMapper _mockMapper;
         private readonly SearchRepositoryController _controller;
         private readonly ITempDataDictionary _tempData;
@@ -41,10 +39,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         {
             _mockVirusCharacteristicService = Substitute.For<IVirusCharacteristicService>();
             _mockIsolateSearchService = Substitute.For<IIsolateSearchService>();
-            _mockLookupService = Substitute.For<ILookupService>();
-            _logger = Substitute.For<ILogger<SearchRepositoryController>>();
+            _mockLookupService = Substitute.For<ILookupService>();            
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _logger, _mockMapper);
+            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockMapper);
             _tempData = new TempDataDictionary(new DefaultHttpContext(), Substitute.For<ITempDataProvider>())
             {
                 ["SearchCriteria"] = JsonConvert.SerializeObject(queryParameters)

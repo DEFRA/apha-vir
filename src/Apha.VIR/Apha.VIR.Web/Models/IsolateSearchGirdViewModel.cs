@@ -2,7 +2,7 @@
 {
     public class IsolateSearchGirdViewModel
     {
-        public List<IsolateSearchResult> IsolateSearchResults { get; set; }
+        public List<IsolateSearchResult>? IsolateSearchResults { get; set; }
         public PaginationModel Pagination { get; set; }
         public string SortOrderFor(string column)
         {

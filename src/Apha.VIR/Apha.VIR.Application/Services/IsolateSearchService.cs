@@ -68,7 +68,7 @@ namespace Apha.VIR.Application.Services
             {                
                 IsolateSearchExportDto isolateInfo = _mapper.Map<IsolateSearchExportDto>(isolateItem.IsolateDetails);
                 isolateInfo.ViabilityChecks = string.Join(", ", isolateItem.IsolateViabilityDetails
-                    .Select(v => $"{v.ViabilityStatus}: checked by {v.CheckedByName} on {v.DateChecked}"));
+                    .Select(v => $"{v.ViabilityStatus}: checked by {v.CheckedByName} on {v.DateChecked.ToString("dd/MM/yyyy")}"));
                 isolateInfo.Characteristics = string.Join(", ", isolateItem.IsolateCharacteristicDetails
                     .Select(c => $"{c.CharacteristicName}: {(String.IsNullOrEmpty(c.CharacteristicValue) ? "no value entered" : c.CharacteristicValue)}"));
                 isolateSearchExportData.Add(isolateInfo);

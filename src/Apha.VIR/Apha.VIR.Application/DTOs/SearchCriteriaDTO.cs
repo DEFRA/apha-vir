@@ -4,7 +4,7 @@ namespace Apha.VIR.Application.DTOs
 {
     public class SearchCriteriaDTO
     {
-        public string AVNumber { get; set; }
+        public string? AVNumber { get; set; }
         public Guid? VirusFamily { get; set; }
         public Guid? VirusType { get; set; }
         public Guid? Group { get; set; }

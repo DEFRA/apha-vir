@@ -15,8 +15,8 @@ namespace Apha.VIR.Web.Models
         public Guid? CountryOfOrigin { get; set; }
         public Guid? HostPurpose { get; set; }
         public Guid? SampleType { get; set; }
-        public int YearOfIsolation { get; set; }
-        public int YearOfSubmissionRecieved { get; set; }
+        public int? YearOfIsolation { get; set; }
+        public int? YearOfSubmissionRecieved { get; set; }
         [DataType(DataType.Date)]
         public DateTime? ReceivedFromDate { get; set; }
         [DataType(DataType.Date)]
@@ -27,25 +27,25 @@ namespace Apha.VIR.Web.Models
         public DateTime? CreatedToDate { get; set; }
         public List<CharacteristicCriteria> CharacteristicSearch { get; set; } = new List<CharacteristicCriteria>();
         [ValidateNever]
-        public PaginationModel Pagination { get; set; }
+        public PaginationModel? Pagination { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var results = new List<ValidationResult>();
 
             if (string.IsNullOrEmpty(AVNumber) &&
-                (VirusFamily == Guid.Empty || VirusFamily == null) &&
-                (VirusType == Guid.Empty || VirusType == null) &&
-                (Group == Guid.Empty || Group == null) &&
-                (Species == Guid.Empty || Species == null) &&
-                (CountryOfOrigin == Guid.Empty || CountryOfOrigin == null) &&
-                (HostPurpose == Guid.Empty || HostPurpose == null) &&
-                (SampleType == Guid.Empty || SampleType == null) &&
+                (IsNullOrEmptyGuid(VirusFamily)) &&
+                (IsNullOrEmptyGuid(VirusType)) &&
+                (IsNullOrEmptyGuid(Group)) &&
+                (IsNullOrEmptyGuid(Species)) &&
+                (IsNullOrEmptyGuid(CountryOfOrigin)) &&
+                (IsNullOrEmptyGuid(HostPurpose)) &&
+                (IsNullOrEmptyGuid(SampleType)) &&
                 YearOfIsolation == 0 &&
                 !ReceivedFromDate.HasValue &&
                 !ReceivedToDate.HasValue &&
                 !CreatedFromDate.HasValue &&
                 !CreatedToDate.HasValue &&
-                CharacteristicSearch.All(c => (c.Characteristic == Guid.Empty || c.Characteristic == null)))
+                CharacteristicSearch.All(c => (IsNullOrEmptyGuid(c.Characteristic))))
             {
                 results.Add(new ValidationResult("You must supply at least one criteria for the Search."));
             }
@@ -92,5 +92,10 @@ namespace Apha.VIR.Web.Models
 
             return results;
         }        
+
+        private static bool IsNullOrEmptyGuid(Guid? guid)
+        {
+            return !guid.HasValue || guid.Value == Guid.Empty;
+        }
     }
 }

@@ -6,7 +6,7 @@
         private int _page = 1;
         private const int MaxPageSize = 100;
 
-        public TFilter Filter { get; set; }
+        public TFilter? Filter { get; set; }
         public string? GlobalSearch { get; set; }
         public string? SortBy { get; set; } = "";
         public bool Descending { get; set; } = false;

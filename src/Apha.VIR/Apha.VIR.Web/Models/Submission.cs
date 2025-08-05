@@ -2,7 +2,7 @@
 
 namespace Apha.VIR.Web.Models
 {
-    public class Submission
+    public static class Submission
     {
         public static bool IsAVNumberValid(string av)
         {

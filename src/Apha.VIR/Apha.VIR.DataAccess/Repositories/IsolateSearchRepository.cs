@@ -38,37 +38,37 @@ namespace Apha.VIR.DataAccess.Repositories
                 query = query.Where(i => i.Avnumber == criteria.Filter.AVNumber);
             }
 
-            if (criteria.Filter.VirusFamily != Guid.Empty && criteria.Filter.VirusFamily != null)
+            if (IsValidGuid(criteria.Filter.VirusFamily))
             {
                 query = query.Where(i => i.Family == criteria.Filter.VirusFamily);
             }
 
-            if (criteria.Filter.VirusType != Guid.Empty && criteria.Filter.VirusType != null)
+            if (IsValidGuid(criteria.Filter.VirusType))
             {
                 query = query.Where(i => i.Type == criteria.Filter.VirusType);
             }
 
-            if (criteria.Filter.Group != Guid.Empty && criteria.Filter.Group != null)
+            if (IsValidGuid(criteria.Filter.Group))
             {
                 query = query.Where(i => i.HostSpecies == criteria.Filter.Group);
             }
 
-            if (criteria.Filter.Species != Guid.Empty && criteria.Filter.Species != null)
+            if (IsValidGuid(criteria.Filter.Species))
             {
                 query = query.Where(i => i.HostBreed == criteria.Filter.Species);
             }
 
-            if (criteria.Filter.CountryOfOrigin != Guid.Empty && criteria.Filter.CountryOfOrigin != null)
+            if (IsValidGuid(criteria.Filter.CountryOfOrigin))
             {
                 query = query.Where(i => i.CountryOfOrigin == criteria.Filter.CountryOfOrigin);
             }
 
-            if (criteria.Filter.HostPurpose != Guid.Empty && criteria.Filter.HostPurpose != null)
+            if (IsValidGuid(criteria.Filter.HostPurpose))
             {
                 query = query.Where(i => i.HostPurpose == criteria.Filter.HostPurpose);
             }
 
-            if (criteria.Filter.SampleType != Guid.Empty && criteria.Filter.SampleType != null)
+            if (IsValidGuid(criteria.Filter.SampleType))
             {
                 query = query.Where(i => i.SampleType == criteria.Filter.SampleType);
             }
@@ -90,7 +90,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
             foreach (CharacteristicCriteria characteristicItem in criteria.Filter.CharacteristicSearch)
             {
-                if (characteristicItem.Characteristic != Guid.Empty && characteristicItem.Characteristic != null)
+                if (IsValidGuid(characteristicItem.Characteristic))
                 {
                     query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
                         c.CharacteristicIsolateId == i.IsolateId && c.VirusCharacteristicId == characteristicItem.Characteristic));
@@ -332,6 +332,11 @@ namespace Apha.VIR.DataAccess.Repositories
                 isolateFullDetails.IsolateCharacteristicDetails = characteristicInfos;
             }
             return isolateFullDetails;
+        }
+
+        public static bool IsValidGuid(Guid? guid)
+        {
+            return guid.HasValue && guid.Value != Guid.Empty;
         }
     }
 }

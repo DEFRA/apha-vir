@@ -6,6 +6,8 @@ using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -16,16 +18,14 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IIsolateSearchService _isolateSearchService;
-        private readonly ILookupService _lookupService;
-        private readonly ILogger<SearchRepositoryController> _logger;
+        private readonly ILookupService _lookupService;        
         private readonly IMapper _mapper;
 
-        public SearchRepositoryController(ILookupService lookupService, IVirusCharacteristicService virusCharacteristicService, IIsolateSearchService isolateSearchService, ILogger<SearchRepositoryController> logger, IMapper mapper)
+        public SearchRepositoryController(ILookupService lookupService, IVirusCharacteristicService virusCharacteristicService, IIsolateSearchService isolateSearchService, IMapper mapper)
         {
             _lookupService = lookupService;
             _virusCharacteristicService = virusCharacteristicService;
-            _isolateSearchService = isolateSearchService;
-            _logger = logger;
+            _isolateSearchService = isolateSearchService;            
             _mapper = mapper;
         }
 
@@ -174,6 +174,13 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> GetComparatorsAndListValues(Guid virusCharacteristicId)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new {
+                    Comparators = new SelectListItem(),
+                    ListValues = new SelectListItem()
+                });
+            }
             var (comparators, listValues) = await _isolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId);
             return Json(new
             {
@@ -185,6 +192,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> BindIsolateGridOnPaginationAndSort(int pageNo, string column, bool sortOrder)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid parameters.");
+            }
             var modelIsolateSearchGird = new IsolateSearchGirdViewModel();
             var criteriaString = TempData.Peek("SearchCriteria") as string;
             if (!String.IsNullOrEmpty(criteriaString))
@@ -219,6 +230,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public IActionResult BindGirdPagination(PaginationModel pagination)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("Invalid pagination parameter");
+            }
             return ViewComponent("Pagination", pagination);
         }
 
