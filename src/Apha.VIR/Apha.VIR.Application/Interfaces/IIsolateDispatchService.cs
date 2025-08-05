@@ -12,7 +12,6 @@ namespace Apha.VIR.Application.Interfaces
     {
         Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId);
         Task DeleteDispatchAsync(Guid DispatchId, byte[] LastModified, string User);
-
-        //Task<IEnumerable<DispatchDTO>> GetDispatchAsync(string AVNumber, Guid DispatchId, Guid DispatchIsolateId);
+        
     }
 }

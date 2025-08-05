@@ -8,9 +8,6 @@ namespace Apha.VIR.Web.Mappings
     {
         public ViewModelMapper()
         {
-            // CreateMap<SourceType, DestinationType>();
-            // Add your DTO to viewmodel mappings here
-            // For example:
             CreateMap<LookupDTO, LookupViewModel>();
             CreateMap<IsolateDispatchHistory, IsolateDispatchInfoDTO>().ReverseMap();
         }

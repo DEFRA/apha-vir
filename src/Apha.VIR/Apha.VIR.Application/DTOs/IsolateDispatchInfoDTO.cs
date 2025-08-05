@@ -24,5 +24,5 @@ public class IsolateDispatchInfoDTO
 
     public Guid DispatchIsolateId { get; set; }
 
-    public Byte[] LastModified { get; set; }
+    public Byte[] LastModified { get; set; } = Array.Empty<byte>();
 }

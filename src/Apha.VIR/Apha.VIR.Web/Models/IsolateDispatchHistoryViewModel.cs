@@ -4,9 +4,9 @@ namespace Apha.VIR.Web.Models
 {
     public class IsolateDispatchHistoryViewModel
     {
-        public string Nomenclature { get; set; }
+        public string? Nomenclature { get; set; }
 
-        public IEnumerable<IsolateDispatchHistory> DispatchHistoryRecords { get; set; }
+        public IEnumerable<IsolateDispatchHistory>? DispatchHistoryRecords { get; set; }
 
     }
 
@@ -26,17 +26,17 @@ namespace Apha.VIR.Web.Models
         [Display(Name = "Passage Number")]
         public int PassageNumber { get; set; }
 
-        public string Recipient { get; set; }
+        public string? Recipient { get; set; }
 
         [Display(Name = "Recipient Name")]
-        public string RecipientName { get; set; }
+        public string? RecipientName { get; set; }
 
         [Display(Name = "Recipient Address")]
-        public string RecipientAddress { get; set; }
+        public string? RecipientAddress { get; set; }
 
 
         [Display(Name = "Reason for Dispatch")]
-        public string ReasonForDispatch { get; set; }
+        public string? ReasonForDispatch { get; set; }
 
         [Required]
         [Display(Name = "Dispatched Date")]
@@ -45,16 +45,16 @@ namespace Apha.VIR.Web.Models
 
         [Required]
         [Display(Name = "Dispatched By")]
-        public string DispatchedByName { get; set; }
+        public string? DispatchedByName { get; set; }
 
         //public byte[] LastModified { get; set; }
 
         [Display(Name = "AV Number")]
-        public string Avnumber { get; set; }
+        public string? Avnumber { get; set; }
 
-        public string Nomenclature { get; set; }
+        public string? Nomenclature { get; set; }
 
-        public Byte[] LastModified { get; set; }
+        public Byte[]? LastModified { get; set; }
 
     }
 }

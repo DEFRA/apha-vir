@@ -8,9 +8,6 @@ namespace Apha.VIR.DataAccess.Data
     {
         public void Configure(EntityTypeBuilder<LookupItemByParent> entity)
         {
-            //entity.Property(e => e.Id)
-            //    .HasDefaultValueSql("(newid())")
-            //    .HasColumnName("Id");
 
             entity.Property(e => e.Name)
                          .HasMaxLength(100)

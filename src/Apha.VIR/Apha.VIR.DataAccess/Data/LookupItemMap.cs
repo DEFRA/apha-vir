@@ -8,19 +8,12 @@ namespace Apha.VIR.DataAccess.Data
     {
         public void Configure(EntityTypeBuilder<LookupItem> entity)
         {
-            //entity.Property(e => e.Id)
-            //    .HasDefaultValueSql("(newid())")
-            //    .HasColumnName("Id");
 
             entity.Property(e => e.Name)
                          .HasMaxLength(100)
                          .IsUnicode(false)
                          .HasColumnName("Name");
 
-            //entity.Property(e => e.ParentName)
-            //    .HasColumnType("uniqueidentifier")
-            //    .IsRequired(false)
-            //    .HasColumnName("parentname");
 
             entity.Property(e => e.AlternateName)
                    .HasMaxLength(100)

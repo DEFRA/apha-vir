@@ -182,12 +182,12 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
         {
             // Arrange
             var dispatchId = Guid.NewGuid();
-            byte[] lastModified = null;
+            byte[]? lastModified = null;
             var user = "TestUser";
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            _service.DeleteDispatchAsync(dispatchId, lastModified, user));
+                _service.DeleteDispatchAsync(dispatchId, lastModified!, user));
         }
 
         [Fact]
@@ -278,7 +278,10 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
         private string InvokeGetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var methodInfo = typeof(IsolateDispatchService).GetMethod("GetCharacteristicNomenclature", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            return (string)methodInfo.Invoke(_service, new object[] { characteristicList });
+            if (methodInfo == null)
+                throw new InvalidOperationException("GetCharacteristicNomenclature method not found.");
+            var result = methodInfo.Invoke(_service, new object[] { characteristicList });
+            return result as string ?? string.Empty;
         }
 
 

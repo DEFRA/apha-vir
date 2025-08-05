@@ -20,8 +20,14 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         public async Task<IActionResult> History(string AVNumber, Guid IsolateId)
         {
+            if (string.IsNullOrWhiteSpace(AVNumber) && IsolateId == Guid.Empty)
+            {
+                return View();
+            }
+
             IEnumerable<IsolateDispatchInfoDTO> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(
                 AVNumber,
                 IsolateId
@@ -43,8 +49,17 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(Guid DispatchId, string LastModified)
+        public async Task<IActionResult> Delete(Guid DispatchId, string LastModified, Guid IsolateId, string AVNumber)
         {
+            if (DispatchId == Guid.Empty)
+            {
+                return BadRequest("Invalid Dispatch ID.");
+            }
+            if (string.IsNullOrWhiteSpace(LastModified))
+            {
+                return BadRequest("Last Modified cannot be empty.");
+            }
+
             string UserName = "Test User";
             await _isolateDispatchService.DeleteDispatchAsync(
                 DispatchId,
@@ -52,7 +67,7 @@ namespace Apha.VIR.Web.Controllers
                 UserName
             );
             
-            return RedirectToAction("History");
+            return RedirectToAction("History", new { AVNumber = AVNumber, IsolateId = IsolateId });
         }
 
 

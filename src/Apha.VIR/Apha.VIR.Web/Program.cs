@@ -31,8 +31,8 @@ else
 
 // Add database context
 builder.Services.AddDbContext<VIRDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("WeatherForecastConnectionString")
-    ?? throw new InvalidOperationException("Connection string 'WeatherForecastConnectionString' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("VIRConnectionString")
+    ?? throw new InvalidOperationException("Connection string 'VIRConnectionString' not found.")));
 
 builder.Services.AddAutoMapper(typeof(EntityMapper).Assembly);
 builder.Services.AddAutoMapper(typeof(ViewModelMapper).Assembly);

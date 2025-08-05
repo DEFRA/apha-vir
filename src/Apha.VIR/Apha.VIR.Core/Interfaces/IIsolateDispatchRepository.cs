@@ -6,5 +6,5 @@ public interface IIsolateDispatchRepository
 {
     Task<IEnumerable<IsolateDispatchInfo>> GetDispatchesHistoryAsync(Guid IsolateId);
     Task DeleteDispatchAsync(Guid DispatchId, Byte[] LastModified, string User);
-    //Task<IEnumerable<IsolateDispatch>> GetDispatchAsync(Guid isolateId);
+
 }
