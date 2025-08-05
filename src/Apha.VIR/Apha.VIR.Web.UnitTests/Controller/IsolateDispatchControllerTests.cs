@@ -30,38 +30,41 @@ namespace Apha.VIR.Web.UnitTests.Controller
         public async Task History_ReturnsViewModelWithData_WhenServiceReturnsValidData()
         {
             // Arrange
+            var avNumber = "AV123456-01";
+            var isolateId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+
             var isolateDispatchInfoDTOs = new List<IsolateDispatchInfoDTO>
-{
-            new IsolateDispatchInfoDTO { Nomenclature = "Test Nomenclature" }
+            {
+                new IsolateDispatchInfoDTO { Nomenclature = "Test Nomenclature" }
             };
             var isolateDispatchHistories = new List<IsolateDispatchHistory>
             {
                 new IsolateDispatchHistory
                 {
-                DispatchIsolateId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                IsolateId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                DispatchId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                NoOfAliquots = 5,
-                PassageNumber = 2,
-                Recipient = "recipient@test.com",
-                RecipientName = "Test Recipient",
-                RecipientAddress = "123 Test Street, Test City",
-                ReasonForDispatch = "Research",
-                DispatchedDate = new DateTime(2024, 1, 1),
-                DispatchedByName = "Test Dispatcher",
-                Avnumber = "AV123456-01",
-                Nomenclature = "Test Nomenclature",
-                LastModified = new byte[] { 1, 2, 3, 4 }
+                    DispatchIsolateId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    IsolateId = isolateId,
+                    DispatchId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                    NoOfAliquots = 5,
+                    PassageNumber = 2,
+                    Recipient = "recipient@test.com",
+                    RecipientName = "Test Recipient",
+                    RecipientAddress = "123 Test Street, Test City",
+                    ReasonForDispatch = "Research",
+                    DispatchedDate = new DateTime(2024, 1, 1),
+                    DispatchedByName = "Test Dispatcher",
+                    Avnumber = avNumber,
+                    Nomenclature = "Test Nomenclature",
+                    LastModified = new byte[] { 1, 2, 3, 4 }
                 }
             };
 
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(Arg.Any<string>(), Arg.Any<Guid>())
-            .Returns(Task.FromResult((IEnumerable<IsolateDispatchInfoDTO>)isolateDispatchInfoDTOs));
+                .Returns(Task.FromResult((IEnumerable<IsolateDispatchInfoDTO>)isolateDispatchInfoDTOs));
             _mockMapper.Map<IEnumerable<IsolateDispatchHistory>>(Arg.Any<IEnumerable<IsolateDispatchInfoDTO>>())
-            .Returns(isolateDispatchHistories);
+                .Returns(isolateDispatchHistories);
 
             // Act
-            var result = await _controller.History();
+            var result = await _controller.History(avNumber, isolateId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -74,13 +77,16 @@ namespace Apha.VIR.Web.UnitTests.Controller
         public async Task History_ReturnsNullViewModel_WhenServiceReturnsEmptyList()
         {
             // Arrange
+            var avNumber = "AV000000-01";
+            var isolateId = Guid.Parse("2066E698-B746-493A-AB14-B30800CB75A8");
+
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(Arg.Any<string>(), Arg.Any<Guid>())
-            .Returns(Task.FromResult((IEnumerable<IsolateDispatchInfoDTO>)new List<IsolateDispatchInfoDTO>()));
+                .Returns(Task.FromResult((IEnumerable<IsolateDispatchInfoDTO>)new List<IsolateDispatchInfoDTO>()));
             _mockMapper.Map<IEnumerable<IsolateDispatchHistory>>(Arg.Any<IEnumerable<IsolateDispatchInfoDTO>>())
-            .Returns(new List<IsolateDispatchHistory>());
+                .Returns(new List<IsolateDispatchHistory>());
 
             // Act
-            var result = await _controller.History();
+            var result = await _controller.History(avNumber, isolateId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -91,27 +97,33 @@ namespace Apha.VIR.Web.UnitTests.Controller
         public async Task History_HandlesException_WhenServiceThrowsException()
         {
             // Arrange
+            var avNumber = "AV000000-01";
+            var isolateId = Guid.Parse("2066E698-B746-493A-AB14-B30800CB75A8");
+
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(Arg.Any<string>(), Arg.Any<Guid>())
-            .Throws(new Exception("Test exception"));
+                .Throws(new Exception("Test exception"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _controller.History());
+            await Assert.ThrowsAsync<Exception>(() => _controller.History(avNumber, isolateId));
         }
 
         [Fact]
         public async Task History_CallsServiceWithCorrectParameters()
         {
             // Arrange
+            var avNumber = "AV000000-01";
+            var isolateId = Guid.Parse("2066E698-B746-493A-AB14-B30800CB75A8");
+
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(Arg.Any<string>(), Arg.Any<Guid>())
-            .Returns(Task.FromResult((IEnumerable<IsolateDispatchInfoDTO>)new List<IsolateDispatchInfoDTO>()));
+                .Returns(Task.FromResult((IEnumerable<IsolateDispatchInfoDTO>)new List<IsolateDispatchInfoDTO>()));
 
             // Act
-            await _controller.History();
+            await _controller.History(avNumber, isolateId);
 
             // Assert
             await _mockIsolateDispatchService.Received(1).GetDispatchesHistoryAsync(
-            Arg.Is<string>(s => s == "AV000000-01"),
-            Arg.Is<Guid>(g => g == Guid.Parse("2066E698-B746-493A-AB14-B30800CB75A8"))
+                Arg.Is<string>(s => s == avNumber),
+                Arg.Is<Guid>(g => g == isolateId)
             );
         }
     }
