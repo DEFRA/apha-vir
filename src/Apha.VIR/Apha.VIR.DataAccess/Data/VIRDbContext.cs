@@ -20,7 +20,9 @@ public class VIRDbContext : DbContext
     public virtual DbSet<VirusCharacteristicDataType> VirusCharacteristicDataTypes { get; set; }
     public virtual DbSet<VirusCharacteristicListEntry> VirusCharacteristicListEntries { get; set; }
     public virtual DbSet<VirusCharacteristic> VirusCharacteristics { get; set; }
-    public virtual DbSet<VirusTypeCharacteristicMap> VirusTypeCharacteristics { get; set; }
+    public virtual DbSet<VirusTypeCharacteristic> VirusTypeCharacteristics { get; set; }
+    public virtual DbSet<IsolateSearchResult> VwIsolates { get; set; }
+    public virtual DbSet<IsolateCharacteristicsForSearch> VwCharacteristicsForSearches { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

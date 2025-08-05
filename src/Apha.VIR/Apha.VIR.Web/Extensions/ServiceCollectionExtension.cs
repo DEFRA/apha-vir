@@ -18,6 +18,7 @@ namespace Apha.VIR.Web.Extensions
             // Add your application services here            
             services.AddScoped<ILookupService, LookupService>();
             services.AddScoped<IVirusCharacteristicService, VirusCharacteristicService>();
+            services.AddScoped<IIsolateSearchService, IsolateSearchService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)
@@ -25,6 +26,8 @@ namespace Apha.VIR.Web.Extensions
             // Add your data access services here            
             services.AddScoped<ILookupRepository, LookupRepository>();
             services.AddScoped<IVirusCharacteristicRepository, VirusCharacteristicRepository>();
+            services.AddScoped<IVirusCharacteristicListEntryRepository, VirusCharacteristicListEntryRepository>();
+            services.AddScoped<IIsolateSearchRepository, IsolateSearchRepository>();
             return services;
         }
     }

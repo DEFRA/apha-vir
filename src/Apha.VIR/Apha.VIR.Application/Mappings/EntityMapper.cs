@@ -1,5 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
+using Apha.VIR.Core.Pagination;
 using AutoMapper;
 
 namespace Apha.VIR.Application.Mappings
@@ -10,7 +12,38 @@ namespace Apha.VIR.Application.Mappings
         {
             CreateMap<Lookup, LookupDTO>().ReverseMap();
             CreateMap<LookupItem, LookupItemDTO>().ReverseMap();
+            CreateMap<LookupItemByParent, LookupItemDTO>().ReverseMap();
             CreateMap<VirusCharacteristic, VirusCharacteristicDTO>().ReverseMap();
+            CreateMap<VirusCharacteristicListEntry, VirusCharacteristicListEntryDTO>().ReverseMap();
+            CreateMap<SearchCriteriaDTO, SearchCriteria>();
+            CreateMap<CharacteristicCriteriaDTO, CharacteristicCriteria>();
+            CreateMap<IsolateSearchResult, IsolateSearchResultDTO>();
+            CreateMap<QueryParameters<SearchCriteriaDTO>, PaginationParameters<SearchCriteria>>();
+            CreateMap<PagedData<IsolateSearchResult>, PaginatedResult<IsolateSearchResultDTO>>();
+            CreateMap<IsolateFullDetailsResult, IsolateFullDetailsResultDto>();
+            CreateMap<IsolateInfo, IsolateInfoDTO>();
+            CreateMap<IsolateViabilityInfo, IsolateViabilityInfoDTO>();
+            CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>();
+            CreateMap<IsolateCharacteristicInfo, IsolateCharacteristicInfoDTO>();
+            CreateMap<IsolateInfoDTO, IsolateSearchExportDto>()
+             .ForMember(dest => dest.VirusFamily, opt => opt.MapFrom(src => src.FamilyName))
+             .ForMember(dest => dest.VirusType, opt => opt.MapFrom(src => src.TypeName))
+             .ForMember(dest => dest.HostPurpose, opt => opt.MapFrom(src => src.HostPurposeName))
+             .ForMember(dest => dest.SampleType, opt => opt.MapFrom(src => src.SampleTypeName))
+             .ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.GroupSpeciesName))
+             .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.BreedName))
+             .ForMember(dest => dest.CountryOfOrigin, opt => opt.MapFrom(src => src.CountryOfOriginName))
+             .ForMember(dest => dest.IsolationMethod, opt => opt.MapFrom(src => src.IsolationMethodName))
+             .ForMember(dest => dest.Freezer, opt => opt.MapFrom(src => src.FreezerName))
+             .ForMember(dest => dest.Tray, opt => opt.MapFrom(src => src.TrayName))
+             .ForMember(dest => dest.IsMixedIsolate, opt => opt.MapFrom(src => src.IsMixedIsolate ? "Yes" : "No"))
+             .ForMember(dest => dest.ValidToIssue, opt => opt.MapFrom(src => (src.ValidToIssue ?? false) ? "Yes" : "No"))
+             .ForMember(dest => dest.OriginalSampleAvailable, opt => opt.MapFrom(src => src.OriginalSampleAvailable ? "Yes" : "No"))
+             .ForMember(dest => dest.AntiserumProduced, opt => opt.MapFrom(src => src.AntiserumProduced ? "Yes" : "No"))
+             .ForMember(dest => dest.OriginalSampleAvailable, opt => opt.MapFrom(src => src.OriginalSampleAvailable ? "Yes" : "No"))
+             .ForMember(dest => dest.AntigenProduced, opt => opt.MapFrom(src => src.AntigenProduced ? "Yes" : "No"))
+             .ForMember(dest => dest.MTA, opt => opt.MapFrom(src => src.MaterialTransferAgreement ? "Yes" : "No"))
+             .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => src.ReceivedDate.HasValue ? src.ReceivedDate.Value.ToString("dd/MM/yyyy") : ""));
         }
     }
 }

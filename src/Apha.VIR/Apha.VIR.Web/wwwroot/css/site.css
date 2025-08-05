@@ -166,6 +166,10 @@ body {
     margin-right: 25%;
 }
 
+.searchRepo-grid-table tbody{
+    vertical-align: top;
+}
+
 .searchRepo-grid-table {
     width: 100%;
 }
@@ -175,7 +179,7 @@ body {
     }
 
         .searchRepo-grid-table table thead tr th {
-            text-wrap-mode: nowrap;
+            text-wrap-mode: wrap;
             padding-bottom: 10px;
             background-color: Navy;
             border: 1px solid white;
@@ -432,3 +436,22 @@ body {
         .validation ul li::before {
             content: "\002D ";
         }
+
+.btn-as-link {
+    background: none;
+    border: none;
+    color: #0000FF;
+    padding: 0;
+    font: inherit;
+    /* text-decoration: underline; */
+    cursor: pointer;
+}
+
+    .btn-as-link:hover {
+        color: #0000FF;
+        text-decoration: underline;
+    }
+
+.inline-form {
+    display: inline;
+}
