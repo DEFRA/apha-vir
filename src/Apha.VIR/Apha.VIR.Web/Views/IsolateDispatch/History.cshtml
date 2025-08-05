@@ -3,7 +3,7 @@
     var nomenclature = Model?.Nomenclature ?? string.Empty;
 }
 
-@if (hasRecords && Model.DispatchHistoryRecords != null)
+@if (hasRecords && Model != null && Model.DispatchHistoryRecords != null)
 {
     var records = Model.DispatchHistoryRecords;
     <p>
