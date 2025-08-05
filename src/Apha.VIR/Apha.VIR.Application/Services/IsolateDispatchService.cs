@@ -40,11 +40,11 @@ namespace Apha.VIR.Application.Services
         public async Task DeleteDispatchAsync(Guid DispatchId, byte[] LastModified, string User)
         {
             if (DispatchId == Guid.Empty)
-                throw new ArgumentException(nameof(DispatchId), "DispatchId cannot be empty.");
+                throw new ArgumentException("DispatchId cannot be empty.", nameof(DispatchId));
             if (LastModified == null)
                 throw new ArgumentNullException(nameof(LastModified), "LastModified cannot be null.");
             if (string.IsNullOrWhiteSpace(User))
-                throw new ArgumentException(nameof(User), "User cannot be empty.");
+                throw new ArgumentException("User cannot be empty.", nameof(User));
 
             await _isolateDispatchRepository.DeleteDispatchAsync(DispatchId, LastModified, User);
         }
@@ -70,9 +70,19 @@ namespace Apha.VIR.Application.Services
             var charNomenclature = GetCharacteristicNomenclature(characteristicList.ToList());
             
 
-            string nomenclature = string.IsNullOrEmpty(charNomenclature)
-                ? (matchIsolate.Count > 0 ? matchIsolate.First().Nomenclature : string.Empty)
-                : charNomenclature;
+
+            string nomenclature;
+            if (string.IsNullOrEmpty(charNomenclature))
+            {
+                nomenclature = matchIsolate.Count > 0 && matchIsolate.First().Nomenclature != null
+                    ? matchIsolate.First().Nomenclature!
+                    : string.Empty;
+            }
+            else
+            {
+                nomenclature = charNomenclature!;
+            }
+
 
             foreach (var dh in dispatchHistList)
             {

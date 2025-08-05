@@ -1,13 +1,8 @@
-﻿@model IsolateDispatchHistoryViewModel
-@{
-    ViewData["Title"] = "Isolate Dispatch History | Virus Isolates Repository";
-}
-
-@if (Model != null)
+﻿@if (Model != null && Model.DispatchHistoryRecords != null)
 {
-<p>
-    <strong>@Model.Nomenclature</strong>
-</p>
+    <p>
+        <strong>@Model.Nomenclature</strong>
+    </p>
 
     <div class="isolate-grid-table mt-1">
 
@@ -28,7 +23,7 @@
             <tbody>
                 @foreach (var item in Model.DispatchHistoryRecords)
                 {
-                    var strLastModified = Convert.ToBase64String(@item.LastModified);
+                    var strLastModified = item.LastModified != null ? Convert.ToBase64String(item.LastModified) : string.Empty;
 
                     <tr>
                         <td>@item.NoOfAliquots</td>
@@ -72,8 +67,8 @@ else
 {
     <table border="1" id="ctl00_ContentPlaceHolder1_grvDispatch" style="border-collapse:collapse;">
     <thead>
-        <tr>
-           
+        <tr style="display:none;">
+            <th colspan="10"></th>
         </tr>
     </thead>
     <tbody>
@@ -82,9 +77,8 @@ else
         </tr>
     </tbody>
 </table>
-
-
 }
+
 <p>
     <a asp-action="ViewIsolateDetails" asp-route-id="1">Return to View Isolate Details Page</a>
 </p>

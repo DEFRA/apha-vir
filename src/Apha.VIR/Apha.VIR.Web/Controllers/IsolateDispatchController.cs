@@ -23,6 +23,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> History(string AVNumber, Guid IsolateId)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
             if (string.IsNullOrWhiteSpace(AVNumber) && IsolateId == Guid.Empty)
             {
                 return View();
@@ -51,6 +56,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid DispatchId, string LastModified, Guid IsolateId, string AVNumber)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (DispatchId == Guid.Empty)
             {
                 return BadRequest("Invalid Dispatch ID.");
@@ -66,7 +76,7 @@ namespace Apha.VIR.Web.Controllers
                 Convert.FromBase64String(LastModified),
                 UserName
             );
-            
+
             return RedirectToAction("History", new { AVNumber = AVNumber, IsolateId = IsolateId });
         }
 
