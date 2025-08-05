@@ -74,7 +74,7 @@ namespace Apha.VIR.Application.Services
             string nomenclature;
             if (string.IsNullOrEmpty(charNomenclature))
             {
-                nomenclature = matchIsolate.Count > 0 && matchIsolate.First().Nomenclature != null
+                nomenclature = matchIsolate.First().Nomenclature != null
                     ? matchIsolate.First().Nomenclature!
                     : string.Empty;
             }

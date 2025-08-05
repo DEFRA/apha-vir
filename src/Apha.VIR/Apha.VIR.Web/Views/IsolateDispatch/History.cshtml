@@ -1,7 +1,12 @@
-﻿@if (Model != null && Model.DispatchHistoryRecords != null)
+﻿@{
+    var hasRecords = Model?.DispatchHistoryRecords != null;
+    var nomenclature = Model?.Nomenclature ?? string.Empty;
+}
+
+@if (hasRecords)
 {
     <p>
-        <strong>@Model.Nomenclature</strong>
+        <strong>@nomenclature</strong>
     </p>
 
     <div class="isolate-grid-table mt-1">
