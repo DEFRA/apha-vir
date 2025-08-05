@@ -114,6 +114,8 @@ namespace Apha.VIR.Application.Services
         }
 
 
+
+        // Sonar: S2325 - This method is intentionally not static as it may require instance context in the future.
         private string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var characteristicNomenclatureList = new StringBuilder();

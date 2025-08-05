@@ -49,7 +49,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
 
         public void Dispose()
         {
-            // Clean up code, if necessary
+            GC.SuppressFinalize(this);
         }
 
         [Fact]
