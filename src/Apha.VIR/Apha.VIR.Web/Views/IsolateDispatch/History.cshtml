@@ -1,11 +1,11 @@
 ﻿@{
-    var hasRecords = Model?.DispatchHistoryRecords != null;
+    var records = Model?.DispatchHistoryRecords;
     var nomenclature = Model?.Nomenclature ?? string.Empty;
 }
 
-@if (hasRecords && Model != null && Model.DispatchHistoryRecords != null)
+@if (records != null)
 {
-    var records = Model.DispatchHistoryRecords;
+
     <p>
         <strong>@nomenclature</strong>
     </p>
