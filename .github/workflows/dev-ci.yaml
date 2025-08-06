@@ -115,23 +115,21 @@ jobs:
       - name: Run Unit Tests with Coverage
         shell: pwsh
         run: |
-          dotnet test src/apha.vir.sln --no-build --configuration Release
-
           dotnet test src/Apha.VIR/Apha.VIR.Application.UnitTests/Apha.VIR.Application.UnitTests.csproj `
             --no-build --configuration Release /p:CollectCoverage=true `
-            /p:CoverletOutput="$($PWD.Path)/TestResults/Apha.VIR.Application.coverage.opencover.xml" `
+            /p:CoverletOutput="$($PWD.Path)/src/TestResults/Apha.VIR.Application.coverage.opencover.xml" `
             /p:CoverletOutputFormat=opencover `
             /p:Deterministic=true `
             /p:DebugType=full /p:DebugSymbols=true `
-            --logger "trx;LogFileName=$($PWD.Path)/TestResults/Apha.VIR.Application.test_results.trx"
+            --logger "trx;LogFileName=$($PWD.Path)/src/TestResults/Apha.VIR.Application.test_results.trx"
 
           dotnet test src/Apha.VIR/Apha.VIR.Web.UnitTests/Apha.VIR.Web.UnitTests.csproj `
             --no-build --configuration Release /p:CollectCoverage=true `
-            /p:CoverletOutput="$($PWD.Path)/TestResults/Apha.VIR.Web.coverage.opencover.xml" `
+            /p:CoverletOutput="$($PWD.Path)/src/TestResults/Apha.VIR.Web.coverage.opencover.xml" `
             /p:CoverletOutputFormat=opencover `
             /p:Deterministic=true `
             /p:DebugType=full /p:DebugSymbols=true `
-            --logger "trx;LogFileName=$($PWD.Path)/TestResults/Apha.VIR.Web.test_results.trx"
+            --logger "trx;LogFileName=$($PWD.Path)/src/TestResults/Apha.VIR.Web.test_results.trx"
       - name: List coverage files
         shell: pwsh
         run: Get-ChildItem -Recurse -Filter "*.coverage.opencover.xml"; Get-ChildItem -Recurse -Filter "*.test_results.trx"
