@@ -46,7 +46,8 @@ namespace Apha.VIR.Web.Controllers
             {
                 foreach (var menberName in validation.MemberNames.Any() ? validation.MemberNames : new[] { "" })
                 {
-                    ModelState.AddModelError(menberName, validation.ErrorMessage);
+                    if (validation.ErrorMessage != null)
+                        ModelState.AddModelError(menberName, validation.ErrorMessage);
                 }
             }
 
@@ -153,7 +154,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BindIsolateGridOnPaginationAndSort(int pageNo, string column, bool sortOrder)
+        public async Task<IActionResult> BindIsolateGridOnPaginationAndSort(int pageNo, string column = "", bool sortOrder = false)
         {
             if (!ModelState.IsValid)
             {
@@ -166,11 +167,11 @@ namespace Apha.VIR.Web.Controllers
                 var criteriaDto = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
                 if (pageNo != 0)
                 {
-                    criteriaDto.Page = pageNo;
+                    criteriaDto!.Page = pageNo;
                 }
                 else
                 {
-                    criteriaDto.SortBy = column;
+                    criteriaDto!.SortBy = column;
                     criteriaDto.Descending = sortOrder;
                 }
 
@@ -203,48 +204,47 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> ExportToExcel()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
-            if (!String.IsNullOrEmpty(criteriaString))
+            List<IsolateSearchExportViewModel> searchExportRecords = new List<IsolateSearchExportViewModel>();
+            var criteriaDto = String.IsNullOrEmpty(criteriaString) ? null : JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
+            if (criteriaDto != null)
             {
-                var criteriaDto = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
-                var searchExportRecords = _mapper.Map<List<IsolateSearchExportViewModel>>(
-                    await _isolateSearchService.GetIsolateSearchExportResultAsync(criteriaDto));
-                using (var workbook = new XLWorkbook())
+                searchExportRecords = _mapper.Map<List<IsolateSearchExportViewModel>>(
+                await _isolateSearchService.GetIsolateSearchExportResultAsync(criteriaDto));
+            }
+            using (var workbook = new XLWorkbook())
+            {
+                string fileName = $"VIR SearchResults {DateTime.Today.ToString("dMMMMyyyy")}";
+                var worksheet = workbook.Worksheets.Add(fileName);
+                var currentRow = 1;
+                // Header
+                var properties = typeof(IsolateSearchExportViewModel).GetProperties();
+                for (int i = 0; i < properties.Length; i++)
                 {
-                    string fileName = $"VIR SearchResults {DateTime.Today.ToString("dMMMMyyyy")}";
-                    var worksheet = workbook.Worksheets.Add(fileName);
-                    var currentRow = 1;
-                    // Header
-                    var properties = typeof(IsolateSearchExportViewModel).GetProperties();
+                    worksheet.Cell(currentRow, i + 1).Value = properties[i].Name;
+                }
+                // Data
+                foreach (var isolate in searchExportRecords)
+                {
+                    currentRow++;
                     for (int i = 0; i < properties.Length; i++)
                     {
-                        worksheet.Cell(currentRow, i + 1).Value = properties[i].Name;
-                    }
-                    // Data
-                    foreach (var isolate in searchExportRecords)
-                    {
-                        currentRow++;
-                        for (int i = 0; i < properties.Length; i++)
-                        {
-                            var value = properties[i].GetValue(isolate);
-                            worksheet.Cell(currentRow, i + 1).Value = value?.ToString() ?? string.Empty;
-                        }
-                    }
-                    var range = worksheet.Range(1, 1, currentRow, properties.Length);
-                    range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                    range.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-                    worksheet.Columns().AdjustToContents();
-                    using (var stream = new MemoryStream())
-                    {
-                        workbook.SaveAs(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
-                        return File(stream.ToArray(),
-                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                    $"{fileName}.xlsx");
+                        var value = properties[i].GetValue(isolate);
+                        worksheet.Cell(currentRow, i + 1).Value = value?.ToString() ?? string.Empty;
                     }
                 }
+                var range = worksheet.Range(1, 1, currentRow, properties.Length);
+                range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                range.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                worksheet.Columns().AdjustToContents();
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                $"{fileName}.xlsx");
+                }
             }
-            else
-                return null;
         }
 
         private static List<int> GenerateYearsList()

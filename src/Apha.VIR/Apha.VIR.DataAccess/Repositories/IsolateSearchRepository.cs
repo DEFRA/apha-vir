@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
+using System.Linq.Expressions;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Apha.VIR.DataAccess.Repositories
 {
@@ -27,8 +25,8 @@ namespace Apha.VIR.DataAccess.Repositories
             var isolateResult = await query.Skip((criteria.Page - 1) * criteria.PageSize)
                 .Take(criteria.PageSize)
                 .ToListAsync();
-            return new PagedData<IsolateSearchResult>(isolateResult, totalRecords);            
-        }        
+            return new PagedData<IsolateSearchResult>(isolateResult, totalRecords);
+        }
 
         private IQueryable<IsolateSearchResult> FetchIsolateSearchRecordsAsync(PaginationParameters<SearchCriteria> criteria)
         {
@@ -38,68 +36,79 @@ namespace Apha.VIR.DataAccess.Repositories
 
             query = (IQueryable<IsolateSearchResult>)ApplyDateFilters(query, criteria.Filter);
 
-            query = (IQueryable<IsolateSearchResult>)ApplyAllCharacteristicFilters(query, criteria.Filter.CharacteristicSearch);            
+            if (criteria.Filter != null)
+                query = (IQueryable<IsolateSearchResult>)ApplyAllCharacteristicFilters(query, criteria.Filter.CharacteristicSearch);
 
             query = (IQueryable<IsolateSearchResult>)ApplySorting(query, criteria.SortBy, criteria.Descending);
-            
-            return query;            
+
+            return query;
         }
-       
+
         private static IQueryable ApplyBasicFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
         {
-            if(filter != null)
+            if (filter == null)
             {
-                if (!string.IsNullOrEmpty(filter.AVNumber))
-                {
-                    query = query.Where(i => i.Avnumber == filter.AVNumber);
-                }
+                return query;
+            }
 
-                if (IsValidGuid(filter.VirusFamily))
-                {
-                    query = query.Where(i => i.Family == filter.VirusFamily);
-                }
+            query = ApplyStringFilter(query, filter.AVNumber, i => i.Avnumber);
+            query = ApplyGuidFilters(query, filter);
+            query = ApplyYearOfIsolationFilter(query, filter.YearOfIsolation);
 
-                if (IsValidGuid(filter.VirusType))
-                {
-                    query = query.Where(i => i.Type == filter.VirusType);
-                }
-
-                if (IsValidGuid(filter.Group))
-                {
-                    query = query.Where(i => i.HostSpecies == filter.Group);
-                }
-
-                if (IsValidGuid(filter.Species))
-                {
-                    query = query.Where(i => i.HostBreed == filter.Species);
-                }
-
-                if (IsValidGuid(filter.CountryOfOrigin))
-                {
-                    query = query.Where(i => i.CountryOfOrigin == filter.CountryOfOrigin);
-                }
-
-                if (IsValidGuid(filter.HostPurpose))
-                {
-                    query = query.Where(i => i.HostPurpose == filter.HostPurpose);
-                }
-
-                if (IsValidGuid(filter.SampleType))
-                {
-                    query = query.Where(i => i.SampleType == filter.SampleType);
-                }
-
-                if (filter.YearOfIsolation != 0)
-                {
-                    query = query.Where(i => i.YearOfIsolation == filter.YearOfIsolation);
-                }
-            }   
             return query;
+        }
+       
+        private static IQueryable<IsolateSearchResult> ApplyStringFilter(
+            IQueryable<IsolateSearchResult> query,
+            string filterValue,
+            Expression<Func<IsolateSearchResult, string>> propertySelector)
+        {
+            if (string.IsNullOrEmpty(filterValue))
+                return query;
+            var parameter = propertySelector.Parameters[0];
+            var constant = Expression.Constant(filterValue, typeof(string));
+            var equality = Expression.Equal(propertySelector.Body, constant);
+            var lambda = Expression.Lambda<Func<IsolateSearchResult, bool>>(equality, parameter);
+            return query.Where(lambda);
+        }
+
+        private static IQueryable<IsolateSearchResult> ApplyGuidFilters(IQueryable<IsolateSearchResult> query, SearchCriteria filter)
+        {
+            query = ApplyGuidFilter(query, filter.VirusFamily, i => i.Family);
+            query = ApplyGuidFilter(query, filter.VirusType, i => i.Type);
+            query = ApplyGuidFilter(query, filter.Group, i => i.HostSpecies);
+            query = ApplyGuidFilter(query, filter.Species, i => i.HostBreed);
+            query = ApplyGuidFilter(query, filter.CountryOfOrigin, i => i.CountryOfOrigin);
+            query = ApplyGuidFilter(query, filter.HostPurpose, i => i.HostPurpose);
+            query = ApplyGuidFilter(query, filter.SampleType, i => i.SampleType);
+
+            return query;
+        }
+
+        private static IQueryable<IsolateSearchResult> ApplyGuidFilter(
+            IQueryable<IsolateSearchResult> query,
+            Guid? filterValue,
+            Expression<Func<IsolateSearchResult, Guid?>> propertySelector)
+        {
+            if (!IsValidGuid(filterValue))
+                return query;
+            var parameter = propertySelector.Parameters[0];
+            var constant = Expression.Constant(filterValue, typeof(string));
+            var equality = Expression.Equal(propertySelector.Body, constant);
+            var lambda = Expression.Lambda<Func<IsolateSearchResult, bool>>(equality, parameter);
+            return query.Where(lambda);
+        }
+
+        private static IQueryable<IsolateSearchResult> ApplyYearOfIsolationFilter(IQueryable<IsolateSearchResult> query, int yearOfIsolation)
+        {
+            return yearOfIsolation == 0
+                ? query
+                : query.Where(i => i.YearOfIsolation == yearOfIsolation);
         }
 
         private static IQueryable ApplyDateFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
         {
-            if(filter != null)
+            if (filter != null)
             {
                 if (filter.ReceivedFromDate.HasValue && filter.ReceivedToDate.HasValue)
                 {
@@ -110,7 +119,7 @@ namespace Apha.VIR.DataAccess.Repositories
                 {
                     query = query.Where(i => i.DateCreated >= filter.CreatedFromDate && i.DateCreated <= filter.CreatedToDate);
                 }
-            }     
+            }
             return query;
         }
 
@@ -151,7 +160,7 @@ namespace Apha.VIR.DataAccess.Repositories
             }
             return query;
         }
-        
+
         private IQueryable ApplyNumericCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
         {
             switch (characteristicItem.Comparator)
@@ -160,12 +169,12 @@ namespace Apha.VIR.DataAccess.Repositories
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                            float.Parse(c.CharacteristicValue) >= float.Parse(characteristicItem.CharacteristicValue1)));
+                            float.Parse(c.CharacteristicValue!) >= float.Parse(characteristicItem.CharacteristicValue1)));
                     }
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue2))
                     {
                         query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                            float.Parse(c.CharacteristicValue) <= float.Parse(characteristicItem.CharacteristicValue2)));
+                            float.Parse(c.CharacteristicValue!) <= float.Parse(characteristicItem.CharacteristicValue2)));
                     }
                     break;
                 default:
@@ -235,26 +244,41 @@ namespace Apha.VIR.DataAccess.Repositories
         }
 
         private static IQueryable ApplySorting(IQueryable<IsolateSearchResult> query, string? sortBy, bool descending)
-        {           
-            return sortBy?.ToLower() switch
+        {
+            if (string.IsNullOrEmpty(sortBy))
             {
-                "avnumber" => descending ? query.OrderByDescending(i => i.Avnumber) : query.OrderBy(i => i.Avnumber),
-                "senderreferencenumber" => descending ? query.OrderByDescending(i => i.SenderReferenceNumber) : query.OrderBy(i => i.SenderReferenceNumber),
-                "sampletypename" => descending ? query.OrderByDescending(i => i.SampleTypeName) : query.OrderBy(i => i.SampleTypeName),
-                "familyname" => descending ? query.OrderByDescending(i => i.FamilyName) : query.OrderBy(i => i.FamilyName),
-                "typename" => descending ? query.OrderByDescending(i => i.TypeName) : query.OrderBy(i => i.TypeName),
-                "groupspeciesname" => descending ? query.OrderByDescending(i => i.GroupSpeciesName) : query.OrderBy(i => i.GroupSpeciesName),
-                "breedname" => descending ? query.OrderByDescending(i => i.BreedName) : query.OrderBy(i => i.BreedName),
-                "yearofisolation" => descending ? query.OrderByDescending(i => i.YearOfIsolation) : query.OrderBy(i => i.YearOfIsolation),
-                "receiveddate" => descending ? query.OrderByDescending(i => i.ReceivedDate) : query.OrderBy(i => i.ReceivedDate),
-                "countryoforiginname" => descending ? query.OrderByDescending(i => i.CountryOfOriginName) : query.OrderBy(i => i.CountryOfOriginName),
-                "materialtransferagreement" => descending ? query.OrderByDescending(i => i.MaterialTransferAgreement) : query.OrderBy(i => i.MaterialTransferAgreement),
-                "noofaliquots" => descending ? query.OrderByDescending(i => i.NoOfAliquots) : query.OrderBy(i => i.NoOfAliquots),
-                "freezername" => descending ? query.OrderByDescending(i => i.FreezerName) : query.OrderBy(i => i.FreezerName),
-                "trayname" => descending ? query.OrderByDescending(i => i.TrayName) : query.OrderBy(i => i.TrayName),
-                "well" => descending ? query.OrderByDescending(i => i.Well) : query.OrderBy(i => i.Well),
+                return query;
+            }
+
+            return ApplySortingByProperty(query, sortBy.ToLower(), descending);
+        }
+
+        private static IQueryable ApplySortingByProperty(IQueryable<IsolateSearchResult> query, string property, bool descending)
+        {
+            return property switch
+            {
+                "avnumber" => ApplyOrder(query, i => i.Avnumber, descending),
+                "senderreferencenumber" => ApplyOrder(query, i => i.SenderReferenceNumber, descending),
+                "sampletypename" => ApplyOrder(query, i => i.SampleTypeName, descending),
+                "familyname" => ApplyOrder(query, i => i.FamilyName, descending),
+                "typename" => ApplyOrder(query, i => i.TypeName, descending),
+                "groupspeciesname" => ApplyOrder(query, i => i.GroupSpeciesName, descending),
+                "breedname" => ApplyOrder(query, i => i.BreedName, descending),
+                "yearofisolation" => ApplyOrder(query, i => i.YearOfIsolation, descending),
+                "receiveddate" => ApplyOrder(query, i => i.ReceivedDate, descending),
+                "countryoforiginname" => ApplyOrder(query, i => i.CountryOfOriginName, descending),
+                "materialtransferagreement" => ApplyOrder(query, i => i.MaterialTransferAgreement, descending),
+                "noofaliquots" => ApplyOrder(query, i => i.NoOfAliquots, descending),
+                "freezername" => ApplyOrder(query, i => i.FreezerName, descending),
+                "trayname" => ApplyOrder(query, i => i.TrayName, descending),
+                "well" => ApplyOrder(query, i => i.Well, descending),
                 _ => query
             };
+        }
+
+        private static IQueryable ApplyOrder<T>(IQueryable<IsolateSearchResult> query, Expression<Func<IsolateSearchResult, T>> keySelector, bool descending)
+        {
+            return descending ? query.OrderByDescending(keySelector) : query.OrderBy(keySelector);
         }
 
         public async Task<List<IsolateFullDetailsResult>> GetIsolateSearchExportResultAsync(PaginationParameters<SearchCriteria> criteria)
@@ -262,7 +286,7 @@ namespace Apha.VIR.DataAccess.Repositories
             List<IsolateFullDetailsResult> isolateFullDetailsRecords = new List<IsolateFullDetailsResult>();
             IQueryable<IsolateSearchResult> query = FetchIsolateSearchRecordsAsync(criteria);
             var isolateRecords = await query.ToListAsync();
-            foreach (var record in isolateRecords) 
+            foreach (var record in isolateRecords)
             {
                 IsolateFullDetailsResult data = await GetIsolateFullDetailsById(record.IsolateId);
                 isolateFullDetailsRecords.Add(data);
@@ -272,7 +296,6 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IsolateFullDetailsResult> GetIsolateFullDetailsById(Guid isolateId)
         {
-            IsolateFullDetailsResult isolateSearchExportResult = new IsolateFullDetailsResult();
             DataSet dsIsolateData = new DataSet();
             using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
             {
@@ -292,10 +315,10 @@ namespace Apha.VIR.DataAccess.Repositories
                     using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                     {
                         adapter.Fill(dsIsolateData);
-                    }                    
-                }              
+                    }
+                }
             }
-            isolateSearchExportResult = GetIsolateFullDetailsResultsInModel(dsIsolateData);
+            IsolateFullDetailsResult isolateSearchExportResult = GetIsolateFullDetailsResultsInModel(dsIsolateData);
             return isolateSearchExportResult;
         }
 
@@ -359,8 +382,8 @@ namespace Apha.VIR.DataAccess.Repositories
                         RecipientAddress = dispatchRow["RecipientAddress"].ToString(),
                         ReasonForDispatch = dispatchRow["ReasonForDispatch"].ToString(),
                         DispatchedDate = Convert.ToDateTime(dispatchRow["DispatchedDate"]),
-                        DispatchedByName = dispatchRow["DispatchedByName"].ToString(),
-                        DispatchIsolateId = isolateFullDetails.IsolateDetails.IsolateId // Assuming it's the same as IsolateId
+                        DispatchedByName = dispatchRow["DispatchedByName"] is DBNull ? "" : dispatchRow["DispatchedByName"].ToString()!,
+                        DispatchIsolateId = isolateFullDetails.IsolateDetails!.IsolateId // Assuming it's the same as IsolateId
                     });
                 }
                 // Fill IsolateViabilityDetails
@@ -369,10 +392,10 @@ namespace Apha.VIR.DataAccess.Repositories
                 {
                     viabilityInfos.Add(new IsolateViabilityInfo
                     {
-                        ViabilityStatus = viabilityRow["ViabilityStatus"].ToString(),
+                        ViabilityStatus = viabilityRow["ViabilityStatus"] is DBNull ? "" : viabilityRow["ViabilityStatus"].ToString()!,
                         DateChecked = Convert.ToDateTime(viabilityRow["DateChecked"]),
-                        CheckedByName = viabilityRow["CheckedByName"].ToString(),
-                        IsolateViabilityIsolateId = isolateFullDetails.IsolateDetails.IsolateId // Assuming it's the same as IsolateId
+                        CheckedByName = viabilityRow["CheckedByName"] is DBNull ? "" : viabilityRow["CheckedByName"].ToString()!,
+                        IsolateViabilityIsolateId = isolateFullDetails.IsolateDetails!.IsolateId // Assuming it's the same as IsolateId
                     });
                 }
                 // Fill IsolateCharacteristicDetails
@@ -382,12 +405,12 @@ namespace Apha.VIR.DataAccess.Repositories
                     characteristicInfos.Add(new IsolateCharacteristicInfo
                     {
                         CharacteristicId = (Guid)characteristicRow["CharacteristicId"],
-                        CharacteristicName = characteristicRow["CharacteristicName"].ToString(),
+                        CharacteristicName = characteristicRow["CharacteristicName"] is DBNull ? "" : characteristicRow["CharacteristicName"].ToString()!,
                         CharacteristicValue = characteristicRow["CharacteristicValue"].ToString(),
                         CharacteristicPrefix = characteristicRow["CharacteristicPrefix"].ToString(),
-                        IsolateId = isolateFullDetails.IsolateDetails.IsolateId
+                        IsolateId = isolateFullDetails.IsolateDetails!.IsolateId
                     });
-                }                
+                }
                 isolateFullDetails.IsolateDispatchDetails = dispatchInfos;
                 isolateFullDetails.IsolateViabilityDetails = viabilityInfos;
                 isolateFullDetails.IsolateCharacteristicDetails = characteristicInfos;

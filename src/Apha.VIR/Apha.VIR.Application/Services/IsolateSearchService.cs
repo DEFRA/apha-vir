@@ -73,8 +73,8 @@ namespace Apha.VIR.Application.Services
                     .Select(c => $"{c.CharacteristicName}: {(String.IsNullOrEmpty(c.CharacteristicValue) ? "no value entered" : c.CharacteristicValue)}"));
                 isolateSearchExportData.Add(isolateInfo);
 
-                if (criteria.Filter.FullSearch)// exclude freezer, tray, well values for admin users
-                {
+                if (criteria.Filter != null && criteria.Filter.FullSearch)// exclude freezer, tray, well values for admin users
+                {                    
                     isolateInfo.Freezer = "";
                     isolateInfo.Tray = "";
                     isolateInfo.Well = "";

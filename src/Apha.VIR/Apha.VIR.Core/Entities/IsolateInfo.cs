@@ -2,7 +2,7 @@
 
 public class IsolateInfo
 {
-    public string Avnumber { get; set; } = null!;
+    public string? Avnumber { get; set; } = null!;
     public string? FamilyName { get; set; }
     public string? TypeName { get; set; }
     public string? GroupSpeciesName { get; set; }
