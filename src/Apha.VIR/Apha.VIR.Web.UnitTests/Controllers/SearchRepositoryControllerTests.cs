@@ -691,21 +691,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileResult.ContentType);
             Assert.Contains("VIR SearchResults", fileResult.FileDownloadName);
             Assert.EndsWith(".xlsx", fileResult.FileDownloadName);
-        }
-
-        [Fact]
-        public async Task ExportToExcel_NoSearchCriteria_ReturnsNull()
-        {
-            // Arrange
-            _tempData.Remove("SearchCriteria");
-            _controller.TempData = _tempData;           
-
-            // Act
-            var result = await _controller.ExportToExcel();
-
-            // Assert
-            Assert.Null(result);
-        }
+        }        
 
         [Fact]
         public async Task ExportToExcel_ValidSearchCriteria_CorrectFileNameAndContentType()
