@@ -491,3 +491,22 @@ body {
     font-size: small;
     color: #000040;
 }
+
+.btn-as-link {
+    background: none;
+    border: none;
+    color: #0000FF;
+    padding: 0;
+    font: inherit;
+    /* text-decoration: underline; */
+    cursor: pointer;
+}
+
+    .btn-as-link:hover {
+        color: #0000FF;
+        text-decoration: underline;
+    }
+
+.inline-form {
+    display: inline;
+}

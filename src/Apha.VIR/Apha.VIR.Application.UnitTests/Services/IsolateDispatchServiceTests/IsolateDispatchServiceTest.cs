@@ -6,7 +6,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTests
+namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
 {
     public class IsolateDispatchServiceTest : IDisposable
     {
