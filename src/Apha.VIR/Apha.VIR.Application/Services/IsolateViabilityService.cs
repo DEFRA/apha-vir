@@ -51,7 +51,7 @@ namespace Apha.VIR.Application.Services
 
             var charNomenclature = GetCharacteristicNomenclature(characteristicList.ToList());
 
-            var nomenclature = string.IsNullOrEmpty(charNomenclature) ? matchIsolate?.FirstOrDefault()?.Nomenclature : charNomenclature;
+            var nomenclature = string.IsNullOrEmpty(charNomenclature) ? matchIsolate[0].Nomenclature : charNomenclature;
             var staffs = await _lookupRepository.GetAllStaffAsync();
             var Viabilities = await _lookupRepository.GetAllViabilityAsync();
 

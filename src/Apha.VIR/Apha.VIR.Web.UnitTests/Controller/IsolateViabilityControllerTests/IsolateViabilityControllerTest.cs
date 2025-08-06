@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Text;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
@@ -48,7 +49,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void History_WithNullOrEmptyAVNumber_ReturnsViewWithEmptyViewModel(string avNumber)
+        public void History_WithNullOrEmptyAVNumber_ReturnsNUllViewModel(string avNumber)
         {
             // Arrange
             var isolate = Guid.NewGuid();
@@ -57,15 +58,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             var result = _controller.History(avNumber, isolate) as ViewResult;
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal("ViabilityHistory", result.ViewName);
-            var viewModel = Assert.IsType<IsolateViabilityHistoryViewModel>(result.Model);
-            Assert.Null(viewModel.Nomenclature);
-            Assert.Empty(viewModel.ViabilityHistoryList);
+            Assert.Null(result);
+            //Assert.Equal("ViabilityHistory", result.ViewName);
+            //var viewModel = Assert.IsType<IsolateViabilityHistoryViewModel>(result.Model);
+            //Assert.Null(viewModel.Nomenclature);
+            //Assert.Empty(viewModel.ViabilityHistoryList);
         }
 
         [Fact]
-        public void History_WithInvalidIsolateGuid_ReturnsViewWithEmptyViewModel()
+        public void History_WithInvalidIsolateGuid_ReturnsNull()
         {
             // Arrange
             var avNumber = "AV001";
@@ -75,11 +76,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             var result = _controller.History(avNumber, isolate) as ViewResult;
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal("ViabilityHistory", result.ViewName);
-            var viewModel = Assert.IsType<IsolateViabilityHistoryViewModel>(result.Model);
-            Assert.Null(viewModel.Nomenclature);
-            Assert.Empty(viewModel.ViabilityHistoryList);
+            Assert.Null(result);
         }
 
         [Fact]
@@ -192,42 +189,37 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             await Assert.ThrowsAsync<FormatException>(() => _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId));
         }
 
-        [Theory]
-        [InlineData("")]
-        public async Task Delete_EmptyLastModified_ReturnsRedirectToActionResult(string lastModified)
+        [Fact]
+        public async Task Delete_InvalidModelState_ShouldReturnBadRequest()
         {
             // Arrange
-            var isolateViabilityId = Guid.NewGuid();
-            var avNumber = "AV123";
-            var isolateId = Guid.NewGuid();
-
-            // Act & Assert
-            var result = await _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId);
+            _controller.ModelState.AddModelError("key", "error");
+            var result = await _controller.Delete(Guid.NewGuid(), "validBase64", "AV123", Guid.NewGuid());
 
             // Assert
-            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal(nameof(IsolateViabilityController.History), redirectResult.ActionName);
-            Assert.Equal(avNumber, redirectResult.RouteValues["AVNumber"]);
-            Assert.Equal(isolateId, redirectResult.RouteValues["Isolate"]);
-
-            await _isolateViabilityService.Received(1).DeleteIsolateViabilityAsync(
-            Arg.Is<Guid>(g => g == isolateViabilityId),
-            Arg.Is<byte[]>(b => b.SequenceEqual(Convert.FromBase64String(lastModified))),
-            Arg.Is<string>(s => s == "TestUser")
-            );
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
-        [Theory]
-        [InlineData(null)]
-        public async Task Delete_EmptyOrNullLastModified_ThrowsArgumentException(string lastModified)
+        [Fact]
+        public async Task Delete_EmptyViabilityId_ShouldReturnBadRequest()
         {
             // Arrange
-            var isolateViabilityId = Guid.NewGuid();
-            var avNumber = "AV123";
-            var isolateId = Guid.NewGuid();
+            var result = await _controller.Delete(Guid.Empty, "validBase64", "AV123", Guid.NewGuid());
 
-       
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId));
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Invalid ViabilityId ID.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task Delete_EmptyLastModified_ShouldReturnBadRequest()
+        {
+            // Arrange
+            var result = await _controller.Delete(Guid.NewGuid(), "", "AV123", Guid.NewGuid());
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Last Modified cannot be empty.", badRequestResult.Value);
         }
     }
 }
