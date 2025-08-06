@@ -1,8 +1,66 @@
-﻿using Apha.VIR.Core.Interfaces;
+﻿using System.Data;
+using Apha.VIR.Core.Entities;
+using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
 public class CharacteristicRepository : ICharacteristicRepository
 {
+    private readonly VIRDbContext _context;
+
+    public CharacteristicRepository(VIRDbContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristicInfoAsync(Guid isolateId)
+    {
+        return GetIsolateCharacteristics(isolateId);
+    }
+ 
+    private async Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristics(Guid isolateId)
+    {
+        var isolateCharacteristicList = new List<IsolateCharacteristicInfo>();
+
+        using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
+        {
+            if (connection.State != ConnectionState.Open)
+                await connection.OpenAsync();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "spCharacteristicGetByIsolate";
+                command.CommandType = CommandType.StoredProcedure;
+
+                var param = command.CreateParameter();
+                param.ParameterName = "@IsolateID";
+                param.Value = isolateId;
+                command.Parameters.Add(param);
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        
+                            var dto = new IsolateCharacteristicInfo
+                            {
+                                 CharacteristicId  = (Guid) result["CharacteristicId"],
+                                CharacteristicValue = result["CharacteristicValue"] as string,
+                                CharacteristicIsolateId = (Guid)result["CharacteristicIsolateId"],
+                                CharacteristicPrefix = result["CharacteristicPrefix"] as string ,
+                                CharacteristicDisplay = result["CharacteristicDisplay"] as bool?
+                            
+                            };
+                        isolateCharacteristicList.Add(dto);
+                        
+                    }
+                }
+            }
+        }
+
+        return isolateCharacteristicList;
+    }
 }

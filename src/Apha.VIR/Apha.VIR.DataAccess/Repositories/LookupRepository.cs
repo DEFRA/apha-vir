@@ -205,5 +205,26 @@ namespace Apha.VIR.DataAccess.Repositories
                 .FromSqlRaw($"EXEC spSampleTypeGetAll").ToListAsync())
                 .Where(vf => vf.Active).ToList();
         }
+
+        public async Task<IEnumerable<LookupItem>> GetAllWorkGroupsAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spWorkgroupsGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllStaffAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spStaffGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllViabilityAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spViabilityGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
     }
 }

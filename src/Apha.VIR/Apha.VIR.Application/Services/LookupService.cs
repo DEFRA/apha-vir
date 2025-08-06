@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -93,6 +88,20 @@ namespace Apha.VIR.Application.Services
         public async Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync()
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllSampleTypesAsync());
+        }
+        public async Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllWorkGroupsAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllStaffAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllStaffAsync());
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllViabilityAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItem>>(await _lookupRepository.GetAllViabilityAsync());
         }
     }
 }

@@ -1,0 +1,90 @@
+﻿@{
+    var records = Model?.DispatchHistoryRecords;
+    var nomenclature = Model?.Nomenclature ?? string.Empty;
+}
+
+@if (records != null)
+{
+
+    <p>
+        <strong>@nomenclature</strong>
+    </p>
+
+    <div class="isolate-grid-table mt-1">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="view-isolate-details-label2">No Of Aliquots</th>
+                    <th class="view-isolate-details-label2">Passage Number</th>
+                    <th class="view-isolate-details-label2">Recipient</th>
+                    <th class="view-isolate-details-label2">Recipient Name</th>
+                    <th class="view-isolate-details-label2">Recipient Address</th>
+                    <th class="view-isolate-details-label2">Reason For Dispatch</th>
+                    <th class="view-isolate-details-label2">Dispatched Date</th>
+                    <th class="view-isolate-details-label2">Dispatched By</th>
+                    <th class="view-isolate-details-label2" colspan="2"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in records)
+                {
+                    var strLastModified = item.LastModified != null ? Convert.ToBase64String(item.LastModified) : string.Empty;
+
+                    <tr>
+                        <td>@item.NoOfAliquots</td>
+                        <td>@item.PassageNumber</td>
+                        <td>@item.Recipient</td>
+                        <td>@item.RecipientName</td>
+                        <td>@item.RecipientAddress</td>
+                        <td>@item.ReasonForDispatch</td>
+                        <td>@item.DispatchedDate.ToString("d")</td>
+                        <td>@item.DispatchedByName</td>
+                        <td>
+                            <form asp-action="Edit" method="post" style="display:inline;">
+                                <input type="hidden" name="DispatchIsolateId" value="@item.DispatchIsolateId" />
+                                <input type="hidden" name="AVNumber" value="@item.Avnumber" />
+                                <input type="hidden" name="DispatchId" value="@item.DispatchId" />
+                                <button type="submit" style="text-decoration: underline; color: #0d6efd; padding: 0; border: none; background: none; cursor: pointer;">
+                                    Edit
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <form asp-action="Delete" method="post" style="display:inline;">
+                                <input type="hidden" name="DispatchId" value="@item.DispatchId" />
+                                <input type="hidden" name="IsolateId" value="@item.IsolateId" />
+                                <input type="hidden" name="AVNumber" value="@item.Avnumber" />
+                                <input type="hidden" name="LastModified" value="@strLastModified" />
+                                <button type="submit"
+                                        onclick="return confirm('Please confirm that you want to delete this dispatch record');"
+                                        style="text-decoration: underline; color: #0d6efd; padding: 0; border: none; background: none; cursor: pointer;">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <table border="1" id="ctl00_ContentPlaceHolder1_grvDispatch" style="border-collapse:collapse;">
+    <thead>
+        <tr style="display:none;">
+            <th colspan="10"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="10">There are no dispatch records available for this isolate</td>
+        </tr>
+    </tbody>
+</table>
+}
+
+<p>
+    <a asp-action="ViewIsolateDetails" asp-route-id="1">Return to View Isolate Details Page</a>
+</p>

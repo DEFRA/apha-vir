@@ -2,7 +2,8 @@
 
 public class IsolateInfo
 {
-    public string Avnumber { get; set; } = null!;
+    public Guid IsolateId { get; set; }
+    public string? AvNumber { get; set; } = null!;
     public string? FamilyName { get; set; }
     public string? TypeName { get; set; }
     public string? GroupSpeciesName { get; set; }
@@ -15,7 +16,6 @@ public class IsolateInfo
     public string? Well { get; set; }
     public bool MaterialTransferAgreement { get; set; }
     public int? NoOfAliquots { get; set; }
-    public Guid IsolateId { get; set; }
     public string? SenderReferenceNumber { get; set; }
     public string? IsolationMethodName { get; set; }
     public bool AntiserumProduced { get; set; }
