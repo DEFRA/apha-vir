@@ -137,23 +137,23 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
         }
 
         [Fact]
-        public async Task DeleteIsolateViabilityAsync_NullLastModified_ShouldThrowException()
+        public async Task DeleteIsolateViabilityAsync_EmptyLastModified_ShouldThrowException()
         {
             // Arrange
             var isolateId = Guid.NewGuid();
-            byte[] lastModified = null;
+            byte[] lastModified = Array.Empty<byte>();
             var userId = "testUser";
 
             // Arrange
 
-            _mockIsolateViabilityRepository.DeleteIsolateViabilityAsync(isolateId, null, userId)
-             .Returns(Task.FromException(new ArgumentNullException("lastModified")));
+            _mockIsolateViabilityRepository.DeleteIsolateViabilityAsync(isolateId, lastModified, userId)
+             .Returns(Task.FromException(new ArgumentException("lastModified")));
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _isolateViabilityService.DeleteIsolateViabilityAsync(isolateId, null, userId));
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _isolateViabilityService.DeleteIsolateViabilityAsync(isolateId, lastModified, userId));
 
-            await _mockIsolateViabilityRepository.Received(1).DeleteIsolateViabilityAsync(isolateId, null, userId);
+            await _mockIsolateViabilityRepository.Received(1).DeleteIsolateViabilityAsync(isolateId, lastModified, userId);
 
         }
     }

@@ -36,8 +36,10 @@ namespace Apha.VIR.Application.Services
         {
             if (DispatchId == Guid.Empty)
                 throw new ArgumentException("DispatchId cannot be empty.", nameof(DispatchId));
-            if (LastModified == null)
-                throw new ArgumentNullException(nameof(LastModified), "LastModified cannot be null.");
+
+            if (LastModified == Array.Empty<byte>() )
+                throw new ArgumentException( "LastModified cannot be empty.", nameof(LastModified));
+            
             if (string.IsNullOrWhiteSpace(User))
                 throw new ArgumentException("User cannot be empty.", nameof(User));
 
