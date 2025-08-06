@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Validation;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
@@ -107,6 +108,24 @@ namespace Apha.VIR.Application.Services
 
         }
 
+        public async Task<IsolateFullDetailDTO> GetDispatcheConfirmationAsync(Guid IsolateId)
+        {
+            var isolateFullDetail = await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(IsolateId);
+
+            if ( isolateFullDetail.IsolateDetails == null)
+            {
+                var error = new BusinessValidationError(
+                    message: "Problem with reading IsolateDetails.",
+                    code: "ERR_ISOLATE" );
+
+                var errorResponse = new BusinessValidationErrorException([error]);
+
+                throw errorResponse;
+            }
+
+            return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
+
+        }
         private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var characteristicNomenclatureList = new StringBuilder();
