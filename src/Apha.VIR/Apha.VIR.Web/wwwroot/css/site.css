@@ -166,10 +166,6 @@ body {
     margin-right: 25%;
 }
 
-.searchRepo-grid-table tbody{
-    vertical-align: top;
-}
-
 .searchRepo-grid-table {
     width: 100%;
 }
@@ -179,7 +175,7 @@ body {
     }
 
         .searchRepo-grid-table table thead tr th {
-            text-wrap-mode: wrap;
+            text-wrap-mode: nowrap;
             padding-bottom: 10px;
             background-color: Navy;
             border: 1px solid white;
@@ -436,6 +432,65 @@ body {
         .validation ul li::before {
             content: "\002D ";
         }
+
+/*Isolate History*/
+.view-isolate-details-label {
+    color: Navy;
+    background-color: White;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.view-isolate-details-label2 {
+    color: white;
+    background-color: navy;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* Grid Table of View Isolate Details  */
+.isolate-grid-table {
+    width: 100%;
+}
+
+    .isolate-grid-table table {
+        border-collapse: collapse;
+    }
+
+        .isolate-grid-table table thead tr th {
+            text-wrap-mode: nowrap;
+            padding-bottom: 1px;
+            background-color: Navy;
+            border: 1px solid black;
+            align-items: center
+        }
+
+        .isolate-grid-table table thead tr th {
+            color: White;
+        }
+
+        .isolate-grid-table table tr td {
+            border: 1px solid black;
+            border-spacing: 0;
+        }
+
+
+    .isolate-grid-table tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+}
+
+.isolate-grid-table tr form button:hover {
+    text-decoration-line: underline
+}
+
+.custom-underline-hover {
+    text-decoration: none;
+    font-size: small;
+    color: #000040;
+}
 
 .btn-as-link {
     background: none;

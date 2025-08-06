@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Core.Entities;
 
 namespace Apha.VIR.Application.Interfaces
@@ -24,5 +19,9 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllStaffAsync();
+
+        Task<IEnumerable<LookupItem>> GetAllViabilityAsync();
     }
 }

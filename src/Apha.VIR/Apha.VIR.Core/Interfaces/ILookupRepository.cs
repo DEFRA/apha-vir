@@ -18,5 +18,10 @@ namespace Apha.VIR.Core.Interfaces
         Task<IEnumerable<LookupItem>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItem>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItem>> GetAllSampleTypesAsync();
+        Task<IEnumerable<LookupItem>> GetAllWorkGroupsAsync();
+        Task<IEnumerable<LookupItem>> GetAllStaffAsync();
+        Task<IEnumerable<LookupItem>> GetAllViabilityAsync();
+
+
     }
 }
