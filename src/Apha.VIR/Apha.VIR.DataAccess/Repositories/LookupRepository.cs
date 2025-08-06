@@ -157,9 +157,9 @@ namespace Apha.VIR.DataAccess.Repositories
                    .Where(vt => vt.Active).ToList();
         }
 
-        public async Task<IEnumerable<LookupItemByParent>> GetAllVirusTypesByParentAsync(string? virusFamily)
+        public async Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(string? virusFamily)
         {
-            return (await _context.Set<LookupItemByParent>()
+            return (await _context.Set<LookupItem>()
                     .FromSqlInterpolated($"EXEC spVirusTypeGetByParent @Parent = {virusFamily}").ToListAsync())
                      .Where(vt => vt.Active).ToList();
         }
@@ -178,9 +178,9 @@ namespace Apha.VIR.DataAccess.Repositories
              .Where(vf => vf.Active).ToList();            
         }
 
-        public async Task<IEnumerable<LookupItemByParent>> GetAllHostBreedsByParentAsync(string? hostSpecies)
+        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsByParentAsync(string? hostSpecies)
         {
-            return (await _context.Set<LookupItemByParent>()
+            return (await _context.Set<LookupItem>()
                    .FromSqlInterpolated($"EXEC spHostBreedGetByParent @Parent = {hostSpecies}").ToListAsync())
                    .Where(vf => vf.Active).ToList();
         }

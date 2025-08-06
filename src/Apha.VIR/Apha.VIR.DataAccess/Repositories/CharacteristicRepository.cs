@@ -1,10 +1,9 @@
-﻿using Apha.VIR.Core.Entities;
-using System.Text;
+﻿using System.Data;
+using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
-using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 

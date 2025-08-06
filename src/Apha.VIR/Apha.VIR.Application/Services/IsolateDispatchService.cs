@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
@@ -51,6 +46,8 @@ namespace Apha.VIR.Application.Services
                 
         public async Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId)
         {
+            string nomenclature;
+
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
 
             var matchIsolate = isolationList.Where(x => x.IsolateId == IsolateId).ToList();
@@ -62,16 +59,12 @@ namespace Apha.VIR.Application.Services
 
             var matchIsolateId = matchIsolate.First().IsolateId;
 
-
             var dispatchHistList = await _isolateDispatchRepository.GetDispatchesHistoryAsync(matchIsolateId);
 
             var characteristicList = await _iCharacteristicRepository.GetIsolateCharacteristicInfoAsync(matchIsolateId);
 
             var charNomenclature = GetCharacteristicNomenclature(characteristicList.ToList());
-            
 
-
-            string nomenclature;
             if (string.IsNullOrEmpty(charNomenclature))
             {
                 nomenclature = matchIsolate.First().Nomenclature != null
@@ -83,10 +76,9 @@ namespace Apha.VIR.Application.Services
                 nomenclature = charNomenclature!;
             }
 
-
-            foreach (var dh in dispatchHistList)
+            foreach (var item in dispatchHistList)
             {
-                dh.Nomenclature = nomenclature;
+                item.Nomenclature = nomenclature;
             }
 
             var staffs = await _staffRepository.GetStaffListAsync();
@@ -113,10 +105,7 @@ namespace Apha.VIR.Application.Services
 
         }
 
-
-
-        // Sonar: S2325 - This method is intentionally not static as it may require instance context in the future.
-        private string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
+        private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var characteristicNomenclatureList = new StringBuilder();
 
@@ -132,7 +121,6 @@ namespace Apha.VIR.Application.Services
             var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
 
             return characteristicNomenclature;
-
         }
 
     

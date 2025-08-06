@@ -1,10 +1,8 @@
-﻿using Apha.VIR.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Web.Models;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -13,7 +11,6 @@ namespace Apha.VIR.Web.Controllers
         private readonly IIsolateDispatchService _isolateDispatchService;
         private readonly IMapper _mapper;
  
-
         public IsolateDispatchController(IIsolateDispatchService isolateDispatchService, IMapper mapper)
         {
             _isolateDispatchService = isolateDispatchService;

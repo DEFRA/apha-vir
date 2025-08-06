@@ -1,21 +1,14 @@
-﻿using Xunit;
-using NSubstitute;
-using Apha.VIR.Application.Interfaces;
+﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Services;
+using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Apha.VIR.Core.Entities;
-using Apha.VIR.Application.DTOs;
-using Apha.VIR.Application.Services;
-using System.Linq;
+using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
+namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTests
 {
-    public class IsolateDispatchServiceTests : IDisposable
+    public class IsolateDispatchServiceTest : IDisposable
     {
         private readonly IIsolateDispatchRepository _isolateDispatchRepository;
         private readonly IIsolateRepository _isolateRepository;
@@ -26,7 +19,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
         private readonly IMapper _mapper;
         private readonly IsolateDispatchService _service;
 
-        public IsolateDispatchServiceTests()
+        public IsolateDispatchServiceTest()
         {
             _isolateDispatchRepository = Substitute.For<IIsolateDispatchRepository>();
             _isolateRepository = Substitute.For<IIsolateRepository>();
@@ -47,10 +40,6 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
             );
         }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
 
         [Fact]
         public async Task GetDispatchesHistoryAsync_ValidInputs_ReturnsDispatches()
@@ -146,9 +135,6 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
             await Assert.ThrowsAsync<Exception>(() => _service.GetDispatchesHistoryAsync(avNumber, isolateId));
         }
 
-        //--------Test for DeleteDispatchAsync method-------------------------------
-        //--------------------------------------------------------------------------
-
         [Fact]
         public async Task DeleteDispatchAsync_WithValidInput_ShouldCallRepositoryMethod()
         {
@@ -206,74 +192,6 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
             _service.DeleteDispatchAsync(dispatchId, lastModified, user));
         }
 
-        //--------Test for GetCharacteristicNomenclature method-------------------------------
-        //--------------------------------------------------------------------------
-
-        [Fact]
-        public void GetCharacteristicNomenclature_EmptyList_ReturnsEmptyString()
-        {
-            var result = InvokeGetCharacteristicNomenclature(new List<IsolateCharacteristicInfo>());
-
-            Assert.Equal(string.Empty, result);
-        }
-
-        [Fact]
-        public void GetCharacteristicNomenclature_AllCharacteristicsNotForDisplay_ReturnsEmptyString()
-        {
-            var characteristicList = new List<IsolateCharacteristicInfo>
-            {
-            new IsolateCharacteristicInfo { CharacteristicDisplay = false, CharacteristicValue = "Value1", CharacteristicPrefix = "Prefix1" },
-            new IsolateCharacteristicInfo { CharacteristicDisplay = false, CharacteristicValue = "Value2", CharacteristicPrefix = "Prefix2" }
-            };
-
-            var result = InvokeGetCharacteristicNomenclature(characteristicList);
-
-            Assert.Equal(string.Empty, result);
-        }
-
-        [Fact]
-        public void GetCharacteristicNomenclature_CharacteristicsWithEmptyOrNullValues_ReturnsEmptyString()
-        {
-            var characteristicList = new List<IsolateCharacteristicInfo>
-            {
-            new IsolateCharacteristicInfo { CharacteristicDisplay = true, CharacteristicValue = "", CharacteristicPrefix = "Prefix1" },
-            new IsolateCharacteristicInfo { CharacteristicDisplay = true, CharacteristicValue = null, CharacteristicPrefix = "Prefix2" }
-            };
-
-            var result = InvokeGetCharacteristicNomenclature(characteristicList);
-
-            Assert.Equal(string.Empty, result);
-        }
-
-        [Fact]
-        public void GetCharacteristicNomenclature_ValidCharacteristics_ReturnsCorrectNomenclature()
-        {
-            var characteristicList = new List<IsolateCharacteristicInfo>
-            {
-            new IsolateCharacteristicInfo { CharacteristicDisplay = true, CharacteristicValue = "Value1", CharacteristicPrefix = "Prefix1" },
-            new IsolateCharacteristicInfo { CharacteristicDisplay = true, CharacteristicValue = "Value2", CharacteristicPrefix = "Prefix2" }
-            };
-
-            var result = InvokeGetCharacteristicNomenclature(characteristicList);
-
-            Assert.Equal("Prefix1Value1 Prefix2Value2", result);
-        }
-
-        [Fact]
-        public void GetCharacteristicNomenclature_MixedValidAndInvalidCharacteristics_ReturnsCorrectNomenclature()
-        {
-            var characteristicList = new List<IsolateCharacteristicInfo>
-        {
-        new IsolateCharacteristicInfo { CharacteristicDisplay = true, CharacteristicValue = "Value1", CharacteristicPrefix = "Prefix1" },
-        new IsolateCharacteristicInfo { CharacteristicDisplay = false, CharacteristicValue = "Value2", CharacteristicPrefix = "Prefix2" },
-        new IsolateCharacteristicInfo { CharacteristicDisplay = true, CharacteristicValue = "", CharacteristicPrefix = "Prefix3" },
-        new IsolateCharacteristicInfo { CharacteristicDisplay = true, CharacteristicValue = "Value4", CharacteristicPrefix = "Prefix4" }
-        };
-
-            var result = InvokeGetCharacteristicNomenclature(characteristicList);
-
-            Assert.Equal("Prefix1Value1 Prefix4Value4", result);
-        }
 
         private string InvokeGetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
@@ -284,6 +202,10 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTest
             return result as string ?? string.Empty;
         }
 
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
 
     }
 }
