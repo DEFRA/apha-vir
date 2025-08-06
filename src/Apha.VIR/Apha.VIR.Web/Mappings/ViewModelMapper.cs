@@ -10,6 +10,10 @@ namespace Apha.VIR.Web.Mappings
         {
             CreateMap<LookupDTO, LookupViewModel>();
             CreateMap<IsolateDispatchHistory, IsolateDispatchInfoDTO>().ReverseMap();
+            CreateMap<SearchCriteria, SearchCriteriaDTO>();
+            CreateMap<CharacteristicCriteria, CharacteristicCriteriaDTO>();
+            CreateMap<IsolateSearchResultDTO, IsolateSearchResult>();
+            CreateMap<IsolateSearchExportDto, IsolateSearchExportViewModel>();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>();
         }
     }

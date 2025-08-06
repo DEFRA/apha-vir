@@ -1,12 +1,13 @@
 ﻿namespace Apha.VIR.Application.Pagination
 {
-    public class QueryParameters
+    public class QueryParameters<TFilter>
     {
         private int _pageSize = 10;
         private int _page = 1;
         private const int MaxPageSize = 100;
 
-        public string? Search { get; set; }
+        public TFilter? Filter { get; set; }
+        public string? GlobalSearch { get; set; }
         public string? SortBy { get; set; } = "";
         public bool Descending { get; set; } = false;
 

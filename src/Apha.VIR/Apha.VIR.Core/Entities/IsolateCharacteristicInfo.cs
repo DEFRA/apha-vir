@@ -2,6 +2,7 @@
 
 public class IsolateCharacteristicInfo
 {
+    public Guid? IsolateId { get; set; }
     public Guid? CharacteristicId { get; set; }
     public Guid? CharacteristicIsolateId { get; set; }
     public Guid? VirusCharacteristicId { get; set; }
