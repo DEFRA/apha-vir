@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection.PortableExecutable;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.Options;
 
 namespace Apha.VIR.Web.Models
 {
@@ -32,7 +31,27 @@ namespace Apha.VIR.Web.Models
         {
             var results = new List<ValidationResult>();
 
-            if (string.IsNullOrEmpty(AVNumber) &&
+            if (IsEmptySearch())
+            {
+                results.Add(new ValidationResult("You must supply at least one criteria for the Search."));
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(AVNumber) && !Submission.IsAVNumberValid(AVNumber))
+                {
+                    results.Add(new ValidationResult("The correct format for an AV number is either AVNNNNNN-YY, PDNNNN-NN SINNNNNN-YY. Please amend and try again"));
+                }
+
+                results = ValidateCreatedAndReceivedDates(results);
+
+                results = ValidateCharacteristics(results);                
+            }
+
+            return results;
+        }
+        private bool IsEmptySearch()
+        {
+            return string.IsNullOrEmpty(AVNumber) &&
                 (IsNullOrEmptyGuid(VirusFamily)) &&
                 (IsNullOrEmptyGuid(VirusType)) &&
                 (IsNullOrEmptyGuid(Group)) &&
@@ -45,54 +64,47 @@ namespace Apha.VIR.Web.Models
                 !ReceivedToDate.HasValue &&
                 !CreatedFromDate.HasValue &&
                 !CreatedToDate.HasValue &&
-                CharacteristicSearch.All(c => (IsNullOrEmptyGuid(c.Characteristic))))
+                CharacteristicSearch.All(c => (IsNullOrEmptyGuid(c.Characteristic)));
+        }
+        private List<ValidationResult> ValidateCreatedAndReceivedDates(List<ValidationResult> results)
+        {
+            if (ReceivedFromDate > DateTime.Today)
             {
-                results.Add(new ValidationResult("You must supply at least one criteria for the Search."));
+                results.Add(new ValidationResult("The 'Received From' date must be before today's date. Please amend and try again"));
             }
-            else
+            else if (ReceivedFromDate.HasValue && ReceivedToDate.HasValue && ReceivedFromDate > ReceivedToDate)
             {
-                if (!string.IsNullOrEmpty(AVNumber) && !Submission.IsAVNumberValid(AVNumber))
-                {
-                    results.Add(new ValidationResult("The correct format for an AV number is either AVNNNNNN-YY, PDNNNN-NN SINNNNNN-YY. Please amend and try again"));
-                }
+                results.Add(new ValidationResult("The 'Received From' date must be before the 'Received To' date. Please amend and try again"));
+            }
 
-                if (ReceivedFromDate > DateTime.Today)
+            if (CreatedFromDate > DateTime.Today)
+            {
+                results.Add(new ValidationResult("The 'Created From' date must be before today's date. Please amend and try again"));
+            }
+            else if (CreatedFromDate.HasValue && CreatedToDate.HasValue && CreatedFromDate > CreatedToDate)
+            {
+                results.Add(new ValidationResult("The 'Created From' date must be before the 'Created To' date. Please amend and try again"));
+            }
+            return results;
+        }
+        private List<ValidationResult> ValidateCharacteristics(List<ValidationResult> results)
+        {
+            foreach (CharacteristicCriteria characteristicCriteria in CharacteristicSearch)
+            {
+                if (characteristicCriteria.CharacteristicType == "Numeric")
                 {
-                    results.Add(new ValidationResult("The 'Received From' date must be before today's date. Please amend and try again"));
-                }
-                else if (ReceivedFromDate.HasValue && ReceivedToDate.HasValue && ReceivedFromDate > ReceivedToDate)
-                {
-                    results.Add(new ValidationResult("The 'Received From' date must be before the 'Received To' date. Please amend and try again"));
-                }
+                    bool isValid1 = string.IsNullOrEmpty(characteristicCriteria.CharacteristicValue1) || double.TryParse(characteristicCriteria.CharacteristicValue1, out _);
+                    bool isValid2 = string.IsNullOrEmpty(characteristicCriteria.CharacteristicValue2) || double.TryParse(characteristicCriteria.CharacteristicValue2, out _);
 
-                if (CreatedFromDate > DateTime.Today)
-                {
-                    results.Add(new ValidationResult("The 'Created From' date must be before today's date. Please amend and try again"));
-                }
-                else if (CreatedFromDate.HasValue && CreatedToDate.HasValue && CreatedFromDate > CreatedToDate)
-                {
-                    results.Add(new ValidationResult("The 'Created From' date must be before the 'Created To' date. Please amend and try again"));
-                }
-
-                foreach (CharacteristicCriteria characteristicCriteria in CharacteristicSearch)
-                {
-                    if (characteristicCriteria.CharacteristicType == "Numeric")
+                    if (!isValid1 || !isValid2)
                     {
-                        bool isValid1 = string.IsNullOrEmpty(characteristicCriteria.CharacteristicValue1) || double.TryParse(characteristicCriteria.CharacteristicValue1, out _);
-                        bool isValid2 = string.IsNullOrEmpty(characteristicCriteria.CharacteristicValue2) || double.TryParse(characteristicCriteria.CharacteristicValue2, out _);
-
-                        if (!isValid1 || !isValid2)
-                        {
-                            results.Add(new ValidationResult("The characteristic you have selected is numeric, therefore the value(s) to search must also be numeric. Please amend and try again"));
-                            break;
-                        }
+                        results.Add(new ValidationResult("The characteristic you have selected is numeric, therefore the value(s) to search must also be numeric. Please amend and try again"));
+                        break;
                     }
                 }
             }
-
             return results;
-        }        
-
+        }
         private static bool IsNullOrEmptyGuid(Guid? guid)
         {
             return !guid.HasValue || guid.Value == Guid.Empty;

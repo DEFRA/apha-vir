@@ -7,10 +7,10 @@ namespace Apha.VIR.Web.Models
         public static bool IsAVNumberValid(string av)
         {
             // This is for testing when an AV number is exactly right.
-            Regex regexObj = new(@"^AV\d{6}-\d{2}\s");
-            Regex regexObj2 = new(@"^PD\d{4}-\d{2}\s");
-            Regex regexObj3 = new(@"^SI\d{6}-\d{2}\s");
-            Regex regexObj4 = new(@"^BN\d{6}-\d{2}\s");
+            Regex regexObj = new(@"^AV\d{6}-\d{2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
+            Regex regexObj2 = new(@"^PD\d{4}-\d{2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
+            Regex regexObj3 = new(@"^SI\d{6}-\d{2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
+            Regex regexObj4 = new(@"^BN\d{6}-\d{2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
 
             av = av.ToUpper() + " ";
 
@@ -23,10 +23,10 @@ namespace Apha.VIR.Web.Models
         public static bool AVNumberIsValidPotentially(string av)
         {
             // This is for testing when an AV number can be formatted to be valid e.g. AV123-01 is OK.
-            var regexObj = new Regex(@"^AV\d{1,6}-\d{1,2}\s");
-            var regexObj2 = new Regex(@"^PD\d{1,4}-\d{1,2}\s");
-            var regexObj3 = new Regex(@"^SI\d{1,6}-\d{1,2}\s");
-            var regexObj4 = new Regex(@"^BN\d{1,6}-\d{1,2}\s");
+            var regexObj = new Regex(@"^AV\d{1,6}-\d{1,2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
+            var regexObj2 = new Regex(@"^PD\d{1,4}-\d{1,2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
+            var regexObj3 = new Regex(@"^SI\d{1,6}-\d{1,2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
+            var regexObj4 = new Regex(@"^BN\d{1,6}-\d{1,2}\s", RegexOptions.None, TimeSpan.FromMilliseconds(200));
 
             av = av.ToUpper() + " ";
 

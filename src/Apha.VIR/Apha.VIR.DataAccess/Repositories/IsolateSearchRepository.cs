@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -33,167 +34,227 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             var query = _context.VwIsolates.AsQueryable();
 
-            if (!string.IsNullOrEmpty(criteria.Filter.AVNumber))
-            {
-                query = query.Where(i => i.Avnumber == criteria.Filter.AVNumber);
-            }
+            query = (IQueryable<IsolateSearchResult>)ApplyBasicFilters(query, criteria.Filter);
 
-            if (IsValidGuid(criteria.Filter.VirusFamily))
-            {
-                query = query.Where(i => i.Family == criteria.Filter.VirusFamily);
-            }
+            query = (IQueryable<IsolateSearchResult>)ApplyDateFilters(query, criteria.Filter);
 
-            if (IsValidGuid(criteria.Filter.VirusType))
-            {
-                query = query.Where(i => i.Type == criteria.Filter.VirusType);
-            }
+            query = (IQueryable<IsolateSearchResult>)ApplyAllCharacteristicFilters(query, criteria.Filter.CharacteristicSearch);            
 
-            if (IsValidGuid(criteria.Filter.Group))
+            query = (IQueryable<IsolateSearchResult>)ApplySorting(query, criteria.SortBy, criteria.Descending);
+            
+            return query;            
+        }
+       
+        private static IQueryable ApplyBasicFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
+        {
+            if(filter != null)
             {
-                query = query.Where(i => i.HostSpecies == criteria.Filter.Group);
-            }
+                if (!string.IsNullOrEmpty(filter.AVNumber))
+                {
+                    query = query.Where(i => i.Avnumber == filter.AVNumber);
+                }
 
-            if (IsValidGuid(criteria.Filter.Species))
+                if (IsValidGuid(filter.VirusFamily))
+                {
+                    query = query.Where(i => i.Family == filter.VirusFamily);
+                }
+
+                if (IsValidGuid(filter.VirusType))
+                {
+                    query = query.Where(i => i.Type == filter.VirusType);
+                }
+
+                if (IsValidGuid(filter.Group))
+                {
+                    query = query.Where(i => i.HostSpecies == filter.Group);
+                }
+
+                if (IsValidGuid(filter.Species))
+                {
+                    query = query.Where(i => i.HostBreed == filter.Species);
+                }
+
+                if (IsValidGuid(filter.CountryOfOrigin))
+                {
+                    query = query.Where(i => i.CountryOfOrigin == filter.CountryOfOrigin);
+                }
+
+                if (IsValidGuid(filter.HostPurpose))
+                {
+                    query = query.Where(i => i.HostPurpose == filter.HostPurpose);
+                }
+
+                if (IsValidGuid(filter.SampleType))
+                {
+                    query = query.Where(i => i.SampleType == filter.SampleType);
+                }
+
+                if (filter.YearOfIsolation != 0)
+                {
+                    query = query.Where(i => i.YearOfIsolation == filter.YearOfIsolation);
+                }
+            }   
+            return query;
+        }
+
+        private static IQueryable ApplyDateFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
+        {
+            if(filter != null)
             {
-                query = query.Where(i => i.HostBreed == criteria.Filter.Species);
-            }
+                if (filter.ReceivedFromDate.HasValue && filter.ReceivedToDate.HasValue)
+                {
+                    query = query.Where(i => i.ReceivedDate >= filter.ReceivedFromDate && i.ReceivedDate <= filter.ReceivedToDate);
+                }
 
-            if (IsValidGuid(criteria.Filter.CountryOfOrigin))
-            {
-                query = query.Where(i => i.CountryOfOrigin == criteria.Filter.CountryOfOrigin);
-            }
+                if (filter.CreatedFromDate.HasValue && filter.CreatedToDate.HasValue)
+                {
+                    query = query.Where(i => i.DateCreated >= filter.CreatedFromDate && i.DateCreated <= filter.CreatedToDate);
+                }
+            }     
+            return query;
+        }
 
-            if (IsValidGuid(criteria.Filter.HostPurpose))
-            {
-                query = query.Where(i => i.HostPurpose == criteria.Filter.HostPurpose);
-            }
-
-            if (IsValidGuid(criteria.Filter.SampleType))
-            {
-                query = query.Where(i => i.SampleType == criteria.Filter.SampleType);
-            }
-
-            if (criteria.Filter.YearOfIsolation != 0)
-            {
-                query = query.Where(i => i.YearOfIsolation == criteria.Filter.YearOfIsolation);
-            }
-
-            if (criteria.Filter.ReceivedFromDate.HasValue && criteria.Filter.ReceivedToDate.HasValue)
-            {
-                query = query.Where(i => i.ReceivedDate >= criteria.Filter.ReceivedFromDate && i.ReceivedDate <= criteria.Filter.ReceivedToDate);
-            }
-
-            if (criteria.Filter.CreatedFromDate.HasValue && criteria.Filter.CreatedToDate.HasValue)
-            {
-                query = query.Where(i => i.DateCreated >= criteria.Filter.CreatedFromDate && i.DateCreated <= criteria.Filter.CreatedToDate);
-            }
-
-            foreach (CharacteristicCriteria characteristicItem in criteria.Filter.CharacteristicSearch)
+        private IQueryable ApplyAllCharacteristicFilters(IQueryable<IsolateSearchResult> query, List<CharacteristicCriteria> characteristicSearch)
+        {
+            foreach (CharacteristicCriteria characteristicItem in characteristicSearch)
             {
                 if (IsValidGuid(characteristicItem.Characteristic))
                 {
-                    query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                        c.CharacteristicIsolateId == i.IsolateId && c.VirusCharacteristicId == characteristicItem.Characteristic));
-
-                    switch (characteristicItem.CharacteristicType)
-                    {
-                        case "Numeric":
-                            switch (characteristicItem.Comparator)
-                            {
-                                case "between":
-                                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                                    {
-                                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                            float.Parse(c.CharacteristicValue) >= float.Parse(characteristicItem.CharacteristicValue1)));
-                                    }
-                                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue2))
-                                    {
-                                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                            float.Parse(c.CharacteristicValue) <= float.Parse(characteristicItem.CharacteristicValue2)));
-                                    }
-                                    break;
-                                default:
-                                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                                    {
-                                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.Comparator}{characteristicItem.CharacteristicValue1}")));
-                                    }
-                                    break;
-                            }
-                            break;
-
-                        case "SingleList":
-                            switch (characteristicItem.Comparator)
-                            {
-                                case "begins with":
-                                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                                    {
-                                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.CharacteristicValue1}%")));
-                                    }
-                                    break;
-                                case "not equal to":
-                                    query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                        c.CharacteristicValue != characteristicItem.CharacteristicValue1));
-                                    break;
-                                default:
-                                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                                    {
-                                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                            c.CharacteristicValue == characteristicItem.CharacteristicValue1));
-                                    }
-                                    break;
-                            }
-                            break;
-
-                        case "Yes/No":
-                            query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                c.CharacteristicValue == characteristicItem.CharacteristicValue1));
-                            break;
-
-                        case "Text":
-                            switch (characteristicItem.Comparator)
-                            {
-                                case "contains":
-                                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                                    {
-                                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                            EF.Functions.Like(c.CharacteristicValue, $"%{characteristicItem.CharacteristicValue1}%")));
-                                    }
-                                    break;
-                                default:
-                                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                                    {
-                                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
-                                            c.CharacteristicValue == characteristicItem.CharacteristicValue1));
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
+                    query = (IQueryable<IsolateSearchResult>)ApplyCharacteristicFilter(query, characteristicItem);
                 }
             }
+            return query;
+        }
 
-            query = criteria.SortBy?.ToLower() switch
+        private IQueryable ApplyCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
+        {
+            query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                         c.CharacteristicIsolateId == i.IsolateId && c.VirusCharacteristicId == characteristicItem.Characteristic));
+
+            switch (characteristicItem.CharacteristicType)
             {
-                "avnumber" => criteria.Descending ? query.OrderByDescending(i => i.Avnumber) : query.OrderBy(i => i.Avnumber),
-                "senderreferencenumber" => criteria.Descending ? query.OrderByDescending(i => i.SenderReferenceNumber) : query.OrderBy(i => i.SenderReferenceNumber),
-                "sampletypename" => criteria.Descending ? query.OrderByDescending(i => i.SampleTypeName) : query.OrderBy(i => i.SampleTypeName),
-                "familyname" => criteria.Descending ? query.OrderByDescending(i => i.FamilyName) : query.OrderBy(i => i.FamilyName),
-                "typename" => criteria.Descending ? query.OrderByDescending(i => i.TypeName) : query.OrderBy(i => i.TypeName),
-                "groupspeciesname" => criteria.Descending ? query.OrderByDescending(i => i.GroupSpeciesName) : query.OrderBy(i => i.GroupSpeciesName),
-                "breedname" => criteria.Descending ? query.OrderByDescending(i => i.BreedName) : query.OrderBy(i => i.BreedName),
-                "yearofisolation" => criteria.Descending ? query.OrderByDescending(i => i.YearOfIsolation) : query.OrderBy(i => i.YearOfIsolation),
-                "receiveddate" => criteria.Descending ? query.OrderByDescending(i => i.ReceivedDate) : query.OrderBy(i => i.ReceivedDate),
-                "countryoforiginname" => criteria.Descending ? query.OrderByDescending(i => i.CountryOfOriginName) : query.OrderBy(i => i.CountryOfOriginName),
-                "materialtransferagreement" => criteria.Descending ? query.OrderByDescending(i => i.MaterialTransferAgreement) : query.OrderBy(i => i.MaterialTransferAgreement),
-                "noofaliquots" => criteria.Descending ? query.OrderByDescending(i => i.NoOfAliquots) : query.OrderBy(i => i.NoOfAliquots),
-                "freezername" => criteria.Descending ? query.OrderByDescending(i => i.FreezerName) : query.OrderBy(i => i.FreezerName),
-                "trayname" => criteria.Descending ? query.OrderByDescending(i => i.TrayName) : query.OrderBy(i => i.TrayName),
-                "well" => criteria.Descending ? query.OrderByDescending(i => i.Well) : query.OrderBy(i => i.Well),
+                case "Numeric":
+                    query = (IQueryable<IsolateSearchResult>)ApplyNumericCharacteristicFilter(query, characteristicItem);
+                    break;
+
+                case "SingleList":
+                    query = (IQueryable<IsolateSearchResult>)ApplySingleListCharacteristicFilter(query, characteristicItem);
+                    break;
+
+                case "Yes/No":
+                    query = (IQueryable<IsolateSearchResult>)ApplyYesNoCharacteristicFilter(query, characteristicItem);
+                    break;
+
+                case "Text":
+                    query = (IQueryable<IsolateSearchResult>)ApplyTextCharacteristicFilter(query, characteristicItem);
+                    break;
+            }
+            return query;
+        }
+        
+        private IQueryable ApplyNumericCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
+        {
+            switch (characteristicItem.Comparator)
+            {
+                case "between":
+                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
+                    {
+                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                            float.Parse(c.CharacteristicValue) >= float.Parse(characteristicItem.CharacteristicValue1)));
+                    }
+                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue2))
+                    {
+                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                            float.Parse(c.CharacteristicValue) <= float.Parse(characteristicItem.CharacteristicValue2)));
+                    }
+                    break;
+                default:
+                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
+                    {
+                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.Comparator}{characteristicItem.CharacteristicValue1}")));
+                    }
+                    break;
+            }
+            return query;
+        }
+
+        private IQueryable ApplySingleListCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
+        {
+            switch (characteristicItem.Comparator)
+            {
+                case "begins with":
+                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
+                    {
+                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.CharacteristicValue1}%")));
+                    }
+                    break;
+                case "not equal to":
+                    query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        c.CharacteristicValue != characteristicItem.CharacteristicValue1));
+                    break;
+                default:
+                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
+                    {
+                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                            c.CharacteristicValue == characteristicItem.CharacteristicValue1));
+                    }
+                    break;
+            }
+            return query;
+        }
+
+        private IQueryable ApplyYesNoCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
+        {
+            query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        c.CharacteristicValue == characteristicItem.CharacteristicValue1));
+            return query;
+        }
+
+        private IQueryable ApplyTextCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
+        {
+            switch (characteristicItem.Comparator)
+            {
+                case "contains":
+                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
+                    {
+                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                            EF.Functions.Like(c.CharacteristicValue, $"%{characteristicItem.CharacteristicValue1}%")));
+                    }
+                    break;
+                default:
+                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
+                    {
+                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                            c.CharacteristicValue == characteristicItem.CharacteristicValue1));
+                    }
+                    break;
+            }
+            return query;
+        }
+
+        private static IQueryable ApplySorting(IQueryable<IsolateSearchResult> query, string? sortBy, bool descending)
+        {           
+            return sortBy?.ToLower() switch
+            {
+                "avnumber" => descending ? query.OrderByDescending(i => i.Avnumber) : query.OrderBy(i => i.Avnumber),
+                "senderreferencenumber" => descending ? query.OrderByDescending(i => i.SenderReferenceNumber) : query.OrderBy(i => i.SenderReferenceNumber),
+                "sampletypename" => descending ? query.OrderByDescending(i => i.SampleTypeName) : query.OrderBy(i => i.SampleTypeName),
+                "familyname" => descending ? query.OrderByDescending(i => i.FamilyName) : query.OrderBy(i => i.FamilyName),
+                "typename" => descending ? query.OrderByDescending(i => i.TypeName) : query.OrderBy(i => i.TypeName),
+                "groupspeciesname" => descending ? query.OrderByDescending(i => i.GroupSpeciesName) : query.OrderBy(i => i.GroupSpeciesName),
+                "breedname" => descending ? query.OrderByDescending(i => i.BreedName) : query.OrderBy(i => i.BreedName),
+                "yearofisolation" => descending ? query.OrderByDescending(i => i.YearOfIsolation) : query.OrderBy(i => i.YearOfIsolation),
+                "receiveddate" => descending ? query.OrderByDescending(i => i.ReceivedDate) : query.OrderBy(i => i.ReceivedDate),
+                "countryoforiginname" => descending ? query.OrderByDescending(i => i.CountryOfOriginName) : query.OrderBy(i => i.CountryOfOriginName),
+                "materialtransferagreement" => descending ? query.OrderByDescending(i => i.MaterialTransferAgreement) : query.OrderBy(i => i.MaterialTransferAgreement),
+                "noofaliquots" => descending ? query.OrderByDescending(i => i.NoOfAliquots) : query.OrderBy(i => i.NoOfAliquots),
+                "freezername" => descending ? query.OrderByDescending(i => i.FreezerName) : query.OrderBy(i => i.FreezerName),
+                "trayname" => descending ? query.OrderByDescending(i => i.TrayName) : query.OrderBy(i => i.TrayName),
+                "well" => descending ? query.OrderByDescending(i => i.Well) : query.OrderBy(i => i.Well),
                 _ => query
             };
-            return query;            
         }
 
         public async Task<List<IsolateFullDetailsResult>> GetIsolateSearchExportResultAsync(PaginationParameters<SearchCriteria> criteria)

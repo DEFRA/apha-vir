@@ -9,6 +9,7 @@ using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
@@ -37,14 +38,7 @@ namespace Apha.VIR.Web.Controllers
         
         public async Task<IActionResult> Search(SearchCriteria criteria)
         {
-            if (!String.IsNullOrEmpty(criteria.AVNumber))
-            {
-                criteria.AVNumber = criteria.AVNumber.ToUpper();
-                if (Submission.AVNumberIsValidPotentially(criteria.AVNumber))
-                {
-                    criteria.AVNumber = Submission.AVNumberFormatted(criteria.AVNumber);
-                }
-            }
+            criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
 
             var context = new ValidationContext(criteria);
             var validationResult = criteria.Validate(context);
@@ -69,40 +63,9 @@ namespace Apha.VIR.Web.Controllers
                 return View("IsolateSearch", searchModel);
             }
 
-            if (criteria.ReceivedFromDate == null ^ criteria.ReceivedToDate == null)
-            {
-                if (criteria.ReceivedFromDate == null)
-                {
-                    criteria.ReceivedFromDate = Convert.ToDateTime("01/01/1900");
-                }
-                if (criteria.ReceivedToDate == null)
-                {
-                    criteria.ReceivedToDate = DateTime.Today;
-                }
-            }
+            criteria = NormalizeCreatedAndReceivedDateRanges(criteria);
 
-            if (criteria.CreatedFromDate == null ^ criteria.CreatedToDate == null)
-            {
-                if (criteria.CreatedFromDate == null)
-                {
-                    criteria.CreatedFromDate = Convert.ToDateTime("01/01/1900");
-                }
-                if (criteria.CreatedToDate == null)
-                {
-                    criteria.CreatedToDate = DateTime.Today;
-                }
-            }
-
-            ModelState.Remove(nameof(criteria.AVNumber));
-            ModelState.Remove(nameof(criteria.CreatedFromDate));
-            ModelState.Remove(nameof(criteria.CreatedToDate));
-            ModelState.Remove(nameof(criteria.ReceivedFromDate));
-            ModelState.Remove(nameof(criteria.ReceivedToDate));
-            searchModel.AVNumber = criteria.AVNumber;
-            searchModel.CreatedFromDate = criteria.CreatedFromDate;
-            searchModel.CreatedToDate = criteria.CreatedToDate;
-            searchModel.ReceivedFromDate = criteria.ReceivedFromDate;
-            searchModel.ReceivedToDate = criteria.ReceivedToDate;
+            searchModel = UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);           
 
             criteria.Pagination = new PaginationModel();
             var criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>
@@ -290,6 +253,63 @@ namespace Apha.VIR.Web.Controllers
             int currentYear = DateTime.Now.Year;
 
             return Enumerable.Range(seedYear, currentYear - seedYear + 1).Reverse().ToList();
+        }
+
+        private static string? NormalizeAVNumber(string? aVNumber)
+        {
+            if (!String.IsNullOrEmpty(aVNumber))
+            {
+                aVNumber = aVNumber.ToUpper();
+                if (Submission.AVNumberIsValidPotentially(aVNumber))
+                {
+                    aVNumber = Submission.AVNumberFormatted(aVNumber);
+                }
+            }
+            return aVNumber;
+        }
+
+        private static SearchCriteria NormalizeCreatedAndReceivedDateRanges(SearchCriteria criteria)
+        {
+            if (criteria.ReceivedFromDate == null ^ criteria.ReceivedToDate == null)
+            {
+                if (criteria.ReceivedFromDate == null)
+                {
+                    criteria.ReceivedFromDate = Convert.ToDateTime("01/01/1900");
+                }
+                if (criteria.ReceivedToDate == null)
+                {
+                    criteria.ReceivedToDate = DateTime.Today;
+                }
+            }
+
+            if (criteria.CreatedFromDate == null ^ criteria.CreatedToDate == null)
+            {
+                if (criteria.CreatedFromDate == null)
+                {
+                    criteria.CreatedFromDate = Convert.ToDateTime("01/01/1900");
+                }
+                if (criteria.CreatedToDate == null)
+                {
+                    criteria.CreatedToDate = DateTime.Today;
+                }
+            }
+
+            return criteria;
+        }
+
+        private static SearchRepositoryViewModel UpdateModelStateValuesAndSearchModel(SearchRepositoryViewModel searchModel, SearchCriteria criteria, ModelStateDictionary modelState)
+        {
+            modelState.Remove(nameof(criteria.AVNumber));
+            modelState.Remove(nameof(criteria.CreatedFromDate));
+            modelState.Remove(nameof(criteria.CreatedToDate));
+            modelState.Remove(nameof(criteria.ReceivedFromDate));
+            modelState.Remove(nameof(criteria.ReceivedToDate));
+            searchModel.AVNumber = criteria.AVNumber;
+            searchModel.CreatedFromDate = criteria.CreatedFromDate;
+            searchModel.CreatedToDate = criteria.CreatedToDate;
+            searchModel.ReceivedFromDate = criteria.ReceivedFromDate;
+            searchModel.ReceivedToDate = criteria.ReceivedToDate;
+            return searchModel;
         }
 
         private async Task<SearchRepositoryViewModel> LoadIsolateSearchFilterControlsData(SearchCriteria? criteria)
