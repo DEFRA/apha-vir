@@ -11,29 +11,6 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
 {
     public class IsolateViabilityServiceTest: AbstractIsolateViabilityServiceTest
     {
-        //private readonly IIsolateViabilityService _isolateViabilityService;
-        //private readonly IIsolateViabilityRepository _mockIsolateViabilityRepository;
-        //private readonly IIsolateRepository _mockIsolateRepository;
-        //private readonly ICharacteristicRepository _mockCharacteristicRepository;
-        //private readonly ILookupRepository _mockLookupRepository;
-        //private readonly IMapper _mockMapper;
-
-        //public IsolateViabilityServiceTest()
-        //{
-        //    _mockIsolateViabilityRepository = Substitute.For<IIsolateViabilityRepository>();
-        //    _mockIsolateRepository = Substitute.For<IIsolateRepository>();
-        //    _mockCharacteristicRepository = Substitute.For<ICharacteristicRepository>();
-        //    _mockLookupRepository = Substitute.For<ILookupRepository>();
-        //    _mockMapper = Substitute.For<IMapper>();
-
-        //    _isolateViabilityService = new IsolateViabilityService(
-        //    _mockIsolateViabilityRepository,
-        //    _mockIsolateRepository,
-        //    _mockCharacteristicRepository,
-        //    _mockLookupRepository,
-        //    _mockMapper);
-        //}
-
         [Fact]
         public async Task GetViabilityHistoryAsync_SuccessfulRetrieval_ReturnsViabilityHistory()
         {

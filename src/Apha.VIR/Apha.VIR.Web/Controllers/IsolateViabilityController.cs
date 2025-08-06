@@ -4,6 +4,7 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
@@ -20,6 +21,12 @@ namespace Apha.VIR.Web.Controllers
 
         public IActionResult History(string AVNumber, Guid Isolate)
         {
+            if (string.IsNullOrWhiteSpace(AVNumber) || Isolate == Guid.Empty || !ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
+            }
+
             var result = _isolateViabilityService.GetViabilityHistoryAsync(AVNumber, Isolate).Result;
        
             var viabilityHistories = _mapper.Map<IEnumerable<IsolateViabilityModel>>(result);
@@ -38,12 +45,25 @@ namespace Apha.VIR.Web.Controllers
         {
             string userid = "TestUser";
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (isolateViabilityId == Guid.Empty)
+            {
+                return BadRequest("Invalid ViabilityId ID.");
+            }
+            if (string.IsNullOrWhiteSpace(lastModified))
+            {
+                return BadRequest("Last Modified cannot be empty.");
+            }
+
             byte[] lastModifiedbyte = Convert.FromBase64String(lastModified);
 
             await _isolateViabilityService.DeleteIsolateViabilityAsync(isolateViabilityId, lastModifiedbyte, userid);
 
             return RedirectToAction(nameof(History), new { AVNumber= avNUmber, Isolate = isolateId });
         }
-
     }
 }

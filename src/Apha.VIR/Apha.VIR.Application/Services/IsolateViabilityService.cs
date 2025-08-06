@@ -35,19 +35,19 @@ namespace Apha.VIR.Application.Services
 
             var matchIsolate = isolationList.Where(x => x.IsolateId == IsolateId).ToList();
 
-            if (matchIsolate != null && matchIsolate.Count == 0 )
+            if (matchIsolate.Count == 0 )
             {
                 return Enumerable.Empty<IsolateViabilityInfoDTO>();
             }
 
-            var matchIsolateId = matchIsolate?.FirstOrDefault()?.IsolateId;
+            var matchIsolateId = matchIsolate[0].IsolateId;
 
 
-            var result = await _isolateViabilityRepository.GetViabilityHistoryAsync(matchIsolateId.Value);
+            var result = await _isolateViabilityRepository.GetViabilityHistoryAsync(matchIsolateId);
 
             var viabilityHistorList = _mapper.Map<IEnumerable<IsolateViabilityInfo>>(result);
 
-            var characteristicList = await _iCharacteristicRepository.GetIsolateCharacteristicInfoAsync(matchIsolateId.Value);
+            var characteristicList = await _iCharacteristicRepository.GetIsolateCharacteristicInfoAsync(matchIsolateId);
 
             var charNomenclature = GetCharacteristicNomenclature(characteristicList.ToList());
 
