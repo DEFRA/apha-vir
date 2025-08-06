@@ -43,6 +43,9 @@ namespace Apha.VIR.Application.Mappings
              .ForMember(dest => dest.AntigenProduced, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.AntigenProduced)))
              .ForMember(dest => dest.MTA, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.MaterialTransferAgreement)))
              .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => MappingHelper.ToDateStringFormat(src.ReceivedDate)));
+            CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>().ReverseMap();
+            CreateMap<IsolateViabilityInfo, IsolateViability>().ReverseMap();
+            CreateMap<IsolateViabilityInfo, IsolateViabilityInfoDTO>().ReverseMap();
         }
     }
 }

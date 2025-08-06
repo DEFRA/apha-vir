@@ -6,7 +6,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTests
+namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
 {
     public class IsolateDispatchServiceTest : IDisposable
     {
@@ -168,11 +168,11 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTests
         {
             // Arrange
             var dispatchId = Guid.NewGuid();
-            byte[]? lastModified = null;
+            byte[]? lastModified = Array.Empty<byte>(); ;
             var user = "TestUser";
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            await Assert.ThrowsAsync<ArgumentException>(() =>
                 _service.DeleteDispatchAsync(dispatchId, lastModified!, user));
         }
 
