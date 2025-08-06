@@ -344,7 +344,7 @@ namespace Apha.VIR.DataAccess.Repositories
             if (isolateRow != null) {            
                 isolateInfo = new IsolateInfo
                 {
-                    Avnumber = isolateRow["AVNumber"].ToString(),
+                    AvNumber = isolateRow["AVNumber"].ToString(),
                     FamilyName = isolateRow["FamilyName"].ToString(),
                     TypeName = isolateRow["TypeName"].ToString(),
                     GroupSpeciesName = isolateRow["GroupSpeciesName"].ToString(),
