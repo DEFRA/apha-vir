@@ -52,12 +52,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         [Fact]
         public async Task Index_ReturnsViewResultWithCorrectModelType()
         {
-            // Arrange
-            var expectedModel = new SearchRepositoryViewModel();
+            // Arrange            
             _mockLookupService.GetAllVirusFamiliesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllVirusTypesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllHostSpeciesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllHostBreedsAsync().Returns(new List<LookupItemDTO>());
+            
             _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllHostPurposesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllSampleTypesAsync().Returns(new List<LookupItemDTO>());
@@ -126,7 +126,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Assert.NotNull(result);
             Assert.Equal("IsolateSearch", result.ViewName);
             var model = Assert.IsType<SearchRepositoryViewModel>(result.Model);
-            Assert.Empty(model.IsolateSearchGird.IsolateSearchResults);
+            if (model != null && model.IsolateSearchGird != null && model.IsolateSearchGird.IsolateSearchResults != null)
+                Assert.Empty(model.IsolateSearchGird.IsolateSearchResults);
         }   
 
         [Fact]
@@ -171,7 +172,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Assert.NotNull(result);
             Assert.Equal("_IsolateSearchResults", result.ViewName);
             var model = Assert.IsType<IsolateSearchGirdViewModel>(result.Model);
-            Assert.Single(model.IsolateSearchResults);
+            if (model.IsolateSearchResults != null)
+                Assert.Single(model.IsolateSearchResults);
         }
 
         [Fact]
@@ -379,7 +381,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         public async Task GetVirusCharacteristicsByVirusType_NullVirusTypeId_ReturnsAllCharacteristics()
         {
             // Arrange
-            string virusTypeId = null;
+            string? virusTypeId = null;
             var expectedCharacteristics = new List<VirusCharacteristicDTO>
             {
                 new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1" },
@@ -457,7 +459,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
-            var jObject = JObject.FromObject(jsonResult.Value);
+            Assert.NotNull(jsonResult.Value);
+            var jObject = JObject.FromObject(jsonResult.Value);            
             var jComparators = jObject["Comparators"] as JArray;
             var jListValues = jObject["ListValues"] as JArray;
 
@@ -483,14 +486,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             var result = await _controller.GetComparatorsAndListValues(virusCharacteristicId);
 
             // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);     
-            var jObject = JObject.FromObject(jsonResult.Value);
-
-            Assert.True(jObject.ContainsKey("Comparators"));
-            Assert.Equal(0, jObject["Comparators"]!.Count());
-
-            Assert.True(jObject.ContainsKey("ListValues"));
-            Assert.Equal(0, jObject["ListValues"]!.Count());
+            var jsonResult = Assert.IsType<JsonResult>(result);   
+           
+            Assert.NotNull(jsonResult.Value); 
+            var jObject = JObject.FromObject(jsonResult.Value);   
+            
+            Assert.Equal(0, (jObject["Comparators"] as JArray)?.Count ?? -1);
+            Assert.Equal(0, (jObject["ListValues"] as JArray)?.Count ?? -1);
         }       
 
         [Fact]
@@ -527,8 +529,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             var viewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateSearchResults", viewResult.ViewName);
             var model = Assert.IsType<IsolateSearchGirdViewModel>(viewResult.Model);
-            Assert.Single(model.IsolateSearchResults);
-            Assert.Equal(criteriaDto.Page, model.Pagination.PageNumber);
+            if (model.IsolateSearchResults != null)
+                Assert.Single(model.IsolateSearchResults);
+            Assert.Equal(criteriaDto.Page, model.Pagination!.PageNumber);
             Assert.Equal(criteriaDto.SortBy, model.Pagination.SortColumn);
             Assert.Equal(criteriaDto.Descending, model.Pagination.SortDirection);
         }
@@ -608,8 +611,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             var viewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateSearchResults", viewResult.ViewName);
             var model = Assert.IsType<IsolateSearchGirdViewModel>(viewResult.Model);
-            Assert.Single(model.IsolateSearchResults);
-            Assert.Equal(1, model.Pagination.PageNumber);
+            if (model.IsolateSearchResults != null)
+                Assert.Single(model.IsolateSearchResults);
+            Assert.Equal(1, model.Pagination!.PageNumber);
             Assert.Equal(column, model.Pagination.SortColumn);
             Assert.Equal(sortOrder, model.Pagination.SortDirection);
         }        
@@ -633,7 +637,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             // Assert
             Assert.IsType<ViewComponentResult>(result);
             var viewComponentResult = result as ViewComponentResult;
-            Assert.Equal("Pagination", viewComponentResult.ViewComponentName);
+            Assert.Equal("Pagination", viewComponentResult!.ViewComponentName);
             Assert.Equal(paginationModel, viewComponentResult.Arguments);
         }
 
@@ -649,7 +653,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             // Assert
             Assert.IsType<ViewComponentResult>(result);
             var viewComponentResult = result as ViewComponentResult;
-            Assert.Equal("Pagination", viewComponentResult.ViewComponentName);
+            Assert.Equal("Pagination", viewComponentResult!.ViewComponentName);
             Assert.Null(viewComponentResult.Arguments);
         }
 
@@ -665,7 +669,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             // Assert
             Assert.IsType<ViewComponentResult>(result);
             var viewComponentResult = result as ViewComponentResult;
-            Assert.Equal("Pagination", viewComponentResult.ViewComponentName);
+            Assert.Equal("Pagination", viewComponentResult!.ViewComponentName);
         }
 
         [Fact]

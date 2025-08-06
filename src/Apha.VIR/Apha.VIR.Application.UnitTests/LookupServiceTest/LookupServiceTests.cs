@@ -246,7 +246,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllVirusTypesByParentAsync_WithNullVirusFamily_ReturnsExpectedResult()
         {
             // Arrange
-            string virusFamily = null;
+            string? virusFamily = null;
             var repositoryResult = new List<LookupItemByParent>();
             var expectedResult = new List<LookupItemDTO>();
 
@@ -462,7 +462,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllHostBreedsByParentAsync_NullHostSpecies_ReturnsLookupItemDTOs()
         {
             // Arrange
-            string hostSpecies = null;
+            string? hostSpecies = null;
             var lookupItems = new List<LookupItemByParent> { new LookupItemByParent { Id = Guid.NewGuid(), Name = "All Breeds" } };
             var lookupItemDTOs = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "All Breeds" } };
 

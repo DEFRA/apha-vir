@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -50,8 +51,8 @@ namespace Apha.VIR.DataAccess.Repositories
             {
                 return query;
             }
-
-            query = ApplyStringFilter(query, filter.AVNumber, i => i.Avnumber);
+            if (!String.IsNullOrEmpty(filter.AVNumber))
+                query = ApplyStringFilter(query, filter.AVNumber, i => i.Avnumber);
             query = ApplyGuidFilters(query, filter);
             query = ApplyYearOfIsolationFilter(query, filter.YearOfIsolation);
 
@@ -328,94 +329,108 @@ namespace Apha.VIR.DataAccess.Repositories
 
             if (dataSet.Tables.Count >= 4)
             {
-                DataTable isolateTable = dataSet.Tables[0];
-                DataTable dispatchTable = dataSet.Tables[1];
-                DataTable viabilityTable = dataSet.Tables[2];
-                DataTable characteristicTable = dataSet.Tables[3];
-
-                foreach (DataRow isolateRow in isolateTable.Rows)
-                {
-                    isolateFullDetails.IsolateDetails = new IsolateInfo
-                    {
-                        Avnumber = isolateRow["AVNumber"].ToString(),
-                        FamilyName = isolateRow["FamilyName"].ToString(),
-                        TypeName = isolateRow["TypeName"].ToString(),
-                        GroupSpeciesName = isolateRow["GroupSpeciesName"].ToString(),
-                        BreedName = isolateRow["BreedName"].ToString(),
-                        CountryOfOriginName = isolateRow["CountryOfOriginName"].ToString(),
-                        YearOfIsolation = isolateRow["YearOfIsolation"] as int?,
-                        ReceivedDate = isolateRow["ReceivedDate"] as DateTime?,
-                        FreezerName = isolateRow["FreezerName"].ToString(),
-                        TrayName = isolateRow["TrayName"].ToString(),
-                        Well = isolateRow["Well"].ToString(),
-                        MaterialTransferAgreement = Convert.ToBoolean(isolateRow["MaterialTransferAgreement"]),
-                        NoOfAliquots = isolateRow["NoOfAliquots"] as int?,
-                        IsolateId = (Guid)isolateRow["IsolateID"],
-                        SenderReferenceNumber = isolateRow["SenderReferenceNumber"].ToString(),
-                        IsolationMethodName = isolateRow["IsolationMethodName"].ToString(),
-                        AntiserumProduced = Convert.ToBoolean(isolateRow["AntiserumProduced"]),
-                        AntigenProduced = Convert.ToBoolean(isolateRow["AntigenProduced"]),
-                        PhylogeneticAnalysis = isolateRow["PhylogeneticAnalysis"].ToString(),
-                        PhylogeneticFileName = isolateRow["PhylogeneticFileName"].ToString(),
-                        Mtalocation = isolateRow["MTALocation"].ToString(),
-                        Comment = isolateRow["Comment"].ToString(),
-                        ValidToIssue = isolateRow["ValidToIssue"] as bool?,
-                        WhyNotValidToIssue = isolateRow["WhyNotValidToIssue"].ToString(),
-                        OriginalSampleAvailable = Convert.ToBoolean(isolateRow["OriginalSampleAvailable"]),
-                        FirstViablePassageNumber = isolateRow["FirstViablePassageNumber"] as int?,
-                        IsMixedIsolate = Convert.ToBoolean(isolateRow["IsMixedIsolate"]),
-                        Nomenclature = isolateRow["Nomenclature"].ToString(),
-                        SmsreferenceNumber = isolateRow["SMSReferenceNumber"].ToString(),
-                        HostPurposeName = isolateRow["HostPurposeName"].ToString(),
-                        SampleTypeName = isolateRow["SampleTypeName"].ToString()
-                    };
-                }
-                // Fill IsolateDispatchDetails
-                List<IsolateDispatchInfo> dispatchInfos = new List<IsolateDispatchInfo>();
-                foreach (DataRow dispatchRow in dispatchTable.Rows)
-                {
-                    dispatchInfos.Add(new IsolateDispatchInfo
-                    {
-                        NoOfAliquots = Convert.ToInt32(dispatchRow["NoOfAliquots"]),
-                        PassageNumber = Convert.ToInt32(dispatchRow["PassageNumber"]),
-                        RecipientName = dispatchRow["RecipientName"].ToString(),
-                        RecipientAddress = dispatchRow["RecipientAddress"].ToString(),
-                        ReasonForDispatch = dispatchRow["ReasonForDispatch"].ToString(),
-                        DispatchedDate = Convert.ToDateTime(dispatchRow["DispatchedDate"]),
-                        DispatchedByName = dispatchRow["DispatchedByName"] is DBNull ? "" : dispatchRow["DispatchedByName"].ToString()!,
-                        DispatchIsolateId = isolateFullDetails.IsolateDetails!.IsolateId // Assuming it's the same as IsolateId
-                    });
-                }
-                // Fill IsolateViabilityDetails
-                List<IsolateViabilityInfo> viabilityInfos = new List<IsolateViabilityInfo>();
-                foreach (DataRow viabilityRow in viabilityTable.Rows)
-                {
-                    viabilityInfos.Add(new IsolateViabilityInfo
-                    {
-                        ViabilityStatus = viabilityRow["ViabilityStatus"] is DBNull ? "" : viabilityRow["ViabilityStatus"].ToString()!,
-                        DateChecked = Convert.ToDateTime(viabilityRow["DateChecked"]),
-                        CheckedByName = viabilityRow["CheckedByName"] is DBNull ? "" : viabilityRow["CheckedByName"].ToString()!,
-                        IsolateViabilityIsolateId = isolateFullDetails.IsolateDetails!.IsolateId // Assuming it's the same as IsolateId
-                    });
-                }
-                // Fill IsolateCharacteristicDetails
-                List<IsolateCharacteristicInfo> characteristicInfos = new List<IsolateCharacteristicInfo>();
-                foreach (DataRow characteristicRow in characteristicTable.Rows)
-                {
-                    characteristicInfos.Add(new IsolateCharacteristicInfo
-                    {
-                        CharacteristicId = (Guid)characteristicRow["CharacteristicId"],
-                        CharacteristicName = characteristicRow["CharacteristicName"] is DBNull ? "" : characteristicRow["CharacteristicName"].ToString()!,
-                        CharacteristicValue = characteristicRow["CharacteristicValue"].ToString(),
-                        CharacteristicPrefix = characteristicRow["CharacteristicPrefix"].ToString(),
-                        IsolateId = isolateFullDetails.IsolateDetails!.IsolateId
-                    });
-                }
-                isolateFullDetails.IsolateDispatchDetails = dispatchInfos;
-                isolateFullDetails.IsolateViabilityDetails = viabilityInfos;
-                isolateFullDetails.IsolateCharacteristicDetails = characteristicInfos;
+                isolateFullDetails.IsolateDetails = GetIsolateDetails(dataSet.Tables[0]);
+                isolateFullDetails.IsolateDispatchDetails = GetDispatchDetails(dataSet.Tables[1], isolateFullDetails.IsolateDetails!.IsolateId);
+                isolateFullDetails.IsolateViabilityDetails = GetViabilityDetails(dataSet.Tables[2], isolateFullDetails.IsolateDetails!.IsolateId);
+                isolateFullDetails.IsolateCharacteristicDetails = GetCharacteristicDetails(dataSet.Tables[3], isolateFullDetails.IsolateDetails!.IsolateId);                
             }
             return isolateFullDetails;
+        }
+
+        private IsolateInfo? GetIsolateDetails(DataTable isolateTable)
+        {
+            IsolateInfo? isolateInfo = null;
+            var isolateRow = isolateTable.Rows.Cast<DataRow>().FirstOrDefault();
+            if (isolateRow != null) {            
+                isolateInfo = new IsolateInfo
+                {
+                    Avnumber = isolateRow["AVNumber"].ToString(),
+                    FamilyName = isolateRow["FamilyName"].ToString(),
+                    TypeName = isolateRow["TypeName"].ToString(),
+                    GroupSpeciesName = isolateRow["GroupSpeciesName"].ToString(),
+                    BreedName = isolateRow["BreedName"].ToString(),
+                    CountryOfOriginName = isolateRow["CountryOfOriginName"].ToString(),
+                    YearOfIsolation = isolateRow["YearOfIsolation"] as int?,
+                    ReceivedDate = isolateRow["ReceivedDate"] as DateTime?,
+                    FreezerName = isolateRow["FreezerName"].ToString(),
+                    TrayName = isolateRow["TrayName"].ToString(),
+                    Well = isolateRow["Well"].ToString(),
+                    MaterialTransferAgreement = Convert.ToBoolean(isolateRow["MaterialTransferAgreement"]),
+                    NoOfAliquots = isolateRow["NoOfAliquots"] as int?,
+                    IsolateId = (Guid)isolateRow["IsolateID"],
+                    SenderReferenceNumber = isolateRow["SenderReferenceNumber"].ToString(),
+                    IsolationMethodName = isolateRow["IsolationMethodName"].ToString(),
+                    AntiserumProduced = Convert.ToBoolean(isolateRow["AntiserumProduced"]),
+                    AntigenProduced = Convert.ToBoolean(isolateRow["AntigenProduced"]),
+                    PhylogeneticAnalysis = isolateRow["PhylogeneticAnalysis"].ToString(),
+                    PhylogeneticFileName = isolateRow["PhylogeneticFileName"].ToString(),
+                    Mtalocation = isolateRow["MTALocation"].ToString(),
+                    Comment = isolateRow["Comment"].ToString(),
+                    ValidToIssue = isolateRow["ValidToIssue"] as bool?,
+                    WhyNotValidToIssue = isolateRow["WhyNotValidToIssue"].ToString(),
+                    OriginalSampleAvailable = Convert.ToBoolean(isolateRow["OriginalSampleAvailable"]),
+                    FirstViablePassageNumber = isolateRow["FirstViablePassageNumber"] as int?,
+                    IsMixedIsolate = Convert.ToBoolean(isolateRow["IsMixedIsolate"]),
+                    Nomenclature = isolateRow["Nomenclature"].ToString(),
+                    SmsreferenceNumber = isolateRow["SMSReferenceNumber"].ToString(),
+                    HostPurposeName = isolateRow["HostPurposeName"].ToString(),
+                    SampleTypeName = isolateRow["SampleTypeName"].ToString()
+                };
+            }
+            return isolateInfo;
+        }
+
+        private List<IsolateDispatchInfo> GetDispatchDetails(DataTable dispatchTable, Guid isolateId)
+        {
+            List<IsolateDispatchInfo> dispatchInfos = new List<IsolateDispatchInfo>();
+            foreach (DataRow dispatchRow in dispatchTable.Rows)
+            {
+                dispatchInfos.Add(new IsolateDispatchInfo
+                {
+                    NoOfAliquots = Convert.ToInt32(dispatchRow["NoOfAliquots"]),
+                    PassageNumber = Convert.ToInt32(dispatchRow["PassageNumber"]),
+                    RecipientName = dispatchRow["RecipientName"].ToString(),
+                    RecipientAddress = dispatchRow["RecipientAddress"].ToString(),
+                    ReasonForDispatch = dispatchRow["ReasonForDispatch"].ToString(),
+                    DispatchedDate = Convert.ToDateTime(dispatchRow["DispatchedDate"]),
+                    DispatchedByName = dispatchRow["DispatchedByName"] is DBNull ? "" : dispatchRow["DispatchedByName"].ToString()!,
+                    DispatchIsolateId = isolateId 
+                });
+            }
+            return dispatchInfos;
+        }
+
+        private List<IsolateViabilityInfo> GetViabilityDetails(DataTable viabilityTable, Guid isolateId)
+        {
+            List<IsolateViabilityInfo> viabilityInfos = new List<IsolateViabilityInfo>();
+            foreach (DataRow viabilityRow in viabilityTable.Rows)
+            {
+                viabilityInfos.Add(new IsolateViabilityInfo
+                {
+                    ViabilityStatus = viabilityRow["ViabilityStatus"] is DBNull ? "" : viabilityRow["ViabilityStatus"].ToString()!,
+                    DateChecked = Convert.ToDateTime(viabilityRow["DateChecked"]),
+                    CheckedByName = viabilityRow["CheckedByName"] is DBNull ? "" : viabilityRow["CheckedByName"].ToString()!,
+                    IsolateViabilityIsolateId = isolateId 
+                });
+            }
+            return viabilityInfos;
+        }
+
+        private List<IsolateCharacteristicInfo> GetCharacteristicDetails(DataTable characteristicTable, Guid isolateId)
+        {
+            List<IsolateCharacteristicInfo> characteristicInfos = new List<IsolateCharacteristicInfo>();
+            foreach (DataRow characteristicRow in characteristicTable.Rows)
+            {
+                characteristicInfos.Add(new IsolateCharacteristicInfo
+                {
+                    CharacteristicId = (Guid)characteristicRow["CharacteristicId"],
+                    CharacteristicName = characteristicRow["CharacteristicName"] is DBNull ? "" : characteristicRow["CharacteristicName"].ToString()!,
+                    CharacteristicValue = characteristicRow["CharacteristicValue"].ToString(),
+                    CharacteristicPrefix = characteristicRow["CharacteristicPrefix"].ToString(),
+                    IsolateId = isolateId
+                });
+            }
+            return characteristicInfos;
         }
 
         public static bool IsValidGuid(Guid? guid)
