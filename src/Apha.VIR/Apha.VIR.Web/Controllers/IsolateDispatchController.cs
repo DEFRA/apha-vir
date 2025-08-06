@@ -77,6 +77,7 @@ namespace Apha.VIR.Web.Controllers
             return RedirectToAction("History", new { AVNumber = AVNumber, IsolateId = IsolateId });
         }
 
+        [HttpGet]
         public IActionResult Confirmation(Guid Isolate)
         {
             if (Isolate == Guid.Empty || !ModelState.IsValid)
@@ -91,9 +92,10 @@ namespace Apha.VIR.Web.Controllers
             var model = new IsolateDispatchConfirmatioViewModel
             {
                 DispatchConfirmationMessage = "Isolate dispatch completed successfully.",
-                RemainingAliquots = result.IsolateDetails.NoOfAliquots ?? 0,
+                RemainingAliquots = result.IsolateDetails?.NoOfAliquots ?? 0,
                 DispatchHistorys = dislist
             };
+
             return View(model);
         }
     }

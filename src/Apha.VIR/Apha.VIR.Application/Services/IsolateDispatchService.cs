@@ -124,7 +124,6 @@ namespace Apha.VIR.Application.Services
             }
 
             return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
-
         }
         private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
