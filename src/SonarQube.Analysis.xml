@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<SonarQubeAnalysisProperties>
-  <!-- Ignore duplication detection for dto, model, and entity folders -->
-  <Property Name="sonar.cpd.exclusions">**/DTOs/**,**/Models/**,**/Entities/**</Property>
-
-  <!-- Optionally ignore webroot or other folders completely -->
-  <Property Name="sonar.exclusions">**/webroot/**</Property>
-</SonarQubeAnalysisProperties>
