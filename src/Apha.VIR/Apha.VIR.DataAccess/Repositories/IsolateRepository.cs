@@ -107,7 +107,7 @@ public class IsolateRepository : IIsolateRepository
         {
             dto = new IsolateInfo
             {
-                //Avnumber = reader["AVNumber"].ToString(),
+                AvNumber = reader["AVNumber"].ToString(),
                 FamilyName = reader["FamilyName"].ToString(),
                 TypeName = reader["TypeName"].ToString(),
                 GroupSpeciesName = reader["GroupSpeciesName"].ToString(),

@@ -15,6 +15,11 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<IsolateSearchResultDTO, IsolateSearchResult>();
             CreateMap<IsolateSearchExportDto, IsolateSearchExportViewModel>();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>();
+            CreateMap<IsolateFullDetailDTO, IsolateDetailsViewModel>();
+            CreateMap<IsolateInfoDTO, IsolateDetails>();
+            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityCheckInfo>();
+            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>();
+            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>();
         }
     }
 }
