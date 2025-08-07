@@ -78,14 +78,14 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Confirmation(Guid Isolate)
+        public async Task<IActionResult> Confirmation(Guid Isolate)
         {
             if (Isolate == Guid.Empty || !ModelState.IsValid)
             {
                 return BadRequest("Invalid Isolate ID.");
             }
           
-            var result = _isolateDispatchService.GetDispatcheConfirmationAsync(Isolate).Result;
+            var result = await _isolateDispatchService.GetDispatcheConfirmationAsync(Isolate);
             
             var dislist = _mapper.Map<IEnumerable<IsolateDispatchHistory>>(result.IsolateDispatchDetails);
 
