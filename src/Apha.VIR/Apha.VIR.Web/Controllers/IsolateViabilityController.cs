@@ -33,6 +33,7 @@ namespace Apha.VIR.Web.Controllers
 
             var viewModel = new IsolateViabilityHistoryViewModel
             {
+                IsolateId = Isolate,
                 Nomenclature = viabilityHistories.FirstOrDefault()?.Nomenclature!,
                 ViabilityHistoryList = viabilityHistories
             };
