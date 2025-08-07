@@ -1,0 +1,54 @@
+﻿@using Apha.VIR.Web.Controllers
+@model IsolateDispatchConfirmatioViewModel
+<table class="no-top-space" style="margin-top:0; padding-top:0; border-spacing:0;">
+    <tr>
+        <td colspan="3" style="padding-top:0;">
+            <p class="success-message" style="margin-top:0; padding-top:0;">
+                <strong style="color: green;">@Model.DispatchConfirmationMessage</strong>
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td>No. Of Aliquots Remaining</td>
+        <td></td>
+        <td>
+            @Model.RemainingAliquots
+        </td>
+    </tr>
+</table>
+
+@*     <h2>Dispatch History</h2> *@
+
+<div class="isolate-grid-table mt-3">
+    <table class="dispatch-history" cellpadding="5">
+        <thead>
+            <tr>
+                <th class="view-isolate-details-label2">No of Aliquots</th>
+                <th class="view-isolate-details-label2">Passage Number</th>
+                <th class="view-isolate-details-label2">Recipient Name</th>
+                <th class="view-isolate-details-label2">Recipient Address</th>
+                <th class="view-isolate-details-label2">Reason For Dispatch</th>
+                <th class="view-isolate-details-label2">Dispatched By</th>
+                <th class="view-isolate-details-label2">Dispatched Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DispatchHistorys)
+            {
+                <tr>
+                    <td>@item.NoOfAliquots</td>
+                    <td>@item.PassageNumber</td>
+                    <td>@item.RecipientName</td>
+                    <td>@item.RecipientAddress</td>
+                    <td>@item.ReasonForDispatch</td>
+                    <td>@item.DispatchedByName</td>
+                    <td>@item.DispatchedDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<p>
+    <a asp-action="Index" asp-controller="Home">Return to the Search Repository Page</a>
+</p>

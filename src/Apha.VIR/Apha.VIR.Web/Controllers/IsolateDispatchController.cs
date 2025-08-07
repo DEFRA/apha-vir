@@ -10,7 +10,7 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IIsolateDispatchService _isolateDispatchService;
         private readonly IMapper _mapper;
- 
+
         public IsolateDispatchController(IIsolateDispatchService isolateDispatchService, IMapper mapper)
         {
             _isolateDispatchService = isolateDispatchService;
@@ -77,8 +77,26 @@ namespace Apha.VIR.Web.Controllers
             return RedirectToAction("History", new { AVNumber = AVNumber, IsolateId = IsolateId });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Confirmation(Guid Isolate)
+        {
+            if (Isolate == Guid.Empty || !ModelState.IsValid)
+            {
+                return BadRequest("Invalid Isolate ID.");
+            }
+          
+            var result = await _isolateDispatchService.GetDispatcheConfirmationAsync(Isolate);
+            
+            var dislist = _mapper.Map<IEnumerable<IsolateDispatchHistory>>(result.IsolateDispatchDetails);
 
+            var model = new IsolateDispatchConfirmatioViewModel
+            {
+                DispatchConfirmationMessage = "Isolate dispatch completed successfully.",
+                RemainingAliquots = result.IsolateDetails?.NoOfAliquots ?? 0,
+                DispatchHistorys = dislist
+            };
 
-
+            return View(model);
+        }
     }
 }
