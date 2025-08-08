@@ -6,6 +6,8 @@
 <form asp-action="Edit" asp-controller="IsolateViability" method="post">
     <input asp-for="@Model.IsolateViability.IsolateViabilityId" type="hidden" />
     <input asp-for="@Model.IsolateViability.LastModified" type="hidden" />
+    <input asp-for="@Model.IsolateViability.IsolateViabilityIsolateId" type="hidden" />
+    <input asp-for="@Model.IsolateViability.AVNumber" type="hidden" />
     <table cellpadding="5px">
         <tr>
             <td>AV Number</td>

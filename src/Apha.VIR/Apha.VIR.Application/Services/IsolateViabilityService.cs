@@ -67,7 +67,16 @@ namespace Apha.VIR.Application.Services
         {
               await _isolateViabilityRepository.DeleteIsolateViabilityAsync(IsolateId, lastModified, userid);
         }
-       
+
+        public async Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userid)
+        {
+            var result = _mapper.Map<IsolateViability>(isolateViability);
+
+             await _isolateViabilityRepository.UpdateIsolateViabilityAsync(result, userid);
+ 
+
+            //var viabilityHistorList = _mapper.Map<IEnumerable<IsolateViabilityInfo>>(result);
+        }
         private string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var characteristicNomenclatureList = new StringBuilder();

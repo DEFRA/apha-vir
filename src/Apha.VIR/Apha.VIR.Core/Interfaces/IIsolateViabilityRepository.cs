@@ -6,4 +6,6 @@ public interface IIsolateViabilityRepository
 {
     Task<IEnumerable<IsolateViability>> GetViabilityHistoryAsync(Guid IsolateId);
     Task DeleteIsolateViabilityAsync(Guid IsolateId, byte[] lastModified, string userid);
+
+    Task UpdateIsolateViabilityAsync(IsolateViability isolateViability, string userid);
 }

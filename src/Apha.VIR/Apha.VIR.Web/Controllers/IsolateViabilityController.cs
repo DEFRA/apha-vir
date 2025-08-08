@@ -77,33 +77,26 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(IsolateViabilityViewModel IsolateViability)
+        public async Task<IActionResult> Edit(IsolateViabilityViewModel model)
         {
-            //if (string.IsNullOrWhiteSpace(AVNumber) || Isolate == Guid.Empty || !ModelState.IsValid)
-            //{
-            //    ModelState.AddModelError("", "Invalid parameters.");
-            //    return BadRequest(ModelState);
-            //}
+            string userid = "TestUser";
 
-            //var result = await _isolateViabilityService.
-            //    GetViabilityHistoryAsync(AVNumber, Isolate);
+            ModelState.Remove("IsolateViability.ViabilityStatus");
+            ModelState.Remove("IsolateViability.CheckedByName");
+            ModelState.Remove("IsolateViability.ViableName");
 
-            ////Todo check is no vaibility list
-            //var viability = _mapper.Map<IEnumerable<IsolateViabilityModel>>
-            //    (result.Where(x => x.IsolateViabilityId == IsolateViabilityId));
-
-            var vaibilities = await _lookupService.GetAllViabilityAsync();
-            var staffs = await _lookupService.GetAllStaffAsync();
-
-            var viewModel = new IsolateViabilityViewModel
+            if ( !ModelState.IsValid)
             {
-                // Nomenclature = viability.FirstOrDefault()?.Nomenclature!,
-               // IsolateViability = _mapper.Map<IsolateViabilityModel>(viability.FirstOrDefault()),
-                ViabilityList = vaibilities.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList(),
-                CheckedByList = staffs.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList(),
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
+            }
 
-            };
-            return View("Edit", viewModel);
+            var dto = _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability);
+
+            await _isolateViabilityService.UpdateIsolateViabilityAsync(dto, userid);
+
+            return RedirectToAction(nameof(History), new { AVNumber = model.IsolateViability.AVNumber, Isolate = model.IsolateViability.IsolateViabilityIsolateId });
+
         }
         [HttpPost]
         public async Task<IActionResult> Delete(Guid isolateViabilityId, string lastModified,string avNUmber, Guid isolateId)
