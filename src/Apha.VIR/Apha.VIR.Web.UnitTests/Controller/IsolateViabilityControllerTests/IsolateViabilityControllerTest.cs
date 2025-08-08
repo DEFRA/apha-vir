@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Services;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
@@ -14,12 +15,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
         private readonly IsolateViabilityController _controller;
-
+        private readonly ILookupService _lookupService;
         public IsolateViabilityControllerTest()
         {
+            _lookupService = Substitute.For<ILookupService>();
             _isolateViabilityService = Substitute.For<IIsolateViabilityService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new IsolateViabilityController(_isolateViabilityService, _mapper);
+            _controller = new IsolateViabilityController(_isolateViabilityService, _lookupService, _mapper);
         }
 
         [Fact]

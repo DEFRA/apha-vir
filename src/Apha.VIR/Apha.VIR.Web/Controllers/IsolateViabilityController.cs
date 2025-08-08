@@ -1,11 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -13,9 +15,13 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
-        public IsolateViabilityController(IIsolateViabilityService isolateViabilityService, IMapper mapper)
+        private readonly ILookupService _lookupService;
+        public IsolateViabilityController(IIsolateViabilityService isolateViabilityService,
+            ILookupService lookupService,
+            IMapper mapper)
         {
             _isolateViabilityService = isolateViabilityService;
+            _lookupService = lookupService;
             _mapper = mapper;
         }
 
@@ -40,6 +46,65 @@ namespace Apha.VIR.Web.Controllers
             return View("ViabilityHistory", viewModel);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(string AVNumber, Guid Isolate, Guid IsolateViabilityId)
+        {
+            if (string.IsNullOrWhiteSpace(AVNumber) || Isolate == Guid.Empty || !ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
+            }
+
+            var result = await _isolateViabilityService.
+                GetViabilityHistoryAsync(AVNumber, Isolate);
+            
+            //Todo check is no vaibility list
+            var viability = _mapper.Map<IEnumerable<IsolateViabilityModel>>
+                (result.Where(x=>x.IsolateViabilityId == IsolateViabilityId));
+
+            var vaibilities = await _lookupService.GetAllViabilityAsync();
+            var staffs = await _lookupService.GetAllStaffAsync();
+
+            var viewModel = new IsolateViabilityViewModel
+            {
+                // Nomenclature = viability.FirstOrDefault()?.Nomenclature!,
+                IsolateViability = _mapper.Map<IsolateViabilityModel>(viability.FirstOrDefault()),
+                ViabilityList = vaibilities.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList(),
+                CheckedByList = staffs.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList(),
+
+            };
+            return View("Edit", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(IsolateViabilityViewModel IsolateViability)
+        {
+            //if (string.IsNullOrWhiteSpace(AVNumber) || Isolate == Guid.Empty || !ModelState.IsValid)
+            //{
+            //    ModelState.AddModelError("", "Invalid parameters.");
+            //    return BadRequest(ModelState);
+            //}
+
+            //var result = await _isolateViabilityService.
+            //    GetViabilityHistoryAsync(AVNumber, Isolate);
+
+            ////Todo check is no vaibility list
+            //var viability = _mapper.Map<IEnumerable<IsolateViabilityModel>>
+            //    (result.Where(x => x.IsolateViabilityId == IsolateViabilityId));
+
+            var vaibilities = await _lookupService.GetAllViabilityAsync();
+            var staffs = await _lookupService.GetAllStaffAsync();
+
+            var viewModel = new IsolateViabilityViewModel
+            {
+                // Nomenclature = viability.FirstOrDefault()?.Nomenclature!,
+               // IsolateViability = _mapper.Map<IsolateViabilityModel>(viability.FirstOrDefault()),
+                ViabilityList = vaibilities.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList(),
+                CheckedByList = staffs.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList(),
+
+            };
+            return View("Edit", viewModel);
+        }
         [HttpPost]
         public async Task<IActionResult> Delete(Guid isolateViabilityId, string lastModified,string avNUmber, Guid isolateId)
         {
