@@ -105,7 +105,7 @@ namespace Apha.VIR.Web.Models
             }
             return results;
         }
-        private static bool IsNullOrEmptyGuid(Guid? guid)
+        public static bool IsNullOrEmptyGuid(Guid? guid)
         {
             return !guid.HasValue || guid.Value == Guid.Empty;
         }

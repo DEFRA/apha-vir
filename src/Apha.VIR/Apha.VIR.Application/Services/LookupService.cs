@@ -55,7 +55,7 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllVirusTypesAsync());
         }
 
-        public async Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(string? virusFamily)
+        public async Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(Guid? virusFamily)
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllVirusTypesByParentAsync(virusFamily));
         }
@@ -70,7 +70,7 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsAsync());
         }
 
-        public async Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(string? hostSpecies)
+        public async Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(Guid? hostSpecies)
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsByParentAsync(hostSpecies));
         }

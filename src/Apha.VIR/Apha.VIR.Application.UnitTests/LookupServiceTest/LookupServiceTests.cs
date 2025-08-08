@@ -246,7 +246,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllVirusTypesByParentAsync_WithNullVirusFamily_ReturnsExpectedResult()
         {
             // Arrange
-            string? virusFamily = null;
+            Guid? virusFamily = null;
             var repositoryResult = new List<LookupItem>();
             var expectedResult = new List<LookupItemDTO>();
 
@@ -266,7 +266,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllVirusTypesByParentAsync_WithEmptyVirusFamily_ReturnsExpectedResult()
         {
             // Arrange
-            var virusFamily = string.Empty;
+            Guid? virusFamily = null;
             var repositoryResult = new List<LookupItem>();
             var expectedResult = new List<LookupItemDTO>();
 
@@ -286,7 +286,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllVirusTypesByParentAsync_WhenRepositoryReturnsEmptyList_ReturnsEmptyList()
         {            
             // Arrange
-            var virusFamily = "TestFamily";
+            Guid virusFamily = Guid.NewGuid();
             var emptyList = new List<LookupItem>();
             var emptyDTOList = new List<LookupItemDTO>();
 
@@ -306,7 +306,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllVirusTypesByParentAsync_WhenRepositoryThrowsException_ThrowsException()
         {
             // Arrange
-            var virusFamily = "TestFamily";
+            Guid virusFamily = Guid.NewGuid();
             var expectedException = new Exception("Test exception");
 
             _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Throws(expectedException);
@@ -442,7 +442,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllHostBreedsByParentAsync_ValidHostSpecies_ReturnsLookupItemDTOs()
         {
             // Arrange
-            var hostSpecies = "Dog";
+            Guid hostSpecies = Guid.NewGuid();
             var lookupItems = new List<LookupItem> { new LookupItem { Id = Guid.NewGuid(), Name = "Labrador" } };
             var lookupItemDTOs = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Labrador" } };
 
@@ -462,7 +462,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllHostBreedsByParentAsync_NullHostSpecies_ReturnsLookupItemDTOs()
         {
             // Arrange
-            string? hostSpecies = null;
+            Guid? hostSpecies = null;
             var lookupItems = new List<LookupItem> { new LookupItem { Id = Guid.NewGuid(), Name = "All Breeds" } };
             var lookupItemDTOs = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "All Breeds" } };
 
@@ -482,7 +482,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllHostBreedsByParentAsync_EmptyList_ReturnsEmptyList()
         {
             // Arrange
-            var hostSpecies = "Cat";
+            Guid hostSpecies = Guid.NewGuid();
             var emptyList = new List<LookupItem>();
             var emptyDTOList = new List<LookupItemDTO>();
 
@@ -502,7 +502,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllHostBreedsByParentAsync_RepositoryThrowsException_ThrowsException()
         {
             // Arrange
-            var hostSpecies = "Bird";
+            Guid hostSpecies = Guid.NewGuid();
             var expectedException = new Exception("Repository error");
 
             _mockLookupRepository.GetAllHostBreedsByParentAsync(hostSpecies).Throws(expectedException);

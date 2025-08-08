@@ -23,7 +23,10 @@ namespace Apha.VIR.Web.Controllers
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
 
-        public SearchRepositoryController(ILookupService lookupService, IVirusCharacteristicService virusCharacteristicService, IIsolateSearchService isolateSearchService, IMapper mapper)
+        public SearchRepositoryController(ILookupService lookupService, 
+            IVirusCharacteristicService virusCharacteristicService, 
+            IIsolateSearchService isolateSearchService, 
+            IMapper mapper)
         {
             _lookupService = lookupService;
             _virusCharacteristicService = virusCharacteristicService;
@@ -39,8 +42,8 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> Search(SearchCriteria criteria, bool IsNewSearch = false)
         {
-            SearchRepositoryViewModel searchModel = new SearchRepositoryViewModel();
-            QueryParameters<SearchCriteriaDTO> criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>();
+            SearchRepositoryViewModel searchModel = new();
+            QueryParameters<SearchCriteriaDTO> criteriaPaginationDto;
             if (IsNewSearch)
             {
                 criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
@@ -54,9 +57,7 @@ namespace Apha.VIR.Web.Controllers
                         if (validation.ErrorMessage != null)
                             ModelState.AddModelError(menberName, validation.ErrorMessage);
                     }
-                }
-
-                searchModel = await LoadIsolateSearchFilterControlsData(criteria);
+                }                
 
                 if (!ModelState.IsValid)
                 {
@@ -71,7 +72,7 @@ namespace Apha.VIR.Web.Controllers
 
                 criteria = NormalizeCreatedAndReceivedDateRanges(criteria);
 
-                searchModel = UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);
+                UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);
 
                 criteria.Pagination = new PaginationModel();
                 criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>
@@ -90,10 +91,9 @@ namespace Apha.VIR.Web.Controllers
                 criteria.Pagination = new PaginationModel {
                     PageNumber = criteriaPaginationDto.Page,
                     PageSize = criteriaPaginationDto.PageSize
-                };
-                searchModel = _mapper.Map<SearchRepositoryViewModel>(await LoadIsolateSearchFilterControlsData(criteria));                
+                };                      
             }
-
+            searchModel = await LoadIsolateSearchFilterControlsData(criteria);
             var searchResults = await _isolateSearchService.PerformSearchAsync(criteriaPaginationDto);
             searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
             {
@@ -107,48 +107,30 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetVirusTypesByVirusFamily(string? virusFamilyId)
+        public async Task<JsonResult> GetVirusTypesByVirusFamily(Guid? virusFamilyId)
         {
-            if (!String.IsNullOrEmpty(virusFamilyId))
-            {
-                var virusTypesDto = await _lookupService.GetAllVirusTypesByParentAsync(virusFamilyId);
-                return Json(virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }).ToList());
-            }
-            else
-            {
-                var virusTypesDto = await _lookupService.GetAllVirusTypesAsync();
-                return Json(virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }).ToList());
-            }
+            if (!ModelState.IsValid)
+                return Json(new List<SelectListItem>());
+
+            return Json(await GetVirusTypesDropdownList(virusFamilyId));
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetHostBreedsByGroup(string? hostSpicyId)
+        public async Task<JsonResult> GetHostBreedsByGroup(Guid? hostSpicyId)
         {
-            if (!String.IsNullOrEmpty(hostSpicyId))
-            {
-                var hostBreedDto = await _lookupService.GetAllHostBreedsByParentAsync(hostSpicyId);
-                return Json(hostBreedDto.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList());
-            }
-            else
-            {
-                var hostBreedDto = await _lookupService.GetAllHostBreedsAsync();
-                return Json(hostBreedDto.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList());
-            }
+            if (!ModelState.IsValid)
+                return Json(new List<SelectListItem>());
+
+            return Json(await GetHostBreedsDropdownList(hostSpicyId));
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetVirusCharacteristicsByVirusType(string? virusTypeId)
+        public async Task<JsonResult> GetVirusCharacteristicsByVirusType(Guid? virusTypeId)
         {
-            if (!String.IsNullOrEmpty(virusTypeId))
-            {
-                var virusCharacteristicDto = await _virusCharacteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(virusTypeId, false);
-                return Json(virusCharacteristicDto.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString() }).ToList());
-            }
-            else
-            {
-                var virusCharacteristicDto = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
-                return Json(virusCharacteristicDto.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString() }).ToList());
-            }
+            if (!ModelState.IsValid)
+                return Json(new List<SelectListItem>());
+
+            return Json(await GetVirusCharacteristicsDropdownList(virusTypeId));
         }
 
         [HttpGet]
@@ -264,12 +246,13 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        private static List<int> GenerateYearsList()
+        private static List<SelectListItem> GenerateYearsList()
         {
             const int seedYear = 1850;
             int currentYear = DateTime.Now.Year;
 
-            return Enumerable.Range(seedYear, currentYear - seedYear + 1).Reverse().ToList();
+            var yearsDto = Enumerable.Range(seedYear, currentYear - seedYear + 1).Reverse().ToList();
+            return yearsDto.Select(y => new SelectListItem { Value = y.ToString(), Text = y.ToString() }).ToList();
         }
 
         private static string? NormalizeAVNumber(string? aVNumber)
@@ -314,7 +297,7 @@ namespace Apha.VIR.Web.Controllers
             return criteria;
         }
 
-        private static SearchRepositoryViewModel UpdateModelStateValuesAndSearchModel(SearchRepositoryViewModel searchModel, SearchCriteria criteria, ModelStateDictionary modelState)
+        private static void UpdateModelStateValuesAndSearchModel(SearchRepositoryViewModel searchModel, SearchCriteria criteria, ModelStateDictionary modelState)
         {
             modelState.Remove(nameof(criteria.AVNumber));
             modelState.Remove(nameof(criteria.CreatedFromDate));
@@ -325,35 +308,32 @@ namespace Apha.VIR.Web.Controllers
             searchModel.CreatedFromDate = criteria.CreatedFromDate;
             searchModel.CreatedToDate = criteria.CreatedToDate;
             searchModel.ReceivedFromDate = criteria.ReceivedFromDate;
-            searchModel.ReceivedToDate = criteria.ReceivedToDate;
-            return searchModel;
+            searchModel.ReceivedToDate = criteria.ReceivedToDate;            
         }
 
         private async Task<SearchRepositoryViewModel> LoadIsolateSearchFilterControlsData(SearchCriteria? criteria)
         {
-            SearchRepositoryViewModel searchViewModel = new SearchRepositoryViewModel();
-            var virusFamilyDto = await _lookupService.GetAllVirusFamiliesAsync();
-            var virusTypesDto = await _lookupService.GetAllVirusTypesAsync();
-            var hostSpecyDto = await _lookupService.GetAllHostSpeciesAsync();
-            var hostBreedDto = await _lookupService.GetAllHostBreedsAsync();
+            SearchRepositoryViewModel searchViewModel = _mapper.Map<SearchRepositoryViewModel>(criteria) ?? new SearchRepositoryViewModel();
+            var virusFamilyDto = await _lookupService.GetAllVirusFamiliesAsync();            
+            var hostSpecyDto = await _lookupService.GetAllHostSpeciesAsync();            
             var countryDto = await _lookupService.GetAllCountriesAsync();
             var hostPurposeDto = await _lookupService.GetAllHostPurposesAsync();
             var sampleTypeDto = await _lookupService.GetAllSampleTypesAsync();
-            var yearsDto = GenerateYearsList();
-            var virusCharacteristicDto = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
+            var characteristicsDto = await GetVirusCharacteristicsDropdownList(criteria?.VirusType);
+            var characteristicSearchList = Enumerable.Range(0, 3).Select(i => new CharacteristicSearchViewModel
+            {
+                CharacteristicList = characteristicsDto
+            }).ToList();
 
             searchViewModel.VirusFamilyList = virusFamilyDto.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
-            searchViewModel.VirusTypeList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }).ToList();
+            searchViewModel.VirusTypeList = await GetVirusTypesDropdownList(criteria?.VirusFamily);
             searchViewModel.HostSpecyList = hostSpecyDto.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name }).ToList();
-            searchViewModel.HostBreedList = hostBreedDto.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
+            searchViewModel.HostBreedList = await GetHostBreedsDropdownList(criteria?.Group);
             searchViewModel.CountryList = countryDto.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
             searchViewModel.HostPurposeList = hostPurposeDto.Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name }).ToList();
             searchViewModel.SampleTypeList = sampleTypeDto.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name }).ToList();
-            searchViewModel.YearsList = yearsDto.Select(y => new SelectListItem { Value = y.ToString(), Text = y.ToString() }).ToList();
-            searchViewModel.CharacteristicSearch = Enumerable.Range(0, 3).Select(i => new CharacteristicSearchViewModel
-            {
-                CharacteristicList = virusCharacteristicDto.Select(c => new CustomSelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString(), DataType = c.DataType.ToString() }).ToList()
-            }).ToList();
+            searchViewModel.YearsList = GenerateYearsList();
+            searchViewModel.CharacteristicSearch = characteristicSearchList;
             if (criteria == null)
             {
                 searchViewModel.IsolateSearchGird = new IsolateSearchGirdViewModel
@@ -361,9 +341,51 @@ namespace Apha.VIR.Web.Controllers
                     IsolateSearchResults = new List<IsolateSearchResult>(),
                     Pagination = new PaginationModel()
                 };
-            }
+            }           
 
             return searchViewModel;
+        }
+
+        private async Task<List<SelectListItem>> GetVirusTypesDropdownList(Guid? virusFamilyId)
+        {
+            if (SearchCriteria.IsNullOrEmptyGuid(virusFamilyId))
+            {
+                var virusTypesDto = await _lookupService.GetAllVirusTypesAsync();
+                return virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }).ToList();
+            }
+            else
+            {               
+                var virusTypesDto = await _lookupService.GetAllVirusTypesByParentAsync(virusFamilyId);
+                return virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }).ToList();
+            }
+        }
+
+        private async Task<List<SelectListItem>> GetHostBreedsDropdownList(Guid? hostSpicyId)
+        {
+            if (SearchCriteria.IsNullOrEmptyGuid(hostSpicyId))
+            {
+                var hostBreedDto = await _lookupService.GetAllHostBreedsAsync();
+                return hostBreedDto.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
+            }
+            else
+            {               
+                var hostBreedDto = await _lookupService.GetAllHostBreedsByParentAsync(hostSpicyId);
+                return hostBreedDto.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
+            }
+        }
+
+        private async Task<List<CustomSelectListItem>> GetVirusCharacteristicsDropdownList(Guid? virusTypeId)
+        {
+            if (SearchCriteria.IsNullOrEmptyGuid(virusTypeId))
+            {
+                var virusCharacteristicDto = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
+                return virusCharacteristicDto.Select(c => new CustomSelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString(), DataType = c.DataType.ToString() }).ToList();
+            }
+            else
+            {               
+                var virusCharacteristicDto = await _virusCharacteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(virusTypeId, false);
+                return virusCharacteristicDto.Select(c => new CustomSelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString(), DataType = c.DataType.ToString() }).ToList();
+            }
         }
 
         private QueryParameters<SearchCriteriaDTO> RetriveThePreviousSearchFilter()

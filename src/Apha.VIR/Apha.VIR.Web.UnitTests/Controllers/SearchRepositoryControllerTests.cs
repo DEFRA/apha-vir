@@ -199,14 +199,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Assert.Equal(virusTypes[1].Id.ToString(), selectList[1].Value);
             Assert.Equal(virusTypes[1].Name, selectList[1].Text);
             await _mockLookupService.Received(1).GetAllVirusTypesAsync();
-            await _mockLookupService.DidNotReceive().GetAllVirusTypesByParentAsync(Arg.Any<string>());
+            await _mockLookupService.DidNotReceive().GetAllVirusTypesByParentAsync(Arg.Any<Guid>());
         }
 
         [Fact]
         public async Task GetVirusTypesByVirusFamily_ValidVirusFamilyId_ReturnsFilteredVirusTypes()
         {
             // Arrange
-            var virusFamilyId = "family1";
+            Guid virusFamilyId = Guid.NewGuid();
             var virusTypes = new List<LookupItemDTO>
             {
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" }
@@ -230,7 +230,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         public async Task GetHostBreedsByGroup_WithValidHostSpicyId_ReturnsCorrectJsonResult()
         {
             // Arrange
-            var hostSpicyId = "123";
+            Guid hostSpicyId = Guid.NewGuid();
             var hostBreeds = new List<LookupItemDTO>
             {
             new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed1" },
@@ -290,7 +290,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             _mockLookupService.GetAllHostBreedsAsync().Returns(allHostBreeds);
 
             // Act
-            var result = await _controller.GetHostBreedsByGroup(string.Empty);
+            var result = await _controller.GetHostBreedsByGroup(null);
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
@@ -306,7 +306,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         public async Task GetHostBreedsByGroup_WithValidHostSpicyId_CallsCorrectMethod()
         {
             // Arrange
-            var hostSpicyId = "123";
+            Guid hostSpicyId = Guid.NewGuid();
             _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDTO>());
 
             // Act
@@ -328,14 +328,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers
 
             // Assert
             await _mockLookupService.Received(1).GetAllHostBreedsAsync();
-            await _mockLookupService.DidNotReceive().GetAllHostBreedsByParentAsync(Arg.Any<string>());
+            await _mockLookupService.DidNotReceive().GetAllHostBreedsByParentAsync(Arg.Any<Guid>());
         }
 
         [Fact]
         public async Task GetHostBreedsByGroup_WithEmptyResult_ReturnsEmptyList()
         {
             // Arrange
-            var hostSpicyId = "123";
+            Guid hostSpicyId = Guid.NewGuid();
             _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDTO>());
 
             // Act
@@ -351,7 +351,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         public async Task GetVirusCharacteristicsByVirusType_ValidVirusTypeId_ReturnsCorrectJsonResult()
         {
             // Arrange
-            var virusTypeId = "123";
+            Guid virusTypeId = Guid.NewGuid();
             var expectedCharacteristics = new List<VirusCharacteristicDTO>
             {
                 new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1" },
@@ -381,7 +381,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         public async Task GetVirusCharacteristicsByVirusType_NullVirusTypeId_ReturnsAllCharacteristics()
         {
             // Arrange
-            string? virusTypeId = null;
+            Guid? virusTypeId = null;
             var expectedCharacteristics = new List<VirusCharacteristicDTO>
             {
                 new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1" },
@@ -412,7 +412,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         public async Task GetVirusCharacteristicsByVirusType_EmptyVirusTypeId_ReturnsAllCharacteristics()
         {
             // Arrange
-            string virusTypeId = string.Empty;
+            Guid? virusTypeId = null;
             var expectedCharacteristics = new List<VirusCharacteristicDTO>
             {
                 new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1" },

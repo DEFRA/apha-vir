@@ -157,7 +157,7 @@ namespace Apha.VIR.DataAccess.Repositories
                    .Where(vt => vt.Active).ToList();
         }
 
-        public async Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(string? virusFamily)
+        public async Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(Guid? virusFamily)
         {
             return await GetLookupItemsByParentAsync("VirusType", virusFamily);
         }
@@ -176,12 +176,12 @@ namespace Apha.VIR.DataAccess.Repositories
              .Where(vf => vf.Active).ToList();
         }
 
-        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsByParentAsync(string? hostSpecies)
+        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsByParentAsync(Guid? hostSpecies)
         {
             return await GetLookupItemsByParentAsync("HostBreed", hostSpecies);
         }
 
-        private async Task<IEnumerable<LookupItem>> GetLookupItemsByParentAsync(string Lookup, string? Parent)
+        private async Task<IEnumerable<LookupItem>> GetLookupItemsByParentAsync(string Lookup, Guid? Parent)
         {
             var lookupItemList = new List<LookupItem>();
             string commandName = string.Empty;
