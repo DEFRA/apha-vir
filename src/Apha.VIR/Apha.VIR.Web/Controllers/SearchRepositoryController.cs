@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Security.Cryptography.Pkcs;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
@@ -19,14 +20,14 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IIsolateSearchService _isolateSearchService;
-        private readonly ILookupService _lookupService;        
+        private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
 
         public SearchRepositoryController(ILookupService lookupService, IVirusCharacteristicService virusCharacteristicService, IIsolateSearchService isolateSearchService, IMapper mapper)
         {
             _lookupService = lookupService;
             _virusCharacteristicService = virusCharacteristicService;
-            _isolateSearchService = isolateSearchService;            
+            _isolateSearchService = isolateSearchService;
             _mapper = mapper;
         }
 
@@ -35,55 +36,70 @@ namespace Apha.VIR.Web.Controllers
             var searchModel = await LoadIsolateSearchFilterControlsData(null);
             return View("IsolateSearch", searchModel);
         }
-        
-        public async Task<IActionResult> Search(SearchCriteria criteria)
+
+        public async Task<IActionResult> Search(SearchCriteria criteria, bool IsNewSearch = false)
         {
-            criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
-
-            var context = new ValidationContext(criteria);
-            var validationResult = criteria.Validate(context);
-            foreach (var validation in validationResult)
+            SearchRepositoryViewModel searchModel = new SearchRepositoryViewModel();
+            QueryParameters<SearchCriteriaDTO> criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>();
+            if (IsNewSearch)
             {
-                foreach (var menberName in validation.MemberNames.Any() ? validation.MemberNames : new[] { "" })
+                criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
+
+                var context = new ValidationContext(criteria);
+                var validationResult = criteria.Validate(context);
+                foreach (var validation in validationResult)
                 {
-                    if (validation.ErrorMessage != null)
-                        ModelState.AddModelError(menberName, validation.ErrorMessage);
+                    foreach (var menberName in validation.MemberNames.Any() ? validation.MemberNames : new[] { "" })
+                    {
+                        if (validation.ErrorMessage != null)
+                            ModelState.AddModelError(menberName, validation.ErrorMessage);
+                    }
                 }
-            }
 
-            var searchModel = await LoadIsolateSearchFilterControlsData(criteria);
+                searchModel = await LoadIsolateSearchFilterControlsData(criteria);
 
-            if (!ModelState.IsValid)
-            {
-                TempData.Remove("SearchCriteria");
-                searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
+                if (!ModelState.IsValid)
                 {
-                    IsolateSearchResults = new List<IsolateSearchResult>(),
-                    Pagination = new PaginationModel()
+                    TempData.Remove("SearchCriteria");
+                    searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
+                    {
+                        IsolateSearchResults = new List<IsolateSearchResult>(),
+                        Pagination = new PaginationModel()
+                    };
+                    return View("IsolateSearch", searchModel);
+                }
+
+                criteria = NormalizeCreatedAndReceivedDateRanges(criteria);
+
+                searchModel = UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);
+
+                criteria.Pagination = new PaginationModel();
+                criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>
+                {
+                    Filter = _mapper.Map<SearchCriteriaDTO>(criteria),
+                    SortBy = criteria.Pagination.SortColumn,
+                    Descending = criteria.Pagination.SortDirection,
+                    Page = criteria.Pagination.PageNumber,
+                    PageSize = criteria.Pagination.PageSize,
                 };
-                return View("IsolateSearch", searchModel);
             }
-
-            criteria = NormalizeCreatedAndReceivedDateRanges(criteria);
-
-            searchModel = UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);           
-
-            criteria.Pagination = new PaginationModel();
-            var criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>
-            {
-                Filter = _mapper.Map<SearchCriteriaDTO>(criteria),
-                SortBy = criteria.Pagination.SortColumn,
-                Descending = criteria.Pagination.SortDirection,
-                Page = criteria.Pagination.PageNumber,
-                PageSize = criteria.Pagination.PageSize,
-            };
+            else
+            {                
+                criteriaPaginationDto = RetriveThePreviousSearchFilter();
+                criteria = _mapper.Map<SearchCriteria>(criteriaPaginationDto.Filter);
+                criteria.Pagination = new PaginationModel {
+                    PageNumber = criteriaPaginationDto.Page,
+                    PageSize = criteriaPaginationDto.PageSize
+                };
+                searchModel = _mapper.Map<SearchRepositoryViewModel>(await LoadIsolateSearchFilterControlsData(criteria));                
+            }
 
             var searchResults = await _isolateSearchService.PerformSearchAsync(criteriaPaginationDto);
             searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
             {
                 IsolateSearchResults = _mapper.Map<List<IsolateSearchResult>>(searchResults.data)
             };
-            criteria.Pagination.TotalCount = searchResults.TotalCount;
+            criteria!.Pagination!.TotalCount = searchResults.TotalCount;
             searchModel.IsolateSearchGird.Pagination = criteria.Pagination;
 
             TempData["SearchCriteria"] = JsonConvert.SerializeObject(criteriaPaginationDto);
@@ -140,7 +156,8 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new {
+                return Json(new
+                {
                     Comparators = new SelectListItem(),
                     ListValues = new SelectListItem()
                 });
@@ -194,7 +211,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public IActionResult BindGirdPagination(PaginationModel pagination)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid pagination parameter");
             }
@@ -337,7 +354,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 CharacteristicList = virusCharacteristicDto.Select(c => new CustomSelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString(), DataType = c.DataType.ToString() }).ToList()
             }).ToList();
-            if(criteria == null)
+            if (criteria == null)
             {
                 searchViewModel.IsolateSearchGird = new IsolateSearchGirdViewModel
                 {
@@ -345,8 +362,21 @@ namespace Apha.VIR.Web.Controllers
                     Pagination = new PaginationModel()
                 };
             }
-            
+
             return searchViewModel;
+        }
+
+        private QueryParameters<SearchCriteriaDTO> RetriveThePreviousSearchFilter()
+        {
+            QueryParameters<SearchCriteriaDTO> previousSearch = new QueryParameters<SearchCriteriaDTO>();
+            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            if (criteriaString != null)
+            {
+                previousSearch = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString)
+                    ?? new QueryParameters<SearchCriteriaDTO>();
+                return previousSearch;
+            }
+            return previousSearch;
         }
     }
 }

@@ -247,7 +247,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         {
             // Arrange
             string? virusFamily = null;
-            var repositoryResult = new List<LookupItemByParent>();
+            var repositoryResult = new List<LookupItem>();
             var expectedResult = new List<LookupItemDTO>();
 
             _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(repositoryResult);            
@@ -267,7 +267,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         {
             // Arrange
             var virusFamily = string.Empty;
-            var repositoryResult = new List<LookupItemByParent>();
+            var repositoryResult = new List<LookupItem>();
             var expectedResult = new List<LookupItemDTO>();
 
             _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(repositoryResult);            
@@ -287,7 +287,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         {            
             // Arrange
             var virusFamily = "TestFamily";
-            var emptyList = new List<LookupItemByParent>();
+            var emptyList = new List<LookupItem>();
             var emptyDTOList = new List<LookupItemDTO>();
 
             _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(emptyList);
@@ -443,7 +443,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         {
             // Arrange
             var hostSpecies = "Dog";
-            var lookupItems = new List<LookupItemByParent> { new LookupItemByParent { Id = Guid.NewGuid(), Name = "Labrador" } };
+            var lookupItems = new List<LookupItem> { new LookupItem { Id = Guid.NewGuid(), Name = "Labrador" } };
             var lookupItemDTOs = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Labrador" } };
 
             _mockLookupRepository.GetAllHostBreedsByParentAsync(hostSpecies).Returns(lookupItems);
@@ -463,7 +463,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         {
             // Arrange
             string? hostSpecies = null;
-            var lookupItems = new List<LookupItemByParent> { new LookupItemByParent { Id = Guid.NewGuid(), Name = "All Breeds" } };
+            var lookupItems = new List<LookupItem> { new LookupItem { Id = Guid.NewGuid(), Name = "All Breeds" } };
             var lookupItemDTOs = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "All Breeds" } };
 
             _mockLookupRepository.GetAllHostBreedsByParentAsync(hostSpecies).Returns(lookupItems);
@@ -483,7 +483,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         {
             // Arrange
             var hostSpecies = "Cat";
-            var emptyList = new List<LookupItemByParent>();
+            var emptyList = new List<LookupItem>();
             var emptyDTOList = new List<LookupItemDTO>();
 
             _mockLookupRepository.GetAllHostBreedsByParentAsync(hostSpecies).Returns(emptyList);

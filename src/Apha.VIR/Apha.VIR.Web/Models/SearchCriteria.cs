@@ -59,7 +59,7 @@ namespace Apha.VIR.Web.Models
                 (IsNullOrEmptyGuid(CountryOfOrigin)) &&
                 (IsNullOrEmptyGuid(HostPurpose)) &&
                 (IsNullOrEmptyGuid(SampleType)) &&
-                YearOfIsolation == 0 &&
+                (YearOfIsolation == 0 || YearOfIsolation == null) &&
                 !ReceivedFromDate.HasValue &&
                 !ReceivedToDate.HasValue &&
                 !CreatedFromDate.HasValue &&
