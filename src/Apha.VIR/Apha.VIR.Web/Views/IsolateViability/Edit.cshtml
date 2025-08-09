@@ -27,7 +27,7 @@
             <td>Viability</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
-                <select asp-for="@Model.IsolateViability.Viable" asp-items="Model.ViabilityList" tabindex="2" class="select-dropdown">
+                <select asp-for="@Model.IsolateViability.Viable" asp-items="Model.ViabilityList" class="select-dropdown">
                     <option value=""></option>
                 </select>
             </td>
@@ -36,7 +36,7 @@
             <td>Checked By</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
-                <select asp-for="@Model.IsolateViability.CheckedById" asp-items="Model.CheckedByList" tabindex="2" class="select-dropdown">
+                <select asp-for="@Model.IsolateViability.CheckedById" asp-items="Model.CheckedByList" class="select-dropdown">
                     <option value=""></option>
                 </select>
             </td>
@@ -45,16 +45,15 @@
             <td>Date Checked;*</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
-                <input type="date" asp-for="@Model.IsolateViability.DateChecked" tabindex="14" />
+                <input type="date" asp-for="@Model.IsolateViability.DateChecked" />
     
             </td>
         </tr>
         <tr>
             <td colspan="3" style="text-align: right;">
-               @*  <a asp-action="Edit" asp-controller="IsolateViability" class="btn btn-secondary">Save</a> *@
-                <button type="submit" class="btn btn-secondary">Save</button> 
+                <button type="submit" class="btn-as-link">Save</button>
                 <img src="~/images/spacer.gif" width="10" height="5" alt="" />
-                <a asp-action="Index" asp-controller="IsolateDispatchHistory" class="btn btn-secondary">Cancel</a>
+                <a asp-action="History" asp-controller="IsolateViability" class="btn btn-secondary">Cancel</a>
             </td>
         </tr>
     </table>
