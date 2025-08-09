@@ -83,7 +83,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Invalid parameters.");
+                ModelState.AddModelError("ModelError", "Invalid parameters.");
                 return BadRequest(ModelState);
             }
 

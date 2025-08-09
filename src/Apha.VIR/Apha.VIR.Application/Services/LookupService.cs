@@ -99,9 +99,9 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllStaffAsync());
         }
 
-        public async Task<IEnumerable<LookupItem>> GetAllViabilityAsync()
+        public async Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync()
         {
-            return _mapper.Map<IEnumerable<LookupItem>>(await _lookupRepository.GetAllViabilityAsync());
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllViabilityAsync());
         }
     }
 }
