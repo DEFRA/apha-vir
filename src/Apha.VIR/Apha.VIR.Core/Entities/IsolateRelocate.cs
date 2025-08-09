@@ -8,4 +8,4 @@ public class IsolateRelocate
     public string? Well { get; set; }
     public byte[] LastModified { get; set; } = null!;
     public string UserID { get; set; } = string.Empty;
- }
+}

@@ -18,7 +18,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
     {
         private readonly IVirusCharacteristicService _mockVirusCharacteristicService;
         private readonly IIsolateSearchService _mockIsolateSearchService;
-        private readonly ILookupService _mockLookupService;        
+        private readonly ILookupService _mockLookupService;
         private readonly IMapper _mockMapper;
         private readonly SearchRepositoryController _controller;
         private readonly ITempDataDictionary _tempData;
@@ -39,7 +39,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         {
             _mockVirusCharacteristicService = Substitute.For<IVirusCharacteristicService>();
             _mockIsolateSearchService = Substitute.For<IIsolateSearchService>();
-            _mockLookupService = Substitute.For<ILookupService>();            
+            _mockLookupService = Substitute.For<ILookupService>();
             _mockMapper = Substitute.For<IMapper>();
             _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockMapper);
             _tempData = new TempDataDictionary(new DefaultHttpContext(), Substitute.For<ITempDataProvider>())
@@ -57,7 +57,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             _mockLookupService.GetAllVirusTypesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllHostSpeciesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllHostBreedsAsync().Returns(new List<LookupItemDTO>());
-            
+
             _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllHostPurposesAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllSampleTypesAsync().Returns(new List<LookupItemDTO>());
@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             var model = Assert.IsType<SearchRepositoryViewModel>(result.Model);
             if (model != null && model.IsolateSearchGird != null && model.IsolateSearchGird.IsolateSearchResults != null)
                 Assert.Empty(model.IsolateSearchGird.IsolateSearchResults);
-        }   
+        }
 
         [Fact]
         public async Task Search_WhenTempDataIsNull_ReturnsViewWithEmptyResults()
@@ -224,7 +224,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Assert.Equal(virusTypes[0].Name, selectList[0].Text);
             await _mockLookupService.Received(1).GetAllVirusTypesByParentAsync(virusFamilyId);
             await _mockLookupService.DidNotReceive().GetAllVirusTypesAsync();
-        }        
+        }
 
         [Fact]
         public async Task GetHostBreedsByGroup_WithValidHostSpicyId_ReturnsCorrectJsonResult()
@@ -460,7 +460,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
             Assert.NotNull(jsonResult.Value);
-            var jObject = JObject.FromObject(jsonResult.Value);            
+            var jObject = JObject.FromObject(jsonResult.Value);
             var jComparators = jObject["Comparators"] as JArray;
             var jListValues = jObject["ListValues"] as JArray;
 
@@ -486,14 +486,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             var result = await _controller.GetComparatorsAndListValues(virusCharacteristicId);
 
             // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);   
-           
-            Assert.NotNull(jsonResult.Value); 
-            var jObject = JObject.FromObject(jsonResult.Value);   
-            
+            var jsonResult = Assert.IsType<JsonResult>(result);
+
+            Assert.NotNull(jsonResult.Value);
+            var jObject = JObject.FromObject(jsonResult.Value);
+
             Assert.Equal(0, (jObject["Comparators"] as JArray)?.Count ?? -1);
             Assert.Equal(0, (jObject["ListValues"] as JArray)?.Count ?? -1);
-        }       
+        }
 
         [Fact]
         public async Task BindIsolateGridOnPaginationAndSort_WithValidCriteria_ReturnsPartialView()
@@ -546,7 +546,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
                 PageSize = 10,
                 SortBy = "FreezerName",
                 Descending = true,
-                Filter = new SearchCriteriaDTO { AVNumber = "XWERWE"}
+                Filter = new SearchCriteriaDTO { AVNumber = "XWERWE" }
             };
             var criteriaString = JsonConvert.SerializeObject(criteriaDto);
             _tempData["SearchCriteria"] = criteriaString;
@@ -570,7 +570,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             var viewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateSearchResults", viewResult.ViewName);
             var model = Assert.IsType<IsolateSearchGirdViewModel>(viewResult.Model);
-            Assert.Empty(model.IsolateSearchResults);            
+            Assert.Empty(model.IsolateSearchResults);
         }
 
         [Fact]
@@ -616,7 +616,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Assert.Equal(1, model.Pagination!.PageNumber);
             Assert.Equal(column, model.Pagination.SortColumn);
             Assert.Equal(sortOrder, model.Pagination.SortDirection);
-        }        
+        }
 
         [Fact]
         public void BindGirdPagination_ValidInput_ReturnsViewComponentResult()
@@ -695,7 +695,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileResult.ContentType);
             Assert.Contains("VIR SearchResults", fileResult.FileDownloadName);
             Assert.EndsWith(".xlsx", fileResult.FileDownloadName);
-        }        
+        }
 
         [Fact]
         public async Task ExportToExcel_ValidSearchCriteria_CorrectFileNameAndContentType()
@@ -757,7 +757,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         }
 
         private List<IsolateSearchExportDto> SetupValidSearchCriteriaExportResult()
-        {  
+        {
             return new List<IsolateSearchExportDto>
             {
                 new IsolateSearchExportDto

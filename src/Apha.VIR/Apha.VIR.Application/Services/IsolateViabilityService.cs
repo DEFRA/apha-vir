@@ -35,7 +35,7 @@ namespace Apha.VIR.Application.Services
 
             var matchIsolate = isolationList.Where(x => x.IsolateId == IsolateId).ToList();
 
-            if (matchIsolate.Count == 0 )
+            if (matchIsolate.Count == 0)
             {
                 return Enumerable.Empty<IsolateViabilityInfoDTO>();
             }
@@ -65,15 +65,15 @@ namespace Apha.VIR.Application.Services
 
         public async Task DeleteIsolateViabilityAsync(Guid IsolateId, byte[] lastModified, string userid)
         {
-              await _isolateViabilityRepository.DeleteIsolateViabilityAsync(IsolateId, lastModified, userid);
+            await _isolateViabilityRepository.DeleteIsolateViabilityAsync(IsolateId, lastModified, userid);
         }
 
         public async Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userid)
         {
             var result = _mapper.Map<IsolateViability>(isolateViability);
 
-             await _isolateViabilityRepository.UpdateIsolateViabilityAsync(result, userid);
- 
+            await _isolateViabilityRepository.UpdateIsolateViabilityAsync(result, userid);
+
 
             //var viabilityHistorList = _mapper.Map<IEnumerable<IsolateViabilityInfo>>(result);
         }
@@ -104,8 +104,8 @@ namespace Apha.VIR.Application.Services
                 vh.AVNumber = AVNumber;
             }
         }
-       
-        private void GetCheckedByName(IEnumerable<IsolateViabilityInfo> viabilityHistorList,IEnumerable<LookupItem>? staffs)
+
+        private void GetCheckedByName(IEnumerable<IsolateViabilityInfo> viabilityHistorList, IEnumerable<LookupItem>? staffs)
         {
             foreach (var viability in viabilityHistorList)
             {

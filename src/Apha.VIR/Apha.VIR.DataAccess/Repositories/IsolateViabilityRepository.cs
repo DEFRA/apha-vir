@@ -19,7 +19,7 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
 
     public async Task<IEnumerable<IsolateViability>> GetViabilityHistoryAsync(Guid IsolateId)
     {
-      
+
         var parameters = new[]
         {
             new SqlParameter("@IsolateID", IsolateId),
@@ -31,7 +31,7 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
 
     public async Task DeleteIsolateViabilityAsync(Guid IsolateId, byte[] lastModified, string userid)
     {
-         
+
         var parameters = new[]
         {
                 new SqlParameter("@IsolateViabilityId",IsolateId),

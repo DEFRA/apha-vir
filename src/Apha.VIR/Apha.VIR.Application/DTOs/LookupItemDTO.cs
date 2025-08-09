@@ -7,7 +7,7 @@ public class LookupItemDTO
     public string Name { get; set; } = null!;
 
     public string ParentName { get; set; } = null!;
-    
+
     public string AlternateName { get; set; } = null!;
 
     public bool Active { get; set; }

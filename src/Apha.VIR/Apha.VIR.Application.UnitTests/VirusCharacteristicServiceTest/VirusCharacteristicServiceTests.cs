@@ -25,7 +25,7 @@ namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
         public async Task GetAllVirusCharacteristicsAsync_SuccessfulRetrieval_ReturnsCorrectNumberOfItems()
         {
             var id1 = Guid.NewGuid();
-            var id2 = Guid.NewGuid();   
+            var id2 = Guid.NewGuid();
             // Arrange
             var repositoryResult = new List<VirusCharacteristic>
             {

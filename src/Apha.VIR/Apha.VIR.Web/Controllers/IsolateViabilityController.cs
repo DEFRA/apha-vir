@@ -34,7 +34,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var result = _isolateViabilityService.GetViabilityHistoryAsync(AVNumber, Isolate).Result;
-       
+
             var viabilityHistories = _mapper.Map<IEnumerable<IsolateViabilityModel>>(result);
 
             var viewModel = new IsolateViabilityHistoryViewModel
@@ -57,10 +57,10 @@ namespace Apha.VIR.Web.Controllers
 
             var result = await _isolateViabilityService.
                 GetViabilityHistoryAsync(AVNumber, Isolate);
-            
+
             //Todo check is no vaibility list
             var viability = _mapper.Map<IEnumerable<IsolateViabilityModel>>
-                (result.Where(x=>x.IsolateViabilityId == IsolateViabilityId));
+                (result.Where(x => x.IsolateViabilityId == IsolateViabilityId));
 
             var vaibilities = await _lookupService.GetAllViabilityAsync();
             var staffs = await _lookupService.GetAllStaffAsync();
@@ -85,7 +85,7 @@ namespace Apha.VIR.Web.Controllers
             ModelState.Remove("IsolateViability.CheckedByName");
             ModelState.Remove("IsolateViability.ViableName");
 
-            if ( !ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Invalid parameters.");
                 return BadRequest(ModelState);
@@ -99,7 +99,7 @@ namespace Apha.VIR.Web.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(Guid isolateViabilityId, string lastModified,string avNUmber, Guid isolateId)
+        public async Task<IActionResult> Delete(Guid isolateViabilityId, string lastModified, string avNUmber, Guid isolateId)
         {
             string userid = "TestUser";
 
@@ -121,7 +121,7 @@ namespace Apha.VIR.Web.Controllers
 
             await _isolateViabilityService.DeleteIsolateViabilityAsync(isolateViabilityId, lastModifiedbyte, userid);
 
-            return RedirectToAction(nameof(History), new { AVNumber= avNUmber, Isolate = isolateId });
+            return RedirectToAction(nameof(History), new { AVNumber = avNUmber, Isolate = isolateId });
         }
     }
 }

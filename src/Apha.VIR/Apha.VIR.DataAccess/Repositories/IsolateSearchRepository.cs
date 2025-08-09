@@ -58,7 +58,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
             return query;
         }
-       
+
         private static IQueryable<IsolateSearchResult> ApplyStringFilter(
             IQueryable<IsolateSearchResult> query,
             string filterValue,
@@ -332,7 +332,7 @@ namespace Apha.VIR.DataAccess.Repositories
                 isolateFullDetails.IsolateDetails = GetIsolateDetails(dataSet.Tables[0]);
                 isolateFullDetails.IsolateDispatchDetails = GetDispatchDetails(dataSet.Tables[1], isolateFullDetails.IsolateDetails!.IsolateId);
                 isolateFullDetails.IsolateViabilityDetails = GetViabilityDetails(dataSet.Tables[2], isolateFullDetails.IsolateDetails!.IsolateId);
-                isolateFullDetails.IsolateCharacteristicDetails = GetCharacteristicDetails(dataSet.Tables[3], isolateFullDetails.IsolateDetails!.IsolateId);                
+                isolateFullDetails.IsolateCharacteristicDetails = GetCharacteristicDetails(dataSet.Tables[3], isolateFullDetails.IsolateDetails!.IsolateId);
             }
             return isolateFullDetails;
         }
@@ -341,7 +341,8 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             IsolateInfo? isolateInfo = null;
             var isolateRow = isolateTable.Rows.Cast<DataRow>().FirstOrDefault();
-            if (isolateRow != null) {            
+            if (isolateRow != null)
+            {
                 isolateInfo = new IsolateInfo
                 {
                     AvNumber = isolateRow["AVNumber"].ToString(),
@@ -394,7 +395,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     ReasonForDispatch = dispatchRow["ReasonForDispatch"].ToString(),
                     DispatchedDate = Convert.ToDateTime(dispatchRow["DispatchedDate"]),
                     DispatchedByName = dispatchRow["DispatchedByName"] is DBNull ? "" : dispatchRow["DispatchedByName"].ToString()!,
-                    DispatchIsolateId = isolateId 
+                    DispatchIsolateId = isolateId
                 });
             }
             return dispatchInfos;
@@ -410,7 +411,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     ViabilityStatus = viabilityRow["ViabilityStatus"] is DBNull ? "" : viabilityRow["ViabilityStatus"].ToString()!,
                     DateChecked = Convert.ToDateTime(viabilityRow["DateChecked"]),
                     CheckedByName = viabilityRow["CheckedByName"] is DBNull ? "" : viabilityRow["CheckedByName"].ToString()!,
-                    IsolateViabilityIsolateId = isolateId 
+                    IsolateViabilityIsolateId = isolateId
                 });
             }
             return viabilityInfos;

@@ -26,7 +26,7 @@ namespace Apha.VIR.DataAccess.Repositories
         public async Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
-            if(lookup != null)
+            if (lookup != null)
             {
                 return await _context.Set<LookupItem>()
                    .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
@@ -65,7 +65,7 @@ namespace Apha.VIR.DataAccess.Repositories
                 new SqlParameter  {
                     ParameterName = "@LastModified",
                     SqlDbType = SqlDbType.Timestamp,
-                    Direction = ParameterDirection.Output                   
+                    Direction = ParameterDirection.Output
                 }
             };
 
@@ -113,7 +113,7 @@ namespace Apha.VIR.DataAccess.Repositories
          Justification = "Stored procedure name is validated against a whitelist from the database.")]
         public async Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item)
         {
- 
+
             var allowedProcedures = (await _context.Lookups.ToListAsync())
                                     .Select(l => l.DeleteCommand)
                                     .Where(cmd => !string.IsNullOrWhiteSpace(cmd))
@@ -127,13 +127,13 @@ namespace Apha.VIR.DataAccess.Repositories
 
             if (!allowedProcedures.Contains(lookup.DeleteCommand))
                 throw new SecurityException($"Stored procedure '{lookup.UpdateCommand}' is not allowed.");
-            
+
 
             var sql = $"EXEC [{lookup.DeleteCommand}] @ID, @LastModified OUT";
 
             var parameters = new[]
              {
-                new SqlParameter("@ID", Item.Id),                
+                new SqlParameter("@ID", Item.Id),
                 new SqlParameter  {
                     ParameterName = "@LastModified",
                     SqlDbType = SqlDbType.Timestamp,
@@ -175,7 +175,7 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             return (await _context.Set<LookupItem>()
              .FromSqlRaw($"EXEC spHostBreedGetAll").ToListAsync())
-             .Where(vf => vf.Active).ToList();            
+             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItemByParent>> GetAllHostBreedsByParentAsync(string? hostSpecies)

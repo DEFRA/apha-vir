@@ -13,7 +13,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
     {
         private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
-        private readonly LookupService _mockLookupService;        
+        private readonly LookupService _mockLookupService;
 
         public LookupServiceTests()
         {
@@ -34,7 +34,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
 
             // Act
             var result = await _mockLookupService.GetAllLookupsAsync();
-            
+
             // Assert
             Assert.Equal(expectedDTOs, result);
             await _mockLookupRepository.Received(1).GetAllLookupsAsync();
@@ -114,7 +114,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
             await _mockLookupRepository.Received(1).GetAllLookupEntriesAsync(lookupId);
             _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
             Assert.Equal(expectedDtos, result);
-        }       
+        }
 
         [Fact]
         public async Task GetAllLookupEntriesAsync_ExceptionThrown_PropagatesException()
@@ -211,7 +211,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Virus Type 1" },
                 new LookupItem { Id = Guid.NewGuid(), Name = "Virus Type 2" }
             };
-            
+
             var expectedResult = new List<LookupItemDTO>
             {
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Virus Type 1" },
@@ -240,7 +240,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllVirusTypesAsync());
             await _mockLookupRepository.Received(1).GetAllVirusTypesAsync();
-        }        
+        }
 
         [Fact]
         public async Task GetAllVirusTypesByParentAsync_WithNullVirusFamily_ReturnsExpectedResult()
@@ -250,14 +250,14 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
             var repositoryResult = new List<LookupItemByParent>();
             var expectedResult = new List<LookupItemDTO>();
 
-            _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(repositoryResult);            
+            _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(repositoryResult);
             _mockMapper.Map<IEnumerable<LookupItemDTO>>(expectedResult);
 
             // Act
             var result = await _mockLookupService.GetAllVirusTypesByParentAsync(virusFamily);
 
             // Assert
-            await _mockLookupRepository.Received(1).GetAllVirusTypesByParentAsync(virusFamily);            
+            await _mockLookupRepository.Received(1).GetAllVirusTypesByParentAsync(virusFamily);
             _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(repositoryResult);
             Assert.Equal(expectedResult, result);
         }
@@ -270,21 +270,21 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
             var repositoryResult = new List<LookupItemByParent>();
             var expectedResult = new List<LookupItemDTO>();
 
-            _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(repositoryResult);            
+            _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(repositoryResult);
             _mockMapper.Map<IEnumerable<LookupItemDTO>>(expectedResult);
 
             // Act
             var result = await _mockLookupService.GetAllVirusTypesByParentAsync(virusFamily);
 
             // Assert
-            await _mockLookupRepository.Received(1).GetAllVirusTypesByParentAsync(virusFamily);            
+            await _mockLookupRepository.Received(1).GetAllVirusTypesByParentAsync(virusFamily);
             _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(repositoryResult);
             Assert.Equal(expectedResult, result);
         }
 
         [Fact]
         public async Task GetAllVirusTypesByParentAsync_WhenRepositoryReturnsEmptyList_ReturnsEmptyList()
-        {            
+        {
             // Arrange
             var virusFamily = "TestFamily";
             var emptyList = new List<LookupItemByParent>();
@@ -407,7 +407,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Breed1" },
                 new LookupItem { Id = Guid.NewGuid(), Name = "Breed2" }
             };
-            
+
             var expectedDTOs = new List<LookupItemDTO>
             {
                 new LookupItemDTO { Id = mockHostBreeds[0].Id, Name = mockHostBreeds[0].Name },
@@ -522,7 +522,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Country 1" },
                 new LookupItem { Id = Guid.NewGuid(), Name = "Country 2" }
             };
-            
+
             var expectedDTOs = new List<LookupItemDTO>
             {
                 new LookupItemDTO { Id = countries[0].Id, Name = countries[0].Name },
@@ -530,7 +530,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
             };
 
             _mockLookupRepository.GetAllCountriesAsync().Returns(countries);
-           _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
 
             // Act
             var result = await _mockLookupService.GetAllCountriesAsync();
@@ -561,7 +561,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
         public async Task GetAllCountriesAsync_ShouldThrowException_WhenRepositoryThrowsException()
         {
             // Arrange          
-            _mockLookupRepository.GetAllCountriesAsync().Returns<Task<IEnumerable<LookupItem>>>(_ => throw new Exception("Repository error"));         
+            _mockLookupRepository.GetAllCountriesAsync().Returns<Task<IEnumerable<LookupItem>>>(_ => throw new Exception("Repository error"));
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllCountriesAsync());
@@ -578,7 +578,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Purpose 1" },
                 new LookupItem { Id = Guid.NewGuid(), Name = "Purpose 2" }
             };
-            
+
             var expectedResult = new List<LookupItemDTO>
             {
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Purpose 1" },
@@ -631,7 +631,7 @@ namespace Apha.VIR.Application.UnitTests.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Sample Type 1" },
                 new LookupItem { Id = Guid.NewGuid(), Name = "Sample Type 2" }
             };
-            
+
             var expectedDtos = new List<LookupItemDTO>
             {
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Sample Type 1" },

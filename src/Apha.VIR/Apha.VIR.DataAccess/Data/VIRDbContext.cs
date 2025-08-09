@@ -22,15 +22,15 @@ public class VIRDbContext : DbContext
     public virtual DbSet<VirusCharacteristic> VirusCharacteristics { get; set; }
     public virtual DbSet<VirusTypeCharacteristic> VirusTypeCharacteristics { get; set; }
     public virtual DbSet<Staff> Staffs { get; set; }
-    public virtual DbSet<Workgroup> Workgroups { get; set; }    
+    public virtual DbSet<Workgroup> Workgroups { get; set; }
     public virtual DbSet<IsolateSearchResult> VwIsolates { get; set; }
     public virtual DbSet<IsolateCharacteristicsForSearch> VwCharacteristicsForSearches { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-          modelBuilder.ApplyConfigurationsFromAssembly(typeof(VIRDbContext).Assembly);
-          modelBuilder.Entity<IsolateInfo>().HasNoKey();
-          modelBuilder.Entity<IsolateDispatchInfo>().HasNoKey();
-          modelBuilder.Entity<IsolateDispatch>().HasNoKey();
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(VIRDbContext).Assembly);
+        modelBuilder.Entity<IsolateInfo>().HasNoKey();
+        modelBuilder.Entity<IsolateDispatchInfo>().HasNoKey();
+        modelBuilder.Entity<IsolateDispatch>().HasNoKey();
     }
 }

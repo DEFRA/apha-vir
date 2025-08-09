@@ -110,13 +110,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             var serviceResult = new List<IsolateViabilityInfoDTO> { new IsolateViabilityInfoDTO { Nomenclature = "Test" } };
 
             _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(Task.FromResult<IEnumerable<IsolateViabilityInfoDTO>>(serviceResult));
-            
+
             _mapper.Map<IEnumerable<IsolateViabilityModel>>(serviceResult).Returns((IEnumerable<IsolateViabilityModel>)null);
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _controller.History(avNumber, isolate));
         }
-     
+
         [Fact]
         public void History_WhenServiceThrowsException_ReturnsErrorView()
         {

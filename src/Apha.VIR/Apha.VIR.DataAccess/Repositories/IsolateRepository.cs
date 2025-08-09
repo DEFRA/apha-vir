@@ -56,11 +56,12 @@ public class IsolateRepository : IIsolateRepository
     public async Task<IsolateFullDetail> GetIsolateFullDetailsByIdAsync(Guid isolateId)
     {
         IsolateFullDetail isolateFullDetail = new IsolateFullDetail
-        {   IsolateCharacteristicDetails=new(),
-            IsolateDetails=new(),
-            IsolateDispatchDetails=new(),
-            IsolateViabilityDetails=new(),
-        } ;
+        {
+            IsolateCharacteristicDetails = new(),
+            IsolateDetails = new(),
+            IsolateDispatchDetails = new(),
+            IsolateViabilityDetails = new(),
+        };
 
         using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
         {

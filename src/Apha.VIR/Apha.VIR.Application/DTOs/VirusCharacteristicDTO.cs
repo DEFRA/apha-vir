@@ -27,5 +27,5 @@ public class VirusCharacteristicDTO
     public byte[] LastModified { get; set; } = null!;
 
     public string DataType { get; set; } = null!;
- 
+
 }

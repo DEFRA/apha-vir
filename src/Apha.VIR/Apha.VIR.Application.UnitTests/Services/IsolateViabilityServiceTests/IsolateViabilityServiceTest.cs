@@ -9,7 +9,7 @@ using NSubstitute;
 
 namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
 {
-    public class IsolateViabilityServiceTest: AbstractIsolateViabilityServiceTest
+    public class IsolateViabilityServiceTest : AbstractIsolateViabilityServiceTest
     {
         [Fact]
         public async Task GetViabilityHistoryAsync_SuccessfulRetrieval_ReturnsViabilityHistory()

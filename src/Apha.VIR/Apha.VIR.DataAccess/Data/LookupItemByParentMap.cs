@@ -7,7 +7,7 @@ namespace Apha.VIR.DataAccess.Data
     internal class LookupItemByParentMap : IEntityTypeConfiguration<LookupItemByParent>
     {
         public void Configure(EntityTypeBuilder<LookupItemByParent> entity)
-        {        
+        {
             entity.Property(e => e.Name)
                          .HasMaxLength(100)
                          .IsUnicode(false)

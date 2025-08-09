@@ -19,14 +19,14 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IIsolateSearchService _isolateSearchService;
-        private readonly ILookupService _lookupService;        
+        private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
 
         public SearchRepositoryController(ILookupService lookupService, IVirusCharacteristicService virusCharacteristicService, IIsolateSearchService isolateSearchService, IMapper mapper)
         {
             _lookupService = lookupService;
             _virusCharacteristicService = virusCharacteristicService;
-            _isolateSearchService = isolateSearchService;            
+            _isolateSearchService = isolateSearchService;
             _mapper = mapper;
         }
 
@@ -35,7 +35,7 @@ namespace Apha.VIR.Web.Controllers
             var searchModel = await LoadIsolateSearchFilterControlsData(null);
             return View("IsolateSearch", searchModel);
         }
-        
+
         public async Task<IActionResult> Search(SearchCriteria criteria)
         {
             criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
@@ -66,7 +66,7 @@ namespace Apha.VIR.Web.Controllers
 
             criteria = NormalizeCreatedAndReceivedDateRanges(criteria);
 
-            searchModel = UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);           
+            searchModel = UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);
 
             criteria.Pagination = new PaginationModel();
             var criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>
@@ -140,7 +140,8 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new {
+                return Json(new
+                {
                     Comparators = new SelectListItem(),
                     ListValues = new SelectListItem()
                 });
@@ -194,7 +195,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public IActionResult BindGirdPagination(PaginationModel pagination)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid pagination parameter");
             }
@@ -337,7 +338,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 CharacteristicList = virusCharacteristicDto.Select(c => new CustomSelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString(), DataType = c.DataType.ToString() }).ToList()
             }).ToList();
-            if(criteria == null)
+            if (criteria == null)
             {
                 searchViewModel.IsolateSearchGird = new IsolateSearchGirdViewModel
                 {
@@ -345,7 +346,7 @@ namespace Apha.VIR.Web.Controllers
                     Pagination = new PaginationModel()
                 };
             }
-            
+
             return searchViewModel;
         }
     }

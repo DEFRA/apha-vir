@@ -33,7 +33,7 @@ public class SystemInfoMap : IEntityTypeConfiguration<SystemInfo>
 
         entity.Property(e => e.ReleaseNotes).HasColumnType("text");
 
-       
+
     }
 
 }

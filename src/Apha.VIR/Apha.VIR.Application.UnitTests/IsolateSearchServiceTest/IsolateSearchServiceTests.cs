@@ -361,7 +361,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
-            _mockMapper.Map<List<IsolateFullDetailsResultDto>>(Arg.Any<List<IsolateFullDetailsResult>>()).Returns(new List<IsolateFullDetailsResultDto>());           
+            _mockMapper.Map<List<IsolateFullDetailsResultDto>>(Arg.Any<List<IsolateFullDetailsResult>>()).Returns(new List<IsolateFullDetailsResultDto>());
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(new List<IsolateFullDetailsResult>());
 
             // Act
@@ -419,7 +419,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             _mockMapper.Map<List<IsolateFullDetailsResultDto>>(Arg.Any<List<IsolateFullDetailsResult>>()).Returns(isolateFullDetailsDto);
             _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(isolateFullDetails);
-            
+
             _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateSearchExportDto>()).Returns(x => x.Arg<IsolateSearchExportDto>());
 
             // Act
@@ -430,7 +430,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             Assert.Equal("", result[0].Freezer);
             Assert.Equal("", result[0].Tray);
             Assert.Equal("", result[0].Well);
-        }        
+        }
 
         [Fact]
         public async Task GetIsolateSearchExportResultAsync_RepositoryThrowsException_PropagatesException()

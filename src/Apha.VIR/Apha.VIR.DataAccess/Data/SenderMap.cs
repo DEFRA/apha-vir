@@ -19,7 +19,7 @@ public class SenderMap : IEntityTypeConfiguration<Sender>
         entity.Property(e => e.SenderName)
             .HasMaxLength(50)
             .IsUnicode(false)
-            .HasColumnName("Sender"); 
+            .HasColumnName("Sender");
 
         entity.Property(e => e.SenderAddress)
             .HasMaxLength(500)

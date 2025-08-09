@@ -84,9 +84,9 @@ namespace Apha.VIR.Web.Controllers
             {
                 return BadRequest("Invalid Isolate ID.");
             }
-          
+
             var result = await _isolateDispatchService.GetDispatcheConfirmationAsync(Isolate);
-            
+
             var dislist = _mapper.Map<IEnumerable<IsolateDispatchHistory>>(result.IsolateDispatchDetails);
 
             var model = new IsolateDispatchConfirmatioViewModel

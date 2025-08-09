@@ -54,7 +54,7 @@ namespace Apha.VIR.Application.Services
         }
 
         public async Task<PaginatedResult<IsolateSearchResultDTO>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)
-        {     
+        {
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
             return _mapper.Map<PaginatedResult<IsolateSearchResultDTO>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
         }
@@ -65,7 +65,7 @@ namespace Apha.VIR.Application.Services
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
             List<IsolateFullDetailsResultDto> isolateRecords = _mapper.Map<List<IsolateFullDetailsResultDto>>(await _isolateSearchRepository.GetIsolateSearchExportResultAsync(criteriaData));
             foreach (var isolateItem in isolateRecords)
-            {                
+            {
                 IsolateSearchExportDto isolateInfo = _mapper.Map<IsolateSearchExportDto>(isolateItem.IsolateDetails);
                 isolateInfo.ViabilityChecks = string.Join(", ", isolateItem.IsolateViabilityDetails
                     .Select(v => $"{v.ViabilityStatus}: checked by {v.CheckedByName} on {v.DateChecked.ToString("dd/MM/yyyy")}"));
@@ -74,11 +74,11 @@ namespace Apha.VIR.Application.Services
                 isolateSearchExportData.Add(isolateInfo);
 
                 if (criteria.Filter != null && criteria.Filter.FullSearch)// exclude freezer, tray, well values for admin users
-                {                    
+                {
                     isolateInfo.Freezer = "";
                     isolateInfo.Tray = "";
                     isolateInfo.Well = "";
-                }           
+                }
             }
             return isolateSearchExportData;
         }
