@@ -70,14 +70,16 @@ namespace Apha.VIR.Application.Services
 
         public async Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userid)
         {
+            if (isolateViability == null) throw new ArgumentNullException(nameof(isolateViability));
+
+            if (string.IsNullOrWhiteSpace(userid)) throw new ArgumentException("User ID cannot be empty.", nameof(userid));
+
             var result = _mapper.Map<IsolateViability>(isolateViability);
 
             await _isolateViabilityRepository.UpdateIsolateViabilityAsync(result, userid);
-
-
-            //var viabilityHistorList = _mapper.Map<IEnumerable<IsolateViabilityInfo>>(result);
         }
-        private string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
+
+        private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var characteristicNomenclatureList = new StringBuilder();
 
@@ -93,10 +95,9 @@ namespace Apha.VIR.Application.Services
             var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
 
             return characteristicNomenclature;
-
         }
 
-        private void GetNomenclature(IEnumerable<IsolateViabilityInfo> viabilityHistorList, string nomenclature, string AVNumber)
+        private static void GetNomenclature(IEnumerable<IsolateViabilityInfo> viabilityHistorList, string nomenclature, string AVNumber)
         {
             foreach (var vh in viabilityHistorList)
             {
@@ -105,24 +106,24 @@ namespace Apha.VIR.Application.Services
             }
         }
 
-        private void GetCheckedByName(IEnumerable<IsolateViabilityInfo> viabilityHistorList, IEnumerable<LookupItem>? staffs)
+        private static void GetCheckedByName(IEnumerable<IsolateViabilityInfo> viabilityHistorList, IEnumerable<LookupItem>? staffs)
         {
             foreach (var viability in viabilityHistorList)
             {
                 if (viability.CheckedById != Guid.Empty)
                 {
-                    viability.CheckedByName = staffs?.FirstOrDefault(s => s.Id == viability.CheckedById)?.Name;
+                    viability.CheckedByName = staffs?.FirstOrDefault(s => s.Id == viability.CheckedById)?.Name!;
                 }
             }
         }
 
-        private void GetViableName(IEnumerable<IsolateViabilityInfo> viabilityHistorList, IEnumerable<LookupItem>? viabilities)
+        private static void GetViableName(IEnumerable<IsolateViabilityInfo> viabilityHistorList, IEnumerable<LookupItem>? viabilities)
         {
             foreach (var viability in viabilityHistorList)
             {
                 if (viability.Viable != Guid.Empty)
                 {
-                    viability.ViableName = viabilities?.FirstOrDefault(v => v.Id == viability.Viable)?.Name;
+                    viability.ViableName = viabilities?.FirstOrDefault(v => v.Id == viability.Viable)?.Name!;
                 }
             }
         }

@@ -12,7 +12,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
         private readonly ILookupService _lookupService;
-       
+
         public IsolateViabilityController(IIsolateViabilityService isolateViabilityService,
             ILookupService lookupService,
             IMapper mapper)

@@ -3,6 +3,7 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
+using Apha.VIR.DataAccess.Repositories;
 using AutoMapper;
 using Microsoft.Data.SqlClient;
 using NSubstitute;
@@ -155,6 +156,94 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
 
             await _mockIsolateViabilityRepository.Received(1).DeleteIsolateViabilityAsync(isolateId, lastModified, userId);
 
+        }
+
+        [Fact]
+        public async Task UpdateIsolateViabilityAsync_ValidInput_CallsRepository()
+        {
+            // Arrange
+            var dto = new IsolateViabilityInfoDTO
+            {
+                IsolateViabilityId = Guid.NewGuid(),
+                IsolateViabilityIsolateId = Guid.NewGuid(),
+                Viable = Guid.NewGuid(),
+                ViabilityStatus = "Viable",
+                DateChecked = new DateTime(2025, 8, 1),
+                CheckedById = Guid.NewGuid(),
+                LastModified = new byte[] { 1, 2, 3, 4, 5 },
+                CheckedByName = "Dr. Jane Doe",
+                ViableName = "Sample Viable Name",
+                Nomenclature = "ABC-123",
+                AVNumber = "AV-456789"
+            };
+
+            var mappedEntity = new IsolateViability
+            {
+                IsolateViabilityId = Guid.NewGuid(),
+                IsolateViabilityIsolateId = Guid.NewGuid(),
+                Viable = Guid.NewGuid(),
+                DateChecked = new DateTime(2025, 8, 1),
+                CheckedById = Guid.NewGuid(),
+                LastModified = new byte[] { 1, 2, 3, 4, 5 },
+            };
+
+
+            var userId = "user123";
+
+            _mockMapper.Map<IsolateViability>(dto).Returns(mappedEntity);
+
+            // Act
+            await _isolateViabilityService.UpdateIsolateViabilityAsync(dto, userId);
+
+            // Assert
+            await _mockIsolateViabilityRepository.Received(1).UpdateIsolateViabilityAsync(mappedEntity, userId);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task UpdateIsolateViabilityAsync_InvalidUserId_ThrowsArgumentException(string invalidUserId)
+        {
+            // Arrange
+            var dto = new IsolateViabilityInfoDTO();
+            var mappedEntity = new IsolateViability();
+
+            _mockMapper.Map<IsolateViability>(dto).Returns(mappedEntity);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _isolateViabilityService.UpdateIsolateViabilityAsync(dto, invalidUserId));
+        }
+
+        [Fact]
+        public async Task UpdateIsolateViabilityAsync_RepositoryThrows_ExceptionPropagates()
+        {
+            // Arrange
+            var dto = new IsolateViabilityInfoDTO();
+            var mappedEntity = new IsolateViability();
+            var userId = "user123";
+
+            _mockMapper.Map<IsolateViability>(dto).Returns(mappedEntity);
+            _mockIsolateViabilityRepository
+                .When(r => r.UpdateIsolateViabilityAsync(mappedEntity, userId))
+                .Do(_ => throw new Exception("Database error"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() =>
+                _isolateViabilityService.UpdateIsolateViabilityAsync(dto, userId));
+        }
+
+        [Fact]
+        public async Task UpdateIsolateViabilityAsync_MapperThrows_ExceptionPropagates()
+        {
+            // Arrange
+            var dto = new IsolateViabilityInfoDTO();
+            _mockMapper.When(m => m.Map<IsolateViability>(dto))
+                   .Do(_ => throw new InvalidOperationException("Mapping failed"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _isolateViabilityService.UpdateIsolateViabilityAsync(dto, "user123"));
         }
     }
 }
