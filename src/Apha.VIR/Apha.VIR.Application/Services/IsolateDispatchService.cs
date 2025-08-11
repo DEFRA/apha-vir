@@ -5,8 +5,6 @@ using Apha.VIR.Application.Validation;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Application.Services
 {
@@ -39,20 +37,6 @@ namespace Apha.VIR.Application.Services
             _lookupRepository = lookupRepository ?? throw new ArgumentNullException(nameof(lookupRepository));
             _mapper = mapper;
             _isolateViabilityRepository = isolateViabilityRepository;
-        }
-
-        public async Task DeleteDispatchAsync(Guid DispatchId, byte[] LastModified, string User)
-        {
-            if (DispatchId == Guid.Empty)
-                throw new ArgumentException("DispatchId cannot be empty.", nameof(DispatchId));
-
-            if (LastModified == Array.Empty<byte>())
-                throw new ArgumentException("LastModified cannot be empty.", nameof(LastModified));
-
-            if (string.IsNullOrWhiteSpace(User))
-                throw new ArgumentException("User cannot be empty.", nameof(User));
-
-            await _isolateDispatchRepository.DeleteDispatchAsync(DispatchId, LastModified, User);
         }
 
         public async Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId)
@@ -131,6 +115,32 @@ namespace Apha.VIR.Application.Services
 
             return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
         }
+
+        public async Task UpdateDispatchAsync(IsolateDispatchInfoDTO DispatchInfoDto, string User)
+        {
+            if (DispatchInfoDto == null)
+                throw new ArgumentNullException(nameof(DispatchInfoDto), "DispatchInfoDto cannot be null.");
+            if (string.IsNullOrWhiteSpace(User))
+                throw new ArgumentException("User cannot be empty.", nameof(User));
+
+            IsolateDispatchInfo dispatchInfo = _mapper.Map<IsolateDispatchInfo>(DispatchInfoDto);
+            await _isolateDispatchRepository.UpdateDispatchAsync(dispatchInfo, User);
+        }
+
+        public async Task DeleteDispatchAsync(Guid DispatchId, byte[] LastModified, string User)
+        {
+            if (DispatchId == Guid.Empty)
+                throw new ArgumentException("DispatchId cannot be empty.", nameof(DispatchId));
+
+            if (LastModified == Array.Empty<byte>())
+                throw new ArgumentException("LastModified cannot be empty.", nameof(LastModified));
+
+            if (string.IsNullOrWhiteSpace(User))
+                throw new ArgumentException("User cannot be empty.", nameof(User));
+
+            await _isolateDispatchRepository.DeleteDispatchAsync(DispatchId, LastModified, User);
+        }
+
         private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var characteristicNomenclatureList = new StringBuilder();
@@ -217,17 +227,6 @@ namespace Apha.VIR.Application.Services
                 .FirstOrDefault();
 
             return lastViability == null ? null : _mapper.Map<IsolateViabilityDTO>(lastViability);
-        }
-
-        public async Task UpdateDispatchAsync(IsolateDispatchInfoDTO DispatchInfoDto, string User)
-        {
-            if (DispatchInfoDto == null)
-                throw new ArgumentNullException(nameof(DispatchInfoDto), "DispatchInfoDto cannot be null.");
-            if (string.IsNullOrWhiteSpace(User))
-                throw new ArgumentException("User cannot be empty.", nameof(User));
-
-            IsolateDispatchInfo dispatchInfo = _mapper.Map<IsolateDispatchInfo>(DispatchInfoDto);
-            await _isolateDispatchRepository.UpdateDispatchAsync(dispatchInfo, User);
         }
     }
 }

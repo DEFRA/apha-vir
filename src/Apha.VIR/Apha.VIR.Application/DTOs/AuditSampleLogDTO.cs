@@ -18,4 +18,3 @@ public class AuditSampleLogDTO
     public string? HostSpecies { get; set; }
     public string? UpdateType { get; set; }
 }
-

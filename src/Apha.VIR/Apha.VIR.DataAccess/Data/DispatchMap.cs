@@ -34,5 +34,4 @@ public class DispatchMap : IEntityTypeConfiguration<Dispatch>
                     .HasMaxLength(50)
                     .IsUnicode(false);
     }
-
 }

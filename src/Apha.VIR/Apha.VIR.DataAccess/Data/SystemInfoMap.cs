@@ -32,8 +32,5 @@ public class SystemInfoMap : IEntityTypeConfiguration<SystemInfo>
            .HasColumnName("Live");
 
         entity.Property(e => e.ReleaseNotes).HasColumnType("text");
-
-
     }
-
 }

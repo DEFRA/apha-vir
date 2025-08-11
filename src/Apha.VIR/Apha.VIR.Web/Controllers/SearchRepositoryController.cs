@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Security.Cryptography.Pkcs;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
@@ -8,7 +7,6 @@ using Apha.VIR.Web.Models;
 using AutoMapper;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;

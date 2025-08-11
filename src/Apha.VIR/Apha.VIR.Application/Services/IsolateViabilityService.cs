@@ -15,7 +15,6 @@ namespace Apha.VIR.Application.Services
         private readonly ILookupRepository _lookupRepository;
         private readonly IMapper _mapper;
 
-
         public IsolateViabilityService(IIsolateViabilityRepository isolateViabilityRepository,
             IIsolateRepository iIsolateRepository,
             ICharacteristicRepository iCharacteristicRepository,

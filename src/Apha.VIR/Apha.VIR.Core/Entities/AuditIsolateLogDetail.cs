@@ -2,7 +2,6 @@
 
 public class AuditIsolateLogDetail
 {
-
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
     //This prop populate from auth db.

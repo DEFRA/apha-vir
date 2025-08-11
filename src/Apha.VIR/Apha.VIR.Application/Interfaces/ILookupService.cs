@@ -1,5 +1,4 @@
 ﻿using Apha.VIR.Application.DTOs;
-using Apha.VIR.Core.Entities;
 
 namespace Apha.VIR.Application.Interfaces
 {
@@ -21,7 +20,6 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllStaffAsync();
-
         Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync();
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Apha.VIR.DataAccess.Data;
 
-internal class SampleMap : IEntityTypeConfiguration<Sample>
+public class SampleMap : IEntityTypeConfiguration<Sample>
 {
     public void Configure(EntityTypeBuilder<Sample> entity)
     {
