@@ -8,6 +8,6 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? ViabilityList { get; set; }
         public List<SelectListItem>? CheckedByList { get; set; }
 
-        public IsolateViabilityModel IsolateViability { get; set; }
+        public required IsolateViabilityModel IsolateViability { get; set; }
     }
 }

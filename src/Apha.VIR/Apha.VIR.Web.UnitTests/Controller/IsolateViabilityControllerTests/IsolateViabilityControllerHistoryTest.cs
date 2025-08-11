@@ -82,7 +82,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             var avNumber = "AV001";
             var isolate = Guid.NewGuid();
 
-            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(Task.FromResult<IEnumerable<IsolateViabilityInfoDTO>>(null));
+            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(Task.FromResult<IEnumerable<IsolateViabilityInfoDTO>>(null!));
 
             // Act
             var result = _controller.History(avNumber, isolate) as ViewResult;
