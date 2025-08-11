@@ -1,0 +1,96 @@
+﻿@model GetAVNumberViewModel
+@{
+    ViewData["Title"] = "Virus Isolates Repository";
+}
+
+<style>
+    #contentbox {
+        border-top: #0b2677 1px solid;
+        border-right: #0b2677 1px solid;
+        border-bottom: #0b2677 1px solid;
+        border-left: #0b2677 1px solid;
+        margin: 0px 0px 15px 0px;
+    }
+    th {
+        display: table-cell;
+        vertical-align: inherit;
+        font-weight: bold;
+        text-align: -internal-center;
+        unicode-bidi: isolate;
+    }
+
+    thead {
+        background-color: #0b2677;
+        font-size: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    /* Custom link style for recent AV numbers */
+    .recent-av-link {
+        text-decoration: none;
+        color: inherit;
+        transition: text-decoration 0.2s;
+    }
+    .recent-av-link:hover, .recent-av-link:focus {
+        text-decoration: underline;
+    }
+</style>
+
+<div id="contentbox" style="width: 95%">
+    <div class="av-number-box_title">Enter the AV Number of the submission</div>
+    <div class="av-number-box_body">
+        <br />
+        <form asp-controller="Home" asp-action="GetAVNumber" method="post">
+            <div >
+            <table>
+                <tr>
+                    <td>AV Number</td>
+                    <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+                    <td>
+                        <input asp-for="AVNumber" type="text" title="Format is AV000000-00, PD0000-00, SI000000-00 or BN000000-00" style="width: 180px;" />
+                        <br />
+                        <span asp-validation-for="AVNumber" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: center; vertical-align: middle;">
+                        <button type="submit" class="btn btn-link" style="padding:0; border:none; background:none; color:#0b2677; text-decoration:underline; font-size:1em;">
+                            Next
+                        </button>
+                    </td>
+                </tr>
+            </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<div class="isolate-grid-table mt-1">
+@if (Model.RecentAVNumbers != null && Model.RecentAVNumbers.Any())
+{
+    <table class="table table-striped" style="width: 180px;" >
+        <thead>
+            <tr>
+                <th> Select a recently used AV Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RecentAVNumbers)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Home"  asp-action="SubmissionSamples" asp-route-avNumber="@item" class="link-list;">  @item</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

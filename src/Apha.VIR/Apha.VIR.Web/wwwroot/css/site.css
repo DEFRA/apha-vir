@@ -491,3 +491,23 @@ body {
     font-size: small;
     color: #000040;
 }
+
+.av-number-box_title {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    /* padding: 0.2em 1px 2px 14px; */
+    background-color: #0b2677;
+    color: #ffffff;
+    /* font-size: 0.9em; */
+    font-weight: bold;
+}
+
+.av-number-box_body {
+    padding-top: 0px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
