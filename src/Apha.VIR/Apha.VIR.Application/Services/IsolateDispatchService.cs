@@ -68,7 +68,7 @@ namespace Apha.VIR.Application.Services
                 return _mapper.Map<IEnumerable<IsolateDispatchInfoDTO>>(Enumerable.Empty<IsolateDispatchInfoDTO>());
             }
 
-            var matchIsolateId = matchIsolate.First().IsolateId;
+            var matchIsolateId = matchIsolate.FirstOrDefault()?.IsolateId ?? Guid.Empty;
 
             var dispatchHistList = await _isolateDispatchRepository.GetDispatchesHistoryAsync(matchIsolateId);
 
@@ -78,8 +78,8 @@ namespace Apha.VIR.Application.Services
 
             if (string.IsNullOrEmpty(charNomenclature))
             {
-                nomenclature = matchIsolate.First().Nomenclature != null
-                    ? matchIsolate.First().Nomenclature!
+                nomenclature = matchIsolate.FirstOrDefault()?.Nomenclature != null
+                    ? matchIsolate.FirstOrDefault()?.Nomenclature!
                     : string.Empty;
             }
             else
@@ -162,21 +162,20 @@ namespace Apha.VIR.Application.Services
                 throw new ArgumentException("AVNumber cannot be empty.", nameof(AVNumber));
 
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
-
-            // Defensive: If no isolates found, return null DTO
-            if (isolationList == null || !isolationList.Any())
+                        
+            if (!(isolationList?.Any() ?? false))
                 return _mapper.Map<IsolateDispatchInfoDTO>(null);
 
             var matchIsolate = isolationList.Where(x => x.IsolateId == DispatchIsolateId).ToList();
 
-            if (matchIsolate == null || matchIsolate.Count == 0)
+            if (!(matchIsolate?.Any() ?? false))
                 return _mapper.Map<IsolateDispatchInfoDTO>(null);
 
-            var matchIsolateId = matchIsolate.First().IsolateId;
+            var matchIsolateId = matchIsolate.FirstOrDefault()?.IsolateId ?? Guid.Empty;
 
             var dispatchHistList = await _isolateDispatchRepository.GetDispatchesHistoryAsync(matchIsolateId);
 
-            if (dispatchHistList == null || !dispatchHistList.Any())
+            if (!(dispatchHistList?.Any() ?? false))
                 return _mapper.Map<IsolateDispatchInfoDTO>(null);
 
             var staffs = await _staffRepository.GetStaffListAsync();

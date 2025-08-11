@@ -291,7 +291,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
         public async Task UpdateDispatchAsync_NullDispatchInfoDto_ThrowsArgumentNullException()
         {
             // Arrange
-            IsolateDispatchInfoDTO dto = null;
+            IsolateDispatchInfoDTO? dto = null;
             var user = "TestUser";
 
             // Act & Assert

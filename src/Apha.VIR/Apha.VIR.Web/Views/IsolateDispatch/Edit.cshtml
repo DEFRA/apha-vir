@@ -9,6 +9,7 @@
     <input asp-for="LastModified" type="hidden" />
     <input asp-for="DispatchId" type="hidden" />
     <table cellpadding="5px">
+        <thead class="sr-only"><tr><th scope="col"></th></tr></thead>
         <tr>
             <td>AV Number</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
@@ -124,7 +125,7 @@
                 @*                 <input asp-for="DispatchedDate" type="date" style="width: 200px;" />
                 <span asp-validation-for="DispatchedDate" class="text-danger"></span> *@
 
-                <input asp-for="DispatchedDate" tabindex="14"  />
+                <input asp-for="DispatchedDate" />
          
                 <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
             </td>
@@ -139,8 +140,7 @@
             </td>
         </tr>
         <tr>
-            <td colspan="3" style="text-align: right;">
-                <!--<a asp-action="Index" asp-controller="IsolateDispatchHistory" class="btn btn-secondary">Save</a>-->
+            <td colspan="3" style="text-align: right;">               
                 <button type="submit" class="btn btn-link" style="padding:0;border:none;background:none;text-decoration:underline;color:darkblue;cursor:pointer;">Save</button>
 
                 <img src="~/images/spacer.gif" width="10" height="5" alt="" />
