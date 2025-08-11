@@ -48,16 +48,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
 
-                var context = new ValidationContext(criteria);
-                var validationResult = criteria.Validate(context);
-                foreach (var validation in validationResult)
-                {
-                    foreach (var menberName in validation.MemberNames.Any() ? validation.MemberNames : new[] { "" })
-                    {
-                        if (validation.ErrorMessage != null)
-                            ModelState.AddModelError(menberName, validation.ErrorMessage);
-                    }
-                }                
+                ValidateSearchModel(criteria, ModelState);                        
 
                 if (!ModelState.IsValid)
                 {
@@ -295,6 +286,20 @@ namespace Apha.VIR.Web.Controllers
             }
 
             return criteria;
+        }
+
+        private static void ValidateSearchModel(SearchCriteria criteria, ModelStateDictionary modelState)
+        {
+            var context = new ValidationContext(criteria);
+            var validationResult = criteria.Validate(context);
+            foreach (var validation in validationResult)
+            {
+                foreach (var menberName in validation.MemberNames.Any() ? validation.MemberNames : new[] { "" })
+                {
+                    if (validation.ErrorMessage != null)
+                        modelState.AddModelError(menberName, validation.ErrorMessage);
+                }
+            }
         }
 
         private static void UpdateModelStateValuesAndSearchModel(SearchRepositoryViewModel searchModel, SearchCriteria criteria, ModelStateDictionary modelState)
