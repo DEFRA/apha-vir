@@ -46,15 +46,15 @@ namespace Apha.VIR.Application.Services
             if (DispatchId == Guid.Empty)
                 throw new ArgumentException("DispatchId cannot be empty.", nameof(DispatchId));
 
-            if (LastModified == Array.Empty<byte>() )
-                throw new ArgumentException( "LastModified cannot be empty.", nameof(LastModified));
-            
+            if (LastModified == Array.Empty<byte>())
+                throw new ArgumentException("LastModified cannot be empty.", nameof(LastModified));
+
             if (string.IsNullOrWhiteSpace(User))
                 throw new ArgumentException("User cannot be empty.", nameof(User));
 
             await _isolateDispatchRepository.DeleteDispatchAsync(DispatchId, LastModified, User);
         }
-                
+
         public async Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId)
         {
             string nomenclature;
@@ -118,11 +118,11 @@ namespace Apha.VIR.Application.Services
         {
             var isolateFullDetail = await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(IsolateId);
 
-            if ( isolateFullDetail.IsolateDetails == null)
+            if (isolateFullDetail.IsolateDetails == null)
             {
                 var error = new BusinessValidationError(
                     message: "Problem with reading IsolateDetails.",
-                    code: "ERR_ISOLATE" );
+                    code: "ERR_ISOLATE");
 
                 var errorResponse = new BusinessValidationErrorException([error]);
 
@@ -160,7 +160,7 @@ namespace Apha.VIR.Application.Services
                 throw new ArgumentException("AVNumber cannot be empty.", nameof(AVNumber));
 
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
-                        
+
             if (!(isolationList?.Any() ?? false))
                 return _mapper.Map<IsolateDispatchInfoDTO>(null);
 

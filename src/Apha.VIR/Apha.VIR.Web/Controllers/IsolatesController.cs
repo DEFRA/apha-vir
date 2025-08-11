@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Apha.VIR.Web.Controllers
 {
     public class IsolatesController : Controller
-    {        
+    {
         private readonly IIsolatesService _isolatesService;
         private readonly IMapper _mapper;
 
@@ -20,7 +20,7 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
             {
                 return View("Error");
-            }            
+            }
             var result = await _isolatesService.GetIsolateFullDetailsAsync(IsolateId);
             var isolateDetails = _mapper.Map<IsolateDetailsViewModel>(result);
             return View("IsolateDetails", isolateDetails);

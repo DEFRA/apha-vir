@@ -9,7 +9,7 @@ public class IsolateDispatchInfoDTO
     public string Nomenclature { get; set; } = null!;
     public bool ValidToIssue { get; set; }
     public Guid? ViabilityId { get; set; }
-    public  string? ViabilityName { get; set; }
+    public string? ViabilityName { get; set; }
     public int NoOfAliquotsToBeDispatched { get; set; }
     public int NoOfAliquots { get; set; }
     public int PassageNumber { get; set; }

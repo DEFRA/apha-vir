@@ -15,7 +15,7 @@ namespace Apha.VIR.Web.Models
         public string? ReasonForDispatch { get; set; }
         public DateTime DispatchedDate { get; set; }
         public string? DispatchedByName { get; set; }
- 
+
         [Display(Name = "AV Number")]
         public string? Avnumber { get; set; }
         public string? Nomenclature { get; set; }

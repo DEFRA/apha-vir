@@ -26,14 +26,14 @@ namespace Apha.VIR.Application.UnitTests.IsolatesServiceTest
         {
             // Arrange
             var isolateId = Guid.NewGuid();
-            var isolateFullDetail = new IsolateFullDetail 
+            var isolateFullDetail = new IsolateFullDetail
             {
                 IsolateDetails = new IsolateInfo { IsolateId = isolateId },
                 IsolateViabilityDetails = new List<IsolateViabilityInfo>(),
                 IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
                 IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
             };
-            var expectedDto = new IsolateFullDetailDTO 
+            var expectedDto = new IsolateFullDetailDTO
             {
                 IsolateDetails = new IsolateInfoDTO { IsolateId = isolateId },
                 IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
@@ -51,7 +51,7 @@ namespace Apha.VIR.Application.UnitTests.IsolatesServiceTest
             Assert.Equal(expectedDto, result);
             await _mockIsolateRepository.Received(1).GetIsolateFullDetailsByIdAsync(isolateId);
             _mockMapper.Received(1).Map<IsolateFullDetailDTO>(isolateFullDetail);
-        }       
+        }
 
         [Fact]
         public async Task GetIsolateFullDetailsAsync_RepositoryThrowsException_ThrowsException()
@@ -65,6 +65,6 @@ namespace Apha.VIR.Application.UnitTests.IsolatesServiceTest
             await Assert.ThrowsAsync<Exception>(() => _isolatesService.GetIsolateFullDetailsAsync(isolateId));
             await _mockIsolateRepository.Received(1).GetIsolateFullDetailsByIdAsync(isolateId);
             _mockMapper.DidNotReceive().Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>());
-        }       
+        }
     }
 }

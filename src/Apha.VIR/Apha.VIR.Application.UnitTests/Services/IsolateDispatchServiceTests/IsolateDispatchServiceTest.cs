@@ -30,7 +30,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
             _workgroupRepository = Substitute.For<IWorkgroupRepository>();
             _lookupRepository = Substitute.For<ILookupRepository>();
             _mapper = Substitute.For<IMapper>();
-             _isolateViabilityRepository = Substitute.For<IIsolateViabilityRepository>(); // Added missing dependency
+            _isolateViabilityRepository = Substitute.For<IIsolateViabilityRepository>(); // Added missing dependency
 
             _service = new IsolateDispatchService(
                 _isolateDispatchRepository,
@@ -40,7 +40,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
                 _workgroupRepository,
                 _lookupRepository,
                 _mapper,
-                _isolateViabilityRepository 
+                _isolateViabilityRepository
             );
         }
 
@@ -62,7 +62,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
             _characteristicRepository.GetIsolateCharacteristicInfoAsync(isolateId).Returns(characteristicInfo);
             _staffRepository.GetStaffListAsync().Returns(staffList);
             _workgroupRepository.GetWorkgroupfListAsync().Returns(workgroupList);
-            _mapper.Map<IEnumerable<IsolateDispatchInfoDTO>>(Arg.Any<IEnumerable<IsolateDispatchInfo>>()).Returns(x => x.Arg<IEnumerable<IsolateDispatchInfo>>().Select(d => new IsolateDispatchInfoDTO {DispatchId = d.DispatchId ?? Guid.Empty })); // Fix for CS0266 and CS8629
+            _mapper.Map<IEnumerable<IsolateDispatchInfoDTO>>(Arg.Any<IEnumerable<IsolateDispatchInfo>>()).Returns(x => x.Arg<IEnumerable<IsolateDispatchInfo>>().Select(d => new IsolateDispatchInfoDTO { DispatchId = d.DispatchId ?? Guid.Empty })); // Fix for CS0266 and CS8629
 
             // Act
             var result = await _service.GetDispatchesHistoryAsync(avNumber, isolateId);
@@ -201,11 +201,12 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
         {
             // Arrange
             var isolateId = Guid.NewGuid();
-            var isolateFullDetail = new IsolateFullDetail 
-            {  IsolateDetails = new IsolateInfo { NoOfAliquots = 5 },
-               IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
-               IsolateViabilityDetails = new List<IsolateViabilityInfo>(),
-               IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
+            var isolateFullDetail = new IsolateFullDetail
+            {
+                IsolateDetails = new IsolateInfo { NoOfAliquots = 5 },
+                IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
+                IsolateViabilityDetails = new List<IsolateViabilityInfo>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
             };
             var expectedDto = new IsolateFullDetailDTO
             {
@@ -215,7 +216,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
                 IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
 
             };
- 
+
 
             _isolateRepository.GetIsolateFullDetailsByIdAsync(isolateId).Returns(isolateFullDetail);
             _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail).Returns(expectedDto);

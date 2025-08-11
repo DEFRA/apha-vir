@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Models
 {
-    public class IsolateDispatchEditViewModel 
+    public class IsolateDispatchEditViewModel
     {
         public Guid? DispatchId { get; set; }
         public Guid? DispatchIsolateId { get; set; }
@@ -56,7 +56,7 @@ namespace Apha.VIR.Web.Models
         [Display(Name = "Dispatched By")]
         public Guid? DispatchedById { get; set; }
         public List<SelectListItem>? DispatchedByList { get; set; }
-       [Display(Name = "Last Modified")]
+        [Display(Name = "Last Modified")]
         public byte[]? LastModified { get; set; }
         public string? RecipientLocation { get; set; }
     }

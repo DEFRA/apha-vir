@@ -168,8 +168,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
         public async Task Edit_Post_InvalidModel_ReturnsBadRequestResult()
         {
             // Arrange
-            var model = new IsolateViabilityViewModel { IsolateViability= new IsolateViabilityModel
-            { IsolateViabilityId=Guid.NewGuid()} };
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                { IsolateViabilityId = Guid.NewGuid() }
+            };
             _controller.ModelState.AddModelError("Error", "Test error");
 
             // Act
@@ -177,7 +180,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-         
+
             Assert.NotNull(badRequestResult);
             Assert.NotNull(badRequestResult.Value);
 

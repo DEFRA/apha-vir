@@ -5,7 +5,7 @@ namespace Apha.VIR.Core.Interfaces
 {
     public interface IIsolateSearchRepository
     {
-        Task<PagedData<IsolateSearchResult>> PerformSearchAsync(PaginationParameters<SearchCriteria> criteria);        
+        Task<PagedData<IsolateSearchResult>> PerformSearchAsync(PaginationParameters<SearchCriteria> criteria);
         Task<IEnumerable<IsolateSearchResult>> GetIsolateSearchExportResultAsync(PaginationParameters<SearchCriteria> criteria);
     }
 }

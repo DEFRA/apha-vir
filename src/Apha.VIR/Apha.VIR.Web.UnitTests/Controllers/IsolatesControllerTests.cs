@@ -48,8 +48,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers
                 IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
                 IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
             };
-            var isolateViewModel = new IsolateDetailsViewModel 
-            { 
+            var isolateViewModel = new IsolateDetailsViewModel
+            {
                 IsolateDetails = new IsolateDetails(),
                 IsolateViabilityDetails = new List<IsolateViabilityCheckInfo>(),
                 IsolateDispatchDetails = new List<IsolateDispatchInfo>(),

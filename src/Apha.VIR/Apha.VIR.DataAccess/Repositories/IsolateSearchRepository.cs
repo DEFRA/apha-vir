@@ -56,7 +56,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
             return query;
         }
-       
+
         private static IQueryable<IsolateSearchResult> ApplyStringFilter(
             IQueryable<IsolateSearchResult> query,
             string filterValue,
@@ -281,11 +281,11 @@ namespace Apha.VIR.DataAccess.Repositories
         }
 
         public async Task<IEnumerable<IsolateSearchResult>> GetIsolateSearchExportResultAsync(PaginationParameters<SearchCriteria> criteria)
-        {            
+        {
             IQueryable<IsolateSearchResult> query = FetchIsolateSearchRecordsAsync(criteria);
-            var isolateRecords = await query.ToListAsync();            
+            var isolateRecords = await query.ToListAsync();
             return isolateRecords;
-        }             
+        }
 
         public static bool IsValidGuid(Guid? guid)
         {

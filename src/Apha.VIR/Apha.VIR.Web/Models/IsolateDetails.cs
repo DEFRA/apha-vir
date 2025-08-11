@@ -11,7 +11,7 @@ namespace Apha.VIR.Web.Models
         public string? TypeName { get; set; }
         public string? GroupSpeciesName { get; set; }
         public string? BreedName { get; set; }
-        public string? CountryOfOriginName { get; set; }  
+        public string? CountryOfOriginName { get; set; }
         public bool IsMixedIsolate { get; set; }
         public string? HostPurposeName { get; set; }
         public string? SampleTypeName { get; set; }

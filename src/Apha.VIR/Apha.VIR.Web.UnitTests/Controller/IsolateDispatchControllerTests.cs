@@ -139,7 +139,7 @@ namespace Apha.VIR.Web.UnitTests.Controller
                 IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
                 IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
                 IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
- 
+
             };
 
             _mockIsolateDispatchService.GetDispatcheConfirmationAsync(isolateGuid)
