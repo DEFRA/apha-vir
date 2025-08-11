@@ -1,0 +1,205 @@
+﻿@using Apha.VIR.Web.Controllers
+@using System.Globalization
+@model IsolateDispatchEditViewModel
+@{
+    ViewData["Title"] = "Edit Isolate Dispatch History | Virus Isolates Repository";
+}
+<form asp-action="Edit" asp-controller="IsolateDispatch" method="post">
+    <input asp-for="DispatchIsolateId" type="hidden" />
+    <input asp-for="LastModified" type="hidden" />
+    <input asp-for="DispatchId" type="hidden" />
+    <table cellpadding="5px">
+        <tr>
+            <td>AV Number</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <span>@Model.Avnumber</span>
+                <input type="hidden" asp-for="Avnumber" />
+            </td>
+        </tr>
+        <tr>
+            <td>No. Of Aliquots</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <span>@Model.NoOfAliquots</span>
+                <input type="hidden" asp-for="NoOfAliquots" />
+            </td>
+        </tr>
+        <tr>
+            <td>Nomenclature</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <span style="width: 600px;">@Model.Nomenclature</span>
+                <input type="hidden" asp-for="Nomenclature" />
+            </td>
+        </tr>
+        <tr>
+            <td>Valid To Issue</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <input asp-for="ValidToIssue" type="checkbox" disabled />
+                <input type="hidden" asp-for="ValidToIssue" />
+            </td>
+        </tr>
+        <tr>
+            <td>Viability</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <select asp-for="ViabilityId" asp-items="Model.ViabilityList" disabled style="width: 200px;">
+                    <option value="">Select Viability</option>
+                </select>
+                <input type="hidden" name="ViabilityId" value="@Model.ViabilityId" />
+            </td>
+        </tr>
+        <tr>
+            <td>No&nbsp;Of&nbsp;Aliquots&nbsp;To&nbsp;Be&nbsp;Dispatched&nbsp;*</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <input asp-for="NoOfAliquotsToBeDispatched" type="text" style="width: 200px;" />
+                <span asp-validation-for="NoOfAliquotsToBeDispatched"  class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Passage&nbsp;Number&nbsp;*</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <input asp-for="PassageNumber"  type="text" style="width: 200px;"/>
+                <span asp-validation-for="PassageNumber" class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Recipient&nbsp;Location</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <div id="recipientLocation">
+                    <input type="radio" asp-for="RecipientLocation" value="Internal" /> Internal
+                    <input type="radio" asp-for="RecipientLocation" value="External" /> External
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Recipient</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <div id="recipientDropdown">
+                    <select asp-for="RecipientId" asp-items="Model.RecipientList" style="width: 200px;">
+                        <option value=""> </option>
+                    </select>
+                    <small>(Internal Recipients Only)</small>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Recipient&nbsp;Name</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <div id="recipientName">
+                    <input asp-for="RecipientName" style="width: 200px;" maxlength="50" />
+
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Recipient&nbsp;Address</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <div id="recipientAddress">
+                    <textarea asp-for="RecipientAddress" rows="5" style="width: 400px;" maxlength="500"></textarea>
+                    <small>(External Recipients Only)</small>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Reason&nbsp;For&nbsp;Dispatch</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <textarea asp-for="ReasonForDispatch" style="width: 400px;" maxlength="50" rows="2"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>Dispatched&nbsp;Date&nbsp;*</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                @*                 <input asp-for="DispatchedDate" type="date" style="width: 200px;" />
+                <span asp-validation-for="DispatchedDate" class="text-danger"></span> *@
+
+                <input asp-for="DispatchedDate" tabindex="14"  />
+         
+                <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+            </td>
+        </tr>
+        <tr>
+            <td>Dispatched&nbsp;By</td>
+            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td>
+                <select asp-for="DispatchedById" asp-items="Model.DispatchedByList" style="width: 200px;">
+                    <option value="">Select Staff</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: right;">
+                <!--<a asp-action="Index" asp-controller="IsolateDispatchHistory" class="btn btn-secondary">Save</a>-->
+                <button type="submit" class="btn btn-link" style="padding:0;border:none;background:none;text-decoration:underline;color:darkblue;cursor:pointer;">Save</button>
+
+                <img src="~/images/spacer.gif" width="10" height="5" alt="" />
+                <a asp-action="Index" asp-controller="IsolateDispatchHistory" class="btn btn-secondary">Cancel</a>
+            </td>
+        </tr>
+    </table>
+</form>
+<div id="validationSummary" class="text-danger" style="display:none;">
+    <p style="color:red;font-weight:bold;">There are validation messages requiring your attention.</p>
+    <div asp-validation-summary="All"></div>
+    <span id="dispatchedDateError" style="display:none;color:red;font-weight:bold;"></span>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function toggleRecipientDropdown() {
+                const selectedLocation = $("input[name='RecipientLocation']:checked").val();
+                const recipientSelect = $("select[name='RecipientId']");
+                const recipientAddress = $("textarea[name='RecipientAddress']");
+
+                if (selectedLocation === "External") {
+                    recipientSelect.prop("disabled", true);
+                    recipientSelect.prop("selectedIndex", 0);
+                    recipientAddress.prop("disabled", false);
+                } else {
+                    recipientSelect.prop("disabled", false);
+                    recipientAddress.prop("disabled", true);
+                    recipientAddress.val("");
+                }
+            }
+
+            toggleRecipientDropdown();
+
+            $("input[name='RecipientLocation']").change(function () {
+                toggleRecipientDropdown();
+            });
+
+
+            $("form").on("submit", function (e) {
+                var dispatchedDate = $("input[name='DispatchedDate']").val();
+                var today = new Date();
+                today.setHours(0,0,0,0);
+                var dispatched = new Date(dispatchedDate);
+                dispatched.setHours(0,0,0,0);
+
+                if (dispatched > today) {
+                    $("#dispatchedDateError")
+                        .text("- Dispatched Date cannot be in the future.")
+                        .show();
+                    $("#validationSummary").show();
+                    e.preventDefault();
+                } else {
+                    $("#dispatchedDateError").hide();
+                }
+            });
+        });
+    </script>
+}

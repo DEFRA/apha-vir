@@ -44,6 +44,9 @@ public class DispatchRepository : IIsolateDispatchRepository
 
                 using (var result = await command.ExecuteReaderAsync())
                 {
+                    int noOfAliquotsToBeDispatchedOrdinal = 2;
+                    int noOfAliquotsOrdinal = 30;
+
                     while (await result.ReadAsync())
                     {
                         var dto = new IsolateDispatchInfo
@@ -52,7 +55,10 @@ public class DispatchRepository : IIsolateDispatchRepository
                             Nomenclature = result["IsolateNomenclature"] as string,
                             IsolateId = result["IsolateId"] as Guid?,
                             DispatchId = result["DispatchId"] as Guid?,
-                            NoOfAliquots = result["NoOfAliquots"] as int?,
+                            ValidToIssue = result["ValidToIssue"] is DBNull ? false : (bool)result["ValidToIssue"],
+                            ViabilityId = result["Viable"] as Guid?,
+                            NoOfAliquotsToBeDispatched = result.GetInt32(noOfAliquotsToBeDispatchedOrdinal),
+                            NoOfAliquots = result.GetInt32(noOfAliquotsOrdinal),
                             PassageNumber = result["PassageNumber"] as int?,
                             RecipientId = result["Recipient"] as Guid?,
                             RecipientName = result["RecipientName"] as string,
@@ -73,6 +79,7 @@ public class DispatchRepository : IIsolateDispatchRepository
 
         return dispatchList;
     }
+
     public async Task DeleteDispatchAsync(Guid DispatchId, Byte[] LastModified, string User)
     {
 
@@ -84,7 +91,23 @@ public class DispatchRepository : IIsolateDispatchRepository
         );
     }
 
-
-
-
+    public async Task UpdateDispatchAsync(IsolateDispatchInfo DispatchInfo, string User)
+    {
+        await _context.Database.ExecuteSqlRawAsync(
+            "EXEC spDispatchUpdate @UserId, @DispatchId, @DispatchIsolateId, @NoOfAliquots, @PassageNumber, @Recipient, @RecipientName, @RecipientAddress, @ReasonForDispatch, @DispatchedDate, @DispatchedById, @LastModified OUTPUT",
+            new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
+            new SqlParameter("@DispatchId", SqlDbType.UniqueIdentifier) { Value = DispatchInfo.DispatchId ?? Guid.Empty },
+            new SqlParameter("@DispatchIsolateId", SqlDbType.UniqueIdentifier) { Value = DispatchInfo.DispatchIsolateId ?? Guid.Empty },
+            new SqlParameter("@NoOfAliquots", SqlDbType.Int) { Value = DispatchInfo.NoOfAliquotsToBeDispatched },
+            new SqlParameter("@PassageNumber", SqlDbType.Int) { Value = (object?)DispatchInfo.PassageNumber ?? DBNull.Value },
+            new SqlParameter("@Recipient", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.RecipientId ?? DBNull.Value },
+            new SqlParameter("@RecipientName", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.RecipientName ?? DBNull.Value },
+            new SqlParameter("@RecipientAddress", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.RecipientAddress ?? DBNull.Value },
+            new SqlParameter("@ReasonForDispatch", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.ReasonForDispatch ?? DBNull.Value },
+            new SqlParameter("@DispatchedDate", SqlDbType.DateTime) { Value = (object?)DispatchInfo.DispatchedDate ?? DBNull.Value },
+            new SqlParameter("@DispatchedById", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.DispatchedById ?? DBNull.Value },
+            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)DispatchInfo.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
+            
+        );
+    }
 }

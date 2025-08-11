@@ -31,6 +31,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolateRepository, IsolateRepository>();
             services.AddScoped<IStaffRepository, StaffRepository>();
             services.AddScoped<IWorkgroupRepository, WorkgroupRepository>();
+            services.AddScoped<IIsolateViabilityRepository, IsolateViabilityRepository>();
             return services;
         }
     }

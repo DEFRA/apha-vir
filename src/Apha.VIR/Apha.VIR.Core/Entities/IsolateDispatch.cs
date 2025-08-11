@@ -1,6 +1,5 @@
 ﻿namespace Apha.VIR.Core.Entities;
 
-//USe for Add/Edit
 public class IsolateDispatch
 {
     public Guid? DispatchId { get; set; }

@@ -13,6 +13,7 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<LookupItem, LookupItemDTO>().ReverseMap();
             CreateMap<VirusCharacteristic, VirusCharacteristicDTO>().ReverseMap();
             CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>().ReverseMap();
+            CreateMap<IsolateViability, IsolateViabilityDTO>().ReverseMap();
         }
     }
 }

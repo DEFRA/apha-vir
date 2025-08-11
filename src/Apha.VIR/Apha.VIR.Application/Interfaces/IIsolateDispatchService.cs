@@ -1,4 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Core.Entities;
 
 namespace Apha.VIR.Application.Interfaces
 {
@@ -6,6 +7,9 @@ namespace Apha.VIR.Application.Interfaces
     {
         Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId);
         Task DeleteDispatchAsync(Guid DispatchId, byte[] LastModified, string User);
-        
+
+        Task<IsolateDispatchInfoDTO> GetDispatchForIsolateAsync(string AVNumber, Guid DispatchId, Guid DispatchIsolateId);
+
+        Task UpdateDispatchAsync(IsolateDispatchInfoDTO DispatchInfoDto, string User);
     }
 }
