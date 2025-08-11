@@ -25,7 +25,7 @@
 					<th><a href="" data-sortcolumn="TrayName" data-sortorder="@Model.SortOrderFor("TrayName")">Tray</a></th>
 					<th><a href="" data-sortcolumn="Well" data-sortorder="@Model.SortOrderFor("Well")">Well</a></th>
 					<th colspan="2">
-						<a></a>
+						
 					</th>
 					<th><a href="">Dispatch Warning</a></th>
 				</tr>
@@ -42,15 +42,15 @@
 						<td>@searchModel.GroupSpeciesName</td>
 						<td>@searchModel.BreedName</td>
 						<td>@searchModel.YearOfIsolation</td>
-						<td>@searchModel.ReceivedDate?.ToString("MM/dd/yyyy")</td>
+						<td>@searchModel.ReceivedDate?.ToString("dd/MM/yyyy")</td>
 						<td>@searchModel.CountryOfOriginName</td>
-						<td>@searchModel.MaterialTransferAgreement</td>
+						<td>@(searchModel.MaterialTransferAgreement ? "Yes" : "No")</td>
 						<td>@searchModel.NoOfAliquots</td>
 						<td>@searchModel.FreezerName</td>
 						<td>@searchModel.TrayName</td>
 						<td>@searchModel.Well</td>
-						<td><a href="@Url.Action("View", "", new { id = "" })" class="sp-button">View</a></td>
-						<td><a href="@Url.Action("Dispach", "", new { id = "" })" class="sp-button">Dispatch</a></td>
+						<td><a href="@Url.Action("ViewIsolateDetails", "Isolates", new { IsolateId = searchModel.IsolateId })" class="sp-button">View</a></td>
+						<td><a href="@Url.Action("Dispach", "", new { IsolateId = searchModel.IsolateId })" class="sp-button">Dispatch</a></td>
 						@if ((searchModel.MaterialTransferAgreement || searchModel.IsMixedIsolate) || (!(searchModel.ValidToIssue)))
 						{
 							<td>

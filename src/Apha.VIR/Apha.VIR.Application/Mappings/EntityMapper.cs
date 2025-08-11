@@ -18,12 +18,7 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<CharacteristicCriteriaDTO, CharacteristicCriteria>();
             CreateMap<IsolateSearchResult, IsolateSearchResultDTO>();
             CreateMap<QueryParameters<SearchCriteriaDTO>, PaginationParameters<SearchCriteria>>();
-            CreateMap<PagedData<IsolateSearchResult>, PaginatedResult<IsolateSearchResultDTO>>();
-            CreateMap<IsolateFullDetailsResult, IsolateFullDetailsResultDto>();
-            CreateMap<IsolateInfo, IsolateInfoDTO>();
-            CreateMap<IsolateViabilityInfo, IsolateViabilityInfoDTO>();
-            CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>();
-            CreateMap<IsolateCharacteristicInfo, IsolateCharacteristicInfoDTO>();
+            CreateMap<PagedData<IsolateSearchResult>, PaginatedResult<IsolateSearchResultDTO>>(); 
             CreateMap<IsolateInfoDTO, IsolateSearchExportDto>()
              .ForMember(dest => dest.VirusFamily, opt => opt.MapFrom(src => src.FamilyName))
              .ForMember(dest => dest.VirusType, opt => opt.MapFrom(src => src.TypeName))

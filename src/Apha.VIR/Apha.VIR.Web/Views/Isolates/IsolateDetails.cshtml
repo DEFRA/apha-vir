@@ -1,0 +1,191 @@
+﻿@model IsolateDetailsViewModel
+@{
+	ViewData["Title"] = "View Isolate Details | Virus Isolates Repository";
+}
+<div class="isolate-details">
+	<table class="table" style="width:100%;">
+		<thead class="sr-only"><tr><th scope="col"></th></tr></thead>
+		<tbody>
+			<tr>
+				<td style="width:50%;">
+					<table>
+						<thead class="sr-only"><tr><th scope="col"></th></tr></thead>
+						<tbody>
+							<tr><td><span class="view-isolate-details-label">Isolate Details</span></td><td></td></tr>
+							<tr><td><span class="view-isolate-details-label">AVNumber</span></td><td>@Model.IsolateDetails!.Avnumber</td></tr>
+							<tr><td><span class="view-isolate-details-label">Nomenclature</span></td><td>@Model.IsolateDetails.Nomenclature</td></tr>
+							<tr>
+								<td><span class="view-isolate-details-label">Dispatch Warning</span></td>
+								<td>
+									@if ((Model.IsolateDetails.MaterialTransferAgreement || Model.IsolateDetails.IsMixedIsolate) || (!(Model.IsolateDetails.ValidToIssue)))
+									{
+										<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="yes-label">
+											Yes
+										</span>
+									}
+									else
+									{
+										<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="no-label">
+											No
+										</span>
+									}
+								</td>
+							</tr>
+							<tr><td><span class="view-isolate-details-label">Mixed Isolate</span></td><td>@(Model.IsolateDetails.IsMixedIsolate ? "Yes" : "No")</td></tr>
+							<tr><td><span class="view-isolate-details-label">Virus Family</span></td><td>@Model.IsolateDetails.FamilyName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Virus Type</span></td><td>@Model.IsolateDetails.TypeName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Host Purpose</span></td><td>@Model.IsolateDetails.HostPurposeName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Sample Type</span></td><td>@Model.IsolateDetails.SampleTypeName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Group</span></td><td>@Model.IsolateDetails.GroupSpeciesName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Species</span></td><td>@Model.IsolateDetails.BreedName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Country Of Origin</span></td><td>@Model.IsolateDetails.CountryOfOriginName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Year Of Isolation</span></td><td>@Model.IsolateDetails.YearOfIsolation</td></tr>
+							<tr><td><span class="view-isolate-details-label">Isolation Method</span></td><td>@Model.IsolateDetails.IsolationMethodName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Received Date</span></td><td>@Model.IsolateDetails.ReceivedDate?.ToString("dd/MM/yyyy")</td></tr>
+							<tr><td><span class="view-isolate-details-label"></span></td><td>&nbsp;&nbsp;</td></tr>
+							<tr><td><span class="view-isolate-details-label">Freezer</span></td><td>@Model.IsolateDetails.FreezerName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Tray</span></td><td>@Model.IsolateDetails.TrayName</td></tr>
+							<tr><td><span class="view-isolate-details-label">Well</span></td><td>@Model.IsolateDetails.Well</td></tr>
+							<tr><td><span class="view-isolate-details-label">No Of Aliquots</span></td><td>@Model.IsolateDetails.NoOfAliquots</td></tr>
+							<tr><td><span class="view-isolate-details-label"></span></td><td>&nbsp;&nbsp;</td></tr>
+							<tr><td><span class="view-isolate-details-label">Valid To Issue</span></td><td>@(Model.IsolateDetails.ValidToIssue ? "Yes" : "No")</td></tr>
+							<tr><td><span class="view-isolate-details-label">Why Not Valid To Issue</span></td><td>@Model.IsolateDetails.WhyNotValidToIssue</td></tr>
+							<tr><td><span class="view-isolate-details-label">Original Sample Available</span></td><td>@(Model.IsolateDetails.OriginalSampleAvailable ? "Yes" : "No")</td></tr>
+							<tr><td><span class="view-isolate-details-label">First Viable Passage Number</span></td><td>@Model.IsolateDetails.FirstViablePassageNumber</td></tr>
+							<tr><td><span class="view-isolate-details-label">Antiserum Produced</span></td><td>@(Model.IsolateDetails.AntiserumProduced ? "Yes" : "No")</td></tr>
+							<tr><td><span class="view-isolate-details-label">Antigen Produced</span></td><td>@(Model.IsolateDetails.AntigenProduced ? "Yes" : "No")</td></tr>
+							<tr><td><span class="view-isolate-details-label">Phylogenetic Analysis</span></td><td>@Model.IsolateDetails.PhylogeneticAnalysis</td></tr>
+							<tr>
+								<td><span class="view-isolate-details-label">Phylogenetic File</span></td>
+								<td>
+									@Model.IsolateDetails.PhylogeneticFileName
+									@if (!string.IsNullOrEmpty(Model.IsolateDetails.PhylogeneticFileName))
+									{
+										<a href="@Url.Action("OpenPhylogeneticFile", "Isolate", new { fileName = Model.IsolateDetails.PhylogeneticFileName })" target="_blank">Open</a>
+									}
+								</td>
+							</tr>
+							<tr><td><span class="view-isolate-details-label"></span></td><td>&nbsp;&nbsp;</td></tr>
+							<tr><td><span class="view-isolate-details-label">MTA</span></td><td>@(Model.IsolateDetails.MaterialTransferAgreement ? "Yes" : "No")</td></tr>
+							<tr><td><span class="view-isolate-details-label">MTA Location</span></td><td>@Model.IsolateDetails.Mtalocation</td></tr>
+							<tr><td><span class="view-isolate-details-label"></span></td><td>&nbsp;&nbsp;</td></tr>
+							<tr><td><span class="view-isolate-details-label">Sender Reference Number</span></td><td>@Model.IsolateDetails.SenderReferenceNumber</td></tr>
+							<tr><td><span class="view-isolate-details-label">SMS Reference Number</span></td><td>@Model.IsolateDetails.SmsreferenceNumber</td></tr>
+							<tr><td><span class="view-isolate-details-label"></span></td><td>&nbsp;&nbsp;</td></tr>
+							<tr>
+								<td style="vertical-align:top;"><span class="view-isolate-details-label">Comment</span></td>
+								<td>
+									<textarea readonly rows="10" cols="50">@Model.IsolateDetails.Comment</textarea>
+								</td>
+							</tr>
+						</tbody>
+
+					</table>
+				</td>
+				<td style="vertical-align: top; width:50%;">
+					<a asp-action="Search" asp-controller="SearchRepository">Back to Search Results</a>
+					<h3 class="view-isolate-header mt-3">Viability Check Information</h3>
+					@if (Model.IsolateViabilityDetails.Any())
+					{
+						<div class="isolate-grid-table mt-1">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Viability Status</th>
+										<th>Date Checked</th>
+										<th>Checked By</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var check in Model.IsolateViabilityDetails)
+									{
+										<tr>
+											<td>@check.ViabilityStatus</td>
+											<td>@check.DateChecked.ToString("d")</td>
+											<td>@check.CheckedByName</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+						<a asp-action="History" asp-controller="IsolateViability" asp-route-AVNumber="@Model.IsolateDetails.Avnumber" asp-route-Isolate="@Model.IsolateDetails.IsolateId">Edit Viability History</a>
+					}
+					else
+					{
+						<p>No Viability Check Information found</p>
+					}
+
+					<h3 class="view-isolate-header mt-3">Dispatch Information</h3>
+
+					@if (Model.IsolateDispatchDetails.Any())
+					{
+						<div class="isolate-grid-table mt-1">
+							<table class="table isolate-chid-tbl">
+								<thead>
+									<tr>
+										<th>Recipient Name</th>
+										<th>Recipient Address</th>
+										<th>Reason</th>
+										<th>Number Of Aliquots</th>
+										<th>Passage Number</th>
+										<th>Dispatched By</th>
+										<th>Dispatched Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var dispatch in Model.IsolateDispatchDetails)
+									{
+										<tr>
+											<td>@dispatch.RecipientName</td>
+											<td>@dispatch.RecipientAddress</td>
+											<td>@dispatch.ReasonForDispatch</td>
+											<td>@dispatch.NoOfAliquots</td>
+											<td>@dispatch.PassageNumber</td>
+											<td>@dispatch.DispatchedByName</td>
+											<td>@dispatch.DispatchedDate.ToString("d")</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+						<a asp-action="History" asp-controller="IsolateDispatch" asp-route-AVNumber="@Model.IsolateDetails.Avnumber" asp-route-IsolateId="@Model.IsolateDetails.IsolateId">Edit Dispatch History</a>
+					}
+					else
+					{
+						<p>No Dispatch Information found</p>
+					}
+
+					<h3 class="view-isolate-header mt-3">Characteristics Information</h3>
+
+					@if (Model.IsolateCharacteristicDetails.Any())
+					{
+						<div class="isolate-grid-table mt-1">
+							<table class="table isolate-chid-tbl">
+								<thead>
+									<tr>
+										<th>Characteristic Name</th>
+										<th>Characteristic Value</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var characteristic in Model.IsolateCharacteristicDetails)
+									{
+										<tr>
+											<td>@characteristic.CharacteristicName</td>
+											<td>@characteristic.CharacteristicValue</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					}
+					else
+					{
+						<p>No Characteristic Information found</p>
+					}
+
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -84,7 +84,7 @@ namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
         public async Task GetAllVirusCharacteristicsByVirusTypeAsync_ValidVirusTypeAndIsAbscentTrue_ReturnsMatchingCharacteristics()
         {
             // Arrange
-            var virusType = "TypeA";
+            Guid virusType = Guid.NewGuid();
             var isAbscent = true;
             var characteristics = new List<VirusCharacteristic> { new VirusCharacteristic() };
             var expectedDtos = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO() };
@@ -105,7 +105,7 @@ namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
         public async Task GetAllVirusCharacteristicsByVirusTypeAsync_ValidVirusTypeAndIsAbscentFalse_ReturnsMatchingCharacteristics()
         {
             // Arrange
-            var virusType = "TypeB";
+            Guid virusType = Guid.NewGuid();
             var isAbscent = false;
             var characteristics = new List<VirusCharacteristic> { new VirusCharacteristic() };
             var expectedDtos = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO() };
@@ -126,7 +126,7 @@ namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
         public async Task GetAllVirusCharacteristicsByVirusTypeAsync_NullVirusType_ReturnsMatchingCharacteristics()
         {
             // Arrange
-            string virusType = null;
+            Guid? virusType = null;
             var isAbscent = true;
             var characteristics = new List<VirusCharacteristic> { new VirusCharacteristic() };
             var expectedDtos = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO() };
@@ -147,7 +147,7 @@ namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
         public async Task GetAllVirusCharacteristicsByVirusTypeAsync_EmptyStringVirusType_ReturnsMatchingCharacteristics()
         {
             // Arrange
-            var virusType = string.Empty;
+            Guid? virusType = null;
             var isAbscent = true;
             var characteristics = new List<VirusCharacteristic> { new VirusCharacteristic() };
             var expectedDtos = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO() };
@@ -168,7 +168,7 @@ namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
         public async Task GetAllVirusCharacteristicsByVirusTypeAsync_RepositoryReturnsEmptyList_ReturnsEmptyList()
         {
             // Arrange
-            var virusType = "TypeC";
+            Guid virusType = Guid.NewGuid();
             var isAbscent = true;
             var characteristics = new List<VirusCharacteristic>();
             var expectedDtos = new List<VirusCharacteristicDTO>();

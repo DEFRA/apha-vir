@@ -15,6 +15,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
         private readonly IVirusCharacteristicRepository _mockVirusCharacteristicRepository;
         private readonly IVirusCharacteristicListEntryRepository _mockVirusCharacteristicListEntryRepository;
         private readonly IIsolateSearchRepository _mockIsolateSearchRepository;
+        private readonly IIsolateRepository _mockIsolateRepository;
         private readonly IMapper _mockMapper;
         private readonly IsolateSearchService _mockIsolateSearchService;
 
@@ -23,12 +24,14 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             _mockVirusCharacteristicRepository = Substitute.For<IVirusCharacteristicRepository>();
             _mockVirusCharacteristicListEntryRepository = Substitute.For<IVirusCharacteristicListEntryRepository>();
             _mockIsolateSearchRepository = Substitute.For<IIsolateSearchRepository>();
+            _mockIsolateRepository = Substitute.For<IIsolateRepository>();
             _mockMapper = Substitute.For<IMapper>();
 
             _mockIsolateSearchService = new IsolateSearchService(
             _mockVirusCharacteristicRepository,
             _mockVirusCharacteristicListEntryRepository,
             _mockIsolateSearchRepository,
+            _mockIsolateRepository,
             _mockMapper
             );
         }
@@ -252,41 +255,22 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
                 Filter = new SearchCriteriaDTO { FullSearch = false }
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
-            var isolateFullDetails = new List<IsolateFullDetailsResult>
+            var isolateFullDetails = new List<IsolateSearchResult>
             {
-                new IsolateFullDetailsResult
+                new IsolateSearchResult
                 {
-                    IsolateDetails = new IsolateInfo
-                    {
-                        FreezerName = "F1",
-                        TrayName = "T1",
-                        Well = "W1"
-                    },
-                    IsolateViabilityDetails = new List<IsolateViabilityInfo>
-                    {
-                        new IsolateViabilityInfo
-                        {
-                            ViabilityStatus = "Viable",
-                            CheckedByName = "John Doe",
-                            DateChecked = DateTime.Now
-                        }
-                    },
-                    IsolateDispatchDetails = new List<IsolateDispatchInfo>
-                    {
-                        new IsolateDispatchInfo
-                        {
-                            RecipientName = "Recp1",
-                            RecipientAddress = "RecptAddress"
-                        }
-                    },
-                    IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>
-                    {
-                        new IsolateCharacteristicInfo
-                        {
-                            CharacteristicName = "Color",
-                            CharacteristicValue = "Red"
-                        }
-                    }
+                    FreezerName = "F1",
+                    TrayName = "T1",
+                    Well = "W1"
+                }
+            };
+            var isolateSearchResultDto = new List<IsolateSearchResultDTO>
+            {
+                new IsolateSearchResultDTO
+                {
+                     FreezerName = "F1",
+                     TrayName = "T1",
+                     Well = "W1"
                 }
             };
             var isolateSearchExportDto = new IsolateSearchExportDto
@@ -295,17 +279,15 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
                 Tray = "T1",
                 Well = "W1"
             };
-            var isolateFullDetailsDto = new List<IsolateFullDetailsResultDto>
+            var isolateFullDetailsDto = new IsolateFullDetailDTO
             {
-                new IsolateFullDetailsResultDto
+                IsolateDetails = new IsolateInfoDTO
                 {
-                    IsolateDetails = new IsolateInfoDTO
-                    {
-                        FreezerName = "F1",
-                        TrayName = "T1",
-                        Well = "W1"
-                    },
-                    IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>
+                    FreezerName = "F1",
+                    TrayName = "T1",
+                    Well = "W1"
+                },
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>
                     {
                         new IsolateViabilityInfoDTO
                         {
@@ -314,7 +296,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
                             DateChecked = DateTime.Now
                         }
                     },
-                    IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>
                     {
                         new IsolateDispatchInfoDTO
                         {
@@ -322,7 +304,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
                             RecipientAddress = "RecptAddress"
                         }
                     },
-                    IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>
                     {
                         new IsolateCharacteristicInfoDTO
                         {
@@ -330,15 +312,13 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
                             CharacteristicValue = "Red"
                         }
                     }
-                }
             };
 
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(isolateFullDetails);
-            _mockMapper.Map<List<IsolateFullDetailsResultDto>>(Arg.Any<List<IsolateFullDetailsResult>>()).Returns(isolateFullDetailsDto);
-            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);
-            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateSearchExportDto>()).Returns(x => x.Arg<IsolateSearchExportDto>());
-
+            _mockMapper.Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>()).Returns(isolateFullDetailsDto);
+            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);            
+            _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(isolateSearchResultDto);
             // Act
             var result = await _mockIsolateSearchService.GetIsolateSearchExportResultAsync(criteria);
 
@@ -361,8 +341,9 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
-            _mockMapper.Map<List<IsolateFullDetailsResultDto>>(Arg.Any<List<IsolateFullDetailsResult>>()).Returns(new List<IsolateFullDetailsResultDto>());           
-            _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(new List<IsolateFullDetailsResult>());
+            _mockMapper.Map<List<IsolateFullDetailDTO>>(Arg.Any<List<IsolateFullDetail>>()).Returns(new List<IsolateFullDetailDTO>());           
+            _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(new List<IsolateSearchResult>());
+            _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(new List<IsolateSearchResultDTO>());
 
             // Act
             var result = await _mockIsolateSearchService.GetIsolateSearchExportResultAsync(criteria);
@@ -380,18 +361,22 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
                 Filter = new SearchCriteriaDTO { FullSearch = true }
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
-            var isolateFullDetails = new List<IsolateFullDetailsResult>
+            var isolateSearchResult = new List<IsolateSearchResult>
             {
-                new IsolateFullDetailsResult
+                new IsolateSearchResult
                 {
-                    IsolateDetails = new IsolateInfo
-                    {
-                        FreezerName = "F1",
-                        TrayName = "T1",
-                        Well = "W1"
-                    },
-                    IsolateViabilityDetails = new List<IsolateViabilityInfo>(),
-                    IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
+                     FreezerName = "F1",
+                     TrayName = "T1",
+                     Well = "W1"
+                }
+            };
+            var isolateSearchResultDto = new List<IsolateSearchResultDTO>
+            {
+                new IsolateSearchResultDTO
+                {
+                     FreezerName = "F1",
+                     TrayName = "T1",
+                     Well = "W1"
                 }
             };
             var isolateSearchExportDto = new IsolateSearchExportDto
@@ -400,26 +385,24 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
                 Tray = "T1",
                 Well = "W1"
             };
-            var isolateFullDetailsDto = new List<IsolateFullDetailsResultDto>
+            var isolateFullDetailsDto = new IsolateFullDetailDTO
             {
-                new IsolateFullDetailsResultDto
+                IsolateDetails = new IsolateInfoDTO
                 {
-                    IsolateDetails = new IsolateInfoDTO
-                    {
-                        FreezerName = "F1",
-                        TrayName = "T1",
-                        Well = "W1"
-                    },
-                    IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
-                    IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
-                }
+                    FreezerName = "F1",
+                    TrayName = "T1",
+                    Well = "W1"
+                },
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
             };
 
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
-            _mockMapper.Map<List<IsolateFullDetailsResultDto>>(Arg.Any<List<IsolateFullDetailsResult>>()).Returns(isolateFullDetailsDto);
+            _mockMapper.Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>()).Returns(isolateFullDetailsDto);
             _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);
-            _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(isolateFullDetails);
-            
+            _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(isolateSearchResult);
+            _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(isolateSearchResultDto);
             _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateSearchExportDto>()).Returns(x => x.Arg<IsolateSearchExportDto>());
 
             // Act

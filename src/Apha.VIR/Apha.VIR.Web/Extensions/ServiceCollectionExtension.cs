@@ -21,6 +21,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolateDispatchService, IsolateDispatchService>();
             services.AddScoped<IIsolateSearchService, IsolateSearchService>();
             services.AddScoped<IIsolateViabilityService, IsolateViabilityService>();
+            services.AddScoped<IIsolatesService, IsolatesService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)

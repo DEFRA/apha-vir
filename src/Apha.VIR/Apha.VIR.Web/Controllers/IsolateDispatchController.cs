@@ -42,6 +42,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 viewModel = new IsolateDispatchHistoryViewModel
                 {
+                    IsolateId = IsolateId,
                     Nomenclature = dispatchHistoryRecords.First().Nomenclature,
                     DispatchHistoryRecords = dispatchHistoryRecords
                 };

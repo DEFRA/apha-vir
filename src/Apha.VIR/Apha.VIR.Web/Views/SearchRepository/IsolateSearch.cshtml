@@ -3,6 +3,7 @@
 	ViewData["Title"] = "SearchRepository";
 }
 <form asp-action="Search" method="post">
+	<input type="hidden" name="IsNewSearch" value="true" />
 	<div class="search-repository-container">
 		<table>
 			<thead><tr><th></th><th></th></tr></thead>
