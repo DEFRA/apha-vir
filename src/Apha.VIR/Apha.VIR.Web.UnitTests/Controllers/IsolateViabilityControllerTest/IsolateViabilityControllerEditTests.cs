@@ -162,35 +162,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             Assert.Equal(model.IsolateViability.IsolateViabilityIsolateId, redirectResult.RouteValues["Isolate"]);
 
             await _isolateViabilityService.Received(1).UpdateIsolateViabilityAsync(dto, "TestUser");
-        }
-
-        [Fact]
-        public async Task Edit_Post_InvalidModel_ReturnsBadRequestResult()
-        {
-            // Arrange
-            var model = new IsolateViabilityViewModel
-            {
-                IsolateViability = new IsolateViabilityModel
-                { IsolateViabilityId = Guid.NewGuid() }
-            };
-            _controller.ModelState.AddModelError("Error", "Test error");
-
-            // Act
-            var result = await _controller.Edit(model);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-
-            Assert.NotNull(badRequestResult);
-            Assert.NotNull(badRequestResult.Value);
-
-            var serializableError = Assert.IsType<SerializableError>(badRequestResult.Value);
-            Assert.True(serializableError.ContainsKey("ModelError"));
-
-            var error = serializableError["ModelError"];
-            Assert.NotNull(error);
-            var errormsg = ((string[])error)[0];
-            Assert.Equal("Invalid parameters.", errormsg);
-        }
+        }        
     }
 }

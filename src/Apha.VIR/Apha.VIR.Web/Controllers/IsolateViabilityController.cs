@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -55,8 +56,7 @@ namespace Apha.VIR.Web.Controllers
 
             var result = await _isolateViabilityService.
                 GetViabilityHistoryAsync(AVNumber, Isolate);
-
-            //Todo check is no vaibility list
+           
             var viability = _mapper.Map<IEnumerable<IsolateViabilityModel>>
                 (result.Where(x => x.IsolateViabilityId == IsolateViabilityId));
 
@@ -76,17 +76,20 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(IsolateViabilityViewModel model)
         {
-            string userid = "TestUser";
-
-            ModelState.Remove("IsolateViability.ViabilityStatus");
-            ModelState.Remove("IsolateViability.CheckedByName");
-            ModelState.Remove("IsolateViability.ViableName");
+            string userid = "TestUser";            
 
             if (!ModelState.IsValid)
-            {
-                ModelState.AddModelError("ModelError", "Invalid parameters.");
-                return BadRequest(ModelState);
+            {       
+                var vaibilities = await _lookupService.GetAllViabilityAsync();
+                var staffs = await _lookupService.GetAllStaffAsync();
+                model.ViabilityList = vaibilities.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
+                model.CheckedByList = staffs.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
+
+                return View("Edit", model);
             }
+            //ModelState.Remove("IsolateViability.ViabilityStatus");
+            //ModelState.Remove("IsolateViability.CheckedByName");
+            //ModelState.Remove("IsolateViability.ViableName");
 
             var dto = _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability);
 

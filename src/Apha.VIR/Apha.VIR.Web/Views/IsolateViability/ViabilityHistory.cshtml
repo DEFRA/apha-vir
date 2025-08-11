@@ -27,9 +27,8 @@
 						<td>@item.DateChecked</td>
 						<td>@item.CheckedByName</td>
 						<td>
-							<a asp-action="EditDispatch" asp-route-id="@item.IsolateViabilityId" class="btn btn-primary">Edit</a>
-
-							@* <a href="@Url.Action("Delete", new { IsolateViabilityId = item.IsolateViabilityId, LastModified = Convert.ToBase64String(item.LastModified) })" class="btn btn-primary">Delete</a> *@
+							<a asp-action="Edit" asp-route-AVNumber="@item.AVNumber" asp-route-Isolate="@item.IsolateViabilityIsolateId" 
+							asp-route-IsolateViabilityId="@item.IsolateViabilityId" class="btn btn-primary">Edit</a>
 
 							<form asp-action="Delete"
 								  asp-controller="IsolateViability"

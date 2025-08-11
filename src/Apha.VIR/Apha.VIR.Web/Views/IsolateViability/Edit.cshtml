@@ -1,64 +1,68 @@
 ﻿@using Apha.VIR.Web.Controllers
 @model IsolateViabilityViewModel
 @{
-    ViewData["Title"] = "Edit Isolate Viability History | Virus Isolates Repository";
+	ViewData["Title"] = "Edit Isolate Viability History | Virus Isolates Repository";
 }
 <form asp-action="Edit" asp-controller="IsolateViability" method="post">
-    <input asp-for="@Model.IsolateViability.IsolateViabilityId" type="hidden" />
-    <input asp-for="@Model.IsolateViability.LastModified" type="hidden" />
-    <input asp-for="@Model.IsolateViability.IsolateViabilityIsolateId" type="hidden" />
-    <input asp-for="@Model.IsolateViability.AVNumber" type="hidden" />
-    <table cellpadding="5px">
-        <tr>
-            <td>AV Number</td>
-            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
-            <td>
-                <span>@Model.IsolateViability.AVNumber</span>
-            </td>
-        </tr>
-        <tr>
-            <td>Nomenclature</td>
-            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
-            <td>
-                <span style="width: 600px;">@Model.IsolateViability.Nomenclature</span>
-            </td>
-        </tr>
-        <tr>
-            <td>Viability</td>
-            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
-            <td>
-                <select asp-for="@Model.IsolateViability.Viable" asp-items="Model.ViabilityList" class="select-dropdown">
-                    <option value=""></option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Checked By</td>
-            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
-            <td>
-                <select asp-for="@Model.IsolateViability.CheckedById" asp-items="Model.CheckedByList" class="select-dropdown">
-                    <option value=""></option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Date Checked;*</td>
-            <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
-            <td>
-                <input type="date" asp-for="@Model.IsolateViability.DateChecked" />
-    
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" style="text-align: right;">
-                <button type="submit" class="btn-as-link">Save</button>
-                <img src="~/images/spacer.gif" width="10" height="5" alt="" />
-                <a asp-action="History" asp-controller="IsolateViability" class="btn btn-secondary">Cancel</a>
-            </td>
-        </tr>
-    </table>
+	<input asp-for="@Model.IsolateViability.IsolateViabilityId" type="hidden" />
+	<input asp-for="@Model.IsolateViability.LastModified" type="hidden" />
+	<input asp-for="@Model.IsolateViability.IsolateViabilityIsolateId" type="hidden" />
+	<input asp-for="@Model.IsolateViability.AVNumber" type="hidden" />
+	<table cellpadding="5px">
+		<thead class="sr-only"><tr><th scope="col"></th></tr></thead>
+		<tbody>
+			<tr>
+				<td>AV Number</td>
+				<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+				<td>
+					<span>@Model.IsolateViability.AVNumber</span>
+				</td>
+			</tr>
+			<tr>
+				<td>Nomenclature</td>
+				<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+				<td>
+					<span style="width: 600px;">@Model.IsolateViability.Nomenclature</span>
+				</td>
+			</tr>
+			<tr>
+				<td>Viability</td>
+				<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+				<td>
+					<select asp-for="@Model.IsolateViability.Viable" asp-items="Model.ViabilityList" class="select-dropdown">
+						<option value=""></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Checked By</td>
+				<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+				<td>
+					<select asp-for="@Model.IsolateViability.CheckedById" asp-items="Model.CheckedByList" class="select-dropdown">
+						<option value=""></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Date Checked;*</td>
+				<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
+				<td>
+					<input type="date" asp-for="@Model.IsolateViability.DateChecked" />
+					<span asp-validation-for="@Model.IsolateViability.DateChecked" class="text-danger spvalidation"></span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" style="text-align: right;">
+					<button type="submit" class="btn-as-link">Save</button>
+					<img src="~/images/spacer.gif" width="10" height="5" alt="" />
+					<a asp-action="History" asp-controller="IsolateViability" asp-route-AVNumber="@Model.IsolateViability.AVNumber"
+					   asp-route-Isolate="@Model.IsolateViability.IsolateViabilityIsolateId" class="btn btn-secondary">Cancel</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </form>
 <div id="validationSummary" class="text-danger" style="display:none;">
-    <p>There are validation messages requiring your attention.</p>
-    <div asp-validation-summary="All"></div>
+	<p>There are validation messages requiring your attention.</p>
+	<div asp-validation-summary="All"></div>
 </div>
