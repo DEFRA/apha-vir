@@ -46,6 +46,7 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
             CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
+            CreateMap<IsolateViability, IsolateViabilityDTO>().ReverseMap();
         }
     }
 }

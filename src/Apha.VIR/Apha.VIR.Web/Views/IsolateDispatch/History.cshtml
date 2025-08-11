@@ -42,7 +42,7 @@
                         <td>@item.DispatchedDate.ToString("d")</td>
                         <td>@item.DispatchedByName</td>
                         <td>
-                            <form asp-action="Edit" method="post" style="display:inline;">
+                            <form asp-action="Edit" method="get" style="display:inline;">
                                 <input type="hidden" name="DispatchIsolateId" value="@item.DispatchIsolateId" />
                                 <input type="hidden" name="AVNumber" value="@item.Avnumber" />
                                 <input type="hidden" name="DispatchId" value="@item.DispatchId" />

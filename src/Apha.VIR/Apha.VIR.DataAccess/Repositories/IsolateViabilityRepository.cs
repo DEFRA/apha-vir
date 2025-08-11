@@ -19,7 +19,7 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
 
     public async Task<IEnumerable<IsolateViability>> GetViabilityHistoryAsync(Guid IsolateId)
     {
-      
+
         var parameters = new[]
         {
             new SqlParameter("@IsolateID", IsolateId),
@@ -31,7 +31,7 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
 
     public async Task DeleteIsolateViabilityAsync(Guid IsolateId, byte[] lastModified, string userid)
     {
-         
+
         var parameters = new[]
         {
                 new SqlParameter("@IsolateViabilityId",IsolateId),
@@ -46,5 +46,17 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
 
         await _context.Database
             .ExecuteSqlRawAsync($"EXEC spIsolateViabilityDelete @UserID, @IsolateViabilityId, @LastModified", parameters);
+    }
+
+    public async Task<IEnumerable<IsolateViability>> GetViabilityByIsolateIdAsync(Guid isolateId)
+    {
+
+        var result = await _context.IsolateViabilities
+            .FromSqlRaw("EXEC spIsolateViabilityGetByIsolateId @IsolateID",
+                new Microsoft.Data.SqlClient.SqlParameter("@IsolateID", isolateId))
+            .ToListAsync();
+
+        return result;
+
     }
 }
