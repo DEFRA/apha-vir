@@ -16,14 +16,12 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<CharacteristicCriteria, CharacteristicCriteriaDTO>().ReverseMap();
             CreateMap<IsolateSearchResultDTO, IsolateSearchResult>();
             CreateMap<IsolateSearchExportDto, IsolateSearchExportViewModel>();
-            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>();
             CreateMap<IsolateFullDetailDTO, IsolateDetailsViewModel>();
             CreateMap<IsolateInfoDTO, IsolateDetails>();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityCheckInfo>();
             CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>();
             CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>();
             CreateMap<IsolateDispatchInfoDTO, IsolateDispatchEditViewModel>().ReverseMap();
-
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>().ReverseMap();
         }
     }

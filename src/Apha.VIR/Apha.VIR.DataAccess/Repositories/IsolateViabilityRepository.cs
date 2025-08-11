@@ -70,4 +70,16 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
             .ExecuteSqlRawAsync($"EXEC spIsolateViabilityUpdate @UserID, @IsolateViabilityId," +
             $" @IsolateViabilityIsolateID, @Viable, @DateChecked, @CheckedByID, @LastModified", parameters);
     }
+
+    public async Task<IEnumerable<IsolateViability>> GetViabilityByIsolateIdAsync(Guid isolateId)
+    {
+
+        var result = await _context.IsolateViabilities
+            .FromSqlRaw("EXEC spIsolateViabilityGetByIsolateId @IsolateID",
+                new Microsoft.Data.SqlClient.SqlParameter("@IsolateID", isolateId))
+            .ToListAsync();
+
+        return result;
+
+    }
 }

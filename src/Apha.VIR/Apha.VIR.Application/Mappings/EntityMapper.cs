@@ -38,21 +38,14 @@ namespace Apha.VIR.Application.Mappings
              .ForMember(dest => dest.AntigenProduced, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.AntigenProduced)))
              .ForMember(dest => dest.MTA, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.MaterialTransferAgreement)))
              .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => MappingHelper.ToDateStringFormat(src.ReceivedDate)));
-            CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>().ReverseMap();
+            CreateMap<IsolateFullDetail, IsolateFullDetailDTO>().ReverseMap();
+            CreateMap<IsolateInfoDTO, IsolateInfo>().ReverseMap();
+            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>().ReverseMap();
+            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
+            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfo, IsolateViability>().ReverseMap();
-            CreateMap<IsolateViabilityInfo, IsolateViabilityInfoDTO>().ReverseMap();
-            CreateMap<IsolateFullDetail, IsolateFullDetailDTO>().ReverseMap();
-            CreateMap<IsolateInfoDTO, IsolateInfo>().ReverseMap();
-            CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>().ReverseMap();
-            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
-            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
             CreateMap<IsolateViability, IsolateViabilityDTO>().ReverseMap();
-            CreateMap<IsolateFullDetail, IsolateFullDetailDTO>().ReverseMap();
-            CreateMap<IsolateInfoDTO, IsolateInfo>().ReverseMap();
-            CreateMap<IsolateDispatchInfo, IsolateDispatchInfoDTO>().ReverseMap();
-            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViability>().ReverseMap();
-            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
         }
     }
 }
