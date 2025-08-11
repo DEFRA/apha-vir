@@ -48,6 +48,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 viewModel = new IsolateDispatchHistoryViewModel
                 {
+                    IsolateId = IsolateId,
                     Nomenclature = dispatchHistoryRecords.First().Nomenclature,
                     DispatchHistoryRecords = dispatchHistoryRecords
                 };
@@ -107,7 +108,7 @@ namespace Apha.VIR.Web.Controllers
                 return View();
             }
 
-            IsolateDispatchInfoDTO isolateDispatchInfoDTO = 
+            IsolateDispatchInfoDTO isolateDispatchInfoDTO =
                 await _isolateDispatchService.GetDispatchForIsolateAsync(
                 AVNumber,
                 DispatchId,
@@ -164,9 +165,30 @@ namespace Apha.VIR.Web.Controllers
             "TestUser"
             );
 
-            return RedirectToAction("History", new { AVNumber = model.Avnumber, IsolateId =model.DispatchIsolateId });
+            return RedirectToAction("History", new { AVNumber = model.Avnumber, IsolateId = model.DispatchIsolateId });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Confirmation(Guid Isolate)
+        {
+            if (Isolate == Guid.Empty || !ModelState.IsValid)
+            {
+                return BadRequest("Invalid Isolate ID.");
+            }
+
+            var result = await _isolateDispatchService.GetDispatcheConfirmationAsync(Isolate);
+
+            var dislist = _mapper.Map<IEnumerable<IsolateDispatchHistory>>(result.IsolateDispatchDetails);
+
+            var model = new IsolateDispatchConfirmatioViewModel
+            {
+                DispatchConfirmationMessage = "Isolate dispatch completed successfully.",
+                RemainingAliquots = result.IsolateDetails?.NoOfAliquots ?? 0,
+                DispatchHistorys = dislist
+            };
+
+            return View(model);
+        }
 
     }
 }

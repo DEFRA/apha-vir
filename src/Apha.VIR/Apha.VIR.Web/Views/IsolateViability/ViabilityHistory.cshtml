@@ -1,0 +1,63 @@
+﻿@using Apha.VIR.Web.Controllers
+@model IsolateViabilityHistoryViewModel
+@{
+	ViewData["Title"] = "Isolate Viability History | Virus Isolates Repository";
+}
+<p>
+	<strong>@Model.Nomenclature</strong>
+</p>
+
+@if (Model.ViabilityHistoryList.Any())
+{
+	<div class="isolate-grid-table mt-3">
+		<table class="table" cellpadding="5">
+			<thead>
+				<tr>
+					<th class="view-isolate-details-label2">Viable</th>
+					<th class="view-isolate-details-label2">Date Checked</th>
+					<th class="view-isolate-details-label2">Checked By</th>
+					<th class="view-isolate-details-label2"></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.ViabilityHistoryList)
+				{
+					<tr>
+						<td>@item.ViableName</td>
+						<td>@item.DateChecked</td>
+						<td>@item.CheckedByName</td>
+						<td>
+							<a asp-action="EditDispatch" asp-route-id="@item.IsolateViabilityId" class="btn btn-primary">Edit</a>
+
+							@* <a href="@Url.Action("Delete", new { IsolateViabilityId = item.IsolateViabilityId, LastModified = Convert.ToBase64String(item.LastModified) })" class="btn btn-primary">Delete</a> *@
+
+							<form asp-action="Delete"
+								  asp-controller="IsolateViability"
+								  method="post"
+								  class="inline-form">
+
+								<input type="hidden" name="IsolateViabilityId" value="@item.IsolateViabilityId" />
+								<input type="hidden" name="LastModified" value="@Convert.ToBase64String(item.LastModified)" />
+								<input type="hidden" name="AVNUmber" value="@item.AVNumber" />
+								<input type="hidden" name="IsolateId" value="@item.IsolateViabilityIsolateId" />
+								<button type="submit"
+										class="btn-as-link"
+										onclick="return confirm('Please confirm that you want to delete this viability record');">
+									Delete
+								</button>
+							</form>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+else
+{
+	<p>There are no viability records available for this isolate</p>
+}
+
+<a asp-action="ViewIsolateDetails" asp-controller="Isolates" asp-route-IsolateId="@Model.IsolateId" class="btn btn-secondary">
+	Return to Isolate Details page
+</a>

@@ -1,0 +1,14 @@
+﻿@model PaginationModel
+<div class="pagination">
+	@for (int i = 1; i <= Model.TotalPages; i++)
+	{
+		if (i == Model.PageNumber)
+		{
+			<span class="page active">@i</span>
+		}
+		else
+		{
+			<a class="page" href="#" data-pageno="@i")">@i</a>
+		}
+	}
+</div>

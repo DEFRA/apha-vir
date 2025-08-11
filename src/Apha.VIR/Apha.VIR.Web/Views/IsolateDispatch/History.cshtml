@@ -1,6 +1,7 @@
 ﻿@{
     var records = Model?.DispatchHistoryRecords;
     var nomenclature = Model?.Nomenclature ?? string.Empty;
+    var isolateid = Model?.IsolateId ?? null;
 }
 
 @if (records != null)
@@ -86,5 +87,5 @@ else
 }
 
 <p>
-    <a asp-action="ViewIsolateDetails" asp-route-id="1">Return to View Isolate Details Page</a>
+    <a asp-action="ViewIsolateDetails" asp-controller="Isolates" asp-route-IsolateId="@isolateid">Return to View Isolate Details Page</a>
 </p>

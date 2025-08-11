@@ -1,12 +1,13 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Services;
+using Apha.VIR.Application.Validation;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTests
+namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
 {
     public class IsolateDispatchServiceTest : IDisposable
     {
@@ -171,11 +172,11 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTests
         {
             // Arrange
             var dispatchId = Guid.NewGuid();
-            byte[]? lastModified = null;
+            byte[]? lastModified = Array.Empty<byte>(); ;
             var user = "TestUser";
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            await Assert.ThrowsAsync<ArgumentException>(() =>
                 _service.DeleteDispatchAsync(dispatchId, lastModified!, user));
         }
 
@@ -195,6 +196,71 @@ namespace Apha.VIR.Application.UnitTests.IsolateDispatchServiceTests
             _service.DeleteDispatchAsync(dispatchId, lastModified, user));
         }
 
+        [Fact]
+        public async Task GetDispatcheConfirmationAsync_SuccessfulRetrieval_ReturnsIsolateFullDetailDTO()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var isolateFullDetail = new IsolateFullDetail 
+            {  IsolateDetails = new IsolateInfo { NoOfAliquots = 5 },
+               IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
+               IsolateViabilityDetails = new List<IsolateViabilityInfo>(),
+               IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
+            };
+            var expectedDto = new IsolateFullDetailDTO
+            {
+                IsolateDetails = new IsolateInfoDTO { NoOfAliquots = 5 },
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
+
+            };
+ 
+
+            _isolateRepository.GetIsolateFullDetailsByIdAsync(isolateId).Returns(isolateFullDetail);
+            _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail).Returns(expectedDto);
+
+            // Act
+            var result = await _service.GetDispatcheConfirmationAsync(isolateId);
+
+            // Assert
+            Assert.Equal(expectedDto, result);
+            await _isolateRepository.Received(1).GetIsolateFullDetailsByIdAsync(isolateId);
+            _mapper.Received(1).Map<IsolateFullDetailDTO>(isolateFullDetail);
+        }
+
+        [Fact]
+        public async Task GetDispatcheConfirmationAsync_NullIsolateDetails_ThrowsBusinessValidationErrorException()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+
+            var isolateFullDetail = new IsolateFullDetail
+            {
+                IsolateDetails = null!,
+                IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
+                IsolateViabilityDetails = new List<IsolateViabilityInfo>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
+            };
+
+            _isolateRepository.GetIsolateFullDetailsByIdAsync(isolateId).Returns(isolateFullDetail);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<BusinessValidationErrorException>(() =>
+            _service.GetDispatcheConfirmationAsync(isolateId));
+        }
+
+        [Fact]
+        public async Task GetDispatcheConfirmationAsync_ExceptionThrown_PropagatesException()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            _isolateRepository.GetIsolateFullDetailsByIdAsync(isolateId).Throws(new Exception("Test exception"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() =>
+            _service.GetDispatcheConfirmationAsync(isolateId));
+        }
 
         private string InvokeGetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {

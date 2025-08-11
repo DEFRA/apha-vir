@@ -1,0 +1,74 @@
+﻿@model IsolateSearchGirdViewModel
+@if (Model.IsolateSearchResults.Count > 0)
+{
+	<div class="d-flex ">
+		<span id="lblNumberOfIsolates" class="search-repository-label ">Number of Isolates found matching the above criteria: @Model.Pagination.TotalCount</span>
+		<span id="lblPageNumber" class="search-repository-label text-center">Displaying Page @Model.Pagination.PageNumber of @Model.Pagination.TotalPages</span>
+	</div>
+	<div>
+		<table id="SearchRepositoryGrid" cellpadding="1">
+			<thead>
+				<tr>
+					<th><a href="" data-sortcolumn="Avnumber" data-sortorder="@Model.SortOrderFor("Avnumber")">AV Number</a></th>
+					<th><a href="" data-sortcolumn="SenderReferenceNumber" data-sortorder="@Model.SortOrderFor("SenderReferenceNumber")">Sender Ref</a></th>
+					<th><a href="" data-sortcolumn="SampleTypeName" data-sortorder="@Model.SortOrderFor("SampleTypeName")">Sample Type</a></th>
+					<th><a href="" data-sortcolumn="FamilyName" data-sortorder="@Model.SortOrderFor("FamilyName")">Virus Family</a></th>
+					<th><a href="" data-sortcolumn="TypeName" data-sortorder="@Model.SortOrderFor("TypeName")">Virus Type</a></th>
+					<th><a href="" data-sortcolumn="GroupSpeciesName" data-sortorder="@Model.SortOrderFor("GroupSpeciesName")">Group</a></th>
+					<th><a href="" data-sortcolumn="BreedName" data-sortorder="@Model.SortOrderFor("BreedName")">Species</a></th>
+					<th><a href="" data-sortcolumn="YearOfIsolation" data-sortorder="@Model.SortOrderFor("YearOfIsolation")">Year Of Isolation</a></th>
+					<th><a href="" data-sortcolumn="ReceivedDate" data-sortorder="@Model.SortOrderFor("ReceivedDate")">Received Date</a></th>
+					<th><a href="" data-sortcolumn="CountryOfOriginName" data-sortorder="@Model.SortOrderFor("CountryOfOriginName")">Country Of Origin</a></th>
+					<th><a href="" data-sortcolumn="MaterialTransferAgreement" data-sortorder="@Model.SortOrderFor("MaterialTransferAgreement")">MTA</a></th>
+					<th><a href="" data-sortcolumn="NoOfAliquots" data-sortorder="@Model.SortOrderFor("NoOfAliquots")">Number Of Aliquots</a></th>
+					<th><a href="" data-sortcolumn="FreezerName" data-sortorder="@Model.SortOrderFor("FreezerName")">Freezer</a></th>
+					<th><a href="" data-sortcolumn="TrayName" data-sortorder="@Model.SortOrderFor("TrayName")">Tray</a></th>
+					<th><a href="" data-sortcolumn="Well" data-sortorder="@Model.SortOrderFor("Well")">Well</a></th>
+					<th colspan="2">
+						
+					</th>
+					<th><a href="">Dispatch Warning</a></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var searchModel in Model.IsolateSearchResults)
+				{
+					<tr>
+						<td>@searchModel.Avnumber</td>
+						<td>@searchModel.SenderReferenceNumber</td>
+						<td>@searchModel.SampleTypeName</td>
+						<td>@searchModel.FamilyName</td>
+						<td>@searchModel.TypeName</td>
+						<td>@searchModel.GroupSpeciesName</td>
+						<td>@searchModel.BreedName</td>
+						<td>@searchModel.YearOfIsolation</td>
+						<td>@searchModel.ReceivedDate?.ToString("dd/MM/yyyy")</td>
+						<td>@searchModel.CountryOfOriginName</td>
+						<td>@(searchModel.MaterialTransferAgreement ? "Yes" : "No")</td>
+						<td>@searchModel.NoOfAliquots</td>
+						<td>@searchModel.FreezerName</td>
+						<td>@searchModel.TrayName</td>
+						<td>@searchModel.Well</td>
+						<td><a href="@Url.Action("ViewIsolateDetails", "Isolates", new { IsolateId = searchModel.IsolateId })" class="sp-button">View</a></td>
+						<td><a href="@Url.Action("Dispach", "", new { IsolateId = searchModel.IsolateId })" class="sp-button">Dispatch</a></td>
+						@if ((searchModel.MaterialTransferAgreement || searchModel.IsMixedIsolate) || (!(searchModel.ValidToIssue)))
+						{
+							<td>
+								<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="yes-label">Yes</span>
+							</td>
+						}
+						else
+						{
+							<td>
+								<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="no-label">No</span>
+							</td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<div id="girdPagination" class="pagination">
+		@await Component.InvokeAsync("Pagination", Model.Pagination)
+	</div>
+}

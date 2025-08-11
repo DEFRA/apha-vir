@@ -128,6 +128,70 @@ namespace Apha.VIR.Web.UnitTests.Controller
             );
         }
 
+        [Fact]
+        public async Task Confirmation_WithValidIsolateGuid_ReturnsViewResult()
+        {
+            // Arrange
+            var isolateGuid = Guid.NewGuid();
+            var dispatchConfirmationDTO = new IsolateFullDetailDTO
+            {
+                IsolateDetails = new IsolateInfoDTO { NoOfAliquots = 5 },
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
+ 
+            };
+
+            _mockIsolateDispatchService.GetDispatcheConfirmationAsync(isolateGuid)
+            .Returns(Task.FromResult(dispatchConfirmationDTO));
+
+            var mappedDispatchHistory = new List<IsolateDispatchHistory>();
+            _mockMapper.Map<IEnumerable<IsolateDispatchHistory>>(Arg.Any<IEnumerable<IsolateDispatchInfoDTO>>())
+            .Returns(mappedDispatchHistory);
+
+            // Act
+            var result = await _controller.Confirmation(isolateGuid);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<IsolateDispatchConfirmatioViewModel>(viewResult.Model);
+            Assert.Equal("Isolate dispatch completed successfully.", model.DispatchConfirmationMessage);
+            Assert.Equal(5, model.RemainingAliquots);
+            Assert.Same(mappedDispatchHistory, model.DispatchHistorys);
+
+            await _mockIsolateDispatchService.Received(1).GetDispatcheConfirmationAsync(isolateGuid);
+            _mockMapper.Received(1).Map<IEnumerable<IsolateDispatchHistory>>(Arg.Any<IEnumerable<IsolateDispatchInfoDTO>>());
+        }
+
+        [Fact]
+        public async Task Confirmation_WithEmptyGuid_ReturnsBadRequest()
+        {
+            // Arrange
+            var emptyGuid = Guid.Empty;
+
+            // Act
+            var result = await _controller.Confirmation(emptyGuid);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Invalid Isolate ID.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task Confirmation_WithInvalidModelState_ReturnsBadRequest()
+        {
+            // Arrange
+            var isolateGuid = Guid.NewGuid();
+            _controller.ModelState.AddModelError("Error", "Model error");
+
+            // Act
+            var result = await _controller.Confirmation(isolateGuid);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Invalid Isolate ID.", badRequestResult.Value);
+        }
+
 
         [Theory]
         [InlineData("", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")]

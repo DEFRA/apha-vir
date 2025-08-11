@@ -7,10 +7,6 @@ on:
       - 'fix/*'
       - 'docs/*'
       - main
-
-  # pull_request:
-  #   branches:
-  #     - main      
 env:
   REPOSITORY: apha/vir
 jobs:
@@ -93,8 +89,6 @@ jobs:
             echo "should_push=false"
             echo "should_push=false" >> $GITHUB_OUTPUT
           fi
-    
-
       - name: Start Sonar Analysis
         shell: pwsh
         env:
@@ -106,9 +100,12 @@ jobs:
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
             /d:sonar.host.url="https://sonarcloud.io" `
             /v:"${{ steps.imgtag.outputs.image_tag }}" `
-            /d:sonar.cs.cobertura.reportsPaths="coverage/Cobertura.xml" `
-            /d:sonar.branch.name="${{ github.ref_name }}"
-            #/d:sonar.cs.opencover.reportsPaths=**/TestResults/**/coverage.cobertura.xml `
+            /d:sonar.cs.opencover.reportsPaths="src/TestResults/*.coverage.opencover.xml" `
+            /d:sonar.cs.vstest.reportsPaths="src/TestResults/*.test_results.trx" `
+            /d:sonar.branch.name="${{ github.ref_name }}" `
+            /d:sonar.verbose=true `
+            /d:sonar.exclusions="**/wwwroot/**" `
+            /d:sonar.coverage.exclusions="**/wwwroot/**,**/*.cshtml"
       - name: Restore NuGet packages
         shell: pwsh
         run: dotnet restore src/Apha.VIR.sln
@@ -118,18 +115,24 @@ jobs:
       - name: Run Unit Tests with Coverage
         shell: pwsh
         run: |
-          # dotnet test src/apha.vir.sln --no-build --configuration Release `
-          #   --collect:"XPlat Code Coverage" --settings src/coverlet.runsettings
-          dotnet test src/apha.vir.sln --no-build --configuration Release
+          dotnet test src/Apha.VIR/Apha.VIR.Application.UnitTests/Apha.VIR.Application.UnitTests.csproj `
+            --no-build --configuration Release /p:CollectCoverage=true `
+            /p:CoverletOutput="$($PWD.Path)/src/TestResults/Apha.VIR.Application.coverage.opencover.xml" `
+            /p:CoverletOutputFormat=opencover `
+            /p:Deterministic=true `
+            /p:DebugType=full /p:DebugSymbols=true `
+            --logger "trx;LogFileName=$($PWD.Path)/src/TestResults/Apha.VIR.Application.test_results.trx"
 
-      - name: Convert coverage to Cobertura
-        run: |
-          dotnet tool install --global dotnet-reportgenerator-globaltool
-          #reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:Cobertura
-          #reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:OpenCover
+          dotnet test src/Apha.VIR/Apha.VIR.Web.UnitTests/Apha.VIR.Web.UnitTests.csproj `
+            --no-build --configuration Release /p:CollectCoverage=true `
+            /p:CoverletOutput="$($PWD.Path)/src/TestResults/Apha.VIR.Web.coverage.opencover.xml" `
+            /p:CoverletOutputFormat=opencover `
+            /p:Deterministic=true `
+            /p:DebugType=full /p:DebugSymbols=true `
+            --logger "trx;LogFileName=$($PWD.Path)/src/TestResults/Apha.VIR.Web.test_results.trx"
       - name: List coverage files
         shell: pwsh
-        run: Get-ChildItem -Recurse -Filter "*cobertura.xml"
+        run: Get-ChildItem -Recurse -Filter "*.coverage.opencover.xml"; Get-ChildItem -Recurse -Filter "*.test_results.trx"
       - name: End Sonar Analysis
         shell: pwsh
         env:
@@ -205,23 +208,6 @@ jobs:
 
           echo "Pushing Docker image..."
           docker push "$IMAGE_NAME:$IMAGE_TAG"
-            
-#       - name: Build and push Docker image
-#         uses: docker/build-push-action@v6
-#         with:
-#          # context: https://github.com/DEFRA/apha-bst.git#${{ github.ref_name }}
-#           context: .
-#           file: Dockerfile
-#           target: base
-#           build-args: |
-#             GIT_COMMIT=${{
-#             fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision']
-#             }}
-# #            GIT_BRANCH=${{ github.ref_name }}
-#           push: true
-#           labels: ${{ steps.meta.outputs.labels }}
-#           tags: ${{ steps.meta.outputs.tags }}
-
       - name: Generate job summary
         id: summary
         run: >
@@ -244,7 +230,7 @@ jobs:
           image_tag=${{ needs.build-and-analyze.outputs.image_tag }}
           docker build -t vir:$image_tag .
           echo "Running local image: $image_tag"
-          docker run -d --name test-container -p 8080:8080 vir:$image_tag
+          docker run -d --name test-container -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Development vir:$image_tag
       - name: Wait for service to start
         run: >
           echo "Waiting for the service to start..."
