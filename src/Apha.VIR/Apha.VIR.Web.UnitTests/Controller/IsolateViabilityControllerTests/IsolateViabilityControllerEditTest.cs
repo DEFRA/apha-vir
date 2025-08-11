@@ -55,7 +55,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             Assert.Equal("Edit", viewResult.ViewName);
             var model = Assert.IsType<IsolateViabilityViewModel>(viewResult.Model);
             Assert.NotNull(model.IsolateViability);
+            Assert.NotNull(model.ViabilityList);
             Assert.NotEmpty(model.ViabilityList);
+            Assert.NotEmpty(model.ViabilityList);
+            Assert.NotNull(model.CheckedByList);
+            Assert.NotEmpty(model.CheckedByList);
             Assert.NotEmpty(model.CheckedByList);
         }
 
@@ -151,6 +155,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal(nameof(IsolateViabilityController.History), redirectResult.ActionName);
+            Assert.NotNull(redirectResult);
+            Assert.NotNull(redirectResult.RouteValues);
+            Assert.True(redirectResult.RouteValues.ContainsKey("AVNumber"));
             Assert.Equal(model.IsolateViability.AVNumber, redirectResult.RouteValues["AVNumber"]);
             Assert.Equal(model.IsolateViability.IsolateViabilityIsolateId, redirectResult.RouteValues["Isolate"]);
 
@@ -169,9 +176,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            var error = ((SerializableError)badRequestResult.Value)["ModelError"];
-            var errormsg = ((string[])error)[0];
+         
+            Assert.NotNull(badRequestResult);
+            Assert.NotNull(badRequestResult.Value);
 
+            var serializableError = Assert.IsType<SerializableError>(badRequestResult.Value);
+            Assert.True(serializableError.ContainsKey("ModelError"));
+
+            var error = serializableError["ModelError"];
+            Assert.NotNull(error);
+            var errormsg = ((string[])error)[0];
             Assert.Equal("Invalid parameters.", errormsg);
         }
     }

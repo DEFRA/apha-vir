@@ -38,6 +38,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal(nameof(IsolateViabilityController.History), redirectResult.ActionName);
+
+            Assert.NotNull(redirectResult);
+            Assert.NotNull(redirectResult.RouteValues);
+            Assert.True(redirectResult.RouteValues.ContainsKey("AVNumber"));
             Assert.Equal(avNumber, redirectResult.RouteValues["AVNumber"]);
             Assert.Equal(isolateId, redirectResult.RouteValues["Isolate"]);
 

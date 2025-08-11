@@ -70,8 +70,8 @@ namespace Apha.VIR.Application.Services
 
         public async Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userid)
         {
-            if (isolateViability == null) throw new ArgumentNullException(nameof(isolateViability));
-
+            ArgumentNullException.ThrowIfNull(isolateViability);
+           
             if (string.IsNullOrWhiteSpace(userid)) throw new ArgumentException("User ID cannot be empty.", nameof(userid));
 
             var result = _mapper.Map<IsolateViability>(isolateViability);
