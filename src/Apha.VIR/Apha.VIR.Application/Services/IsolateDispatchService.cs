@@ -68,7 +68,7 @@ namespace Apha.VIR.Application.Services
                 return _mapper.Map<IEnumerable<IsolateDispatchInfoDTO>>(Enumerable.Empty<IsolateDispatchInfoDTO>());
             }
 
-            var matchIsolateId = matchIsolate.FirstOrDefault()?.IsolateId ?? Guid.Empty;
+            var matchIsolateId = matchIsolate.First()?.IsolateId ?? Guid.Empty;
 
             var dispatchHistList = await _isolateDispatchRepository.GetDispatchesHistoryAsync(matchIsolateId);
 
@@ -78,9 +78,7 @@ namespace Apha.VIR.Application.Services
 
             if (string.IsNullOrEmpty(charNomenclature))
             {
-                nomenclature = matchIsolate.FirstOrDefault()?.Nomenclature != null
-                    ? matchIsolate.FirstOrDefault()?.Nomenclature!
-                    : string.Empty;
+                nomenclature = matchIsolate.First().Nomenclature ?? string.Empty;
             }
             else
             {
@@ -168,10 +166,10 @@ namespace Apha.VIR.Application.Services
 
             var matchIsolate = isolationList.Where(x => x.IsolateId == DispatchIsolateId).ToList();
 
-            if (!(matchIsolate?.Any() ?? false))
+            if (!matchIsolate.Any())
                 return _mapper.Map<IsolateDispatchInfoDTO>(null);
 
-            var matchIsolateId = matchIsolate.FirstOrDefault()?.IsolateId ?? Guid.Empty;
+            var matchIsolateId = matchIsolate.First().IsolateId;
 
             var dispatchHistList = await _isolateDispatchRepository.GetDispatchesHistoryAsync(matchIsolateId);
 

@@ -6,8 +6,8 @@ namespace Apha.VIR.Web.Models
 {
     public class IsolateDispatchEditViewModel 
     {
-        public Guid DispatchId { get; set; }
-        public Guid DispatchIsolateId { get; set; }
+        public Guid? DispatchId { get; set; }
+        public Guid? DispatchIsolateId { get; set; }
 
         [Display(Name = "AV Number")]
         public string? Avnumber { get; set; }
@@ -18,6 +18,7 @@ namespace Apha.VIR.Web.Models
         [Display(Name = "Nomenclature")]
         public string? Nomenclature { get; set; }
 
+        [Required]
         [Display(Name = "ValidToIssue")]
         public bool ValidToIssue { get; set; }
 
@@ -29,12 +30,12 @@ namespace Apha.VIR.Web.Models
         [Required(ErrorMessage = "No Of Aliquots must be entered")]
         [RegularExpression(@"^\d+$", ErrorMessage = "No of Aliquots must be a numeric value")]
         [Display(Name = "Number of Aliquots")]
-        public int NoOfAliquotsToBeDispatched { get; set; }
+        public int? NoOfAliquotsToBeDispatched { get; set; }
 
         [Required(ErrorMessage = "Passage Number must be entered")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Passage Number must be a numeric value")]
         [Display(Name = "Passage Number")]
-        public int PassageNumber { get; set; }
+        public int? PassageNumber { get; set; }
 
         [Display(Name = "Recipient")]
         public Guid? RecipientId { get; set; }
@@ -53,7 +54,7 @@ namespace Apha.VIR.Web.Models
         [DataType(DataType.Date)]
         public DateTime? DispatchedDate { get; set; }
         [Display(Name = "Dispatched By")]
-        public Guid DispatchedById { get; set; }
+        public Guid? DispatchedById { get; set; }
         public List<SelectListItem>? DispatchedByList { get; set; }
        [Display(Name = "Last Modified")]
         public byte[]? LastModified { get; set; }

@@ -55,7 +55,7 @@ public class DispatchRepository : IIsolateDispatchRepository
                             Nomenclature = result["IsolateNomenclature"] as string,
                             IsolateId = result["IsolateId"] as Guid?,
                             DispatchId = result["DispatchId"] as Guid?,
-                            ValidToIssue = result["ValidToIssue"] is DBNull ? false : (bool)result["ValidToIssue"],
+                            ValidToIssue = !(result["ValidToIssue"] is DBNull) && (bool)result["ValidToIssue"],
                             ViabilityId = result["Viable"] as Guid?,
                             NoOfAliquotsToBeDispatched = result.GetInt32(noOfAliquotsToBeDispatchedOrdinal),
                             NoOfAliquots = result.GetInt32(noOfAliquotsOrdinal),

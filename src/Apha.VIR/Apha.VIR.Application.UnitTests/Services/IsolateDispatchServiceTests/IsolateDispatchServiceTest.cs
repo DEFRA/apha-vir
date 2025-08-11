@@ -295,7 +295,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
             var user = "TestUser";
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _service.UpdateDispatchAsync(dto, user));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _service.UpdateDispatchAsync(dto!, user));
         }
 
         [Theory]
