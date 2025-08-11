@@ -41,7 +41,7 @@
 							<tr><td><span class="view-isolate-details-label">Country Of Origin</span></td><td>@Model.IsolateDetails.CountryOfOriginName</td></tr>
 							<tr><td><span class="view-isolate-details-label">Year Of Isolation</span></td><td>@Model.IsolateDetails.YearOfIsolation</td></tr>
 							<tr><td><span class="view-isolate-details-label">Isolation Method</span></td><td>@Model.IsolateDetails.IsolationMethodName</td></tr>
-							<tr><td><span class="view-isolate-details-label">Received Date</span></td><td>@Model.IsolateDetails.ReceivedDate</td></tr>
+							<tr><td><span class="view-isolate-details-label">Received Date</span></td><td>@Model.IsolateDetails.ReceivedDate?.ToString("dd/MM/yyyy")</td></tr>
 							<tr><td><span class="view-isolate-details-label"></span></td><td>&nbsp;&nbsp;</td></tr>
 							<tr><td><span class="view-isolate-details-label">Freezer</span></td><td>@Model.IsolateDetails.FreezerName</td></tr>
 							<tr><td><span class="view-isolate-details-label">Tray</span></td><td>@Model.IsolateDetails.TrayName</td></tr>

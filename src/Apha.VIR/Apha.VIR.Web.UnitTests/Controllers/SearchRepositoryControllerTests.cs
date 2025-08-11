@@ -94,7 +94,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
                 CreatedFromDate = DateTime.Today.AddDays(-30),
                 CreatedToDate = DateTime.Today
             };
-
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(new SearchCriteria());
             var searchResults = new PaginatedResult<IsolateSearchResultDTO>
             {
                 data = new List<IsolateSearchResultDTO>(),
@@ -118,6 +118,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers
         {
             // Arrange
             _controller.ModelState.AddModelError("Error", "Model state is invalid");
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(new SearchCriteria());
+            var searchResults = new PaginatedResult<IsolateSearchResultDTO>
+            {
+                data = new List<IsolateSearchResultDTO>(),
+                TotalCount = 10
+            };
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>()).Returns(searchResults);
 
             // Act
             var result = await _controller.Search(new SearchCriteria()) as ViewResult;
@@ -354,8 +361,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Guid virusTypeId = Guid.NewGuid();
             var expectedCharacteristics = new List<VirusCharacteristicDTO>
             {
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2" }
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(virusTypeId, false)
@@ -366,7 +373,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
-            var selectListItems = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            var selectListItems = Assert.IsType<List<CustomSelectListItem>>(jsonResult.Value);
 
             Assert.Equal(expectedCharacteristics.Count, selectListItems.Count);
             Assert.All(selectListItems, item =>
@@ -384,9 +391,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Guid? virusTypeId = null;
             var expectedCharacteristics = new List<VirusCharacteristicDTO>
             {
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 3" }
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" },
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 3", DataType = "Type 3" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
@@ -397,7 +404,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
-            var selectListItems = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            var selectListItems = Assert.IsType<List<CustomSelectListItem>>(jsonResult.Value);
 
             Assert.Equal(expectedCharacteristics.Count, selectListItems.Count);
             Assert.All(selectListItems, item =>
@@ -415,9 +422,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers
             Guid? virusTypeId = null;
             var expectedCharacteristics = new List<VirusCharacteristicDTO>
             {
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 3" }
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" },
+                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 3", DataType = "Type 3" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
@@ -428,7 +435,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
-            var selectListItems = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            var selectListItems = Assert.IsType<List<CustomSelectListItem>>(jsonResult.Value);
 
             Assert.Equal(expectedCharacteristics.Count, selectListItems.Count);
             Assert.All(selectListItems, item =>

@@ -42,9 +42,9 @@
 						<td>@searchModel.GroupSpeciesName</td>
 						<td>@searchModel.BreedName</td>
 						<td>@searchModel.YearOfIsolation</td>
-						<td>@searchModel.ReceivedDate?.ToString("MM/dd/yyyy")</td>
+						<td>@searchModel.ReceivedDate?.ToString("dd/MM/yyyy")</td>
 						<td>@searchModel.CountryOfOriginName</td>
-						<td>@searchModel.MaterialTransferAgreement</td>
+						<td>@(searchModel.MaterialTransferAgreement ? "Yes" : "No")</td>
 						<td>@searchModel.NoOfAliquots</td>
 						<td>@searchModel.FreezerName</td>
 						<td>@searchModel.TrayName</td>
