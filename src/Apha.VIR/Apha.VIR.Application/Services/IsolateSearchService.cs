@@ -14,13 +14,19 @@ namespace Apha.VIR.Application.Services
         private readonly IVirusCharacteristicRepository _virusCharacteristicRepository;
         private readonly IVirusCharacteristicListEntryRepository _virusCharacteristicListEntryRepository;
         private readonly IIsolateSearchRepository _isolateSearchRepository;
+        private readonly IIsolateRepository _iIsolateRepository;
         private readonly IMapper _mapper;
 
-        public IsolateSearchService(IVirusCharacteristicRepository virusCharacteristicRepository, IVirusCharacteristicListEntryRepository virusCharacteristicListEntryRepository, IIsolateSearchRepository isolateSearchRepository, IMapper mapper)
+        public IsolateSearchService(IVirusCharacteristicRepository virusCharacteristicRepository, 
+            IVirusCharacteristicListEntryRepository virusCharacteristicListEntryRepository, 
+            IIsolateSearchRepository isolateSearchRepository,
+            IIsolateRepository iIsolateRepository,
+            IMapper mapper)
         {
             _virusCharacteristicRepository = virusCharacteristicRepository ?? throw new ArgumentNullException(nameof(virusCharacteristicRepository));
             _virusCharacteristicListEntryRepository = virusCharacteristicListEntryRepository ?? throw new ArgumentNullException(nameof(virusCharacteristicListEntryRepository));
             _isolateSearchRepository = isolateSearchRepository ?? throw new ArgumentNullException(nameof(isolateSearchRepository));
+            _iIsolateRepository = iIsolateRepository ?? throw new ArgumentNullException(nameof(iIsolateRepository));
             _mapper = mapper;
         }
 
@@ -54,7 +60,7 @@ namespace Apha.VIR.Application.Services
         }
 
         public async Task<PaginatedResult<IsolateSearchResultDTO>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)
-        {
+        {     
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
             return _mapper.Map<PaginatedResult<IsolateSearchResultDTO>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
         }
@@ -62,16 +68,16 @@ namespace Apha.VIR.Application.Services
         public async Task<List<IsolateSearchExportDto>> GetIsolateSearchExportResultAsync(QueryParameters<SearchCriteriaDTO> criteria)
         {
             List<IsolateSearchExportDto> isolateSearchExportData = new List<IsolateSearchExportDto>();
-            var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
-            List<IsolateFullDetailsResultDto> isolateRecords = _mapper.Map<List<IsolateFullDetailsResultDto>>(await _isolateSearchRepository.GetIsolateSearchExportResultAsync(criteriaData));
-            foreach (var isolateItem in isolateRecords)
+            var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);            
+            List<IsolateSearchResultDTO> isolateRecords = _mapper.Map<List<IsolateSearchResultDTO>>(await _isolateSearchRepository.GetIsolateSearchExportResultAsync(criteriaData));
+            foreach (var record in isolateRecords)
             {
-                IsolateSearchExportDto isolateInfo = _mapper.Map<IsolateSearchExportDto>(isolateItem.IsolateDetails);
-                isolateInfo.ViabilityChecks = string.Join(", ", isolateItem.IsolateViabilityDetails
+                IsolateFullDetailDTO data = _mapper.Map<IsolateFullDetailDTO>(await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(record.IsolateId));
+                IsolateSearchExportDto isolateInfo = _mapper.Map<IsolateSearchExportDto>(data.IsolateDetails);
+                isolateInfo.ViabilityChecks = string.Join(", ", data.IsolateViabilityDetails
                     .Select(v => $"{v.ViabilityStatus}: checked by {v.CheckedByName} on {v.DateChecked.ToString("dd/MM/yyyy")}"));
-                isolateInfo.Characteristics = string.Join(", ", isolateItem.IsolateCharacteristicDetails
-                    .Select(c => $"{c.CharacteristicName}: {(String.IsNullOrEmpty(c.CharacteristicValue) ? "no value entered" : c.CharacteristicValue)}"));
-                isolateSearchExportData.Add(isolateInfo);
+                isolateInfo.Characteristics = string.Join(", ", data.IsolateCharacteristicDetails
+                    .Select(c => $"{c.CharacteristicName}: {(String.IsNullOrEmpty(c.CharacteristicValue) ? "no value entered" : c.CharacteristicValue)}"));                
 
                 if (criteria.Filter != null && criteria.Filter.FullSearch)// exclude freezer, tray, well values for admin users
                 {
@@ -79,7 +85,8 @@ namespace Apha.VIR.Application.Services
                     isolateInfo.Tray = "";
                     isolateInfo.Well = "";
                 }
-            }
+                isolateSearchExportData.Add(isolateInfo);
+            }            
             return isolateSearchExportData;
         }
     }

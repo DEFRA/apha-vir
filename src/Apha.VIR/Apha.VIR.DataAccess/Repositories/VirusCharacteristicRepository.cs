@@ -20,7 +20,7 @@ namespace Apha.VIR.DataAccess.Repositories
                   .FromSqlRaw($"EXEC spVirusCharacteristicGetAll").ToListAsync();
         }
 
-        public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsByVirusTypeAsync(string? virusType, bool isAbscent)
+        public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)
         {
             if (isAbscent)
             {

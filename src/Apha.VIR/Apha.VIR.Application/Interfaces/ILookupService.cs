@@ -12,10 +12,10 @@ namespace Apha.VIR.Application.Interfaces
         Task DeleeLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
         Task<IEnumerable<LookupItemDTO>> GetAllVirusFamiliesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(string? virusFamily);
+        Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(Guid? virusFamily);
         Task<IEnumerable<LookupItemDTO>> GetAllHostSpeciesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(string? hostSpecies);
+        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(Guid? hostSpecies);
         Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();

@@ -58,6 +58,6 @@ else
 	<p>There are no viability records available for this isolate</p>
 }
 
-<a asp-action="Details" asp-controller="Isolate" asp-route-id="1" class="btn btn-secondary">
+<a asp-action="ViewIsolateDetails" asp-controller="Isolates" asp-route-IsolateId="@Model.IsolateId" class="btn btn-secondary">
 	Return to Isolate Details page
 </a>
