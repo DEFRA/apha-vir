@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public  class SampleDTO
+public class SampleDTO
 {
     public Guid SampleId { get; set; }
     public Guid SampleSubmissionId { get; set; }

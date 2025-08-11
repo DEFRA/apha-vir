@@ -13,4 +13,3 @@ public class IsolateCharacteristicInfo
     public string? SMSColumnId { get; set; }
     public string? CharacteristicPrefix { get; set; }
 }
- 

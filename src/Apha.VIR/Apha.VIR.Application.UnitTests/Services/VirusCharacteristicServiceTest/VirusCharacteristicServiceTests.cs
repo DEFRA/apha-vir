@@ -6,7 +6,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
+namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicServiceTest
 {
     public class VirusCharacteristicServiceTests
     {
@@ -25,7 +25,7 @@ namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
         public async Task GetAllVirusCharacteristicsAsync_SuccessfulRetrieval_ReturnsCorrectNumberOfItems()
         {
             var id1 = Guid.NewGuid();
-            var id2 = Guid.NewGuid();   
+            var id2 = Guid.NewGuid();
             // Arrange
             var repositoryResult = new List<VirusCharacteristic>
             {

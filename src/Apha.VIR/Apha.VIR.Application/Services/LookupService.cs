@@ -29,10 +29,10 @@ namespace Apha.VIR.Application.Services
 
         public async Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
         {
-            var itemData =  _mapper.Map<LookupItem>(Item);
+            var itemData = _mapper.Map<LookupItem>(Item);
             await _lookupRepository.InsertLookupEntryAsync(LookupId, itemData);
         }
-        
+
         public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
         {
             var itemData = _mapper.Map<LookupItem>(Item);
@@ -62,7 +62,7 @@ namespace Apha.VIR.Application.Services
 
         public async Task<IEnumerable<LookupItemDTO>> GetAllHostSpeciesAsync()
         {
-            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostSpeciesAsync());        
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostSpeciesAsync());
         }
 
         public async Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAsync()

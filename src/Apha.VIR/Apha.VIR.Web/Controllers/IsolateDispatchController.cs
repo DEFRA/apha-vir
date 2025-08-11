@@ -1,10 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Core.Entities;
-using Apha.VIR.Core.Interfaces;
 using Apha.VIR.Web.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -57,33 +54,7 @@ namespace Apha.VIR.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(Guid DispatchId, string LastModified, Guid IsolateId, string AVNumber)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (DispatchId == Guid.Empty)
-            {
-                return BadRequest("Invalid Dispatch ID.");
-            }
-            if (string.IsNullOrWhiteSpace(LastModified))
-            {
-                return BadRequest("Last Modified cannot be empty.");
-            }
-
-            string UserName = "Test User";
-            await _isolateDispatchService.DeleteDispatchAsync(
-                DispatchId,
-                Convert.FromBase64String(LastModified),
-                UserName
-            );
-
-            return RedirectToAction("History", new { AVNumber = AVNumber, IsolateId = IsolateId });
-        }
-
+        [HttpGet]
         public async Task<IActionResult> Edit(string AVNumber, Guid DispatchId, Guid DispatchIsolateId)
         {
 
@@ -168,6 +139,33 @@ namespace Apha.VIR.Web.Controllers
             return RedirectToAction("History", new { AVNumber = model.Avnumber, IsolateId = model.DispatchIsolateId });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid DispatchId, string LastModified, Guid IsolateId, string AVNumber)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (DispatchId == Guid.Empty)
+            {
+                return BadRequest("Invalid Dispatch ID.");
+            }
+            if (string.IsNullOrWhiteSpace(LastModified))
+            {
+                return BadRequest("Last Modified cannot be empty.");
+            }
+
+            string UserName = "Test User";
+            await _isolateDispatchService.DeleteDispatchAsync(
+                DispatchId,
+                Convert.FromBase64String(LastModified),
+                UserName
+            );
+
+            return RedirectToAction("History", new { AVNumber = AVNumber, IsolateId = IsolateId });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Confirmation(Guid Isolate)
         {
@@ -189,6 +187,5 @@ namespace Apha.VIR.Web.Controllers
 
             return View(model);
         }
-
     }
 }

@@ -10,7 +10,7 @@
         public int PageSize { get; set; }
 
         public PaginationParameters(string? golobalSearch = null, string? sortBy = "", bool descending = false, int page = 1, int pageSize = 10)
-        {            
+        {
             GlobalSearch = golobalSearch;
             SortBy = sortBy;
             Descending = descending;

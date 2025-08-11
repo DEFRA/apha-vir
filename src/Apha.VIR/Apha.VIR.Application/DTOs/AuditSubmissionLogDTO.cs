@@ -16,7 +16,7 @@ public class AuditSubmissionLogDTO
     public string? SenderOrganisation { get; set; }
     public string? SenderAddress { get; set; }
     public string? Owner { get; set; }
-    public string? SamplingLocationPremises { get; set; } 
+    public string? SamplingLocationPremises { get; set; }
     public string? Cphnumber { get; set; }
     public string? CountryOfOrigin { get; set; }
     public string? SubmittingCountry { get; set; }

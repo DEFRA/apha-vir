@@ -44,7 +44,7 @@ namespace Apha.VIR.Web.Models
 
                 results = ValidateCreatedAndReceivedDates(results);
 
-                results = ValidateCharacteristics(results);                
+                results = ValidateCharacteristics(results);
             }
 
             return results;

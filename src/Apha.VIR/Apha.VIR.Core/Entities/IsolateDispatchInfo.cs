@@ -2,7 +2,6 @@
 
 public class IsolateDispatchInfo
 {
-
     public Guid? DispatchId { get; set; }
     public Guid? IsolateId { get; set; }
     public Guid? DispatchIsolateId { get; set; }

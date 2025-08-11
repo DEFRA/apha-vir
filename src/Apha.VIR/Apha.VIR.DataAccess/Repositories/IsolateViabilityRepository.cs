@@ -48,6 +48,29 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
             .ExecuteSqlRawAsync($"EXEC spIsolateViabilityDelete @UserID, @IsolateViabilityId, @LastModified", parameters);
     }
 
+    public async Task UpdateIsolateViabilityAsync(IsolateViability isolateViability, string userid)
+    {
+        var parameters = new[]
+        {
+            new SqlParameter("@IsolateViabilityId",isolateViability.IsolateViabilityId),
+            new SqlParameter("@IsolateViabilityIsolateID",isolateViability.IsolateViabilityIsolateId),
+            new SqlParameter("@Viable",isolateViability.Viable),
+            new SqlParameter("@DateChecked",isolateViability.DateChecked),
+            new SqlParameter("@CheckedByID",isolateViability.CheckedById),
+                new SqlParameter("@UserID", userid),
+                new SqlParameter  {
+                    ParameterName = "@LastModified",
+                    SqlDbType = SqlDbType.Timestamp,
+                    Value = isolateViability.LastModified
+                   //Direction = ParameterDirection.InputOutput,
+                }
+            };
+
+        await _context.Database
+            .ExecuteSqlRawAsync($"EXEC spIsolateViabilityUpdate @UserID, @IsolateViabilityId," +
+            $" @IsolateViabilityIsolateID, @Viable, @DateChecked, @CheckedByID, @LastModified", parameters);
+    }
+
     public async Task<IEnumerable<IsolateViability>> GetViabilityByIsolateIdAsync(Guid isolateId)
     {
 

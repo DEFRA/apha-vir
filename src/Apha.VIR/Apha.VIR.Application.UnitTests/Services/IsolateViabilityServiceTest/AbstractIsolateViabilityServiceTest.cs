@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
@@ -11,7 +6,7 @@ using Apha.VIR.Core.Interfaces;
 using AutoMapper;
 using NSubstitute;
 
-namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
+namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
 {
     public class AbstractIsolateViabilityServiceTest
     {
@@ -21,8 +16,8 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
         protected ICharacteristicRepository _mockCharacteristicRepository;
         protected ILookupRepository _mockLookupRepository;
         protected IMapper _mockMapper;
-    
-     public AbstractIsolateViabilityServiceTest()
+
+        public AbstractIsolateViabilityServiceTest()
         {
             _mockIsolateViabilityRepository = Substitute.For<IIsolateViabilityRepository>();
             _mockIsolateRepository = Substitute.For<IIsolateRepository>();
@@ -64,10 +59,10 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
             _mockCharacteristicRepository,
             _mockLookupRepository,
             _mockMapper);
-           
+
         }
 
-        public void GetViabilityHistoryAsyncSuccessfulRetrievalEnrichArrange(string avNumber,Guid isolateId)
+        public void GetViabilityHistoryAsyncSuccessfulRetrievalEnrichArrange(string avNumber, Guid isolateId)
         {
             var checkedById = Guid.NewGuid();
             var viableId = Guid.NewGuid();

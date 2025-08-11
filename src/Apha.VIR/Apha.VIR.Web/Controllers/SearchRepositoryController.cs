@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Security.Cryptography.Pkcs;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
@@ -8,7 +7,6 @@ using Apha.VIR.Web.Models;
 using AutoMapper;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,9 +21,9 @@ namespace Apha.VIR.Web.Controllers
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
 
-        public SearchRepositoryController(ILookupService lookupService, 
-            IVirusCharacteristicService virusCharacteristicService, 
-            IIsolateSearchService isolateSearchService, 
+        public SearchRepositoryController(ILookupService lookupService,
+            IVirusCharacteristicService virusCharacteristicService,
+            IIsolateSearchService isolateSearchService,
             IMapper mapper)
         {
             _lookupService = lookupService;
@@ -48,7 +46,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
 
-                ValidateSearchModel(criteria, ModelState);                        
+                ValidateSearchModel(criteria, ModelState);
 
                 if (!ModelState.IsValid)
                 {
@@ -76,13 +74,14 @@ namespace Apha.VIR.Web.Controllers
                 };
             }
             else
-            {                
+            {
                 criteriaPaginationDto = RetriveThePreviousSearchFilter();
                 criteria = _mapper.Map<SearchCriteria>(criteriaPaginationDto.Filter);
-                criteria.Pagination = new PaginationModel {
+                criteria.Pagination = new PaginationModel
+                {
                     PageNumber = criteriaPaginationDto.Page,
                     PageSize = criteriaPaginationDto.PageSize
-                };                      
+                };
             }
             searchModel = await LoadIsolateSearchFilterControlsData(criteria);
             var searchResults = await _isolateSearchService.PerformSearchAsync(criteriaPaginationDto);
@@ -313,14 +312,14 @@ namespace Apha.VIR.Web.Controllers
             searchModel.CreatedFromDate = criteria.CreatedFromDate;
             searchModel.CreatedToDate = criteria.CreatedToDate;
             searchModel.ReceivedFromDate = criteria.ReceivedFromDate;
-            searchModel.ReceivedToDate = criteria.ReceivedToDate;            
+            searchModel.ReceivedToDate = criteria.ReceivedToDate;
         }
 
         private async Task<SearchRepositoryViewModel> LoadIsolateSearchFilterControlsData(SearchCriteria? criteria)
         {
             SearchRepositoryViewModel searchViewModel = _mapper.Map<SearchRepositoryViewModel>(criteria) ?? new SearchRepositoryViewModel();
-            var virusFamilyDto = await _lookupService.GetAllVirusFamiliesAsync();            
-            var hostSpecyDto = await _lookupService.GetAllHostSpeciesAsync();            
+            var virusFamilyDto = await _lookupService.GetAllVirusFamiliesAsync();
+            var hostSpecyDto = await _lookupService.GetAllHostSpeciesAsync();
             var countryDto = await _lookupService.GetAllCountriesAsync();
             var hostPurposeDto = await _lookupService.GetAllHostPurposesAsync();
             var sampleTypeDto = await _lookupService.GetAllSampleTypesAsync();
@@ -346,7 +345,7 @@ namespace Apha.VIR.Web.Controllers
                     IsolateSearchResults = new List<IsolateSearchResult>(),
                     Pagination = new PaginationModel()
                 };
-            }           
+            }
 
             return searchViewModel;
         }
@@ -359,7 +358,7 @@ namespace Apha.VIR.Web.Controllers
                 return virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }).ToList();
             }
             else
-            {               
+            {
                 var virusTypesDto = await _lookupService.GetAllVirusTypesByParentAsync(virusFamilyId);
                 return virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }).ToList();
             }
@@ -373,7 +372,7 @@ namespace Apha.VIR.Web.Controllers
                 return hostBreedDto.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
             }
             else
-            {               
+            {
                 var hostBreedDto = await _lookupService.GetAllHostBreedsByParentAsync(hostSpicyId);
                 return hostBreedDto.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
             }
@@ -387,7 +386,7 @@ namespace Apha.VIR.Web.Controllers
                 return virusCharacteristicDto.Select(c => new CustomSelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString(), DataType = c.DataType.ToString() }).ToList();
             }
             else
-            {               
+            {
                 var virusCharacteristicDto = await _virusCharacteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(virusTypeId, false);
                 return virusCharacteristicDto.Select(c => new CustomSelectListItem { Value = c.Id.ToString(), Text = c.Name.ToString(), DataType = c.DataType.ToString() }).ToList();
             }

@@ -4,9 +4,7 @@
     {
         public IEnumerable<T> data { get; set; } = Enumerable.Empty<T>();
         public int TotalCount { get; set; }
-
         public PaginatedResult() { }
-
         public PaginatedResult(IEnumerable<T> items, int totalCount)
         {
             data = items;

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
@@ -17,8 +16,8 @@ namespace Apha.VIR.Application.Services
         private readonly IIsolateRepository _iIsolateRepository;
         private readonly IMapper _mapper;
 
-        public IsolateSearchService(IVirusCharacteristicRepository virusCharacteristicRepository, 
-            IVirusCharacteristicListEntryRepository virusCharacteristicListEntryRepository, 
+        public IsolateSearchService(IVirusCharacteristicRepository virusCharacteristicRepository,
+            IVirusCharacteristicListEntryRepository virusCharacteristicListEntryRepository,
             IIsolateSearchRepository isolateSearchRepository,
             IIsolateRepository iIsolateRepository,
             IMapper mapper)
@@ -60,7 +59,7 @@ namespace Apha.VIR.Application.Services
         }
 
         public async Task<PaginatedResult<IsolateSearchResultDTO>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)
-        {     
+        {
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
             return _mapper.Map<PaginatedResult<IsolateSearchResultDTO>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
         }
@@ -68,7 +67,7 @@ namespace Apha.VIR.Application.Services
         public async Task<List<IsolateSearchExportDto>> GetIsolateSearchExportResultAsync(QueryParameters<SearchCriteriaDTO> criteria)
         {
             List<IsolateSearchExportDto> isolateSearchExportData = new List<IsolateSearchExportDto>();
-            var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);            
+            var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
             List<IsolateSearchResultDTO> isolateRecords = _mapper.Map<List<IsolateSearchResultDTO>>(await _isolateSearchRepository.GetIsolateSearchExportResultAsync(criteriaData));
             foreach (var record in isolateRecords)
             {
@@ -77,7 +76,7 @@ namespace Apha.VIR.Application.Services
                 isolateInfo.ViabilityChecks = string.Join(", ", data.IsolateViabilityDetails
                     .Select(v => $"{v.ViabilityStatus}: checked by {v.CheckedByName} on {v.DateChecked.ToString("dd/MM/yyyy")}"));
                 isolateInfo.Characteristics = string.Join(", ", data.IsolateCharacteristicDetails
-                    .Select(c => $"{c.CharacteristicName}: {(String.IsNullOrEmpty(c.CharacteristicValue) ? "no value entered" : c.CharacteristicValue)}"));                
+                    .Select(c => $"{c.CharacteristicName}: {(String.IsNullOrEmpty(c.CharacteristicValue) ? "no value entered" : c.CharacteristicValue)}"));
 
                 if (criteria.Filter != null && criteria.Filter.FullSearch)// exclude freezer, tray, well values for admin users
                 {
@@ -86,7 +85,7 @@ namespace Apha.VIR.Application.Services
                     isolateInfo.Well = "";
                 }
                 isolateSearchExportData.Add(isolateInfo);
-            }            
+            }
             return isolateSearchExportData;
         }
     }

@@ -5,8 +5,6 @@ using Apha.VIR.Application.Validation;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Application.Services
 {
@@ -15,8 +13,6 @@ namespace Apha.VIR.Application.Services
         private readonly IIsolateDispatchRepository _isolateDispatchRepository;
         private readonly IIsolateRepository _iIsolateRepository;
         private readonly ICharacteristicRepository _iCharacteristicRepository;
-        private readonly IStaffRepository _staffRepository;
-        private readonly IWorkgroupRepository _IWorkgroupRepository;
         private readonly IMapper _mapper;
         private readonly ILookupRepository _lookupRepository;
         private readonly IIsolateViabilityRepository _isolateViabilityRepository;
@@ -25,8 +21,6 @@ namespace Apha.VIR.Application.Services
         public IsolateDispatchService(IIsolateDispatchRepository isolateDispatchRepository,
             IIsolateRepository iIsolateRepository,
             ICharacteristicRepository iCharacteristicRepository,
-            IStaffRepository staffRepository,
-            IWorkgroupRepository workgroupRepository,
             ILookupRepository lookupRepository,
             IMapper mapper,
             IIsolateViabilityRepository isolateViabilityRepository)
@@ -34,27 +28,11 @@ namespace Apha.VIR.Application.Services
             _isolateDispatchRepository = isolateDispatchRepository ?? throw new ArgumentNullException(nameof(isolateDispatchRepository));
             _iIsolateRepository = iIsolateRepository ?? throw new ArgumentNullException(nameof(iIsolateRepository));
             _iCharacteristicRepository = iCharacteristicRepository ?? throw new ArgumentNullException(nameof(iCharacteristicRepository));
-            _staffRepository = staffRepository ?? throw new ArgumentNullException(nameof(staffRepository));
-            _IWorkgroupRepository = workgroupRepository ?? throw new ArgumentNullException(nameof(workgroupRepository));
             _lookupRepository = lookupRepository ?? throw new ArgumentNullException(nameof(lookupRepository));
             _mapper = mapper;
             _isolateViabilityRepository = isolateViabilityRepository;
         }
 
-        public async Task DeleteDispatchAsync(Guid DispatchId, byte[] LastModified, string User)
-        {
-            if (DispatchId == Guid.Empty)
-                throw new ArgumentException("DispatchId cannot be empty.", nameof(DispatchId));
-
-            if (LastModified == Array.Empty<byte>() )
-                throw new ArgumentException( "LastModified cannot be empty.", nameof(LastModified));
-            
-            if (string.IsNullOrWhiteSpace(User))
-                throw new ArgumentException("User cannot be empty.", nameof(User));
-
-            await _isolateDispatchRepository.DeleteDispatchAsync(DispatchId, LastModified, User);
-        }
-                
         public async Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId)
         {
             string nomenclature;
@@ -90,9 +68,8 @@ namespace Apha.VIR.Application.Services
                 item.Nomenclature = nomenclature;
             }
 
-            var staffs = await _staffRepository.GetStaffListAsync();
-
-            var workgroups = await _IWorkgroupRepository.GetWorkgroupfListAsync();
+            var staffs = await _lookupRepository.GetAllStaffAsync();
+            var workgroups = await _lookupRepository.GetAllWorkGroupsAsync();
 
             foreach (var dispatch in dispatchHistList)
             {
@@ -111,18 +88,17 @@ namespace Apha.VIR.Application.Services
             }
 
             return _mapper.Map<IEnumerable<IsolateDispatchInfoDTO>>(dispatchHistList);
-
         }
 
         public async Task<IsolateFullDetailDTO> GetDispatcheConfirmationAsync(Guid IsolateId)
         {
             var isolateFullDetail = await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(IsolateId);
 
-            if ( isolateFullDetail.IsolateDetails == null)
+            if (isolateFullDetail.IsolateDetails == null)
             {
                 var error = new BusinessValidationError(
                     message: "Problem with reading IsolateDetails.",
-                    code: "ERR_ISOLATE" );
+                    code: "ERR_ISOLATE");
 
                 var errorResponse = new BusinessValidationErrorException([error]);
 
@@ -131,22 +107,30 @@ namespace Apha.VIR.Application.Services
 
             return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
         }
-        private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
+
+        public async Task UpdateDispatchAsync(IsolateDispatchInfoDTO DispatchInfoDto, string User)
         {
-            var characteristicNomenclatureList = new StringBuilder();
+            if (DispatchInfoDto == null)
+                throw new ArgumentNullException(nameof(DispatchInfoDto), "DispatchInfoDto cannot be null.");
+            if (string.IsNullOrWhiteSpace(User))
+                throw new ArgumentException("User cannot be empty.", nameof(User));
 
-            // Build nomenclature string from characteristics
-            foreach (IsolateCharacteristicInfo item in characteristicList)
-            {
-                if ((item.CharacteristicDisplay == true) && (!string.IsNullOrEmpty(item.CharacteristicValue)))
-                {
-                    characteristicNomenclatureList.Append(item.CharacteristicPrefix + item.CharacteristicValue + " ");
-                }
-            }
+            IsolateDispatchInfo dispatchInfo = _mapper.Map<IsolateDispatchInfo>(DispatchInfoDto);
+            await _isolateDispatchRepository.UpdateDispatchAsync(dispatchInfo, User);
+        }
 
-            var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
+        public async Task DeleteDispatchAsync(Guid DispatchId, byte[] LastModified, string User)
+        {
+            if (DispatchId == Guid.Empty)
+                throw new ArgumentException("DispatchId cannot be empty.", nameof(DispatchId));
 
-            return characteristicNomenclature;
+            if (LastModified == Array.Empty<byte>())
+                throw new ArgumentException("LastModified cannot be empty.", nameof(LastModified));
+
+            if (string.IsNullOrWhiteSpace(User))
+                throw new ArgumentException("User cannot be empty.", nameof(User));
+
+            await _isolateDispatchRepository.DeleteDispatchAsync(DispatchId, LastModified, User);
         }
 
         public async Task<IsolateDispatchInfoDTO> GetDispatchForIsolateAsync(string AVNumber, Guid DispatchId, Guid DispatchIsolateId)
@@ -160,7 +144,7 @@ namespace Apha.VIR.Application.Services
                 throw new ArgumentException("AVNumber cannot be empty.", nameof(AVNumber));
 
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
-                        
+
             if (!(isolationList?.Any() ?? false))
                 return _mapper.Map<IsolateDispatchInfoDTO>(null);
 
@@ -176,8 +160,8 @@ namespace Apha.VIR.Application.Services
             if (!(dispatchHistList?.Any() ?? false))
                 return _mapper.Map<IsolateDispatchInfoDTO>(null);
 
-            var staffs = await _staffRepository.GetStaffListAsync();
-            var workgroups = await _IWorkgroupRepository.GetWorkgroupfListAsync();
+            var staffs = await _lookupRepository.GetAllStaffAsync();
+            var workgroups = await _lookupRepository.GetAllWorkGroupsAsync();
 
             var dispatch = dispatchHistList.FirstOrDefault(d => d.DispatchId == DispatchId);
             if (dispatch == null)
@@ -204,6 +188,24 @@ namespace Apha.VIR.Application.Services
 
             return _mapper.Map<IsolateDispatchInfoDTO>(dispatch);
         }
+        
+        private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
+        {
+            var characteristicNomenclatureList = new StringBuilder();
+
+            // Build nomenclature string from characteristics
+            foreach (IsolateCharacteristicInfo item in characteristicList)
+            {
+                if ((item.CharacteristicDisplay == true) && (!string.IsNullOrEmpty(item.CharacteristicValue)))
+                {
+                    characteristicNomenclatureList.Append(item.CharacteristicPrefix + item.CharacteristicValue + " ");
+                }
+            }
+
+            var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
+
+            return characteristicNomenclature;
+        }
 
         private async Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid isolateId)
         {
@@ -217,17 +219,6 @@ namespace Apha.VIR.Application.Services
                 .FirstOrDefault();
 
             return lastViability == null ? null : _mapper.Map<IsolateViabilityDTO>(lastViability);
-        }
-
-        public async Task UpdateDispatchAsync(IsolateDispatchInfoDTO DispatchInfoDto, string User)
-        {
-            if (DispatchInfoDto == null)
-                throw new ArgumentNullException(nameof(DispatchInfoDto), "DispatchInfoDto cannot be null.");
-            if (string.IsNullOrWhiteSpace(User))
-                throw new ArgumentException("User cannot be empty.", nameof(User));
-
-            IsolateDispatchInfo dispatchInfo = _mapper.Map<IsolateDispatchInfo>(DispatchInfoDto);
-            await _isolateDispatchRepository.UpdateDispatchAsync(dispatchInfo, User);
         }
     }
 }

@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Apha.VIR.Web.Models;
 
-namespace Apha.VIR.Web.Models
+public class IsolateViabilityHistoryViewModel
 {
-    public class IsolateViabilityHistoryViewModel
-    {
-        public Guid? IsolateId { get; set; }
-        public string Nomenclature { get; set; }
+    public Guid? IsolateId { get; set; }
+    public required string Nomenclature { get; set; }
 
-        public IEnumerable<IsolateViabilityModel> ViabilityHistoryList { get; set; }
+    public required IEnumerable<IsolateViabilityModel> ViabilityHistoryList { get; set; }
 
-    }
 }
+

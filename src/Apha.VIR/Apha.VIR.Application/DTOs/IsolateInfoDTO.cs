@@ -33,6 +33,4 @@ public class IsolateInfoDTO
     public string? SmsreferenceNumber { get; set; }
     public string? HostPurposeName { get; set; }
     public string? SampleTypeName { get; set; }
-
-    
 }

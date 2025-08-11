@@ -27,8 +27,8 @@ public class IsolateViabilityMap : IEntityTypeConfiguration<IsolateViability>
 
         entity.Property(e => e.CheckedById)
             .HasColumnName("CheckedByID");
-       
-       
+
+
         entity.Property(e => e.LastModified)
                     .IsRowVersion()
                     .IsConcurrencyToken();

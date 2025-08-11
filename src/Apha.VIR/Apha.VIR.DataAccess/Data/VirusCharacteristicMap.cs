@@ -50,6 +50,5 @@ public class VirusCharacteristicMap : IEntityTypeConfiguration<VirusCharacterist
 
         entity.Property(e => e.DataType)
             .HasColumnName("VirusCharacteristicTypeName");
-
     }
 }

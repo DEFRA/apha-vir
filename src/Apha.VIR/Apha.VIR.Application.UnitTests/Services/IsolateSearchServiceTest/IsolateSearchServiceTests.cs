@@ -8,7 +8,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
+namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
 {
     public class IsolateSearchServiceTests
     {
@@ -317,7 +317,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(isolateFullDetails);
             _mockMapper.Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>()).Returns(isolateFullDetailsDto);
-            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);            
+            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);
             _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(isolateSearchResultDto);
             // Act
             var result = await _mockIsolateSearchService.GetIsolateSearchExportResultAsync(criteria);
@@ -341,7 +341,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
-            _mockMapper.Map<List<IsolateFullDetailDTO>>(Arg.Any<List<IsolateFullDetail>>()).Returns(new List<IsolateFullDetailDTO>());           
+            _mockMapper.Map<List<IsolateFullDetailDTO>>(Arg.Any<List<IsolateFullDetail>>()).Returns(new List<IsolateFullDetailDTO>());
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(new List<IsolateSearchResult>());
             _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(new List<IsolateSearchResultDTO>());
 
@@ -413,7 +413,7 @@ namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
             Assert.Equal("", result[0].Freezer);
             Assert.Equal("", result[0].Tray);
             Assert.Equal("", result[0].Well);
-        }        
+        }
 
         [Fact]
         public async Task GetIsolateSearchExportResultAsync_RepositoryThrowsException_PropagatesException()

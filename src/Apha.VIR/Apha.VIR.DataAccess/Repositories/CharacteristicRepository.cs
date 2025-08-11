@@ -20,7 +20,7 @@ public class CharacteristicRepository : ICharacteristicRepository
     {
         return GetIsolateCharacteristics(isolateId);
     }
- 
+
     private async Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristics(Guid isolateId)
     {
         var isolateCharacteristicList = new List<IsolateCharacteristicInfo>();
@@ -44,18 +44,18 @@ public class CharacteristicRepository : ICharacteristicRepository
                 {
                     while (await result.ReadAsync())
                     {
-                        
-                            var dto = new IsolateCharacteristicInfo
-                            {
-                                 CharacteristicId  = (Guid) result["CharacteristicId"],
-                                CharacteristicValue = result["CharacteristicValue"] as string,
-                                CharacteristicIsolateId = (Guid)result["CharacteristicIsolateId"],
-                                CharacteristicPrefix = result["CharacteristicPrefix"] as string ,
-                                CharacteristicDisplay = result["CharacteristicDisplay"] as bool?
-                            
-                            };
+
+                        var dto = new IsolateCharacteristicInfo
+                        {
+                            CharacteristicId = (Guid)result["CharacteristicId"],
+                            CharacteristicValue = result["CharacteristicValue"] as string,
+                            CharacteristicIsolateId = (Guid)result["CharacteristicIsolateId"],
+                            CharacteristicPrefix = result["CharacteristicPrefix"] as string,
+                            CharacteristicDisplay = result["CharacteristicDisplay"] as bool?
+
+                        };
                         isolateCharacteristicList.Add(dto);
-                        
+
                     }
                 }
             }

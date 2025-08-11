@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Apha.VIR.DataAccess.Data;
 
-internal class IsolateMap : IEntityTypeConfiguration<Isolate>
+public class IsolateMap : IEntityTypeConfiguration<Isolate>
 {
     public void Configure(EntityTypeBuilder<Isolate> entity)
     {

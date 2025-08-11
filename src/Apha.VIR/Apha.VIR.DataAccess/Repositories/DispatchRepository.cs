@@ -107,7 +107,7 @@ public class DispatchRepository : IIsolateDispatchRepository
             new SqlParameter("@DispatchedDate", SqlDbType.DateTime) { Value = (object?)DispatchInfo.DispatchedDate ?? DBNull.Value },
             new SqlParameter("@DispatchedById", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.DispatchedById ?? DBNull.Value },
             new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)DispatchInfo.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
-            
+
         );
     }
 }

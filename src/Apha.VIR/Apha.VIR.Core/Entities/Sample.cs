@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Core.Entities;
 
-public  class Sample
+public class Sample
 {
     public Guid SampleId { get; set; }
     public Guid SampleSubmissionId { get; set; }
