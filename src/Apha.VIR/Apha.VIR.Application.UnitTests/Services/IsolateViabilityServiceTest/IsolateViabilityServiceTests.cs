@@ -1,16 +1,10 @@
 ﻿using Apha.VIR.Application.DTOs;
-using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
-using Apha.VIR.Core.Interfaces;
-using Apha.VIR.DataAccess.Repositories;
-using AutoMapper;
-using Microsoft.Data.SqlClient;
 using NSubstitute;
 
-namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
+namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
 {
-    public class IsolateViabilityServiceTest : AbstractIsolateViabilityServiceTest
+    public class IsolateViabilityServiceTests : AbstractIsolateViabilityServiceTest
     {
         [Fact]
         public async Task GetViabilityHistoryAsync_SuccessfulRetrieval_ReturnsViabilityHistory()

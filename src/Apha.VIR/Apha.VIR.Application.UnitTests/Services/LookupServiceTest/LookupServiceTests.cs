@@ -7,7 +7,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.LookupServiceTest
+namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
 {
     public class LookupServiceTests
     {

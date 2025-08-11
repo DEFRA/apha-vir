@@ -12,7 +12,7 @@ using Apha.VIR.Application.Pagination;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Apha.VIR.Web.UnitTests.Controllers
+namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 {
     public class SearchRepositoryControllerTests
     {

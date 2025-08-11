@@ -6,7 +6,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.IsolatesServiceTest
+namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
 {
     public class IsolatesServiceTests
     {

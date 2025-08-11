@@ -8,7 +8,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.IsolateSearchServiceTest
+namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
 {
     public class IsolateSearchServiceTests
     {

@@ -6,7 +6,7 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.VirusCharacteristicServiceTest
+namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicServiceTest
 {
     public class VirusCharacteristicServiceTests
     {

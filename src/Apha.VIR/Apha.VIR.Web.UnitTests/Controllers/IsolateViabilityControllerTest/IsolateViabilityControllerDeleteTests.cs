@@ -4,15 +4,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTests
+namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
 {
-    public class IsolateViabilityControllerDeleteTest
+    public class IsolateViabilityControllerDeleteTests
     {
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
         private readonly IsolateViabilityController _controller;
         private readonly ILookupService _lookupService;
-        public IsolateViabilityControllerDeleteTest()
+        public IsolateViabilityControllerDeleteTests()
         {
             _lookupService = Substitute.For<ILookupService>();
             _isolateViabilityService = Substitute.For<IIsolateViabilityService>();

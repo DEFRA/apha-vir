@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Web.UnitTests.Controller
+namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 {
     public class IsolateDispatchControllerTests
     {

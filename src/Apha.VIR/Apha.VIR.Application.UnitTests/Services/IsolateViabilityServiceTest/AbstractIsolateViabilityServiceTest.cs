@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
@@ -11,7 +6,7 @@ using Apha.VIR.Core.Interfaces;
 using AutoMapper;
 using NSubstitute;
 
-namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTests
+namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
 {
     public class AbstractIsolateViabilityServiceTest
     {

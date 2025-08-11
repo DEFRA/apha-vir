@@ -7,9 +7,9 @@ using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
+namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
 {
-    public class IsolateDispatchServiceTest : IDisposable
+    public class IsolateDispatchServiceTests : IDisposable
     {
         private readonly IIsolateDispatchRepository _isolateDispatchRepository;
         private readonly IIsolateRepository _isolateRepository;
@@ -21,7 +21,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTests
         private readonly IsolateDispatchService _service;
         private readonly IIsolateViabilityRepository _isolateViabilityRepository;
 
-        public IsolateDispatchServiceTest()
+        public IsolateDispatchServiceTests()
         {
             _isolateDispatchRepository = Substitute.For<IIsolateDispatchRepository>();
             _isolateRepository = Substitute.For<IIsolateRepository>();
