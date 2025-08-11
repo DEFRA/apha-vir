@@ -95,4 +95,3 @@ web.*.config
 
 # git ignored files backup
 *.orig
-/src/Apha.VIR/Apha.VIR.Web/appsettings.json
