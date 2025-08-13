@@ -25,25 +25,32 @@ namespace Apha.VIR.Web.Controllers
 
         public IActionResult IsolateDispatch()
         {
-            var model = new IsolateDispatchReportViewModel();
+            var model = new IsolateDispatchReportViewModel
+            {
+                DateFrom = DateTime.Today,
+                DateTo = DateTime.Today
+            };
             return View("IsolateDispatchReport", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerateReport(DateTime dateFrom, DateTime dateTo)
+        public async Task<IActionResult> GenerateReport(IsolateDispatchReportViewModel model)
         {
+            ModelState.Remove(nameof(model.ReportData));
 
-            dateFrom = DateTime.Now.AddDays(-80);
-            dateTo = DateTime.Now;
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-            var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
+            var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);
 
             var reportData = _mapper.Map<IEnumerable<IsolateDispatchReportModel>>(result);
 
-            var model = new IsolateDispatchReportViewModel
+            var viewModel = new IsolateDispatchReportViewModel
             {
-                DateFrom = dateFrom,
-                DateTo = dateTo,
+                DateFrom = model.DateFrom,
+                DateTo = model.DateTo,
             };
 
             if (reportData != null && reportData.Any())
@@ -51,16 +58,20 @@ namespace Apha.VIR.Web.Controllers
                 model.ReportData = reportData.ToList();
             }
 
-            return View("IsolateDispatchReport", model);
+            return View("IsolateDispatchReport", viewModel);
         }
 
-        //[HttpPost]
-        public async Task<IActionResult> ExportToExcel(DateTime dateFrom, DateTime dateTo)
+        [HttpGet]
+        public async Task<IActionResult> ExportToExcel(IsolateDispatchReportViewModel model)
         {
-            dateFrom = DateTime.Now.AddDays(-80);
-            dateTo = DateTime.Now;
+            ModelState.Remove(nameof(model.ReportData));
 
-            var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);
 
             var reportData = _mapper.Map<IEnumerable<IsolateDispatchReportModel>>(result);
 
@@ -80,7 +91,7 @@ namespace Apha.VIR.Web.Controllers
                     var displayAttr = properties[i].GetCustomAttribute<DisplayAttribute>();
                     worksheet.Cell(currentRow, i + 1).Value = displayAttr?.Name ?? properties[i].Name;
                 }
-                
+
                 // Data
                 var filteredList = reportData.Select(p => new IsolateDispatchReportModel
                 {
