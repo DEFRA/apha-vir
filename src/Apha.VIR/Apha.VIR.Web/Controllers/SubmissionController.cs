@@ -1,10 +1,79 @@
 ﻿using Apha.VIR.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Controllers
 {
     public class SubmissionController : Controller
     {
+
+        public IActionResult Edit()
+        {
+            var model = new EditSubmissionDetailsViewModel
+            {
+                AVNumber = "AV123456",
+                RLReferenceNumber = "RL987654",
+                SubmittingLab = "1",
+                SubmittingLabList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Lab A" },
+                new SelectListItem { Value = "2", Text = "Lab B" }
+            },
+                SendersReferenceNumber = "SRN-001",
+                SubmittingCountry = "UK",
+                CountryList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "UK", Text = "United Kingdom" },
+                new SelectListItem { Value = "US", Text = "United States" },
+                new SelectListItem { Value = "FR", Text = "France" }
+            },
+                Sender = "John Doe",
+                SenderOrganisation = "Org Example",
+                SenderAddress = "123 Main St, City",
+                CountryOfOrigin = "UK",
+                ReasonForSubmission = "1",
+                ReasonList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Research" },
+                new SelectListItem { Value = "2", Text = "Diagnostic" }
+            },
+                DateSubmissionReceived = DateTime.Today,
+                NumberOfSamples = 5,
+                CPHNumber = "12/345/6789",
+                Owner = "Jane Smith",
+                SamplingLocationPremises = "Farm 1"
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EditSubmissionDetailsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Repopulate lists for redisplay
+                model.SubmittingLabList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Lab A" },
+                new SelectListItem { Value = "2", Text = "Lab B" }
+            };
+                model.CountryList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "UK", Text = "United Kingdom" },
+                new SelectListItem { Value = "US", Text = "United States" },
+                new SelectListItem { Value = "FR", Text = "France" }
+            };
+                model.ReasonList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Research" },
+                new SelectListItem { Value = "2", Text = "Diagnostic" }
+            };
+                return View(model);
+            }
+            // Save logic here
+            return RedirectToAction("Index");
+        }
+
         public IActionResult SubmissionSamples(int id)
         {
             var model = GetDummySubmissionData(id);
