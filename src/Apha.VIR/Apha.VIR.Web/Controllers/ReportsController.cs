@@ -51,13 +51,9 @@ namespace Apha.VIR.Web.Controllers
             {
                 DateFrom = model.DateFrom,
                 DateTo = model.DateTo,
+                ReportData = reportData.ToList()
             };
-
-            if (reportData != null && reportData.Any())
-            {
-                model.ReportData = reportData.ToList();
-            }
-
+    
             return View("IsolateDispatchReport", viewModel);
         }
 

@@ -14,7 +14,7 @@ public class IsolateDispatchReportModel
     public int NoOfAliquots { get; set; }
 
     [Display(Name = "Passage Number")]
-    public string? PassageNumber { get; set; }
+    public int? PassageNumber { get; set; }
 
     [Display(Name = "Recipient")]
     public string? Recipient { get; set; }
