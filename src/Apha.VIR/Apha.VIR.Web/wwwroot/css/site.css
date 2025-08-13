@@ -540,3 +540,62 @@ body {
     text-wrap-mode: wrap!important;
 }
 /* end view isolate details */
+
+.isolatereport-box_title {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    /* padding: 0.2em 1px 2px 14px; */
+    background-color: #0b2677;
+    color: #ffffff;
+    /* font-size: 0.9em; */
+    font-weight: bold;
+}
+
+.isolatereport-contentbox {
+    border-top: #0b2677 1px solid;
+    border-right: #0b2677 1px solid;
+    border-bottom: #0b2677 1px solid;
+    border-left: #0b2677 1px solid;
+    margin: 0px 0px 15px 0px;
+}
+
+.isolatereport-box_body {
+    background-color: #ffffff;
+    color: #333333;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: small;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.isolatereport-header {
+    background-color: #0b2677;
+    font-size: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+.isolatereporttable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #0b2677;
+    margin-bottom: 20px;
+}
+
+    .isolatereporttable th, .isolatereporttable td {
+        border: 1px solid #0b2677;
+        padding: 6px 8px;
+        text-align: left;
+    }
+
+    .isolatereporttable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
