@@ -15,7 +15,7 @@ public class IsolateInfo
     public string? TrayName { get; set; }
     public string? Well { get; set; }
     public bool MaterialTransferAgreement { get; set; }
-    public int? NoOfAliquots { get; set; }
+    public int NoOfAliquots { get; set; } = 0;
     public string? SenderReferenceNumber { get; set; }
     public string? IsolationMethodName { get; set; }
     public bool AntiserumProduced { get; set; }

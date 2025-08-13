@@ -42,7 +42,11 @@ public class IsolateRepository : IIsolateRepository
                         {
                             AvNumber = result["AVNumber"] as string,
                             Nomenclature = result["Nomenclature"] as string,
-                            IsolateId = (Guid)result["IsolateId"]
+                            IsolateId = (Guid)result["IsolateId"],
+                            NoOfAliquots = result.GetInt32("NoOfAliquots"),
+                            ValidToIssue = (result["ValidToIssue"] != DBNull.Value ? (bool?)result["ValidToIssue"] : false),
+                            IsMixedIsolate = (bool)result["IsMixedIsolate"],
+                            MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"]
                         };
                         isolateInfoList.Add(dto);
                     }
@@ -120,7 +124,7 @@ public class IsolateRepository : IIsolateRepository
                 TrayName = reader["TrayName"].ToString(),
                 Well = reader["Well"].ToString(),
                 MaterialTransferAgreement = Convert.ToBoolean(reader["MaterialTransferAgreement"]),
-                NoOfAliquots = reader["NoOfAliquots"] as int?,
+                NoOfAliquots = (reader["NoOfAliquots"] != DBNull.Value ? Convert.ToInt32(reader["NoOfAliquots"]) : 0),
                 IsolateId = (Guid)reader["IsolateID"],
                 SenderReferenceNumber = reader["SenderReferenceNumber"].ToString(),
                 IsolationMethodName = reader["IsolationMethodName"].ToString(),

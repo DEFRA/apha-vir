@@ -50,7 +50,7 @@
 						<td>@searchModel.TrayName</td>
 						<td>@searchModel.Well</td>
 						<td><a href="@Url.Action("ViewIsolateDetails", "Isolates", new { IsolateId = searchModel.IsolateId })" class="sp-button">View</a></td>
-						<td><a href="@Url.Action("Dispach", "", new { IsolateId = searchModel.IsolateId })" class="sp-button">Dispatch</a></td>
+						<td><a href="@Url.Action("Create", "IsolateDispatch", new { AVNumber = searchModel.Avnumber, IsolateId = searchModel.IsolateId, Source = "Search" })" class="sp-button">Dispatch</a></td>
 						@if ((searchModel.MaterialTransferAgreement || searchModel.IsMixedIsolate) || (!(searchModel.ValidToIssue)))
 						{
 							<td>
