@@ -2,40 +2,53 @@
 @{
     ViewData["Title"] = "Isolate Dispatch Report | Virus Isolates Repository";
 }
-
-<div id="contentbox">
-    <h2 class="box_title">Report Criteria</h2>
-    <div class="box_body">
+<div class="isolatereport-contentbox">
+    <div class="isolatereport-box_title">Report Criteria</div>
+    <div class="isolatereport-box_body">
         <form asp-action="GenerateReport" method="post">
-            <table>
-                <tr>
-                    <td><label asp-for="DateFrom">Date From</label></td>
-                    <td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
-                    <td>
-                        <input asp-for="DateFrom" class="datepicker" />
+            <div class="form-criteria">
+                <div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <div style="min-width: 120px;">
+                        <label asp-for="DateFrom" style="padding-left:15px;">Date From</label>
+                    </div>
+                    <div style="width: 50px;">
+                        <img src="~/Images/spacer.gif" width="50" height="5" alt="" />
+                    </div>
+                    <div style="flex: 1;">
+                        <input asp-for="DateFrom" style="width:180px;" />
+                        <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
                         <span asp-validation-for="DateFrom" class="text-danger"></span>
-                    </td>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label asp-for="DateTo">Date To</label></td>
-                    <td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
-                    <td>
-                        <input asp-for="DateTo" class="datepicker" />
+                    </div>
+                </div>
+                <div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <div style="min-width: 120px;">
+                        <label asp-for="DateTo" style="padding-left:15px;">Date To</label>
+                    </div>
+                    <div style="width: 50px;">
+                        <img src="~/Images/spacer.gif" width="50" height="5" alt="" />
+                    </div>
+                    <div style="flex: 1;">
+                        <input asp-for="DateTo" class="datepicker" style="width:180px;" />
+                        <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
                         <span asp-validation-for="DateTo" class="text-danger"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a asp-action="ExportToExcel" type="submit"  class="btn btn-secondary">Export to Excel</a>
-                        @* <a id="repolinkExport" href="@Url.Action("ExportToExcel", "Reports")">Export to Excel</a> *@
-                    </td>
-                    <td>&nbsp;</td>
-                    <td class="text-right">
-                        <button type="submit" class="btn btn-primary">Generate Report</button>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+                <div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <div style="min-width: 50px;padding-left:15px">
+                       
+                        <a asp-action="ExportToExcel" class="btn btn-secondary">Export to Excel</a>
+                    </div>
+                    <div style="width: 155px;">
+                        <img src="~/Images/spacer.gif" width="110" height="5" alt="" />
+                    </div>
+                    <div style="flex: 1;">
+                        <button type="submit" class="btn btn-as-link">Generate Report</button>
+                    </div>
+                   
+                </div>
+                <br />
+
+            </div>
         </form>
     </div>
 </div>
@@ -44,9 +57,10 @@
 
 @if (Model.ReportData != null && Model.ReportData.Any())
 {
-    <table class="table">
+	<table class="isolatereporttable">
+
         <thead>
-            <tr>
+            <tr class=".isolatereport-header">
                 <th>AV Number</th>
                 <th>Nomenclature</th>
                 <th>No Of Aliquots</th>
