@@ -50,6 +50,7 @@ namespace Apha.VIR.Web.Controllers
 
                 if (!ModelState.IsValid)
                 {
+                    searchModel = await LoadIsolateSearchFilterControlsData(criteria);
                     TempData.Remove("SearchCriteria");
                     searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
                     {

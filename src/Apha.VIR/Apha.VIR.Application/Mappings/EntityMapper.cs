@@ -40,7 +40,9 @@ namespace Apha.VIR.Application.Mappings
              .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => MappingHelper.ToDateStringFormat(src.ReceivedDate)));
             CreateMap<IsolateFullDetail, IsolateFullDetailDTO>().ReverseMap();
             CreateMap<IsolateInfoDTO, IsolateInfo>().ReverseMap();
-            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>().ReverseMap();
+            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>()
+             .ForMember(dest => dest.NoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquotsToBeDispatched))
+             .ForMember(dest => dest.IsolateNoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquots)).ReverseMap();
             CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfo, IsolateViability>().ReverseMap();

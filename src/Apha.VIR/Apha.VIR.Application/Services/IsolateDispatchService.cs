@@ -33,6 +33,13 @@ namespace Apha.VIR.Application.Services
             _isolateViabilityRepository = isolateViabilityRepository;
         }
 
+        public async Task<IsolateInfoDTO> GetIsolateInfoByAVNumberAndIsolateIdAsync(string AVNumber, Guid IsolateId)
+        {
+            var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
+            var isolateInfo = isolationList.FirstOrDefault(x => x.IsolateId == IsolateId);
+            return _mapper.Map<IsolateInfoDTO>(isolateInfo);
+        }
+
         public async Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId)
         {
             string nomenclature;
@@ -66,6 +73,7 @@ namespace Apha.VIR.Application.Services
             foreach (var item in dispatchHistList)
             {
                 item.Nomenclature = nomenclature;
+                item.IsolateNoOfAliquots = matchIsolate[0].NoOfAliquots;
             }
 
             var staffs = await _lookupRepository.GetAllStaffAsync();
@@ -106,6 +114,12 @@ namespace Apha.VIR.Application.Services
             }
 
             return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
+        }
+
+        public async Task AddDispatchAsync(IsolateDispatchInfoDTO DispatchInfo, string User)
+        {
+            var dispatchData = _mapper.Map<IsolateDispatchInfo>(DispatchInfo);
+            await _isolateDispatchRepository.AddDispatchAsync(dispatchData, User);
         }
 
         public async Task UpdateDispatchAsync(IsolateDispatchInfoDTO DispatchInfoDto, string User)
@@ -207,12 +221,12 @@ namespace Apha.VIR.Application.Services
             return characteristicNomenclature;
         }
 
-        private async Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid isolateId)
+        public async Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid IsolateId)
         {
-            if (isolateId == Guid.Empty)
-                throw new ArgumentException("ViabilityId cannot be empty.", nameof(isolateId));
+            if (IsolateId == Guid.Empty)
+                throw new ArgumentException("ViabilityId cannot be empty.", nameof(IsolateId));
 
-            var viabilityList = await _isolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId);
+            var viabilityList = await _isolateViabilityRepository.GetViabilityByIsolateIdAsync(IsolateId);
 
             var lastViability = viabilityList
                 .OrderByDescending(v => v.DateChecked)

@@ -577,7 +577,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             var viewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateSearchResults", viewResult.ViewName);
             var model = Assert.IsType<IsolateSearchGirdViewModel>(viewResult.Model);
-            Assert.Empty(model.IsolateSearchResults);
+            Assert.Empty(model?.IsolateSearchResults!);
         }
 
         [Fact]
@@ -652,10 +652,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public void BindGirdPagination_NullInput_ReturnsViewComponentResult()
         {
             // Arrange
-            PaginationModel paginationModel = null;
+            PaginationModel? paginationModel = null;
 
             // Act
-            var result = _controller.BindGirdPagination(paginationModel);
+            var result = _controller.BindGirdPagination(paginationModel!);
 
             // Assert
             Assert.IsType<ViewComponentResult>(result);
