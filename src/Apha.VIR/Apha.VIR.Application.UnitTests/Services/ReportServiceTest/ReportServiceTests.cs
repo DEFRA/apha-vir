@@ -100,8 +100,8 @@ namespace Apha.VIR.Application.UnitTests.Services.ReportServiceTest
         public void Constructor_WithNullDependencies_ThrowsArgumentNullException()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new ReportService(null, _mockLookupRepository, _mockMapper));
-            Assert.Throws<ArgumentNullException>(() => new ReportService(_mockReportRepository, null, _mockMapper));
+            Assert.Throws<ArgumentNullException>(() => new ReportService(null!, _mockLookupRepository, _mockMapper));
+            Assert.Throws<ArgumentNullException>(() => new ReportService(_mockReportRepository, null!, _mockMapper));
         }
     }
 }

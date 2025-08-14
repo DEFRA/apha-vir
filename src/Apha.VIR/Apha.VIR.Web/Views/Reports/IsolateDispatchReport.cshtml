@@ -9,26 +9,26 @@
 			<div class="form-criteria">
 				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
 					<div style="min-width: 120px;">
-						<label asp-for="DateFrom" style="padding-left:15px;">Date From</label>
+						<label  for="DateFrom" style="padding-left:15px;">Date From</label>
 					</div>
 					<div style="width: 50px;">
 						<img src="~/Images/spacer.gif" width="50" height="5" alt="" />
 					</div>
 					<div style="flex: 1;">
-						<input asp-for="DateFrom" style="width:180px;" />
+						<input id="DateFrom" asp-for="DateFrom" style="width:180px;" />
 						<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
 						<span asp-validation-for="DateFrom" class="text-danger"></span>
 					</div>
 				</div>
 				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
 					<div style="min-width: 120px;">
-						<label asp-for="DateTo" style="padding-left:15px;">Date To</label>
+						<label for="DateTo" style="padding-left:15px;">Date To</label>
 					</div>
 					<div style="width: 50px;">
 						<img src="~/Images/spacer.gif" width="50" height="5" alt="" />
 					</div>
 					<div style="flex: 1;">
-						<input asp-for="DateTo" class="datepicker" style="width:180px;" />
+						<input id="DateTo" asp-for="DateTo" class="datepicker" style="width:180px;" />
 						<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
 						<span asp-validation-for="DateTo" class="text-danger"></span>
 					</div>

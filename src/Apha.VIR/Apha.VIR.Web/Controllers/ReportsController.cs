@@ -58,9 +58,18 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExportToExcel(DateTime dateFrom, DateTime dateTo)
+        public async Task<IActionResult> ExportToExcel(DateTime? dateFrom, DateTime? dateTo)
         {
             ModelState.Clear();
+
+            if (dateFrom == null)
+            {
+                ModelState.AddModelError(nameof(dateFrom), "Date From must be entered");
+            }
+            if (dateTo == null)
+            {
+                ModelState.AddModelError(nameof(dateTo), "Date To must be entered");
+            }
 
             if (!ModelState.IsValid)
             {
