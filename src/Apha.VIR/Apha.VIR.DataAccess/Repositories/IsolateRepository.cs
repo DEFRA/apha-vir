@@ -10,7 +10,7 @@ namespace Apha.VIR.DataAccess.Repositories;
 public class IsolateRepository : IIsolateRepository
 {
     private readonly VIRDbContext _context;
-
+    private const string NoOfAliquots = "NoOfAliquots";
     public IsolateRepository(VIRDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -43,7 +43,7 @@ public class IsolateRepository : IIsolateRepository
                             AvNumber = result["AVNumber"] as string,
                             Nomenclature = result["Nomenclature"] as string,
                             IsolateId = (Guid)result["IsolateId"],
-                            NoOfAliquots = (int)result["NoOfAliquots"],
+                            NoOfAliquots = (int)result[NoOfAliquots],
                             ValidToIssue = (result["ValidToIssue"] != DBNull.Value ? (bool?)result["ValidToIssue"] : false),
                             IsMixedIsolate = (bool)result["IsMixedIsolate"],
                             MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"]
@@ -124,7 +124,7 @@ public class IsolateRepository : IIsolateRepository
                 TrayName = reader["TrayName"].ToString(),
                 Well = reader["Well"].ToString(),
                 MaterialTransferAgreement = Convert.ToBoolean(reader["MaterialTransferAgreement"]),
-                NoOfAliquots = (reader["NoOfAliquots"] != DBNull.Value ? Convert.ToInt32(reader["NoOfAliquots"]) : 0),
+                NoOfAliquots = (reader[NoOfAliquots] != DBNull.Value ? Convert.ToInt32(reader[NoOfAliquots]) : 0),
                 IsolateId = (Guid)reader["IsolateID"],
                 SenderReferenceNumber = reader["SenderReferenceNumber"].ToString(),
                 IsolationMethodName = reader["IsolationMethodName"].ToString(),
@@ -157,7 +157,7 @@ public class IsolateRepository : IIsolateRepository
         {
             dispatchInfos.Add(new IsolateDispatchInfo
             {
-                NoOfAliquots = Convert.ToInt32(reader["NoOfAliquots"]),
+                NoOfAliquots = Convert.ToInt32(reader[NoOfAliquots]),
                 PassageNumber = Convert.ToInt32(reader["PassageNumber"]),
                 RecipientName = reader["RecipientName"].ToString(),
                 RecipientAddress = reader["RecipientAddress"].ToString(),
