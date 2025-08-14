@@ -43,7 +43,7 @@ public class IsolateRepository : IIsolateRepository
                             AvNumber = result["AVNumber"] as string,
                             Nomenclature = result["Nomenclature"] as string,
                             IsolateId = (Guid)result["IsolateId"],
-                            NoOfAliquots = result.GetInt32("NoOfAliquots"),
+                            NoOfAliquots = (int)result["NoOfAliquots"],
                             ValidToIssue = (result["ValidToIssue"] != DBNull.Value ? (bool?)result["ValidToIssue"] : false),
                             IsMixedIsolate = (bool)result["IsMixedIsolate"],
                             MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"]

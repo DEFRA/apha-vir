@@ -126,9 +126,7 @@
 		<tr>
 			<td>Dispatched&nbsp;Date&nbsp;*</td>
 			<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
-			<td>
-				@*                 <input asp-for="DispatchedDate" type="date" style="width: 200px;" />
-                <span asp-validation-for="DispatchedDate" class="text-danger"></span> *@
+			<td>				
 				<input asp-for="DispatchedDate" />
 				<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
 				<span asp-validation-for="DispatchedDate" class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
@@ -148,8 +146,7 @@
 
 				<img src="~/images/spacer.gif" width="10" height="5" alt="" />
 				<input type="hidden" asp-for="@Model.Source" />
-				<button id="btnCancel" type="submit" asp-action="CancelAction" asp-controller="IsolateDispatch" class="btn-as-link">Cancel</button>
-				@* <a asp-action="History" asp-controller="IsolateDispatch" asp-route-AVNumber="@Model.Avnumber" asp-route-IsolateId="@Model.DispatchIsolateId" class="btn btn-secondary">Cancel</a> *@
+				<button id="btnCancel" type="submit" asp-action="CancelAction" asp-controller="IsolateDispatch" class="btn-as-link">Cancel</button>				
 			</td>
 		</tr>
 	</table>
@@ -165,11 +162,10 @@
 			if (isMTA === "True") {
 				let confirmDispatch = confirm("Please confirm that the MTA is not violated by this action.");
 				 if (confirmDispatch) {
-					// Proceed with delete
+					// Proceed with dispatch
 				 } else {
-					// Cancel action
-				 }
-				e.preventDefault();
+					e.preventDefault();
+				 }				
 			}
 		});
 
@@ -196,25 +192,7 @@
 
 			$("input[name='RecipientLocation']").change(function () {
 				toggleRecipientDropdown();
-			});
-
-			// $("form").on("submit", function (e) {
-			// 	var dispatchedDate = $("input[name='DispatchedDate']").val();
-			// 	var today = new Date();
-			// 	today.setHours(0,0,0,0);
-			// 	var dispatched = new Date(dispatchedDate);
-			// 	dispatched.setHours(0,0,0,0);
-
-			// 	if (dispatched > today) {
-			// 		$("#dispatchedDateError")
-			// 			.text("- Dispatched Date cannot be in the future.")
-			// 			.show();
-			// 		$("#validationSummary").show();
-			// 		e.preventDefault();
-			// 	} else {
-			// 		$("#dispatchedDateError").hide();
-			// 	}
-			// });
+			});			
 		});
 	</script>
 }

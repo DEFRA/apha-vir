@@ -36,7 +36,7 @@ namespace Apha.VIR.Application.Services
         public async Task<IsolateInfoDTO> GetIsolateInfoByAVNumberAndIsolateIdAsync(string AVNumber, Guid IsolateId)
         {
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
-            var isolateInfo = isolationList.Where(x => x.IsolateId == IsolateId).FirstOrDefault();
+            var isolateInfo = isolationList.FirstOrDefault(x => x.IsolateId == IsolateId);
             return _mapper.Map<IsolateInfoDTO>(isolateInfo);
         }
 
@@ -73,7 +73,7 @@ namespace Apha.VIR.Application.Services
             foreach (var item in dispatchHistList)
             {
                 item.Nomenclature = nomenclature;
-                item.IsolateNoOfAliquots = (int)matchIsolate.First().NoOfAliquots;
+                item.IsolateNoOfAliquots = matchIsolate[0].NoOfAliquots;
             }
 
             var staffs = await _lookupRepository.GetAllStaffAsync();

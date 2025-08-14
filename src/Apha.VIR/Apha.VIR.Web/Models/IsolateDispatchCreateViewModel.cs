@@ -10,7 +10,7 @@ namespace Apha.VIR.Web.Models
         public required string Avnumber { get; set; }      
         public int? NoOfAliquots { get; set; } = null;
         public string? Nomenclature { get; set; }        
-        public bool ValidToIssue { get; set; }       
+        public required bool ValidToIssue { get; set; } = false;      
         public Guid? ViabilityId { get; set; }
         public List<SelectListItem>? ViabilityList { get; set; }
         [Required(ErrorMessage = "No Of Aliquots must be entered")]
@@ -32,7 +32,7 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? DispatchedByList { get; set; }        
         public byte[]? LastModified { get; set; }
         public string? RecipientLocation { get; set; }       
-        public bool MaterialTransferAgreement { get; set; }
+        public bool? MaterialTransferAgreement { get; set; }
         public List<string> WarningMessages { get; set; } = new();
         public string? Source { get; set; }
         public bool IsDispatchDisabled { get; set; } = false;

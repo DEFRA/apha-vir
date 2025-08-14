@@ -62,7 +62,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<ActionResult> Create(string AVNumber, Guid IsolateId, string Source)
         {
             bool isBtnDisabled = false;
-            IsolateDispatchCreateViewModel dispatchCreateModel = new IsolateDispatchCreateViewModel { Avnumber = AVNumber, DispatchIsolateId = IsolateId };
+            IsolateDispatchCreateViewModel dispatchCreateModel = new IsolateDispatchCreateViewModel { Avnumber = AVNumber, DispatchIsolateId = IsolateId, ValidToIssue = false };
             dispatchCreateModel.ViabilityList = await GetViabilityDropdownList();
             dispatchCreateModel.RecipientList = await GetWorkGroupsDropdownList();
             dispatchCreateModel.DispatchedByList = await GetStaffsDropdownList();
@@ -258,7 +258,7 @@ namespace Apha.VIR.Web.Controllers
 
         public IActionResult CancelAction(string Source)
         {
-            string fromSource = Source.ToLower();
+            string fromSource = Source == null ? "": Source.ToLower();
             return fromSource switch
             {
                 "search" => RedirectToAction("Search", "SearchRepository"),
