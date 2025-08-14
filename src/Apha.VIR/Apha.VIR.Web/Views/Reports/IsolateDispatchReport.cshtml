@@ -1,56 +1,55 @@
 ﻿@model IsolateDispatchReportViewModel
 @{
-    ViewData["Title"] = "Isolate Dispatch Report | Virus Isolates Repository";
+	ViewData["Title"] = "Isolate Dispatch Report | Virus Isolates Repository";
 }
 <div class="isolatereport-contentbox">
-    <div class="isolatereport-box_title">Report Criteria</div>
-    <div class="isolatereport-box_body">
-        <form asp-action="GenerateReport" method="post">
-            <div class="form-criteria">
-                <div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <div style="min-width: 120px;">
-                        <label asp-for="DateFrom" style="padding-left:15px;">Date From</label>
-                    </div>
-                    <div style="width: 50px;">
-                        <img src="~/Images/spacer.gif" width="50" height="5" alt="" />
-                    </div>
-                    <div style="flex: 1;">
-                        <input asp-for="DateFrom" style="width:180px;" />
-                        <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
-                        <span asp-validation-for="DateFrom" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <div style="min-width: 120px;">
-                        <label asp-for="DateTo" style="padding-left:15px;">Date To</label>
-                    </div>
-                    <div style="width: 50px;">
-                        <img src="~/Images/spacer.gif" width="50" height="5" alt="" />
-                    </div>
-                    <div style="flex: 1;">
-                        <input asp-for="DateTo" class="datepicker" style="width:180px;" />
-                        <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
-                        <span asp-validation-for="DateTo" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <div style="min-width: 50px;padding-left:15px">
-                       
-                        <a asp-action="ExportToExcel" class="btn btn-secondary">Export to Excel</a>
-                    </div>
-                    <div style="width: 155px;">
-                        <img src="~/Images/spacer.gif" width="110" height="5" alt="" />
-                    </div>
-                    <div style="flex: 1;">
-                        <button type="submit" class="btn btn-as-link">Generate Report</button>
-                    </div>
-                   
-                </div>
-                <br />
-
-            </div>
-        </form>
-    </div>
+	<div class="isolatereport-box_title">Report Criteria</div>
+	<div class="isolatereport-box_body">
+		<form asp-action="GenerateReport" method="post">
+			<div class="form-criteria">
+				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+					<div style="min-width: 120px;">
+						<label asp-for="DateFrom" style="padding-left:15px;">Date From</label>
+					</div>
+					<div style="width: 50px;">
+						<img src="~/Images/spacer.gif" width="50" height="5" alt="" />
+					</div>
+					<div style="flex: 1;">
+						<input asp-for="DateFrom" style="width:180px;" />
+						<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+						<span asp-validation-for="DateFrom" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+					<div style="min-width: 120px;">
+						<label asp-for="DateTo" style="padding-left:15px;">Date To</label>
+					</div>
+					<div style="width: 50px;">
+						<img src="~/Images/spacer.gif" width="50" height="5" alt="" />
+					</div>
+					<div style="flex: 1;">
+						<input asp-for="DateTo" class="datepicker" style="width:180px;" />
+						<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+						<span asp-validation-for="DateTo" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+					<div style="min-width: 50px;padding-left:15px">
+						<a id="RepolinkExport"
+						   href="@Url.Action("ExportToExcel", "Reports", new { dateFrom = Model.DateFrom, dateTo = Model.DateTo })">
+							Export to Excel
+						</a>
+					</div>
+					<div style="width: 155px;">
+					</div>
+					<div style="flex: 1;">
+						<button type="submit" class="btn btn-as-link">Generate Report</button>
+					</div>
+				</div>
+				<br />
+			</div>
+		</form>
+	</div>
 </div>
 
 <br />
@@ -59,53 +58,40 @@
 {
 	<table class="isolatereporttable">
 
-        <thead>
-            <tr class=".isolatereport-header">
-                <th>AV Number</th>
-                <th>Nomenclature</th>
-                <th>No Of Aliquots</th>
-                <th>Passage Number</th>
-                <th>Recipient</th>
-                <th>Recipient Name</th>
-                <th>Recipient Address</th>
-                <th>Reason For Dispatch</th>
-                <th>Dispatched Date</th>
-                <th>Dispatched By</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.ReportData)
-            {
-                <tr>
-                    <td>@item.AVNumber</td>
-                    <td>@item.Nomenclature</td>
-                    <td>@item.NoOfAliquots</td>
-                    <td>@item.PassageNumber</td>
-                    <td>@item.RecipientName</td>
-                    <td>@item.RecipientName</td>
-                    <td>@item.RecipientAddress</td>
-                    <td>@item.ReasonForDispatch</td>
-                    <td>@item.DispatchedDate.ToString("d")</td>
-                    <td>@item.DispatchedByName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>AV Number</th>
+				<th>Nomenclature</th>
+				<th>No Of Aliquots</th>
+				<th>Passage Number</th>
+				<th>Recipient</th>
+				<th>Recipient Name</th>
+				<th>Recipient Address</th>
+				<th>Reason For Dispatch</th>
+				<th>Dispatched Date</th>
+				<th>Dispatched By</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.ReportData)
+			{
+				<tr>
+					<td>@item.AVNumber</td>
+					<td>@item.Nomenclature</td>
+					<td>@item.NoOfAliquots</td>
+					<td>@item.PassageNumber</td>
+					<td>@item.RecipientName</td>
+					<td>@item.RecipientName</td>
+					<td>@item.RecipientAddress</td>
+					<td>@item.ReasonForDispatch</td>
+					<td>@item.DispatchedDate.ToString("d")</td>
+					<td>@item.DispatchedByName</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 }
 else
 {
-    <p>No results to display</p>
-}
-
-@section Scripts {
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script>
-        $(function () {
-            $(".datepicker").datepicker({
-                dateFormat: "dd/mm/yy"
-            });
-        });
-    </script>
-    <partial name="_ValidationScriptsPartial" />
+	<p>No results to display</p>
 }

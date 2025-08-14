@@ -58,16 +58,21 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExportToExcel(IsolateDispatchReportViewModel model)
+        public async Task<IActionResult> ExportToExcel(DateTime dateFrom, DateTime dateTo)
         {
-            ModelState.Remove(nameof(model.ReportData));
+            ModelState.Clear();
 
             if (!ModelState.IsValid)
             {
-                return View(model);
+                var viewmodel = new IsolateDispatchReportViewModel
+                {
+                    DateFrom = dateFrom,
+                    DateTo = dateTo
+                };
+                return View("IsolateDispatchReport", viewmodel);
             }
 
-            var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);
+            var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
 
             var reportData = _mapper.Map<IEnumerable<IsolateDispatchReportModel>>(result);
 

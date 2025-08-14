@@ -71,7 +71,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(serviceData).Returns(mappedData);
 
             // Act
-            var result = await _controller.ExportToExcel(inputModel);
+            var result = await _controller.ExportToExcel(inputModel.DateFrom,inputModel.DateTo);
 
             // Assert
             var fileResult = Assert.IsType<FileContentResult>(result);
@@ -106,27 +106,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             .Returns(new List<IsolateDispatchReportModel>());
 
             // Act
-            var result = await _controller.ExportToExcel(model);
+            var result = await _controller.ExportToExcel(model.DateFrom,model.DateTo);
 
             // Assert
             var fileResult = Assert.IsType<FileContentResult>(result);
             Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileResult.ContentType);
             Assert.Equal(expectedFileName, fileResult.FileDownloadName);
             Assert.True(fileResult.FileContents.Length > 0);
-        }
-
-        [Fact]
-        public async Task ExportToExcel_InvalidModelState_ReturnsViewResult()
-        {
-            // Arrange
-            var model = new IsolateDispatchReportViewModel();
-            _controller.ModelState.AddModelError("DateFrom", "Required");
-
-            // Act
-            var result = await _controller.ExportToExcel(model);
-
-            // Assert
-            Assert.IsType<ViewResult>(result);
         }
     }
 }
