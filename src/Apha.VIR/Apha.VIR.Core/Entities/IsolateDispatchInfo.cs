@@ -7,10 +7,14 @@ public class IsolateDispatchInfo
     public Guid? DispatchIsolateId { get; set; }
     public string? AVNumber { get; set; } = null!;
     public string? Nomenclature { get; set; } = null!;
+    public string? IsolateNomenclature { get; set; } = null!;
+    public string? FamilyName { get; set; } = null!;
+    public string? TypeName { get; set; } = null!;
     public bool ValidToIssue { get; set; }
     public Guid? ViabilityId { get; set; }
     public string? ViabilityName { get; set; }
-    public int NoOfAliquotsToBeDispatched { get; set; }
+    public int NoOfAliquotsToBeDispatched { get; set; } // Todo delete this when merge with Add dispatch.
+    public int IsolateNoOfAliquots { get; set; }
     public int? NoOfAliquots { get; set; }
     public int? PassageNumber { get; set; }
     public Guid? RecipientId { get; set; }
