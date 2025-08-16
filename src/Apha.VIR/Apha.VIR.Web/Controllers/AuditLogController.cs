@@ -70,6 +70,22 @@ namespace Apha.VIR.Web.Controllers
 
             var reportData2 = _mapper.Map<IEnumerable<AuditSampleLogModel>>(result2);
 
+            var result3 = await _auditLogService.GetDispatchLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+              searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData3 = _mapper.Map<IEnumerable<AuditDispatchLogModel>>(result3);
+
+            var result4 = await _auditLogService.GetIsolateViabilityLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+             searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData4 = _mapper.Map<IEnumerable<AuditIsolateViabilityLogModel>>(result4);
+
+            var result5 = await _auditLogService.GetIsolatLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+             searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData5 = _mapper.Map<IEnumerable<AuditIsolateLogModel>>(result5);
+
+
             var viewModel = new AuditLogViewModel
             {
                 AVNumber = searchCriteria.AVNumber,
@@ -80,7 +96,9 @@ namespace Apha.VIR.Web.Controllers
                 SampleLogs = reportData2.ToList(),
                 SubmissionLogs = reportData.ToList(),
                 CharacteristicsLogs = reportData1.ToList(),
-                
+                DispatchLogs = reportData3.ToList(),
+                IsolateViabilityLogs = reportData4.ToList(),
+                IsolateLogs = reportData5.ToList(),
             };
 
             return View("Index", viewModel);

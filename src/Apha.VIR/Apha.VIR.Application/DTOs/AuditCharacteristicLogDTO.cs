@@ -2,7 +2,7 @@
 
 public class AuditCharacteristicLogDTO
 {
-    public string Avnumber { get; set; } = null!;
+    public string AVNumber { get; set; } = null!;
     public int? SampleNumber { get; set; }
     public int? IsolateNumber { get; set; }
     public Guid LogId { get; set; }

@@ -51,11 +51,11 @@ public class AuditRepository : IAuditRepository
            , parameters).ToListAsync();
     }
 
-    public async Task<IEnumerable<AuditIsolateLogDetail>> GetIsolatLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    public async Task<IEnumerable<AuditIsolateLog>> GetIsolatLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
-        return await _context.Set<AuditIsolateLogDetail>()
+        return await _context.Set<AuditIsolateLog>()
            .FromSqlRaw("EXEC spLogIsolateGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId"
            , parameters).ToListAsync();
     }

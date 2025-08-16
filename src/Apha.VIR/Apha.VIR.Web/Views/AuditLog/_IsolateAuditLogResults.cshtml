@@ -38,14 +38,14 @@
 			@foreach (var item in Model)
 			{
 				<tr>
-					<td>@item.AvNumber</td>
+					<td>@item.AVNumber</td>
 					<td>@item.IsolateNumber</td>
 					<td>@item.IsolateSampleId</td>
 					<td>@item.DateDone</td>
 					<td>@item.UserId</td>
 					<td>@item.UserName</td>
 					<td>@item.UpdateType</td>
-					<td>@item.SmsreferenceNumber</td>
+					<td>@item.SMSReferenceNumber</td>
 	 
 					<td>@item.Family</td>
 					<td>@item.Type</td>
@@ -55,7 +55,7 @@
 					<td>@item.AntiserumProduced</td>
 					<td>@item.AntigenProduced</td>
 					<td>@item.MaterialTransferAgreement</td>
-					<td>@item.Mtalocation</td>
+					<td>@item.MTALocation</td>
 					<td>@item.ValidToIssue</td>
 					<td>@item.WhyNotValidToIssue</td>
 					<td>@item.OriginalSampleAvailable</td>
@@ -66,7 +66,7 @@
 					<td>@item.Well</td>
 					<td>@item.LogId</td>
 					<td>
-						<a asp-action="Edit" asp-route-LogId="@item.LogId" asp-route-AvNumber="@item.AvNumber"
+						<a asp-action="Edit" asp-route-LogId="@item.LogId" asp-route-AvNumber="@item.AVNumber"
 						   class="btn btn-primary">More Inf</a>
 						</td>
  				</tr>
