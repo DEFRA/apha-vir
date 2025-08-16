@@ -1,0 +1,48 @@
+﻿@model List<AuditSampleLogModel>
+
+@if (Model != null && Model.Any())
+{
+	<table class="isolatereporttable">
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>AV Number</th>
+				<th>Sample</th>
+				<th>"Date Of Change</th>
+				<th>User</th>
+				<th>User Name</th>
+				<th>Type</th>
+				<th>Senders Ref Number</th>
+				<th>SMS Ref Number</th>
+				<th>Sample Type</th>
+				<th>Species</th>
+				<th>Breed</th>
+				<th>Purpose</th>
+				<th>Sampling Location</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.AVNumber</td>
+					<td>@item.SampleNumber</td>
+					<td>@item.DateDone</td>
+					<td>@item.UserId</td>
+					<td>@item.UserName</td>
+					<td>@item.UpdateType</td>
+					<td>@item.SenderReferenceNumber</td>
+					<td>@item.SMSReferenceNumber</td>
+					<td>@item.SampleType</td>
+					<td>@item.HostSpecies</td>
+					<td>@item.HostBreed</td>
+					<td>@item.HostPurpose</td>
+					<td>@item.SamplingLocationHouse</td>
+ 				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>There are no sample audit records that match the entered criteria.</p>
+}

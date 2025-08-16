@@ -1,74 +1,79 @@
 ﻿@model AuditLogViewModel
 @{
-    ViewData["Title"] = "Search Audit Log | Virus Isolates Repository";
+	ViewData["Title"] = "Search Audit Log | Virus Isolates Repository";
 }
 <div class="isolatereport-contentbox">
-    @* <div class="card"> *@
-    <div class="isolatereport-box_title">
-            Enter search selection criteria
-        </div>
-    <div class="isolatereport-box_body">
-        <form asp-action="SearchAudit" method="post">
-                <div class="form-group row">
-                    <label asp-for="AVNumber" class="col-sm-3 col-form-label">AVNumber</label>
-                    <div class="col-sm-9">
-                        <input asp-for="AVNumber" class="form-control" placeholder="AVnnnnnn-yy or PDnnnn-yy" />
-                        <span asp-validation-for="AVNumber" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label asp-for="DateTimeFrom" class="col-sm-3 col-form-label">Date/Time From</label>
-                    <div class="col-sm-9">
-                        <input asp-for="DateTimeFrom" class="form-control datepicker" placeholder="dd/mm/yyyy hh:mm:ss" />
-                        <span asp-validation-for="DateTimeFrom" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label asp-for="DateTimeTo" class="col-sm-3 col-form-label">Date/Time To</label>
-                    <div class="col-sm-9">
-                        <input asp-for="DateTimeTo" class="form-control datepicker" placeholder="dd/mm/yyyy hh:mm:ss" />
-                        <span asp-validation-for="DateTimeTo" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label asp-for="UserId" class="col-sm-3 col-form-label">User</label>
-                    <div class="col-sm-9">
-                        <input asp-for="UserId" class="form-control"  />
-                        <span asp-validation-for="UserId" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-9 offset-sm-3">
-                        <button type="submit" class="btn btn-primary">Search</button>
-                        <a asp-action="ClearSearch" class="btn btn-secondary">Clear Search</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-   @*  </div> *@
+	<div class="isolatereport-box_title">
+		Enter search selection criteria
+	</div>
+	<div class="isolatereport-box_body">
+		<form asp-action="SearchAudit" method="post">
+			<div class="form-group row">
+				<label for="AVNumber" class="col-sm-3 col-form-label">AVNumber</label>
+				<div class="col-sm-9">
+					<input id="AVNumber" asp-for="AVNumber" class="form-control" title="AVNumber format should be AVnnnnnn-yy or PDnnnn-yy" />
+					<br><span asp-validation-for="AVNumber" class="Validation"></span>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="DateTimeFrom" class="col-sm-3 col-form-label">Date/Time From</label>
+				<div class="col-sm-9">
+					<input id="DateTimeFrom" asp-for="DateTimeFrom" class="form-control datepicker" title="Date format is dd/mm/yyyy hh:mm:ss" />
+					<br><span asp-validation-for="DateTimeFrom" class="Validation"></span>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="DateTimeTo" class="col-sm-3 col-form-label">Date/Time To</label>
+				<div class="col-sm-9">
+					<input id="DateTimeTo" asp-for="DateTimeTo" class="form-control datepicker" title="Date format is dd/mm/yyyy hh:mm:ss" />
+					<br><span asp-validation-for="DateTimeTo" class="Validation"></span>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="UserId" class="col-sm-3 col-form-label">User</label>
+				<div class="col-sm-9">
+					<input id="UserId" asp-for="UserId" class="form-control" />
+					<br><span asp-validation-for="UserId" class="Validation"></span>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-9 offset-sm-3">
+					<button type="submit" class="btn btn-primary">Search</button>
+					<a asp-action="ClearSearch" class="btn btn-secondary">Clear Search</a>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>
-    <div id="searchResults">
-      @*   @if (!string.IsNullOrEmpty(Model.ValidationError))
-        {
-            <div class="alert alert-danger" role="alert">
-                @Model.ValidationError
-            </div>
-        } *@
-
-       @*  @if (Model.ShowResults)
-        { *@
-            <h3>Select the audit log that you wish to view</h3>
-            <div class="btn-group" role="group" aria-label="Audit Log Types">
-                <button type="button" class="btn btn-secondary" id="btnSubmission">Submission</button>
-                <button type="button" class="btn btn-secondary" id="btnSample">Sample</button>
-                <button type="button" class="btn btn-secondary" id="btnIsolate">Isolate</button>
-                <button type="button" class="btn btn-secondary" id="btnCharacteristics">Characteristics</button>
-                <button type="button" class="btn btn-secondary" id="btnDispatch">Dispatch</button>
-                <button type="button" class="btn btn-secondary" id="btnIsolateViability">Isolate Viability</button>
-            </div>
-
-            <div id="auditLogContent" class="mt-3">
-                <!-- Content for each audit log type will be loaded here via AJAX -->
-            </div>
-       @*  } *@
-    </div>
+@if (Model.ShowErrorSummary)
+{
+	<div id="pnlValidation" asp-validation-summary="All" class="spvalidation">
+		<span id="lblValidationMessage" class="validation"></span>
+	</div>
+}
+else
+{
+	<div id="searchoOtiosn">
+		<br />
+		<span class="para-darkblue-small">Select the audit log that you wish to view</span>
+			<div class="btn-group" role="group" aria-label="Select Audit Log Type">
+			<br />
+			<button type="button" class="btn btn-as-link" id="btnSubmission">Submission</button>
+			<button type="button" class="btn btn-as-link" id="btnSample">Sample</button>
+			<button type="button" class="btn btn-as-link" id="btnIsolate">Isolate</button>
+			<button type="button" class="btn btn-as-link" id="btnCharacteristics">Characteristics</button>
+			<button type="button" class="btn btn-as-link" id="btnDispatch">Dispatch</button>
+			<button type="button" class="btn btn-as-link" id="btnIsolateViability">Isolate Viability</button>
+		</div>
+	</div>
+}
+<div id="searchResults">
+	<div id="auditLogContent" class="mt-3">
+		<partial name="_SubmissionAuditLogResults" for="@Model.SubmissionLogs" />
+		<partial name="_CharacteristicsAuditLogResults" for="@Model.CharacteristicsLogs" />
+		<partial name="_DispatchAuditLogResults" for="@Model.DispatchLogs" />
+		<partial name="_IsolateAuditLogResults" for="@Model.IsolateLogs" />
+		<partial name="_IsolateViabilityAuditLogResults" for="@Model.IsolateViabilityLogs" />
+		<partial name="_SampleAuditLogResults" for="@Model.SampleLogs" />
+	</div>
+ </div>

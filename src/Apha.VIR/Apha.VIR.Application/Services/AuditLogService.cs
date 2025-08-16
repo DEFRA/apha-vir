@@ -30,29 +30,34 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<AuditCharacteristicLogDTO>>(result);
         }
 
-        public Task<IEnumerable<AuditDispatchLogDTO>> GetDispatchLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+        public async Task<IEnumerable<AuditDispatchLogDTO>> GetDispatchLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            throw new NotImplementedException();
+            var result = await _auditRepository.GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userid);
+            return _mapper.Map<IEnumerable<AuditDispatchLogDTO>>(result);
         }
 
-        public Task<IEnumerable<AuditViabilityLogDTO>> GetIsolateViabilityLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+        public async Task<IEnumerable<AuditViabilityLogDTO>> GetIsolateViabilityLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            throw new NotImplementedException();
+            var result = await _auditRepository.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid);
+            return _mapper.Map<IEnumerable<AuditViabilityLogDTO>>(result);
         }
 
-        public Task<IEnumerable<AuditIsolateLogDTO>> GetIsolatLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+        public async Task<IEnumerable<AuditIsolateLogDTO>> GetIsolatLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            throw new NotImplementedException();
+            var result = await _auditRepository.GetIsolatLogsAsync(avNumber, dateFrom, dateTo, userid);
+            return _mapper.Map<IEnumerable<AuditIsolateLogDTO>>(result); ;
         }
 
-        public Task<IEnumerable<AuditSampleLogDTO>> GetSamplLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+        public async Task<IEnumerable<AuditSampleLogDTO>> GetSamplLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            throw new NotImplementedException();
+            var result = await _auditRepository.GetSamplLogsAsync(avNumber, dateFrom, dateTo, userid);
+            return _mapper.Map<IEnumerable<AuditSampleLogDTO>>(result);
         }
 
-        public Task<IEnumerable<AuditSubmissionLogDTO>> GetSubmissionLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+        public async Task<IEnumerable<AuditSubmissionLogDTO>> GetSubmissionLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            throw new NotImplementedException();
+            var result = await _auditRepository.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid);
+            return _mapper.Map<IEnumerable<AuditSubmissionLogDTO>>(result);
         }
     }
 }

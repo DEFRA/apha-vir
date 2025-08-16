@@ -1,0 +1,51 @@
+﻿@model List<AuditDispatchLogModel>
+
+@if (Model != null && Model.Any())
+{
+	<table class="isolatereporttable">
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>AVNumber</th>
+				<th>Sample</th>
+				<th>Isolate</th>
+				<th>"Date Of Change</th>
+				<th>User</th>
+				<th>User Name</th>
+				<th>Type</th>
+				<th>No Of Aliquots</th>
+				<th>Passage Number</th>
+				<th>"Recipent Name</th>
+				<th>Recipient Address</th>
+				<th>Reason For Dispatch</th>
+				<th>Dispatched Date</th>
+				<th>Dispatched By</th>
+ 			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.Avnumber</td>
+					<td>@item.SampleNumber</td>
+					<td>@item.IsolateNumber</td>
+					<td>@item.DateDone</td>
+					<td>@item.UserId</td>
+					<td>@item.UserName</td>
+					<td>@item.UpdateType</td>
+					<td>@item.NoOfAliquots</td>
+					<td>@item.PassageNumber</td>
+					<td>@item.RecipientName</td>
+					<td>@item.RecipientAddress</td>
+					<td>@item.ReasonForDispatch</td>
+					<td>@item.ReasonForDispatch</td>
+					<td>@item.DispatchedDate</td>
+					<td>@item.DispatchedBy</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>There are no dispatch audit records matching the entered criteria.</p>
+}

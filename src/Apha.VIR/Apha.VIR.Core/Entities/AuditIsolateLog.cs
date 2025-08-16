@@ -5,8 +5,6 @@ public class AuditIsolateLog
     public int? IsolateNumber { get; set; }
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
-    //This prop populate from auth db.
-    public string UserName { get; set; } = null!;
     public DateTime DateDone { get; set; }
     public string UpdateType { get; set; } = null!;
     public Guid IsolateId { get; set; }
