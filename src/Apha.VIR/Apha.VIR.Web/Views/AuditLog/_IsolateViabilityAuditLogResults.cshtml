@@ -8,13 +8,13 @@
 				<th>AVNumber</th>
 				<th>Sample</th>
 				<th>Isolate</th>
-				<th>"Date Of Change</th>
+				<th>Date Of Change</th>
 				<th>User</th>
-				<th>User Name</th>
+				@* <th>User Name</th> *@
 				<th>Type</th>
 				<th>Viable</th>
 				<th>Date Checked</th>
-				<th>"Checked Bye</th>
+				<th>Checked Bye</th>
  			</tr>
 		</thead>
 		<tbody>
@@ -26,9 +26,10 @@
 					<td>@item.IsolateNumber</td>
 					<td>@item.DateDone</td>
 					<td>@item.UserId</td>
-					<td>@item.UserName</td>
+					@* <td>@item.UserName</td> *@
 					<td>@item.UpdateType</td>
 					<td>@item.Viable</td>
+					<td>@item.DateChecked</td>
 					<td>@item.CheckedBy</td>
 				</tr>
 			}

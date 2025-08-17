@@ -8,9 +8,9 @@
 				<th>AV Number</th>
 				<th>Sample</th>
 				<th>Isolate</th>
-				<th>"Date Of Change</th>
+				<th>Date Of Change</th>
 				<th>User</th>
-				<th>User Name</th>
+				@* <th>User Name</th> *@
 				<th>Type</th>
 				<th>SMS Ref</th>
 				<th>Family</th>
@@ -18,7 +18,7 @@
 				<th>Nomenclature</th>
 				<th>Year Of Isolation</th>
 				<th>Isolation Method</th>
-				<th>"Antiserum ?</th>
+				<th>Antiserum ?</th>
 				<th>Antigen ?</th>
 				<th>MTA</th>
 				<th>MTA Location</th>
@@ -30,7 +30,6 @@
 				<th>Freezer</th>
 				<th>Tray</th>
 				<th>Well</th>
-				<th>LogId</th>
 				<th>More Info</th>
 			</tr>
 		</thead>
@@ -39,15 +38,14 @@
 			{
 				<tr>
 					<td>@item.AVNumber</td>
+					<td>@item.SampleNumber</td>
 					<td>@item.IsolateNumber</td>
-					<td>@item.IsolateSampleId</td>
 					<td>@item.DateDone</td>
 					<td>@item.UserId</td>
-					<td>@item.UserName</td>
+					@* <td>@item.UserName</td> *@
 					<td>@item.UpdateType</td>
 					<td>@item.SMSReferenceNumber</td>
-	 
-					<td>@item.Family</td>
+	 				<td>@item.Family</td>
 					<td>@item.Type</td>
 					<td>@item.IsolateNomenclature</td>
 					<td>@item.YearOfIsolation</td>
@@ -64,7 +62,6 @@
 					<td>@item.Freezer</td>
 					<td>@item.Tray</td>
 					<td>@item.Well</td>
-					<td>@item.LogId</td>
 					<td>
 						<a asp-action="Edit" asp-route-LogId="@item.LogId" asp-route-AvNumber="@item.AVNumber"
 						   class="btn btn-primary">More Inf</a>
