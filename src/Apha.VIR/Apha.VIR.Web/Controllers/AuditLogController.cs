@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Core.Entities;
-using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.AuditLog;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -19,6 +18,7 @@ namespace Apha.VIR.Web.Controllers
             _auditLogService = auditLogService;
             _mapper = mapper;
         }
+
         public IActionResult Index()
         {
             var viewModel = new AuditLogViewModel
@@ -55,36 +55,13 @@ namespace Apha.VIR.Web.Controllers
 
             FormateSearchCriteria(searchCriteria);
 
-            var result1 = await _auditLogService.GetCharacteristicsLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-                searchCriteria.DateTimeTo, searchCriteria.UserId!);
-
-            var reportData1 = _mapper.Map<IEnumerable<AuditCharacteristicsLogModel>>(result1);
+            TempData.Remove("SearchCriteria");
+            TempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
 
             var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
                searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
             var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
-
-            var result2 = await _auditLogService.GetSamplLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-              searchCriteria.DateTimeTo, searchCriteria.UserId!);
-
-            var reportData2 = _mapper.Map<IEnumerable<AuditSampleLogModel>>(result2);
-
-            var result3 = await _auditLogService.GetDispatchLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-              searchCriteria.DateTimeTo, searchCriteria.UserId!);
-
-            var reportData3 = _mapper.Map<IEnumerable<AuditDispatchLogModel>>(result3);
-
-            var result4 = await _auditLogService.GetIsolateViabilityLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-             searchCriteria.DateTimeTo, searchCriteria.UserId!);
-
-            var reportData4 = _mapper.Map<IEnumerable<AuditIsolateViabilityLogModel>>(result4);
-
-            var result5 = await _auditLogService.GetIsolatLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-             searchCriteria.DateTimeTo, searchCriteria.UserId!);
-
-            var reportData5 = _mapper.Map<IEnumerable<AuditIsolateLogModel>>(result5);
-
 
             var viewModel = new AuditLogViewModel
             {
@@ -93,15 +70,111 @@ namespace Apha.VIR.Web.Controllers
                 DateTimeTo = searchCriteria.DateTimeTo,
                 UserId = searchCriteria.UserId,
                 ShowErrorSummary = false,
-                SampleLogs = reportData2.ToList(),
                 SubmissionLogs = reportData.ToList(),
-                CharacteristicsLogs = reportData1.ToList(),
-                DispatchLogs = reportData3.ToList(),
-                IsolateViabilityLogs = reportData4.ToList(),
-                IsolateLogs = reportData5.ToList(),
             };
 
             return View("Index", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAuditLogs(string requesttype)
+        {
+            switch (requesttype.ToLower())
+            {
+                case "submission":
+                    return await GetSubmissionAuditLogs();
+                case "sample":
+                    return await GetSampleAuditLogs();
+                case "isolate":
+                    return await GetIsolateAuditLogs( );
+                case "characteristics":
+                    return await GetCharacteristicsAuditLogs();
+                case "dispatch":
+                    return await GetDispatchAuditLogs();
+                case "viability":
+                    return await GetViabilityAuditLogs();
+                default:
+                    return await GetSubmissionAuditLogs(); ;
+            }
+
+        }
+        
+        private async Task<IActionResult> GetSubmissionAuditLogs()
+        {
+            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
+ 
+            var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+            searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
+
+            return PartialView("_SubmissionAuditLogResults", reportData); // Return a partial view
+        }
+
+        private async Task<IActionResult> GetSampleAuditLogs()
+        {
+            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
+
+            var result = await _auditLogService.GetSamplLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+              searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData = _mapper.Map<IEnumerable<AuditSampleLogModel>>(result);
+
+            return PartialView("_SampleAuditLogResults", reportData); // Return a partial view
+        }
+
+        private async Task<IActionResult> GetIsolateAuditLogs()
+        {
+            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
+
+            var result = await _auditLogService.GetIsolatLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+             searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData = _mapper.Map<IEnumerable<AuditIsolateLogModel>>(result);
+
+            return PartialView("_IsolateAuditLogResults", reportData); // Return a partial view
+        }
+
+        private async Task<IActionResult> GetDispatchAuditLogs()
+        {
+            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
+
+            var result = await _auditLogService.GetDispatchLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+              searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData = _mapper.Map<IEnumerable<AuditDispatchLogModel>>(result);
+
+            return PartialView("_DispatchAuditLogResults", reportData); // Return a partial view
+        }
+
+        private async Task<IActionResult> GetViabilityAuditLogs()
+        {
+            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
+
+            var result = await _auditLogService.GetIsolateViabilityLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+             searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData = _mapper.Map<IEnumerable<AuditIsolateViabilityLogModel>>(result);
+  
+            return PartialView("_IsolateViabilityAuditLogResults", reportData); // Return a partial view
+        }
+
+        private async Task<IActionResult> GetCharacteristicsAuditLogs()
+        {
+            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
+
+            var result = await _auditLogService.GetCharacteristicsLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+                searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+            var reportData = _mapper.Map<IEnumerable<AuditCharacteristicsLogModel>>(result);
+              
+            return PartialView("_CharacteristicsAuditLogResults", reportData); // Return a partial view
         }
 
         private static void ValidateSearchModel(AuditLogSearchModel criteria, ModelStateDictionary modelState)

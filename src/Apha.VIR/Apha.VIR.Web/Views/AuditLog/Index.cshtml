@@ -56,14 +56,14 @@ else
 	<div id="searchoOtiosn">
 		<br />
 		<span class="para-darkblue-small">Select the audit log that you wish to view</span>
-			<div class="btn-group" role="group" aria-label="Select Audit Log Type">
+		<div class="btn-group" role="group" aria-label="Select Audit Log Type">
 			<br />
-			<button type="button" class="btn btn-as-link" id="btnSubmission">Submission</button>
-			<button type="button" class="btn btn-as-link" id="btnSample">Sample</button>
-			<button type="button" class="btn btn-as-link" id="btnIsolate">Isolate</button>
-			<button type="button" class="btn btn-as-link" id="btnCharacteristics">Characteristics</button>
-			<button type="button" class="btn btn-as-link" id="btnDispatch">Dispatch</button>
-			<button type="button" class="btn btn-as-link" id="btnIsolateViability">Isolate Viability</button>
+			<button type="button" class="btn btn-as-link" id="btnSubmission" data-id="Submission" onclick="GetAuditLogs(this)">Submission</button>
+			<button type="button" class="btn btn-as-link" id="btnSample" data-id="Sample" onclick="GetAuditLogs(this)">Sample</button>
+			<button type="button" class="btn btn-as-link" id="btnIsolate" data-id="Isolate" onclick="GetAuditLogs(this)">Isolate</button>
+			<button type="button" class="btn btn-as-link" id="btnCharacteristics" data-id="Characteristics" onclick="GetAuditLogs(this)">Characteristics</button>
+			<button type="button" class="btn btn-as-link" id="btnDispatch" data-id="Dispatch" onclick="GetAuditLogs(this)">Dispatch</button>
+			<button type="button" class="btn btn-as-link" id="btnIsolateViability" data-id="Viability" onclick="GetAuditLogs(this)">Isolate Viability</button>
 		</div>
 	</div>
 }
@@ -76,4 +76,24 @@ else
 		<partial name="_IsolateViabilityAuditLogResults" for="@Model.IsolateViabilityLogs" />
 		<partial name="_SampleAuditLogResults" for="@Model.SampleLogs" />
 	</div>
- </div>
+</div>
+
+@section Scripts {
+	<script>
+		function GetAuditLogs(button) {
+			debugger;
+			var id = $(button).data('id');
+			$.ajax({
+				type: "POST",
+				url: '/AuditLog/GetAuditLogs',
+				data: { requesttype: id },           // Pass data to the server
+				success: function (partialViewHtml) {
+					$('#auditLogContent').html(partialViewHtml);
+				},
+				error: function (xhr, status, error) {
+					console.error('Error loading partial view:', error);
+				}
+			});
+		};
+	</script>
+}
