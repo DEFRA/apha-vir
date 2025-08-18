@@ -36,7 +36,7 @@ namespace Apha.VIR.Web.Components
             return View(breadcrumbTrail);
         }
 
-        private List<NavItem> FindBreadcrumbTrail(List<NavItem> nodes, string path, List<NavItem> trail = null!)
+        private static List<NavItem> FindBreadcrumbTrail(List<NavItem> nodes, string path, List<NavItem> trail = null!)
         {
             trail ??= new List<NavItem>();
 
