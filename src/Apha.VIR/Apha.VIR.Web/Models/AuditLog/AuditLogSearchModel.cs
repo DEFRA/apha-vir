@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DocumentFormat.OpenXml.Spreadsheet;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.Web.Models.AuditLog
 {

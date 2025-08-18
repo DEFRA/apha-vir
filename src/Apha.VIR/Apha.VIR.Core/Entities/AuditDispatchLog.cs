@@ -8,7 +8,7 @@ public class AuditDispatchLog
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
     public DateTime DateDone { get; set; }
-    public string UpdateType { get; set; } = null!;
+    public string? UpdateType { get; set; }
     public Guid DispatchId { get; set; }
     public Guid DispatchIsolateId { get; set; }
     public int NoOfAliquots { get; set; }

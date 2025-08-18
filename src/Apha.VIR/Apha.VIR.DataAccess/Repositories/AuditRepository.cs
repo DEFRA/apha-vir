@@ -15,61 +15,68 @@ public class AuditRepository : IAuditRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<IEnumerable<AuditSubmissionLog>> GetSubmissionLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    public async Task<IEnumerable<AuditSubmissionLog>> GetSubmissionLogsAsync(string avNumber,
+        DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
         return await _context.Set<AuditSubmissionLog>()
-           .FromSqlRaw("EXEC spLogSubmissionGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId"
-           , parameters).ToListAsync();
+           .FromSqlRaw("EXEC spLogSubmissionGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId", 
+           parameters).ToListAsync();
     }
 
-    public async Task<IEnumerable<AuditCharacteristicLog>> GetCharacteristicsLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    public async Task<IEnumerable<AuditCharacteristicLog>> GetCharacteristicsLogsAsync(string avNumber,
+        DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
         return await _context.Set<AuditCharacteristicLog>()
-            .FromSqlRaw("EXEC spLogCharacteristicsGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId"
-            , parameters).ToListAsync();
+            .FromSqlRaw("EXEC spLogCharacteristicsGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+            parameters).ToListAsync();
     }
 
-    public async Task<IEnumerable<AuditDispatchLog>> GetDispatchLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    public async Task<IEnumerable<AuditDispatchLog>> GetDispatchLogsAsync(string avNumber,
+        DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
         return await _context.Set<AuditDispatchLog>()
-           .FromSqlRaw("EXEC spLogDispatchGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId"
-           , parameters).ToListAsync();
+           .FromSqlRaw("EXEC spLogDispatchGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+           parameters).ToListAsync();
     }
 
-    public async Task<IEnumerable<AuditViabilityLog>> GetIsolateViabilityLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    public async Task<IEnumerable<AuditViabilityLog>> GetIsolateViabilityLogsAsync(string avNumber,
+        DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
         return await _context.Set<AuditViabilityLog>()
-           .FromSqlRaw("EXEC spLogisolateViabilityGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId"
-           , parameters).ToListAsync();
+           .FromSqlRaw("EXEC spLogisolateViabilityGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+           parameters).ToListAsync();
     }
 
-    public async Task<IEnumerable<AuditIsolateLog>> GetIsolatLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    public async Task<IEnumerable<AuditIsolateLog>> GetIsolatLogsAsync(string avNumber,
+        DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
         return await _context.Set<AuditIsolateLog>()
-           .FromSqlRaw("EXEC spLogIsolateGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId"
-           , parameters).ToListAsync();
+           .FromSqlRaw("EXEC spLogIsolateGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+           parameters).ToListAsync();
     }
 
-    public async Task<IEnumerable<AuditSampleLog>> GetSamplLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    public async Task<IEnumerable<AuditSampleLog>> GetSamplLogsAsync(string avNumber,
+        DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
         return await _context.Set<AuditSampleLog>()
-           .FromSqlRaw("EXEC spLogSampleGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId"
-           , parameters).ToListAsync();
+           .FromSqlRaw("EXEC spLogSampleGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+           parameters).ToListAsync();
     }
 
-    private static SqlParameter[] GetSqlParameters(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+    private static SqlParameter[] GetSqlParameters(string avNumber,
+        DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         return new[]
         {

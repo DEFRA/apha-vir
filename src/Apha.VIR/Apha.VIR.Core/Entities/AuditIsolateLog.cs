@@ -8,7 +8,7 @@ public class AuditIsolateLog
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
     public DateTime DateDone { get; set; }
-    public string UpdateType { get; set; } = null!;
+    public string? UpdateType { get; set; }
     public Guid IsolateId { get; set; }
     public Guid IsolateSampleId { get; set; }
     public int? YearOfIsolation { get; set; }

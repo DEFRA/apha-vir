@@ -7,10 +7,9 @@ public class AuditIsolateLogDTO
     public int? IsolateNumber { get; set; }
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
-    //This prop populate from auth db.
-    public string UserName { get; set; } = null!;
+    public string UserName { get; set; } = string.Empty;
     public DateTime DateDone { get; set; }
-    public string UpdateType { get; set; } = null!;
+    public string? UpdateType { get; set; }
     public Guid IsolateId { get; set; }
     public Guid IsolateSampleId { get; set; }
     public int? YearOfIsolation { get; set; }

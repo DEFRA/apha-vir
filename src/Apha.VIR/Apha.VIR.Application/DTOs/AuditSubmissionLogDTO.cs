@@ -4,8 +4,7 @@ public class AuditSubmissionLogDTO
 {
     public Guid? LogID { get; set; }
     public string UserId { get; set; } = null!;
-    //This prop populate from auth db.
-    public string UserName { get; set; } = null!;
+    public string UserName { get; set; } = string.Empty;
     public DateTime DateDone { get; set; }
     public Guid? SubmissionId { get; set; }
     public string AVNumber { get; set; } = null!;
@@ -19,7 +18,7 @@ public class AuditSubmissionLogDTO
     public string? Owner { get; set; }
     public string? SamplingLocationPremises { get; set; }
     public int? NumberOfSamples { get; set; }
-    public string UpdateType { get; set; } = null!;
+    public string? UpdateType { get; set; }
     public string? ReasonForSubmission { get; set; }
     public string? SubmittingLab { get; set; }
     public string? CountryOfOrigin { get; set; }

@@ -17,7 +17,7 @@ public class AuditSubmissionLog
     public string? Owner { get; set; }
     public string? SamplingLocationPremises { get; set; }
     public int? NumberOfSamples { get; set; }
-    public string UpdateType { get; set; } = null!;
+    public string? UpdateType { get; set; }
     public string? ReasonForSubmission { get; set; }
     public string? SubmittingLab { get; set; }
     public string? CountryOfOrigin { get; set; }

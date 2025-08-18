@@ -6,8 +6,7 @@ public class AuditSampleLogDTO
     public int? SampleNumber { get; set; }
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
-    //This prop populate from auth db.
-    public string UserName { get; set; } = null!;
+    public string UserName { get; set; } = string.Empty;
     public DateTime DateDone { get; set; }
     public Guid SampleId { get; set; }
     public Guid SampleSubmissionId { get; set; }

@@ -25,7 +25,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 ShowErrorSummary = false,
             };
-            return View("Index", viewModel);
+            return View("AuditLog", viewModel);
         }
 
         [HttpPost]
@@ -51,7 +51,7 @@ namespace Apha.VIR.Web.Controllers
                     ShowErrorSummary = showerrorSummary
                     
                 };
-                return View("Index", model);
+                return View("AuditLog", model);
             }
 
             FormateSearchCriteria(searchCriteria);
@@ -74,7 +74,7 @@ namespace Apha.VIR.Web.Controllers
                 SubmissionLogs = reportData.ToList(),
             };
 
-            return View("Index", viewModel);
+            return View("AuditLog", viewModel);
         }
 
         [HttpPost]
@@ -98,85 +98,131 @@ namespace Apha.VIR.Web.Controllers
                 default:
                     return await GetSubmissionAuditLogs(); ;
             }
-
         }
         
         private async Task<IActionResult> GetSubmissionAuditLogs()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
-            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
- 
-            var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-            searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
-            var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
+            if (!String.IsNullOrEmpty(criteriaString))
+            {
+                var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-            return PartialView("_SubmissionAuditLogResults", reportData); // Return a partial view
+                var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber,
+                    searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+                var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
+                return PartialView("_SubmissionAuditLogResults", reportData);
+            }
+            else 
+            {
+                return PartialView("_SubmissionAuditLogResults", new AuditSubmissionLogModel());
+            }
         }
 
         private async Task<IActionResult> GetSampleAuditLogs()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
-            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
 
-            var result = await _auditLogService.GetSamplLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-              searchCriteria.DateTimeTo, searchCriteria.UserId!);
+            if (!String.IsNullOrEmpty(criteriaString))
+            {
+                var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-            var reportData = _mapper.Map<IEnumerable<AuditSampleLogModel>>(result);
+                var result = await _auditLogService.GetSamplLogsAsync(searchCriteria.AVNumber, 
+                    searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
-            return PartialView("_SampleAuditLogResults", reportData); // Return a partial view
+                var reportData = _mapper.Map<IEnumerable<AuditSampleLogModel>>(result);
+
+                return PartialView("_SampleAuditLogResults", reportData);
+            }
+            else 
+            {
+                return PartialView("_SampleAuditLogResults", new AuditSampleLogModel() );
+            }
         }
 
         private async Task<IActionResult> GetIsolateAuditLogs()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
-            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
 
-            var result = await _auditLogService.GetIsolatLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-             searchCriteria.DateTimeTo, searchCriteria.UserId!);
+            if (!String.IsNullOrEmpty(criteriaString))
+            {
+                var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-            var reportData = _mapper.Map<IEnumerable<AuditIsolateLogModel>>(result);
+                var result = await _auditLogService.GetIsolatLogsAsync(searchCriteria.AVNumber, 
+                    searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
-            return PartialView("_IsolateAuditLogResults", reportData); // Return a partial view
+                var reportData = _mapper.Map<IEnumerable<AuditIsolateLogModel>>(result);
+
+                return PartialView("_IsolateAuditLogResults", reportData);
+            }
+            else 
+            {
+                return PartialView("_IsolateAuditLogResults", new AuditIsolateLogModel());
+            }
         }
 
         private async Task<IActionResult> GetDispatchAuditLogs()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
-            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
 
-            var result = await _auditLogService.GetDispatchLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-              searchCriteria.DateTimeTo, searchCriteria.UserId!);
+            if (!String.IsNullOrEmpty(criteriaString))
+            {
+                var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-            var reportData = _mapper.Map<IEnumerable<AuditDispatchLogModel>>(result);
+                var result = await _auditLogService.GetDispatchLogsAsync(searchCriteria.AVNumber, 
+                    searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
-            return PartialView("_DispatchAuditLogResults", reportData); // Return a partial view
+                var reportData = _mapper.Map<IEnumerable<AuditDispatchLogModel>>(result);
+
+                return PartialView("_DispatchAuditLogResults", reportData); 
+            }
+            else
+            {
+                return PartialView("_DispatchAuditLogResults", new AuditDispatchLogModel());
+            }
         }
 
         private async Task<IActionResult> GetViabilityAuditLogs()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
-            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
 
-            var result = await _auditLogService.GetIsolateViabilityLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-             searchCriteria.DateTimeTo, searchCriteria.UserId!);
+            if (!String.IsNullOrEmpty(criteriaString))
+            {
+                var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-            var reportData = _mapper.Map<IEnumerable<AuditIsolateViabilityLogModel>>(result);
-  
-            return PartialView("_IsolateViabilityAuditLogResults", reportData); // Return a partial view
+                var result = await _auditLogService.GetIsolateViabilityLogsAsync(searchCriteria.AVNumber, 
+                    searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+                var reportData = _mapper.Map<IEnumerable<AuditIsolateViabilityLogModel>>(result);
+
+                return PartialView("_IsolateViabilityAuditLogResults", reportData);
+            }
+            else
+            { 
+                return PartialView("_IsolateViabilityAuditLogResults", new AuditIsolateViabilityLogModel());
+            }
         }
 
         private async Task<IActionResult> GetCharacteristicsAuditLogs()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
-            var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString);
 
-            var result = await _auditLogService.GetCharacteristicsLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-                searchCriteria.DateTimeTo, searchCriteria.UserId!);
+            if (!String.IsNullOrEmpty(criteriaString))
+            {
+                var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-            var reportData = _mapper.Map<IEnumerable<AuditCharacteristicsLogModel>>(result);
-              
-            return PartialView("_CharacteristicsAuditLogResults", reportData); // Return a partial view
+                var result = await _auditLogService.GetCharacteristicsLogsAsync(searchCriteria.AVNumber, 
+                    searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+                var reportData = _mapper.Map<IEnumerable<AuditCharacteristicsLogModel>>(result);
+
+                return PartialView("_CharacteristicsAuditLogResults", reportData);
+            }
+            else
+            {
+                return PartialView("_CharacteristicsAuditLogResults", new AuditCharacteristicsLogModel());
+            }
         }
 
         private static void ValidateSearchModel(AuditLogSearchModel criteria, ModelStateDictionary modelState)
