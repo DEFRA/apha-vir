@@ -71,7 +71,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(serviceData).Returns(mappedData);
 
             // Act
-            var result = await _controller.ExportToExcel(inputModel.DateFrom,inputModel.DateTo);
+            var result = await _controller.ExportToExcel(inputModel.DateFrom, inputModel.DateTo);
 
             // Assert
             var fileResult = Assert.IsType<FileContentResult>(result);
@@ -106,7 +106,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             .Returns(new List<IsolateDispatchReportModel>());
 
             // Act
-            var result = await _controller.ExportToExcel(model.DateFrom,model.DateTo);
+            var result = await _controller.ExportToExcel(model.DateFrom, model.DateTo);
 
             // Assert
             var fileResult = Assert.IsType<FileContentResult>(result);

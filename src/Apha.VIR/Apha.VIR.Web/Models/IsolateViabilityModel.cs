@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Apha.VIR.Web.Utilities;
 
 namespace Apha.VIR.Web.Models
 {
@@ -11,7 +12,7 @@ namespace Apha.VIR.Web.Models
         [Required]
         public Guid Viable { get; set; }
         public string? ViabilityStatus { get; set; } = null!;
-        [Required(ErrorMessage = "Please check this date.")]        
+        [Required(ErrorMessage = "Please check this date.")]
         [DateRange("01/01/1900", ErrorMessage = "Please check this date.")]
         public DateTime DateChecked { get; set; }
         [Required]

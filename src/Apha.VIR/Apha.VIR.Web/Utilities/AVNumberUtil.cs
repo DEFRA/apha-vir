@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Apha.VIR.Web.Models
+namespace Apha.VIR.Web.Utilities
 {
-    public static class Submission
+    public static class AVNumberUtil
     {
         public static bool IsAVNumberValid(string av)
         {

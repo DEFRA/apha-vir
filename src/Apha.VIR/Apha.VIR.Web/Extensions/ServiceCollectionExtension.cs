@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Repositories;
+using Apha.VIR.Web.Services;
 
 namespace Apha.VIR.Web.Extensions
 {
@@ -23,6 +24,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolateViabilityService, IsolateViabilityService>();
             services.AddScoped<IIsolatesService, IsolatesService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddSingleton<NavigationService, NavigationService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)

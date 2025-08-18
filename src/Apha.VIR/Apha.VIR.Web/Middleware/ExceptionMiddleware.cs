@@ -33,15 +33,8 @@ namespace Apha.VIR.Web.Middleware
                         break;
 
                     // Handle more custom exception types here as needed
-
                     default:
-                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                        await context.Response.WriteAsJsonAsync(new
-                        {
-                            Status = "error",
-                            Message = "An unexpected error occurred.",
-                            Details = ex.Message
-                        });
+                        context.Response.Redirect("/Error");
                         break;
                 }
             }

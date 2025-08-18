@@ -1,3 +1,4 @@
+using System.Globalization;
 using Apha.VIR.Application.Mappings;
 using Apha.VIR.Application.Validation;
 using Apha.VIR.DataAccess.Data;
@@ -5,6 +6,7 @@ using Apha.VIR.Web.Extensions;
 using Apha.VIR.Web.Mappings;
 using Apha.VIR.Web.Middleware;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -49,7 +51,17 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
+// Set the default culture to en-GB (Great Britain)
+var cultureSet = "en-GB";
+var supportedCultures = new[] { new CultureInfo(cultureSet) };
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(cultureSet),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+app.UseRequestLocalization(localizationOptions);
 
 if (app.Environment.IsDevelopment())
 {
@@ -60,6 +72,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

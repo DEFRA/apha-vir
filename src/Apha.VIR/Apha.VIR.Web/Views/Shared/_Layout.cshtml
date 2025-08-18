@@ -1,11 +1,4 @@
-﻿@{
-	var breadcrumbs = new List<(string Text, string Url)>
-	{
-		("Home", "/"),
-
-	};
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
@@ -24,9 +17,9 @@
 					<div>
 						<a asp-controller="Home" asp-action="Index">Home</a>
 						&nbsp;|&nbsp;
-						<a href="#" target="_blank">Help</a>
+						<a href="/Help.htm" target="_blank">Help</a>
 						&nbsp;|&nbsp;
-						<a asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+						<a asp-controller="ContactUs" asp-action="Index">Contact Us</a>
 					</div>
 					<div>
 						<span id="lblEnvironment" class="Version">test System Environment</span>
@@ -42,14 +35,7 @@
 				<div class="Title">Virus Isolates Repository</div>
 			</div>
 			<nav class="master_header_bottom" aria-label="breadcrumb">
-				<ol class="breadcrumb">
-					@foreach (var crumb in breadcrumbs)
-
-					{
-						<li class="breadcrumb-item"><a href="@crumb.Url">@crumb.Text</a></li>
-					}
-
-				</ol>
+				@await Component.InvokeAsync("Navigation")
 			</nav>
 		</header>
 
