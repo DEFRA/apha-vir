@@ -58,7 +58,7 @@ namespace Apha.VIR.Web.Utilities
             {
                 avNumber = avNumber.ToUpper();
 
-                int dashPos = avNumber.IndexOf("-");
+                int dashPos = avNumber.IndexOf('-');
                 if (dashPos == -1)
                 {
                     return avNumber;

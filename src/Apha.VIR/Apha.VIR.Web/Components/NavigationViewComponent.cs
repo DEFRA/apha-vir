@@ -47,10 +47,10 @@ namespace Apha.VIR.Web.Components
                 if (string.Equals(node.Url?.TrimEnd('/'), path.TrimEnd('/'), StringComparison.OrdinalIgnoreCase))
                     return newTrail;
 
-                if (node.Children != null && node.Children.Any())
+                if (node.Children != null && node.Children.Count > 0)
                 {
                     var found = FindBreadcrumbTrail(node.Children, path, newTrail);
-                    if (found.Any())
+                    if (found.Count > 0)
                         return found;
                 }
             }
