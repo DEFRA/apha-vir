@@ -32,6 +32,7 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<AuditSampleLogDTO, AuditSampleLogModel>().ReverseMap();
             CreateMap<AuditSubmissionLogDTO, AuditSubmissionLogModel>().ReverseMap();
             CreateMap<AuditViabilityLogDTO, AuditIsolateViabilityLogModel>().ReverseMap();
+            CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetailsViewModel>().ReverseMap();
         }
     }
 }

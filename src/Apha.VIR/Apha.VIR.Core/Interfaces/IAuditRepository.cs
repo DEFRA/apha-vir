@@ -10,4 +10,5 @@ public interface IAuditRepository
     Task<IEnumerable<AuditCharacteristicLog>> GetCharacteristicsLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid);
     Task<IEnumerable<AuditDispatchLog>> GetDispatchLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid);
     Task<IEnumerable<AuditViabilityLog>> GetIsolateViabilityLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid);
+    Task<IEnumerable<AuditIsolateLogDetail>> GetIsolatLogDetailAsync(Guid logid);
 }

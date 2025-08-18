@@ -10,5 +10,6 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<AuditCharacteristicLogDTO>> GetCharacteristicsLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid);
         Task<IEnumerable<AuditDispatchLogDTO>> GetDispatchLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid);
         Task<IEnumerable<AuditViabilityLogDTO>> GetIsolateViabilityLogsAsync(string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid);
+        Task<AuditIsolateLogDetailDTO> GetIsolatLogDetailAsync(Guid logid);
     }
 }

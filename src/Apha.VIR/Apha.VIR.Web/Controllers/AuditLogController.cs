@@ -79,6 +79,32 @@ namespace Apha.VIR.Web.Controllers
             return View("AuditLog", viewModel);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetIsolateLogDetail(Guid logid, string AvNumber)
+        {
+            if (!ModelState.IsValid)
+            {
+                var model = new AuditIsolateLogDetailsViewModel
+                {
+                    AVNumber = AvNumber,
+                    //DateTimeFrom = searchCriteria.DateTimeFrom,
+                    //DateTimeTo = searchCriteria.DateTimeTo,
+                    //UserId = searchCriteria.UserId,
+                    //ShowErrorSummary = showerrorSummary
+
+                };
+                return View("IsolateAuditLogDetail", model);
+            }
+
+            var result = await _auditLogService.GetIsolatLogDetailAsync(logid);
+
+            var viewModel = _mapper.Map<AuditIsolateLogDetailsViewModel>(result);
+
+            viewModel.AVNumber = AvNumber;
+
+            return View("IsolateAuditLogDetail", viewModel);
+        }
+
         [HttpPost]
         public async Task<IActionResult> GetAuditLogs(string requesttype)
         {

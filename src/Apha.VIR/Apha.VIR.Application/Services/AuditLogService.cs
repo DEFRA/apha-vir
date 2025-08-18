@@ -38,6 +38,13 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<AuditViabilityLogDTO>>(result);
         }
 
+        public async Task<AuditIsolateLogDetailDTO> GetIsolatLogDetailAsync(Guid logid)
+        {
+            var result = await _auditRepository.GetIsolatLogDetailAsync(logid);
+
+            return _mapper.Map<AuditIsolateLogDetailDTO>(result.FirstOrDefault()); ;
+        }
+
         public async Task<IEnumerable<AuditIsolateLogDTO>> GetIsolatLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {

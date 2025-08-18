@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Core.Entities;
+﻿using System.Data;
+using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.Data.SqlClient;
@@ -75,15 +76,30 @@ public class AuditRepository : IAuditRepository
            parameters).ToListAsync();
     }
 
+    public async Task<IEnumerable<AuditIsolateLogDetail>> GetIsolatLogDetailAsync(Guid logid)
+    {
+        SqlParameter[] parameters = new[]
+        {
+             new SqlParameter("@LogID", SqlDbType.UniqueIdentifier, 20) { Value = logid}
+        };
+
+        return await _context.Set<AuditIsolateLogDetail>()
+          .FromSqlRaw("EXEC spLogIsolateGetbyID @LogID", parameters).ToListAsync();
+    }
     private static SqlParameter[] GetSqlParameters(string avNumber,
         DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         return new[]
         {
-            new SqlParameter("@AVNumber",avNumber),
-            new SqlParameter("@DateFrom",dateFrom),
-            new SqlParameter("@DateTo",dateTo),
-            new SqlParameter("@UserID", userid)
+            new SqlParameter("@AVNumber", SqlDbType.VarChar, 20) { Value = avNumber == null ? DBNull.Value: avNumber},
+            new SqlParameter("@DateFrom",SqlDbType.DateTime){ Value = dateFrom == null ? DBNull.Value: dateFrom},
+            new SqlParameter("@DateTo",SqlDbType.DateTime){ Value = dateTo == null ? DBNull.Value: dateTo},
+            new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value =  userid == null ? DBNull.Value: userid}
+
+            //new SqlParameter("@AVNumber",avNumber),
+            //new SqlParameter("@DateFrom",dateFrom),
+            //new SqlParameter("@DateTo",dateTo),
+            //new SqlParameter("@UserID", userid)
         };
     }
-}
+  }
