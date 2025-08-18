@@ -36,8 +36,8 @@ namespace Apha.VIR.Web.Models.AuditLog
             {
                 results.Add(new ValidationResult("AVNumber format must be AVnnnnnn-YY, PDnnnn-YY, SInnnnnn-YY or BNnnnnnn-YY"));
             }
-          
- 
+
+
             return results;
         }
     }

@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.Controllers
                     DateTimeTo = searchCriteria.DateTimeTo,
                     UserId = searchCriteria.UserId,
                     ShowErrorSummary = showerrorSummary
-                    
+
                 };
                 return View("AuditLog", model);
             }
@@ -88,7 +88,7 @@ namespace Apha.VIR.Web.Controllers
                 case "sample":
                     return await GetSampleAuditLogs();
                 case "isolate":
-                    return await GetIsolateAuditLogs( );
+                    return await GetIsolateAuditLogs();
                 case "characteristics":
                     return await GetCharacteristicsAuditLogs();
                 case "dispatch":
@@ -99,7 +99,7 @@ namespace Apha.VIR.Web.Controllers
                     return await GetSubmissionAuditLogs(); ;
             }
         }
-        
+
         private async Task<IActionResult> GetSubmissionAuditLogs()
         {
             var criteriaString = TempData.Peek("SearchCriteria") as string;
@@ -114,7 +114,7 @@ namespace Apha.VIR.Web.Controllers
                 var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
                 return PartialView("_SubmissionAuditLogResults", reportData);
             }
-            else 
+            else
             {
                 return PartialView("_SubmissionAuditLogResults", new AuditSubmissionLogModel());
             }
@@ -128,16 +128,16 @@ namespace Apha.VIR.Web.Controllers
             {
                 var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-                var result = await _auditLogService.GetSamplLogsAsync(searchCriteria.AVNumber, 
+                var result = await _auditLogService.GetSamplLogsAsync(searchCriteria.AVNumber,
                     searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
                 var reportData = _mapper.Map<IEnumerable<AuditSampleLogModel>>(result);
 
                 return PartialView("_SampleAuditLogResults", reportData);
             }
-            else 
+            else
             {
-                return PartialView("_SampleAuditLogResults", new AuditSampleLogModel() );
+                return PartialView("_SampleAuditLogResults", new AuditSampleLogModel());
             }
         }
 
@@ -149,14 +149,14 @@ namespace Apha.VIR.Web.Controllers
             {
                 var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-                var result = await _auditLogService.GetIsolatLogsAsync(searchCriteria.AVNumber, 
+                var result = await _auditLogService.GetIsolatLogsAsync(searchCriteria.AVNumber,
                     searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
                 var reportData = _mapper.Map<IEnumerable<AuditIsolateLogModel>>(result);
 
                 return PartialView("_IsolateAuditLogResults", reportData);
             }
-            else 
+            else
             {
                 return PartialView("_IsolateAuditLogResults", new AuditIsolateLogModel());
             }
@@ -170,12 +170,12 @@ namespace Apha.VIR.Web.Controllers
             {
                 var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-                var result = await _auditLogService.GetDispatchLogsAsync(searchCriteria.AVNumber, 
+                var result = await _auditLogService.GetDispatchLogsAsync(searchCriteria.AVNumber,
                     searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
                 var reportData = _mapper.Map<IEnumerable<AuditDispatchLogModel>>(result);
 
-                return PartialView("_DispatchAuditLogResults", reportData); 
+                return PartialView("_DispatchAuditLogResults", reportData);
             }
             else
             {
@@ -191,7 +191,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-                var result = await _auditLogService.GetIsolateViabilityLogsAsync(searchCriteria.AVNumber, 
+                var result = await _auditLogService.GetIsolateViabilityLogsAsync(searchCriteria.AVNumber,
                     searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
                 var reportData = _mapper.Map<IEnumerable<AuditIsolateViabilityLogModel>>(result);
@@ -199,7 +199,7 @@ namespace Apha.VIR.Web.Controllers
                 return PartialView("_IsolateViabilityAuditLogResults", reportData);
             }
             else
-            { 
+            {
                 return PartialView("_IsolateViabilityAuditLogResults", new AuditIsolateViabilityLogModel());
             }
         }
@@ -212,7 +212,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 var searchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-                var result = await _auditLogService.GetCharacteristicsLogsAsync(searchCriteria.AVNumber, 
+                var result = await _auditLogService.GetCharacteristicsLogsAsync(searchCriteria.AVNumber,
                     searchCriteria.DateTimeFrom, searchCriteria.DateTimeTo, searchCriteria.UserId!);
 
                 var reportData = _mapper.Map<IEnumerable<AuditCharacteristicsLogModel>>(result);
@@ -238,10 +238,10 @@ namespace Apha.VIR.Web.Controllers
                 }
             }
         }
-        
+
         private static void FormateSearchCriteria(AuditLogSearchModel searchCriteria)
         {
-           searchCriteria.AVNumber = Apha.VIR.Web.Models.Submission.AVNumberFormatted(searchCriteria.AVNumber!); ;
+            searchCriteria.AVNumber = Apha.VIR.Web.Models.Submission.AVNumberFormatted(searchCriteria.AVNumber!); ;
 
             if (searchCriteria.DateTimeFrom == null)
             {

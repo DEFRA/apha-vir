@@ -20,7 +20,7 @@ namespace Apha.VIR.Application.Services
         public async Task<IEnumerable<AuditCharacteristicLogDTO>> GetCharacteristicsLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            var result = await _auditRepository.GetCharacteristicsLogsAsync(avNumber,dateFrom, dateTo, userid);
+            var result = await _auditRepository.GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, userid);
             return _mapper.Map<IEnumerable<AuditCharacteristicLogDTO>>(result);
         }
 

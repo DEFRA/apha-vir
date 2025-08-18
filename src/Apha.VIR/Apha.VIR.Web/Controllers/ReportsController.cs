@@ -53,7 +53,7 @@ namespace Apha.VIR.Web.Controllers
                 DateTo = model.DateTo,
                 ReportData = reportData.ToList()
             };
-    
+
             return View("IsolateDispatchReport", viewModel);
         }
 

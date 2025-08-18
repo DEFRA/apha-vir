@@ -98,7 +98,7 @@ namespace Apha.VIR.Web.Controllers
 
             var isolateInfo = await _isolateDispatchService.GetIsolateInfoByAVNumberAndIsolateIdAsync(dispatchModel.Avnumber, dispatchModel.DispatchIsolateId);
             if (isolateInfo != null)
-            {                
+            {
                 dispatchModel.NoOfAliquots = isolateInfo.NoOfAliquots ?? 0;
                 dispatchModel.Nomenclature = isolateInfo.Nomenclature;
                 dispatchModel.ValidToIssue = isolateInfo.ValidToIssue ?? false;
@@ -106,7 +106,7 @@ namespace Apha.VIR.Web.Controllers
                 var lastViability = await _isolateDispatchService.GetLastViabilityByIsolateAsync(dispatchModel.DispatchIsolateId);
                 dispatchModel.ViabilityId = lastViability?.Viable;
             }
-            
+
             if (!ModelState.IsValid)
             {
                 return View(dispatchModel);
@@ -258,13 +258,13 @@ namespace Apha.VIR.Web.Controllers
 
         public IActionResult CancelAction(string Source)
         {
-            string fromSource = Source == null ? "": Source.ToLower();
+            string fromSource = Source == null ? "" : Source.ToLower();
             return fromSource switch
             {
                 "search" => RedirectToAction("Search", "SearchRepository"),
                 "summary" => RedirectToAction("Index", "Summary"),
                 _ => RedirectToAction("Create", "IsolateDispatch")
-            };           
+            };
         }
 
         private static List<string> ValidatDispatchForPageLoad(int NoOfAliquots, bool IsMixedIsolate, bool ValidToIssue, ref bool IsDispatchDisabled)
@@ -297,21 +297,21 @@ namespace Apha.VIR.Web.Controllers
                 {
                     validationErrors.Add("- Attempting to dispatch too many aliquots, must leave at least one aliquot in storage.");
                 }
-            }            
+            }
             else
             {
-                validationErrors.Add("- Isolate cannot be dispatched as there are no aliquots available.");                
+                validationErrors.Add("- Isolate cannot be dispatched as there are no aliquots available.");
             }
 
             if (dispatchModel.DispatchedDate > DateTime.Now.Date)
             {
-                validationErrors.Add("- Dispatched Date cannot be in the future.");               
-            }     
-            
-            if(validationErrors.Count > 0)
+                validationErrors.Add("- Dispatched Date cannot be in the future.");
+            }
+
+            if (validationErrors.Count > 0)
             {
-                modelState.AddModelError(string.Empty, "There are validation messages requiring your attention.");                
-                foreach(var error in validationErrors)
+                modelState.AddModelError(string.Empty, "There are validation messages requiring your attention.");
+                foreach (var error in validationErrors)
                 {
                     modelState.AddModelError(string.Empty, error);
                 }
@@ -321,7 +321,7 @@ namespace Apha.VIR.Web.Controllers
         private async Task<List<SelectListItem>> GetViabilityDropdownList()
         {
             var viabilityLookup = await _lookupService.GetAllViabilityAsync();
-           return viabilityLookup.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
+            return viabilityLookup.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
         }
 
         private async Task<List<SelectListItem>> GetWorkGroupsDropdownList()

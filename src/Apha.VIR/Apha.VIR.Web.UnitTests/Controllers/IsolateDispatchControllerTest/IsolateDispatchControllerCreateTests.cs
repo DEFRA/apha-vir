@@ -36,7 +36,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             var isolateInfo = new IsolateInfoDTO
             {
-                NoOfAliquots = 5,               
+                NoOfAliquots = 5,
                 Nomenclature = "Test Nomenclature",
                 ValidToIssue = true,
                 MaterialTransferAgreement = true,
@@ -74,7 +74,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             // Arrange
             string avNumber = "AV001";
             Guid isolateId = Guid.NewGuid();
-            Guid viabilityId = Guid.NewGuid();            
+            Guid viabilityId = Guid.NewGuid();
 
             var isolateInfo = new IsolateInfoDTO
             {
@@ -88,7 +88,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockIsolateDispatchService.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId).Returns(isolateInfo);
 
             // Act
-            var result = await _controller.Create(avNumber, isolateId, "search") as ViewResult;            
+            var result = await _controller.Create(avNumber, isolateId, "search") as ViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -324,7 +324,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 NoOfAliquots = 0,
                 NoOfAliquotsToBeDispatched = 1,
                 ValidToIssue = false,
-                DispatchedDate = DateTime.Now.AddDays(-1)               
+                DispatchedDate = DateTime.Now.AddDays(-1)
             };
 
             _mockIsolateDispatchService.GetIsolateInfoByAVNumberAndIsolateIdAsync(Arg.Any<string>(), Arg.Any<Guid>())
@@ -339,6 +339,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             Assert.Equal(0, model.NoOfAliquots);
             Assert.False(model.ValidToIssue);
             Assert.Null(model.ViabilityId);
-        }        
+        }
     }
 }

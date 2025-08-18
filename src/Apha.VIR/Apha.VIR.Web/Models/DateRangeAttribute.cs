@@ -10,13 +10,13 @@ namespace Apha.VIR.Web.Models
 
         public DateRangeAttribute(string minDate)
         {
-            _minDate = DateTime.ParseExact(minDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);            
+            _minDate = DateTime.ParseExact(minDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);
         }
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value is not DateTime dateValue)
-                return ValidationResult.Success; 
+                return ValidationResult.Success;
 
             if (dateValue < _minDate || dateValue > DateTime.Today)
                 return new ValidationResult(ErrorMessage);

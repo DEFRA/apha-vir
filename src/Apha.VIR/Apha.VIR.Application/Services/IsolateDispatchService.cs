@@ -202,7 +202,7 @@ namespace Apha.VIR.Application.Services
 
             return _mapper.Map<IsolateDispatchInfoDTO>(dispatch);
         }
-        
+
         private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
         {
             var characteristicNomenclatureList = new StringBuilder();

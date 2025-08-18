@@ -21,7 +21,7 @@ public class AuditRepository : IAuditRepository
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
         return await _context.Set<AuditSubmissionLog>()
-           .FromSqlRaw("EXEC spLogSubmissionGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId", 
+           .FromSqlRaw("EXEC spLogSubmissionGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
            parameters).ToListAsync();
     }
 
