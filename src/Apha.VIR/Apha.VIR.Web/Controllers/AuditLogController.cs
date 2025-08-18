@@ -24,6 +24,7 @@ namespace Apha.VIR.Web.Controllers
             var viewModel = new AuditLogViewModel
             {
                 ShowErrorSummary = false,
+                ShowDefaultView = true
             };
             return View("AuditLog", viewModel);
         }
