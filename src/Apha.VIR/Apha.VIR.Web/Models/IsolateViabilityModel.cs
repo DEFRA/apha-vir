@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Apha.VIR.Web.Utilities;
 
 namespace Apha.VIR.Web.Models
 {

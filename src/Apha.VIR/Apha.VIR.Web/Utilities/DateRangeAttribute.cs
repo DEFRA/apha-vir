@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
-namespace Apha.VIR.Web.Models
+namespace Apha.VIR.Web.Utilities
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class DateRangeAttribute : ValidationAttribute

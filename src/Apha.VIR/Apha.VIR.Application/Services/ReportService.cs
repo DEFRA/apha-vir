@@ -7,20 +7,20 @@ namespace Apha.VIR.Application.Services
 {
     public class ReportService : IReportService
     {
-        private readonly IReportRepository _iReportRepository;
+        private readonly IReportRepository _reportRepository;
         private readonly ILookupRepository _lookupRepository;
         private readonly IMapper _mapper;
 
-        public ReportService(IReportRepository iReportRepository, ILookupRepository lookupRepository,
+        public ReportService(IReportRepository reportRepository, ILookupRepository lookupRepository,
             IMapper mapper)
         {
-            _iReportRepository = iReportRepository ?? throw new ArgumentNullException(nameof(iReportRepository));
+            _reportRepository = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
             _lookupRepository = lookupRepository ?? throw new ArgumentNullException(nameof(lookupRepository));
             _mapper = mapper;
         }
         public async Task<IEnumerable<IsolateDispatchReportDTO>> GetDispatchesReportAsync(DateTime? dateFrom, DateTime? dateTo)
         {
-            var result = await _iReportRepository.GetDispatchesReportAsync(dateFrom, dateTo);
+            var result = await _reportRepository.GetDispatchesReportAsync(dateFrom, dateTo);
 
             var staffs = await _lookupRepository.GetAllStaffAsync();
             var workgroups = await _lookupRepository.GetAllWorkGroupsAsync();

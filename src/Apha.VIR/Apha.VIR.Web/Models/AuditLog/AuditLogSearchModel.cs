@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Apha.VIR.Web.Utilities;
 
 namespace Apha.VIR.Web.Models.AuditLog
 {
@@ -32,7 +33,7 @@ namespace Apha.VIR.Web.Models.AuditLog
             {
                 results.Add(new ValidationResult("AVNumber must be supplied"));
             }
-            else if (!Submission.AVNumberIsValidPotentially(AVNumber))
+            else if (!AVNumberUtil.AVNumberIsValidPotentially(AVNumber))
             {
                 results.Add(new ValidationResult("AVNumber format must be AVnnnnnn-YY, PDnnnn-YY, SInnnnnn-YY or BNnnnnnn-YY"));
             }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -241,7 +242,7 @@ namespace Apha.VIR.Web.Controllers
 
         private static void FormateSearchCriteria(AuditLogSearchModel searchCriteria)
         {
-            searchCriteria.AVNumber = Apha.VIR.Web.Models.Submission.AVNumberFormatted(searchCriteria.AVNumber!); ;
+            searchCriteria.AVNumber = AVNumberUtil.AVNumberFormatted(searchCriteria.AVNumber!); ;
 
             if (searchCriteria.DateTimeFrom == null)
             {

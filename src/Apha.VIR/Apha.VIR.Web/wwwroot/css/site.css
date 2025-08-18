@@ -117,22 +117,22 @@ body {
         }
 
         .breadcrumb li a {
-            color: #0b2677;
+            color: #0000FF;
             text-decoration: none;
         }
 
             .breadcrumb li a:link {
-                color: #0b2677;
+                color: #0000FF;
                 text-decoration: none
             }
 
             .breadcrumb li a:visited {
-                color: #0b2677;
+                color: #0000FF;
                 text-decoration: none
             }
 
             .breadcrumb li a:hover {
-                color: #0b2677;
+                color: #0000FF;
                 text-decoration: underline
             }
 
