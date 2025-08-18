@@ -1,0 +1,29 @@
+﻿@model List<NavItem>
+
+@if (Model?.Any() == true)
+{
+    <ol class="breadcrumb">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var item = Model[i];
+
+            if (i < Model.Count - 1)
+            {
+                <li class="breadcrumb-item">
+                    @if (item.Title == "Home")
+                    {
+                        <a title="@item.Description" href="@item.Url">@item.Title</a>
+                    }
+                    else
+                    {
+                        <a title="@item.Description" href="#">@item.Title</a>
+                    }
+                </li>
+            }
+            else
+            {
+                <li class="breadcrumb-item active" aria-current="page">@item.Title</li>
+            }
+        }
+    </ol>
+}

@@ -255,7 +255,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() =>
             _service.GetDispatcheConfirmationAsync(isolateId));
-        }        
+        }
 
         [Fact]
         public async Task UpdateDispatchAsync_SuccessfulUpdate_CallsRepositoryMethod()
@@ -457,7 +457,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId);
 
             // Assert
-            Assert.Null(result);            
+            Assert.Null(result);
         }
 
         [Fact]
@@ -474,8 +474,8 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId);
 
             // Assert
-            Assert.Null(result);           
-        }        
+            Assert.Null(result);
+        }
 
         [Fact]
         public async Task GetIsolateInfoByAVNumberAndIsolateIdAsync_InvalidIsolateId_ReturnsNull()
@@ -492,7 +492,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, invalidIsolateId);
 
             // Assert
-            Assert.Null(result);            
+            Assert.Null(result);
         }
 
         [Fact]
@@ -510,7 +510,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
 
             // Assert
             await _isolateDispatchRepository.Received(1).AddDispatchAsync(dispatchInfo, user);
-        }          
+        }
 
         [Fact]
         public async Task AddDispatchAsync_RepositoryThrowsException_PropagatesException()

@@ -4,6 +4,7 @@ using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
@@ -251,9 +252,9 @@ namespace Apha.VIR.Web.Controllers
             if (!String.IsNullOrEmpty(aVNumber))
             {
                 aVNumber = aVNumber.ToUpper();
-                if (Submission.AVNumberIsValidPotentially(aVNumber))
+                if (AVNumberUtil.AVNumberIsValidPotentially(aVNumber))
                 {
-                    aVNumber = Submission.AVNumberFormatted(aVNumber);
+                    aVNumber = AVNumberUtil.AVNumberFormatted(aVNumber);
                 }
             }
             return aVNumber;

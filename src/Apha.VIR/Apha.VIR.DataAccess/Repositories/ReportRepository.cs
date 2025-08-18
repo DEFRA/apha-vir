@@ -31,7 +31,7 @@ public class ReportRepository : IReportRepository
 
                 var paramDateFrom = command.CreateParameter();
                 paramDateFrom.ParameterName = "@DateFrom";
-                paramDateFrom.Value = dateFrom == null ? DBNull.Value: dateFrom;
+                paramDateFrom.Value = dateFrom == null ? DBNull.Value : dateFrom;
 
                 var paramDateTo = command.CreateParameter();
                 paramDateTo.ParameterName = "@DateTo";
