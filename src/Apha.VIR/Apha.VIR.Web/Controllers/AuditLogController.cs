@@ -78,7 +78,6 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetAuditLogs(string requesttype)
         {
             switch (requesttype.ToLower())
