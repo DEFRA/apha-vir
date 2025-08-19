@@ -45,18 +45,28 @@
 					@* <td>@item.UserName</td> *@
 					<td>@item.UpdateType</td>
 					<td>@item.SMSReferenceNumber</td>
-	 				<td>@item.Family</td>
+					<td>@item.Family</td>
 					<td>@item.Type</td>
 					<td>@item.IsolateNomenclature</td>
 					<td>@item.YearOfIsolation</td>
 					<td>@item.IsolationMethod</td>
-					<td>@item.AntiserumProduced</td>
-					<td>@item.AntigenProduced</td>
-					<td>@item.MaterialTransferAgreement</td>
+					<td>
+						<input type="checkbox" disabled @(item.AntiserumProduced ? "checked" : "") />
+					</td>
+					<td>
+						<input type="checkbox" disabled @(item.AntigenProduced ? "checked" : "") />
+					</td>
+					<td>
+						<input type="checkbox" disabled @(item.MaterialTransferAgreement ? "checked" : "") />
+					</td>
 					<td>@item.MTALocation</td>
-					<td>@item.ValidToIssue</td>
+					<td>
+						<input type="checkbox" disabled @(item.ValidToIssue? "checked" : "") />
+					</td>
 					<td>@item.WhyNotValidToIssue</td>
-					<td>@item.OriginalSampleAvailable</td>
+					<td>
+						<input type="checkbox" disabled @(item.OriginalSampleAvailable ? "checked" : "") />
+					</td>
 					<td>@item.FirstViablePassageNumber</td>
 					<td>@item.NoOfAliquots</td>
 					<td>@item.Freezer</td>
@@ -64,9 +74,9 @@
 					<td>@item.Well</td>
 					<td>
 						<a asp-action="GetIsolateLogDetail" asp-controller="AuditLog" asp-route-LogId="@item.LogId" asp-route-AvNumber="@item.AVNumber"
-						   class="btn btn-primary">More Inf</a>
-						</td>
- 				</tr>
+						   class="btn btn-primary">More Info</a>
+					</td>
+				</tr>
 			}
 		</tbody>
 	</table>

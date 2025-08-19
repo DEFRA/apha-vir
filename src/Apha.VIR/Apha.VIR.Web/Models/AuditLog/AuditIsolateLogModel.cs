@@ -15,7 +15,7 @@ public class AuditIsolateLogModel
     public bool AntigenProduced { get; set; }
     public bool MaterialTransferAgreement { get; set; }
     public string? MTALocation { get; set; }
-    public bool? ValidToIssue { get; set; }
+    public bool ValidToIssue { get; set; } = false;
     public string? WhyNotValidToIssue { get; set; }
     public bool OriginalSampleAvailable { get; set; }
     public int? FirstViablePassageNumber { get; set; }
