@@ -1,0 +1,55 @@
+﻿@model AuditIsolateLogDetailsViewModel
+@{
+    ViewData["Title"] = "View Log Isolate Details | Virus Isolates Repository";
+}
+
+<div>
+    <table style="width: 547px">
+        <tr style="width: 117px; height: 6px">
+            <th scope="row" >AVNumber</th>
+            <td>@Model.AVNumber</td>
+        </tr>
+        <tr style="width: 10px; height: 6px">
+            <th scope="row">Family</th>
+            <td>@Model.Family</td>
+        </tr>
+        <tr>
+            <th scope="row">Type</th>
+            <td>@Model.Type</td>
+        </tr>
+        <tr>
+            <th scope="row">Date Of Change</th>
+            <td>@Model.DateOfChange.ToShortDateString()</td>
+        </tr>
+        <tr>
+            <th scope="row">User</th>
+            <td>@Model.User</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <br />
+        <label for="phylogeneticAnalysis">Phylogenetic Analysis</label>
+        <br/>
+        <textarea id="phylogeneticAnalysis" class="form-control" rows="10" readonly style="width:  547px; height: 150px;">@Model.PhylogeneticAnalysis</textarea>
+        <br />
+    </div>
+    <div class="form-group">
+        <br />
+        <label for="phylogeneticFileName">Phylogenetic Filename</label>
+        <br />
+        <input type="text" id="phylogeneticFileName" class="form-control" value="@Model.PhylogeneticFileName" readonly style="width:  547px;">
+        <br />
+    </div>
+    <div class="form-group">
+        <br />
+        <label for="comment">Comment</label>
+        <br/>
+        <textarea id="comment" class="form-control" rows="10" readonly style="width:  547px; height: 150px;">@Model.Comment</textarea>
+        <br />
+    </div>
+    <div class="text-center">
+        <form asp-action="SearchAudit" asp-controller="AuditLog" method="post" >
+            <button type="submit" class="btn-as-link">Back</button>
+        </form>
+    </div>
+</div>

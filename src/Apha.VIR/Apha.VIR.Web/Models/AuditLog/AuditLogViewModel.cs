@@ -11,6 +11,8 @@ public class AuditLogViewModel
     public string? UserId { get; set; }
     public bool ShowErrorSummary { get; set; }
     public bool ShowDefaultView { get; set; }
+    public bool IsNewSearch { get; set; }
+
     public List<AuditSubmissionLogModel>? SubmissionLogs { get; set; }
     public List<AuditSampleLogModel>? SampleLogs { get; set; }
     public List<AuditIsolateLogModel>? IsolateLogs { get; set; }

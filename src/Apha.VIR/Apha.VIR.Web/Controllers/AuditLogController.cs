@@ -32,51 +32,90 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria)
+        public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
         {
             var showerrorSummary = false;
-
-            if (ModelState.IsValid)
+            if (IsNewSearch)
             {
-                ValidateSearchModel(searchCriteria, ModelState);
-                showerrorSummary = true;
-            }
+                if (ModelState.IsValid)
+                {
+                    ValidateSearchModel(searchCriteria, ModelState);
+                    showerrorSummary = true;
+                }
 
-            if (!ModelState.IsValid)
-            {
-                var model = new AuditLogViewModel
+                if (!ModelState.IsValid)
+                {
+                    var model = new AuditLogViewModel
+                    {
+                        AVNumber = searchCriteria.AVNumber,
+                        DateTimeFrom = searchCriteria.DateTimeFrom,
+                        DateTimeTo = searchCriteria.DateTimeTo,
+                        UserId = searchCriteria.UserId,
+                        ShowErrorSummary = showerrorSummary
+
+                    };
+                    return View("AuditLog", model);
+                }
+
+                FormateSearchCriteria(searchCriteria);
+
+                TempData.Remove("SearchCriteria");
+                TempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
+
+                var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
+                   searchCriteria.DateTimeTo, searchCriteria.UserId!);
+
+                var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
+
+                var viewModel = new AuditLogViewModel
                 {
                     AVNumber = searchCriteria.AVNumber,
                     DateTimeFrom = searchCriteria.DateTimeFrom,
                     DateTimeTo = searchCriteria.DateTimeTo,
                     UserId = searchCriteria.UserId,
-                    ShowErrorSummary = showerrorSummary
-
+                    ShowErrorSummary = false,
+                    IsNewSearch = IsNewSearch,
+                    SubmissionLogs = reportData.ToList(),
                 };
-                return View("AuditLog", model);
+
+                return View("AuditLog", viewModel);
             }
-
-            FormateSearchCriteria(searchCriteria);
-
-            TempData.Remove("SearchCriteria");
-            TempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
-
-            var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
-               searchCriteria.DateTimeTo, searchCriteria.UserId!);
-
-            var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
-
-            var viewModel = new AuditLogViewModel
+            else
             {
-                AVNumber = searchCriteria.AVNumber,
-                DateTimeFrom = searchCriteria.DateTimeFrom,
-                DateTimeTo = searchCriteria.DateTimeTo,
-                UserId = searchCriteria.UserId,
-                ShowErrorSummary = false,
-                SubmissionLogs = reportData.ToList(),
-            };
+                var criteriaString = TempData.Peek("SearchCriteria") as string;
+                ModelState.Remove("AVNumber");
+                if (!String.IsNullOrEmpty(criteriaString))
+                {
+                    var IsolatesearchCriteria = JsonConvert.DeserializeObject<AuditLogSearchModel>(criteriaString) ?? new AuditLogSearchModel();
 
-            return View("AuditLog", viewModel);
+                    var result = await _auditLogService.GetIsolatLogsAsync(IsolatesearchCriteria.AVNumber,
+                        IsolatesearchCriteria.DateTimeFrom, IsolatesearchCriteria.DateTimeTo, IsolatesearchCriteria.UserId!);
+
+                    var reportData = _mapper.Map<IEnumerable<AuditIsolateLogModel>>(result);
+
+                    var viewModel = new AuditLogViewModel
+                    {
+                        AVNumber = IsolatesearchCriteria.AVNumber,
+                        DateTimeFrom = IsolatesearchCriteria.DateTimeFrom,
+                        DateTimeTo = IsolatesearchCriteria.DateTimeTo,
+                        UserId = IsolatesearchCriteria.UserId == "%" ? string.Empty : IsolatesearchCriteria.UserId,
+                        ShowErrorSummary = false,
+                        IsNewSearch = IsNewSearch,
+                        IsolateLogs = reportData.ToList(),
+                    };
+
+                    return View("AuditLog", viewModel);
+                }
+                else
+                {
+                    var viewModel = new AuditLogViewModel
+                    {
+                        ShowErrorSummary = false,
+                        ShowDefaultView = true
+                    };
+                    return View("AuditLog", viewModel);
+                }
+            }
         }
 
         [HttpGet]
@@ -87,11 +126,6 @@ namespace Apha.VIR.Web.Controllers
                 var model = new AuditIsolateLogDetailsViewModel
                 {
                     AVNumber = AvNumber,
-                    //DateTimeFrom = searchCriteria.DateTimeFrom,
-                    //DateTimeTo = searchCriteria.DateTimeTo,
-                    //UserId = searchCriteria.UserId,
-                    //ShowErrorSummary = showerrorSummary
-
                 };
                 return View("IsolateAuditLogDetail", model);
             }

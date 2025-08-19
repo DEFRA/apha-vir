@@ -7,8 +7,9 @@
 		Enter search selection criteria
 	</div>
 	<div class="isolatereport-box_body">
-		<br/>
+		<br />
 		<form asp-action="SearchAudit" method="post">
+			<input type="hidden" name="IsNewSearch" value="true" />
 			<div class="form-group row">
 				<label for="AVNumber" class="col-sm-3 col-form-label">AVNumber</label>
 				<div class="col-sm-9">
@@ -76,7 +77,14 @@ else
 
 		<div id="searchResults" class="searchRepo-grid-table ">
 			<div id="auditLogContent" class="mt-3">
-				<partial name="_SubmissionAuditLogResults" for="@Model.SubmissionLogs" />
+				@if (Model.IsNewSearch)
+				{
+					<partial name="_SubmissionAuditLogResults" for="@Model.SubmissionLogs" />
+				}
+				else
+				{
+					<partial name="_IsolateAuditLogResults" for="@Model.IsolateLogs" />
+				}
 			</div>
 		</div>
 	}
