@@ -128,7 +128,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _auditLogService.GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, null));
+                _auditLogService.GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, null!));
         }
 
         [Fact]

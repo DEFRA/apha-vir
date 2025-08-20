@@ -163,7 +163,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             {
                 foreach (var memberName in validationResult.MemberNames)
                 {
-                    controller.ModelState.AddModelError(memberName, validationResult.ErrorMessage);
+                    controller.ModelState.AddModelError(memberName, validationResult.ErrorMessage!);
                 }
             }
         }
