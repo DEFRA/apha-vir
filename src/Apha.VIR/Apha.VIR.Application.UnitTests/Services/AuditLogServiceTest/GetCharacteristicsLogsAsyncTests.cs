@@ -21,7 +21,6 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             _auditLogService = new AuditLogService(_mockAuditRepository, _mockMapper);
         }
 
-
         [Fact]
         public async Task GetCharacteristicsLogsAsync_ValidInput_ReturnsExpectedResult()
         {
@@ -52,9 +51,8 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
         }
 
         [Theory]
-        [InlineData(null, null, null, null)]
         [InlineData("", null, null, "")]
-        public async Task GetCharacteristicsLogsAsync_NullOrEmptyInput_CallsRepositoryWithCorrectParameters(
+        public async Task GetCharacteristicsLogsAsync_EmptyInput_CallsRepositoryWithCorrectParameters(
             string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
             // Arrange
@@ -66,6 +64,18 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             // Assert
             await _mockAuditRepository.Received(1).GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, userid);
+        }
+
+        [Theory]
+        [InlineData(null, null, null, "user1")]
+        [InlineData("AV123", null, null, null)]
+        [InlineData(null, null, null, null)]
+        public async Task GetCharacteristicsLogsAsync_NullInputs_ThrowsArgumentNullException(
+            string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                _auditLogService.GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, userid));
         }
 
         [Fact]
@@ -91,7 +101,6 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
         [InlineData("user1")]
         [InlineData("user2")]
         [InlineData("")]
-        [InlineData(null)]
         public async Task GetCharacteristicsLogsAsync_DifferentUserIds_CallsRepositoryWithCorrectParameters(string userid)
         {
             // Arrange
@@ -107,6 +116,19 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             // Assert
             await _mockAuditRepository.Received(1).GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, userid);
+        }
+
+        [Fact]
+        public async Task GetCharacteristicsLogsAsync_NullUserId_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var dateFrom = DateTime.Now.AddDays(-7);
+            var dateTo = DateTime.Now;
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                _auditLogService.GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, null));
         }
 
         [Fact]

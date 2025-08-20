@@ -45,20 +45,17 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             _mockMapper.Received(1).Map<IEnumerable<AuditSampleLogDTO>>(repositoryResult);
         }
 
-
-        [Fact]
-        public async Task GetSamplLogsAsync_NullInputParameters_ReturnsEmptyResult()
+        [Theory]
+        [InlineData(null, null, null, "user1")]
+        [InlineData("AV123", null, null, null)]
+        [InlineData(null, null, null, null)]
+        public async Task GetSamplLogsAsync_NullInputParameters_ReturnsEmptyResult(
+            string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            // Arrange
-            _mockRepository.GetSamplLogsAsync(null, null, null, null).Returns(new List<AuditSampleLog>());
-            _mockMapper.Map<IEnumerable<AuditSampleLogDTO>>(Arg.Any<IEnumerable<object>>()).Returns(new List<AuditSampleLogDTO>());
 
-            // Act
-            var result = await _service.GetSamplLogsAsync(null, null, null, null);
-
-            // Assert
-            Assert.Empty(result);
-            await _mockRepository.Received(1).GetSamplLogsAsync(null, null, null, null);
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                _service.GetSamplLogsAsync(avNumber, dateFrom, dateTo, userid));
         }
 
         [Fact]
@@ -102,11 +99,12 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Arrange
             var avNumber = "AV004";
             var exception = new Exception("Repository error");
+
             _mockRepository.GetSamplLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Throws(exception);
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _service.GetSamplLogsAsync(avNumber, null, null, null));
+            await Assert.ThrowsAsync<Exception>(() => _service.GetSamplLogsAsync(avNumber, null, null, string.Empty));
         }
     }
 }

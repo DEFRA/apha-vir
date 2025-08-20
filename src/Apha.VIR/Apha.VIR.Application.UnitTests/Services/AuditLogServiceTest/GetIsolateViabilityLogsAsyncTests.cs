@@ -49,9 +49,8 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
-        public async Task GetIsolateViabilityLogsAsync_NullOrEmptyAvNumber_CallsRepositoryWithCorrectParameters(string avNumber)
+        public async Task GetIsolateViabilityLogsAsync_EmptyAvNumber_CallsRepositoryWithCorrectParameters(string avNumber)
         {
             // Arrange
             var dateFrom = DateTime.Now.AddDays(-7);
@@ -98,7 +97,6 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
         [Theory]
         [InlineData("user123")]
         [InlineData("")]
-        [InlineData(null)]
         public async Task GetIsolateViabilityLogsAsync_DifferentUserIds_CallsRepositoryWithCorrectParameters(string userid)
         {
             // Arrange
@@ -150,6 +148,18 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() =>
             _auditLogService.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid));
+        }
+
+        [Theory]
+        [InlineData(null, null, null, "user1")]
+        [InlineData("AV123", null, null, null)]
+        [InlineData(null, null, null, null)]
+        public async Task GetIsolateViabilityLogsAsync_NullInputs_ThrowsArgumentNullException(
+           string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                _auditLogService.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid));
         }
     }
 }

@@ -59,23 +59,13 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
         public async Task GetSubmissionLogsAsync_NullParameters_ReturnsEmptyResult()
         {
             // Arrange
-            string avNumber = null;
+            string avNumber = null!;
             DateTime? dateFrom = null;
             DateTime? dateTo = null;
-            string userid = null;
+            string userid = null!;
 
-            _mockAuditRepository.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid)
-            .Returns(new List<AuditSubmissionLog>());
-            _mockMapper.Map<IEnumerable<AuditSubmissionLogDTO>>(Arg.Any<IEnumerable<AuditSubmissionLog>>())
-            .Returns(new List<AuditSubmissionLogDTO>());
-
-            // Act
-            var result = await _auditLogService.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid);
-
-            // Assert
-            Assert.Empty(result);
-            await _mockAuditRepository.Received(1).GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid);
-            _mockMapper.Received(1).Map<IEnumerable<AuditSubmissionLogDTO>>(Arg.Any<IEnumerable<AuditSubmissionLog>>());
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                 _auditLogService.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid));
         }
 
         [Fact]

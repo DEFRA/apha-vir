@@ -50,23 +50,16 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             Assert.Equal(expectedResult, result);
         }
 
-        [Fact]
-        public async Task GetDispatchLogsAsync_NullInputParameters_CallsRepositoryWithNullValues()
+        [Theory]
+        [InlineData(null, null, null, "user1")]
+        [InlineData("AV123", null, null, null)]
+        [InlineData(null, null, null, null)]
+        public async Task GetDispatchLogsAsync_NullInputs_ThrowsArgumentNullException(
+            string avNumber, DateTime? dateFrom, DateTime? dateTo, string userid)
         {
-            // Arrange
-            string avNumber = null;
-            DateTime? dateFrom = null;
-            DateTime? dateTo = null;
-            string userId = null;
-
-            _mockAuditRepository.GetDispatchLogsAsync(null, null, null, null)
-            .Returns(new List<AuditDispatchLog>());
-
-            // Act
-            await _auditLogService.GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userId);
-
-            // Assert
-            await _mockAuditRepository.Received(1).GetDispatchLogsAsync(null, null, null, null);
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                _auditLogService.GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userid));
         }
 
         [Fact]
@@ -92,13 +85,17 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
         public async Task GetDispatchLogsAsync_RepositoryThrowsException_ThrowsException()
         {
             // Arrange
-            string avNumber = "AV001";
-            _mockAuditRepository.GetDispatchLogsAsync(avNumber, null, null, null)
+            var avNumber = "AV123";
+            var dateFrom = DateTime.Now.AddDays(-7);
+            var dateTo = DateTime.Now;
+            var userid = "user1";
+
+            _mockAuditRepository.GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Throws(new Exception("Repository error"));
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() =>
-            _auditLogService.GetDispatchLogsAsync(avNumber, null, null, null));
+            _auditLogService.GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userid));
         }
     }
 }

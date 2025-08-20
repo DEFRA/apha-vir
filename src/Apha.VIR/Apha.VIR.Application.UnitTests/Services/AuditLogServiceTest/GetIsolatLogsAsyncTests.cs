@@ -50,19 +50,14 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
         public async Task GetIsolatLogsAsync_WithNullParameters_CallsRepositoryWithNullValues()
         {
             // Arrange
-            string avNumber = null;
+            string avNumber = null!;
             DateTime? dateFrom = null;
             DateTime? dateTo = null;
-            string userid = null;
+            string userid = null!;
 
-            _mockAuditRepository.GetIsolatLogsAsync(null, null, null, null)
-            .Returns(new List<AuditIsolateLog>());
-
-            // Act
-            await _auditLogService.GetIsolatLogsAsync(avNumber, dateFrom, dateTo, userid);
-
-            // Assert
-            await _mockAuditRepository.Received(1).GetIsolatLogsAsync(null, null, null, null);
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                _auditLogService.GetIsolatLogsAsync(avNumber, dateFrom, dateTo, userid));
         }
 
         [Fact]
