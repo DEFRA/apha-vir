@@ -1,0 +1,39 @@
+﻿@model List<LookupItemViewModel>
+
+@if (Model != null && Model.Any())
+{
+	<table class="isolatereporttable">
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>Name</th>
+				<th>Alternate Name</th>
+				<th>Parent Name</th>
+				<th>Active</th>
+				<th>SMS</th>
+				<th>SMSCode</th>
+				<th>Edit</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.Name</td>
+					<td>@item.AlternateName</td>
+					<td>@item.ParentName</td>
+					<td>@item.Active</td>
+					<td>@item.Sms</td>
+					<td>@item.Smscode</td>
+					<td>
+						<a asp-action="Edit" asp-route-lookupid="@item.Id"
+						   class="btn btn-primary">Edit</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>There are no entries recorded for this look-up list.</p>
+}

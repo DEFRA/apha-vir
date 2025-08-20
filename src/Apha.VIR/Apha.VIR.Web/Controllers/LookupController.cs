@@ -14,13 +14,22 @@ namespace Apha.VIR.Web.Controllers
             _lookupService = lookupService;
             _mapper = mapper;
         }
-        public async Task<IActionResult> GetLookup()
+        public async Task<IActionResult> Index()
         {
             var result = await _lookupService.GetAllLookupsAsync();
 
             var lookups = _mapper.Map<IEnumerable<LookupViewModel>>(result);
 
-            return View(lookups);
+            return View("Lookup",lookups);
+        }
+
+        public async Task<IActionResult> LookupList(Guid lookupid)
+        {
+            var result = await _lookupService.GetAllLookupEntriesAsync(lookupid);
+
+            var lookups = _mapper.Map<IEnumerable<LookupItemViewModel>>(result);
+
+            return View("LookupItemList", lookups);
         }
     }
 }

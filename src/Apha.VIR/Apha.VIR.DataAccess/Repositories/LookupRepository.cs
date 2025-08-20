@@ -20,7 +20,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<Lookup>> GetAllLookupsAsync()
         {
-            return await _context.Lookups.FromSqlInterpolated($"EXEC spHostBreedGetAll").ToListAsync();
+            return await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId)
