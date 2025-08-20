@@ -2,6 +2,8 @@
 using Apha.VIR.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Isolate = Apha.VIR.Web.Models.Isolate;
+using Sample = Apha.VIR.Web.Models.Sample;
 using Sender = Apha.VIR.Web.Models.Sender;
 
 namespace Apha.VIR.Web.Controllers
@@ -118,6 +120,50 @@ namespace Apha.VIR.Web.Controllers
                     }
                 };
             return PartialView("_MainOrganisations", Organisations);
+        }
+
+        public IActionResult SubmissionSamples(int id)
+        {
+            var model = GetDummySubmissionData(id);
+            return View(model);
+        }
+
+        private SubmissionViewModel GetDummySubmissionData(int id)
+        {
+            return new SubmissionViewModel
+            {
+                Id = id,
+                AVNumber = $"AV{id:D6}",
+                SendersReferenceNumber = $"REF-{id:D4}",
+                SenderOrganisation = "Sample Organization",
+                CountryOfOriginName = "Sample Country",
+                Samples = new List<Sample>
+                {
+                    new Sample { Id = 1, SampleNumber = "S001", SMSReferenceNumber = "SMS001", SenderReferenceNumber = "SRN001", HostSpeciesName = "Species1", HostBreedName = "Breed1" },
+                    new Sample { Id = 2, SampleNumber = "S002", SMSReferenceNumber = "SMS002", SenderReferenceNumber = "SRN002", HostSpeciesName = "Species2", HostBreedName = "Breed2" }
+                },
+                Isolates = new List<Isolate>
+                {
+                    new Isolate { Id = 1, SampleNumber = "S001", SMSReferenceNumber = "ISO001", SenderReferenceNumber = "SRN001", TypeName = "Avian adenovirus Group II splenomegaly Virus", YearOfIsolation = 2023, Characteristics = "Char1", Nomenclature = "Nom1", isUniqueNomenclature = true },
+                    new Isolate { Id = 1, SampleNumber = "S002", SMSReferenceNumber = "ISO002", SenderReferenceNumber = "SRN002", TypeName = "Avian adenovirus Group I splenomegaly Virus", YearOfIsolation = 2023, Characteristics = "Char2", Nomenclature = "Nom1", isUniqueNomenclature = false}
+                },
+                ShowLetterLink = true,
+                IsLetterRequired = true,
+                ShowDeleteLink = true,
+                IsolatesHeader = "Isolates Header"
+            };
+        }
+
+        private int GetSubmissionIdForSample(int sampleId)
+        {
+            // Dummy method to get submission ID for a sample
+            return 1;
+        }
+
+        private int GetSubmissionIdForIsolate(int isolateId)
+        {
+            // Dummy method to get submission ID for an isolate
+            return 1;
         }
     }
 }
