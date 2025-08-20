@@ -23,7 +23,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             _auditLogService = Substitute.For<IAuditLogService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new AuditLogController(_auditLogService, _mapper);
-         }
+        }
 
         [Fact]
         public async Task SearchAudit_IsNewSearch_ValidModel_ReturnsViewWithViewModel()
@@ -44,6 +44,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var mappedLogs = new List<AuditSubmissionLogModel> { new AuditSubmissionLogModel(), new AuditSubmissionLogModel() };
             _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(Arg.Any<IEnumerable<object>>()).Returns(mappedLogs);
+
+            var httpContext = new DefaultHttpContext();
+            var tempDataProvider = Substitute.For<ITempDataProvider>();
+            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
+
+            tempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
+
+            _controller.TempData = tempData;
 
             // Act
             ValidateModel(searchCriteria, _controller);

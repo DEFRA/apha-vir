@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.AuditLog;
@@ -51,7 +46,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Arrange
             var logId = Guid.NewGuid();
             var avNumber = "AV123";
-            var serviceResult = new AuditIsolateLogDetailDTO();  
+            var serviceResult = new AuditIsolateLogDetailDTO();
             var mappedResult = new AuditIsolateLogDetailsViewModel();
 
             _auditLogService.GetIsolatLogDetailAsync(logId).Returns(serviceResult);

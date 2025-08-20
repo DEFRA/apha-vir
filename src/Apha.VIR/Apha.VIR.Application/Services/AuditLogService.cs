@@ -10,8 +10,7 @@ namespace Apha.VIR.Application.Services
         private readonly IAuditRepository _auditRepository;
         private readonly IMapper _mapper;
 
-        public AuditLogService(IAuditRepository auditRepository, ILookupRepository lookupRepository,
-           IMapper mapper)
+        public AuditLogService(IAuditRepository auditRepository, IMapper mapper)
         {
             _auditRepository = auditRepository ?? throw new ArgumentNullException(nameof(auditRepository));
             _mapper = mapper;

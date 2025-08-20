@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc;
-using NSubstitute;
 using Apha.VIR.Web.Models.AuditLog;
-using Apha.VIR.Application.DTOs;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 {
@@ -57,7 +52,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Assert
             Assert.IsType<PartialViewResult>(result);
             var partialViewResult = (PartialViewResult)result;
-         
+
             Assert.Equal(expectedViewName, partialViewResult.ViewName);
         }
 
@@ -123,8 +118,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             auditLogService.GetSubmissionLogsAsync(Arg.Any<string>(), Arg.Any<DateTime>(), Arg.Any<DateTime>(), Arg.Any<string>())
             .Returns(new AuditSubmissionLogDTO[] { new AuditSubmissionLogDTO() });
 
-
-           
             _controller.TempData = tempData;
 
             var controller = new AuditLogController(auditLogService, mapper)
