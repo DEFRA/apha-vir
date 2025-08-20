@@ -1,51 +1,53 @@
 ﻿@model Sender
 
-<form id="senderForm" method="post" style="width:450px; padding:2px;">
-    <fieldset style="width:100%">
-        <legend class="legend">Add New Sender:</legend>
+<div class="modalborder-div">
+	<form id="senderForm" method="post" style="width:450px; padding:2px;">
+		<fieldset style="width:100%">
+			<legend class="legend">Add New Sender:</legend>
 
-        <div class="editsubmission-form-group_row">
-            <div class="editsubmission-addsender-cell editsubmission-addsender-label">
-                <label for="Name">Sender:</label>
-            </div>
-            <div class="editsubmission-addsender-cell editsubmission-addsender-input">
-                <input asp-for="Name" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-        </div>
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="Name">Sender:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<input asp-for="Name" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+			</div>
 
-        <div class="editsubmission-form-group_row">
-            <div class="editsubmission-addsender-cell editsubmission-addsender-label">
-                <label for="Organisation">Sender Organisation:</label>
-            </div>
-            <div class="editsubmission-addsender-cell editsubmission-addsender-input">
-                <input asp-for="Organisation" />
-                <span asp-validation-for="Organisation" class="text-danger"></span>
-            </div>
-        </div>
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="Organisation">Sender Organisation:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<textarea asp-for="Organisation" style="height:55px"></textarea>
+					<span asp-validation-for="Organisation" class="text-danger"></span>
+				</div>
+			</div>
 
-        <div class="editsubmission-form-group_row">
-            <div class="editsubmission-addsender-cell editsubmission-addsender-label">
-                <label for="Address">Sender Address:</label>
-            </div>
-            <div class="editsubmission-addsender-cell editsubmission-addsender-input">
-                <textarea asp-for="Address"></textarea>
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-        </div>
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="Address">Sender Address:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<textarea asp-for="Address"></textarea>
+					<span asp-validation-for="Address" class="text-danger"></span>
+				</div>
+			</div>
 
-        <div class="editsubmission-form-group_row">
-            <div class="editsubmission-addsender-cell editsubmission-addsender-label">
-                <label for="CountryOfOrigin">Sender Country:</label>
-            </div>
-            <div class="editsubmission-addsender-cell editsubmission-addsender-input">
-                <select asp-for="CountryOfOrigin" asp-items="@(new SelectList(Model.CountryList))"></select>
-            </div>
-        </div>
-    </fieldset>
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="CountryOfOrigin">Sender Country:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<select asp-for="CountryOfOrigin" asp-items="@(new SelectList(Model.CountryList))"></select>
+				</div>
+			</div>
+		</fieldset>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-left:350px" onclick="submitSender()">Insert</button>
-        <button type="button" class="btn btn-link editsubmission-btn-link-custom" data-bs-dismiss="modal">Cancel</button>
-    </div>
-</form>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-left:320px" onclick="submitSender()">Insert</button>
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" data-bs-dismiss="modal">Cancel</button>
+		</div>
+	</form>
+</div>

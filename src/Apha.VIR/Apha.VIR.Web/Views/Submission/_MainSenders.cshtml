@@ -1,47 +1,47 @@
-﻿<fieldset>
-    <legend class="legend">Pick By Sender (Organisation) Country</legend>
+﻿<div class="modalborder-div">
+	<fieldset>
+		<legend class="legend">Pick By Sender (Organisation) Country</legend>
 
-    <div class="modal-content" style="margin: 0 auto; float: none;">
-        <div> Shows only those from the Submitting Country picked above.</div>
-        <br>
-        <br>
-        <div style="display: flex; justify-content: center;">
-            <select id="popupDropdown" style="width:440px;">
-            @foreach (var item in Model)
-            {
-                <option 
-                    value="@item.Id"
-                    data-name="@item.Name"
-                    data-organisation="@item.Organisation"
-                    data-address="@item.Address"
-                    data-country="@item.CountryOfOrigin"
-                >
-                    @item.DisplayText
-                </option>
-            }
-            </select>
-        </div>
-    </div>
+		<div class="modal-content">
+			<div> Shows only those from the Submitting Country picked above.</div>
+			<br>
+			<br>
+			<div style="display: flex; justify-content: center;">
+				<select id="popupDropdown" style="width:440px;">
+					@foreach (var item in Model)
+					{
+						<option value="@item.Id"
+								data-name="@item.Name"
+								data-organisation="@item.Organisation"
+								data-address="@item.Address"
+								data-country="@item.CountryOfOrigin">
+							@item.DisplayText
+						</option>
+					}
+				</select>
+			</div>
+		</div>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-left: 250px;" onclick="okClicked()">OK</button>
-        <button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-right: 250px;" data-bs-dismiss="modal">Cancel</button>
-    </div>
-</fieldset>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-left: 220px;" onclick="okClicked()">OK</button>
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-right: 220px;" data-bs-dismiss="modal">Cancel</button>
+		</div>
+	</fieldset>
+</div>
 
 <script>
-    function okClicked() {
-        var ddl = $('#popupDropdown');
-        var selectedOption = ddl.find("option:selected");
-        var selectedName = selectedOption.data("name");
-        var selectedOrganisation = selectedOption.data("organisation");
-        var selectedAddress = selectedOption.data("address");
+	function okClicked() {
+		var ddl = $('#popupDropdown');
+		var selectedOption = ddl.find("option:selected");
+		var selectedName = selectedOption.data("name");
+		var selectedOrganisation = selectedOption.data("organisation");
+		var selectedAddress = selectedOption.data("address");
 
-        $('#Sender').val(selectedName);
-        $('#SenderOrganisation').val(selectedOrganisation);
-        $('#SenderAddress').val(selectedAddress);
+		$('#Sender').val(selectedName);
+		$('#SenderOrganisation').val(selectedOrganisation);
+		$('#SenderAddress').val(selectedAddress);
 
-        var popup = bootstrap.Modal.getInstance(document.getElementById('popupModal'));
-        popup.hide();
-    }
+		var popup = bootstrap.Modal.getInstance(document.getElementById('popupModal'));
+		popup.hide();
+	}
 </script>
