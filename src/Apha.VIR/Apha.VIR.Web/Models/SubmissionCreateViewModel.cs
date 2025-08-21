@@ -6,7 +6,7 @@ namespace Apha.VIR.Web.Models
 {
     public class SubmissionCreateViewModel
     {
-        public Guid SubmissionId { get; set; }
+        public Guid? SubmissionId { get; set; }
 
         [Required(ErrorMessage = "AV Number is required")]
         [StringLength(256, ErrorMessage = "AV Number may not be more than 256 characters long")]

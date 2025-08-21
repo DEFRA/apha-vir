@@ -6,7 +6,7 @@ namespace Apha.VIR.Web.Models
 {
     public class SenderViewModel
     {
-        public Guid SenderId { get; set; }
+        public Guid? SenderId { get; set; }
         [Required(ErrorMessage = "Sender must be entered")]
         public string? SenderName { get; set; }
         [Required(ErrorMessage = "Sender Organisation must be entered")]
