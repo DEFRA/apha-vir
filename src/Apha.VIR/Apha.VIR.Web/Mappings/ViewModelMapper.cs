@@ -25,6 +25,9 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>().ReverseMap();
             CreateMap<IsolateDispatchCreateViewModel, IsolateDispatchInfoDTO>();
             CreateMap<IsolateDispatchReportDTO, IsolateDispatchReportModel>().ReverseMap();
+            CreateMap<SenderDTO, SenderViewModel>().ReverseMap();
+            CreateMap<SubmissionDTO, SubmissionEditViewModel>().ReverseMap();
+            CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
         }
     }
 }

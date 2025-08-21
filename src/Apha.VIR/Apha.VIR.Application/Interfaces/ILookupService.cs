@@ -21,5 +21,7 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllStaffAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllSubmittingLabAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllSubmissionReasonAsync();
     }
 }

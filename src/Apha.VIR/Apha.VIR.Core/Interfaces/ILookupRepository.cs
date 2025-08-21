@@ -21,7 +21,7 @@ namespace Apha.VIR.Core.Interfaces
         Task<IEnumerable<LookupItem>> GetAllWorkGroupsAsync();
         Task<IEnumerable<LookupItem>> GetAllStaffAsync();
         Task<IEnumerable<LookupItem>> GetAllViabilityAsync();
-
-
+        Task<IEnumerable<LookupItem>> GetAllSubmittingLabAsync();
+        Task<IEnumerable<LookupItem>> GetAllSubmissionReasonAsync();
     }
 }
