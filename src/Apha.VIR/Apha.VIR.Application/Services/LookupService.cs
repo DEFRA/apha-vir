@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
@@ -22,9 +23,10 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupDTO>>(await _lookupRepository.GetAllLookupsAsync());
         }
 
-        public async Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId)
+        public async Task<PaginatedResult<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId,int pageNo,int pageSize)
         {
-            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllLookupEntriesAsync(LookupId));
+            //return _mapper.Map<PaginatedResult<IsolateSearchResultDTO>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
+            return _mapper.Map<PaginatedResult<LookupItemDTO>>(await _lookupRepository.GetAllLookupEntriesAsync(LookupId,  pageNo,  pageSize));
         }
 
         public async Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item)

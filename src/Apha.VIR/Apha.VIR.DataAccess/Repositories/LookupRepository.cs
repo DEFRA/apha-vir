@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
+using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -20,18 +21,29 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<Lookup>> GetAllLookupsAsync()
         {
+
             return await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
         }
 
-        public async Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId)
+        public async Task<PagedData<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId, int pageNo, int pageSize)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
             if (lookup != null)
             {
-                return await _context.Set<LookupItem>()
+                //stored procedure is non-composable SQL and EF does support AsQueryable to get performance of skip. 
+                var result = await _context.Set<LookupItem>()
                    .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+
+                var totalRecords = result.Count;
+                var lookupitems = result.Skip((pageNo - 1) * pageSize)
+                    .Take(pageSize).ToList();
+ 
+
+                return new PagedData<LookupItem>(lookupitems, totalRecords);
+
+
             }
-            throw new NotImplementedException();
+            return new PagedData<LookupItem>([], 0);
         }
 
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",

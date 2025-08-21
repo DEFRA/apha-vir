@@ -1,6 +1,6 @@
-﻿@model List<LookupItemViewModel>
+﻿@model LookupItemListViewModel
 
-@if (Model != null && Model.Any())
+@if (Model != null && Model.LookupItems.Any())
 {
 	<table class="isolatereporttable">
 		<thead>
@@ -15,7 +15,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var item in Model)
+			@foreach (var item in Model.LookupItems)
 			{
 				<tr>
 					<td>@item.Name</td>
@@ -32,6 +32,9 @@
 			}
 		</tbody>
 	</table>
+	<div id="girdPagination" class="pagination">
+		@await Component.InvokeAsync("Pagination", Model.Pagination)
+	</div>
 }
 else
 {

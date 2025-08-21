@@ -1,11 +1,12 @@
 ﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Pagination;
 
 namespace Apha.VIR.Application.Interfaces
 {
     public interface ILookupService
     {
         Task<IEnumerable<LookupDTO>> GetAllLookupsAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId);
+        Task<PaginatedResult<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId, int pageNo, int pageSize);
         Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
         Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
         Task DeleeLookupEntryAsync(Guid LookupId, LookupItemDTO Item);

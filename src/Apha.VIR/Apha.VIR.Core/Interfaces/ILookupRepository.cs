@@ -1,11 +1,12 @@
 ﻿using Apha.VIR.Core.Entities;
+using Apha.VIR.Core.Pagination;
 
 namespace Apha.VIR.Core.Interfaces
 {
     public interface ILookupRepository
     {
         Task<IEnumerable<Lookup>> GetAllLookupsAsync();
-        Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId);
+        Task<PagedData<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId, int pageNo, int pageSize);
         Task InsertLookupEntryAsync(Guid LookupId, LookupItem Item);
         Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item);
         Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item);
