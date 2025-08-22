@@ -1,0 +1,382 @@
+﻿@model IsolateDetailsViewModel
+@{
+    ViewData["Title"] = "AddIsolate";
+    var isEdit = Model.IsolateId != null;
+    var disablecontrol = false;
+    if (isEdit)
+    {
+        disablecontrol = true;
+    }
+}
+
+
+<div class="contentbox" class="w-95">
+    <div class="id-box-title">
+        <span id="lblBoxTitle">Enter/Update the Isolate Details</span>
+    </div>
+    <div class="id-box_body">
+        <br>
+        <div class="container mt-3" id="IsolateDetails">
+
+            @if (isEdit)
+            {
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        SMS Ref
+                    </div>
+                    <div class="col-sm-9">
+                        <span>@Model.IsoSMSReferenceNumber</span>
+                    </div>
+                </div>
+            }
+
+
+            <div class="row mb-3">
+                <div class="col-sm-3">
+                    Virus Family <span class="text-danger">*</span>
+                </div>
+                <div class="col-sm-9">
+                    <select asp-for="VirusFamilyId"
+                            class="form-select small-select-dropdown w-210" required disabled="@(disablecontrol)">
+                        <option value=""></option>
+                        @foreach (var VirusFamily in Model.VirusFamilies)
+                        {
+                            <option value="@VirusFamily.Id">@VirusFamily.Name</option>
+                        }
+                    </select>
+
+                    <span asp-validation-for="VirusFamilyId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">
+                    Virus Type <span class="text-danger">*</span>
+                </div>
+                <div class="col-sm-9">
+                    <select asp-for="VirusTypeId" tabindex="2" class="form-select select-dropdown w-500" required disabled="@(disablecontrol)">
+                        <option value=""></option>
+                        @foreach (var VirusType in Model.VirusTypes)
+                        {
+                            <option value="@VirusType.Id">@VirusType.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="VirusTypeId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">
+                    Year Of Isolation
+                </div>
+                <div class="col-sm-9">
+                    <input asp-for="YearOfIsolation" tabindex="3" class="form-control w-75" value="2025" />
+                    <span asp-validation-for="YearOfIsolation" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">
+                    Is Mixed Isolate
+                </div>
+                <div class="col-sm-9">
+                    <input asp-for="IsMixedIsolate" type="checkbox" tabindex="4" />
+                    <span asp-validation-for="IsMixedIsolate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">
+                    Isolation Method
+                </div>
+                <div class="col-sm-9">
+                    <select asp-for="IsolationMethodId" tabindex="5" class="form-select small-select-dropdown w-80">
+                        <option value=""></option>
+                        @foreach (var IsolationMethod in Model.IsolationMethods)
+                        {
+                            <option value="@IsolationMethod.Id">@IsolationMethod.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="IsolationMethodId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Antiserum Produced</div>
+                <div class="col-sm-9">
+                    <input asp-for="AntigenProduced" type="checkbox" tabindex="6" />
+                    <span asp-validation-for="AntigenProduced" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Antigen Produced</div>
+                <div class="col-sm-9">
+                    <input asp-for="AntigenProduced" type="checkbox" tabindex="7" />
+                    <span asp-validation-for="AntigenProduced" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Phylogenetic Analysis</div>
+                <div class="col-sm-9">
+                    <textarea asp-for="PhylogeneticAnalysis" rows="5" tabindex="8" class="form-control w-500" style="height:166px"></textarea>
+                    <span asp-validation-for="PhylogeneticAnalysis" class="text-danger"></span>
+                </div>
+            </div>
+
+            @if (Model.IsolateId != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-sm-3">Phylogenetic File</div>
+                <div class="col-sm-9 d-flex align-items-center">
+                    <input asp-for="PhylogeneticFile" type="text" class="form-control w-500" />
+                    <a href="" class="ms-2" target="_blank">File</a>
+                    <span asp-validation-for="PhylogeneticFile" class="text-danger ms-2"></span>
+                </div>
+            </div>
+            }
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Material Transfer Agreement</div>
+                <div class="col-sm-9">
+                    <input asp-for="MaterialTransferAgreement" type="checkbox" tabindex="9" />
+                    <span asp-validation-for="MaterialTransferAgreement" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">MTA Location</div>
+                <div class="col-sm-9">
+                    <textarea asp-for="MTALocation" rows="3" tabindex="10" class="form-control w-500" style="height:54px"></textarea>
+                    <span asp-validation-for="MTALocation" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Comment</div>
+                <div class="col-sm-9">
+                    <textarea asp-for="Comment" rows="5" tabindex="11" class="form-control w-500" style="height:166px"></textarea>
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Valid To Issue</div>
+                <div class="col-sm-9">
+                    <input asp-for="ValidToIssue" type="checkbox" tabindex="12" checked />
+                    <span asp-validation-for="ValidToIssue" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Why Not Valid To Issue</div>
+                <div class="col-sm-9">
+                    <textarea asp-for="WhyNotValidToIssue" rows="5" tabindex="13" class="form-control w-500" disabled style="height:86px"></textarea>
+                    <span asp-validation-for="WhyNotValidToIssue" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Original Sample Available</div>
+                <div class="col-sm-9">
+                    <input asp-for="SampleAvailable" type="checkbox" tabindex="14" />
+                    <span asp-validation-for="SampleAvailable" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">First Viable Passage Number</div>
+                <div class="col-sm-9">
+                    <input asp-for="FirstViablePassageNumber" type="text" tabindex="15" class="form-control w-170" />
+                    <span asp-validation-for="FirstViablePassageNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">No. Of Aliquots</div>
+                <div class="col-sm-9">
+                    <input asp-for="NoOfAliquots" type="text" tabindex="16" class="form-control w-170" />
+                    <span asp-validation-for="NoOfAliquots" class="text-danger"></span>
+                    <span id="cpvNoOfAliquots" class="Validation text-danger d-none"><br />No of Aliquots must be a numeric value</span>
+                    <span id="ravNoOfAliquots" class="Validation text-danger d-none"><br />No of Aliquots must be between 0 and 4</span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Freezer</div>
+                <div class="col-sm-9">
+                    <select asp-for="FreezerId" id="ddlFreezer" tabindex="17" class="form-select small-select-dropdown w-210">
+                        <option value=""></option>
+                        @foreach (var Freezer in Model.FreezerList)
+                        {
+                            <option value="@Freezer.Id">@Freezer.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="FreezerId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Tray</div>
+                <div class="col-sm-9">
+                    <select asp-for="TrayId" name="ddlTrayInsert" id="ddlTrayInsert" tabindex="18" class="form-select small-select-dropdown w-210">
+                        <option value=""></option>
+                        @foreach (var Tray in Model.TrayList)
+                        {
+                            <option value="@Tray.Id">@Tray.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="TrayId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Well</div>
+                <div class="col-sm-9">
+                    <input asp-for="Well" type="text" tabindex="19" class="form-control w-170" />
+                    <span asp-validation-for="Well" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Current Nomenclature</div>
+                <div class="col-sm-9">
+                    <span>[Virus Type]/Congo Peafowl/Ascension Island/Ref 2/[Year of Isolation]</span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3">Amended Nomenclature</div>
+                <div class="col-sm-9">
+                    <input asp-for="Nomenclature" type="text" tabindex="20" class="form-control w-600" />
+                    <span asp-validation-for="Nomenclature" class="text-danger"></span>
+                </div>
+            </div>
+
+            
+
+            @if (Model.IsolateId != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-sm-3">Previous Current Viability</div>
+                    <div class="col-sm-9">
+                        <select asp-for="PreviousCurrentViability" class="form-select w-200" disabled="@(disablecontrol)">
+                            <option value=""></option>
+                            @foreach (var viability in Model.ViabilityList)
+                            {
+                                <option value="@viability.Id">@viability.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="PreviousCurrentViability" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">Previous Date Checked</div>
+                    <div class="col-sm-9">
+                        <input asp-for="PreviousDateChecked" type="date" class="form-control w-200" disabled="@(disablecontrol)" />
+                        <span asp-validation-for="PreviousDateChecked" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">Previous Checked By</div>
+                    <div class="col-sm-9">
+                        <select asp-for="PreviousCheckedBy" class="form-select w-200" disabled="@(disablecontrol)">
+                            <option value=""></option>
+                            @foreach (var person in Model.personList)
+                            {
+                                <option value="@person.Id">@person.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="PreviousCheckedBy" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <br>
+
+        <div id="h3ViabilityStatus" class="help-section">Record new viability status</div>
+        <br>
+        <div class="w-100">
+            <div id="Viability" class="container-fluid">
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        Viability
+                    </div>
+                    <div class="col-sm-9">
+                        <select asp-for="Viability" name="ddlViability" id="ddlViability" tabindex="21" class="form-select w-200">
+                            <option value=""></option>
+                            @foreach (var Viability in Model.ViabilityList)
+                            {
+                                <option>@Viability.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Viability" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        Date Checked
+                    </div>
+                    <div class="col-sm-9 d-flex align-items-center">
+                        <input asp-for="DateChecked" name="txtDateChecked" type="date" id="txtDateChecked"
+                               class="form-control d-inline-block w-200"
+                               title="Date format is dd/mm/yyyy" tabindex="23" />
+                        <img id="imgCalender" src="~/Images/calendar.png" class="ms-2" />
+                        <span asp-validation-for="DateChecked" class="text-danger ms-2"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        Checked By
+                    </div>
+                    <div class="col-sm-9">
+                        <select asp-for="CheckedBy" tabindex="24" name="ddlCheckedBy" id="ddlCheckedBy" class="form-select w-200">
+                            <option value=""></option>
+                            @foreach (var person in Model.personList)
+                            {
+                                <option>@person.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CheckedBy" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <p align="right">
+            <a id="lnkSave" href="">Save Isolate and Continue to Characteristics</a>
+            <img src="~\Images\spacer.gif" width="10" height="5" alt="">
+            <a id="lnkSaveImmediate" href="">Save Isolate and return to summary screen</a>
+            <img src="~\Images\spacer.gif" width="10" height="5" alt="">
+            <a id="lnkCancel" href="">Cancel</a>
+        </p>
+
+    </div>
+    <div id="pnlValidation" asp-validation-summary="All" class="validation">
+
+        <p>There are validation messages requiring your attention.</p>
+        <span id="lblValidationMessage" class="validation">  </span>
+        <ul>
+            <li>
+                Isolate must have a Virus Family selected.
+            </li>
+            <li>
+                Isolate must have a Virus Type selected.
+            </li>
+            <li>
+                Isolate must have a Freezer selected.
+            </li>
+            <li>
+                Isolate must have a Freezer Tray selected.
+
+            </li>
+        </ul>
+
+    </div>
+</div>
+
