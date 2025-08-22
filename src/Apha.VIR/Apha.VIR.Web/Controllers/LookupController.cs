@@ -1,14 +1,7 @@
-﻿using Apha.VIR.Application.DTOs;
-using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Pagination;
-using Apha.VIR.Application.Services;
+﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
-using Apha.VIR.Web.Models.AuditLog;
 using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Services;
-using Newtonsoft.Json;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -77,7 +70,6 @@ namespace Apha.VIR.Web.Controllers
                     TotalCount = result.TotalCount
                 }
             };
-
 
             return PartialView("_IsolateSearchResults", LookupItemResult);
         }

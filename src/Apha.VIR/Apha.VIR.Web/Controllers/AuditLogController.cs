@@ -118,7 +118,7 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("IsolateLog")]
         public async Task<IActionResult> GetIsolateLogDetail(Guid logid, string AvNumber)
         {
             if (!ModelState.IsValid)

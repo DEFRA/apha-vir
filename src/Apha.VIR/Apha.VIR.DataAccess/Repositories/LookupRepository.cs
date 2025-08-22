@@ -38,10 +38,7 @@ namespace Apha.VIR.DataAccess.Repositories
                 var lookupitems = result.Skip((pageNo - 1) * pageSize)
                     .Take(pageSize).ToList();
  
-
                 return new PagedData<LookupItem>(lookupitems, totalRecords);
-
-
             }
             return new PagedData<LookupItem>([], 0);
         }
