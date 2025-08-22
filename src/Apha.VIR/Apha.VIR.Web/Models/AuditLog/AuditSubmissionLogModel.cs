@@ -1,12 +1,10 @@
-﻿namespace Apha.VIR.Application.DTOs;
+﻿namespace Apha.VIR.Web.Models.AuditLog;
 
-public class AuditSubmissionLogDTO
+public class AuditSubmissionLogModel
 {
-    public Guid? LogID { get; set; }
     public string UserId { get; set; } = null!;
     public string UserName { get; set; } = string.Empty;
     public DateTime DateDone { get; set; }
-    public Guid? SubmissionId { get; set; }
     public string AVNumber { get; set; } = null!;
     public string? SendersReferenceNumber { get; set; }
     public string? RLReferenceNumber { get; set; }
@@ -23,5 +21,4 @@ public class AuditSubmissionLogDTO
     public string? SubmittingLab { get; set; }
     public string? CountryOfOrigin { get; set; }
     public string? SubmittingCountry { get; set; }
-
 }

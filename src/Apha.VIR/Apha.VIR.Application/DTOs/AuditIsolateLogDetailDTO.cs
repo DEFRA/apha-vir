@@ -4,7 +4,6 @@ public class AuditIsolateLogDetailDTO
 {
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
-    //This prop populate from auth db.
     public DateTime DateDone { get; set; }
     public string? PhylogeneticAnalysis { get; set; }
     public string? PhylogeneticFileName { get; set; }

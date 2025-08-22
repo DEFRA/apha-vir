@@ -1,0 +1,40 @@
+﻿@model List<AuditCharacteristicsLogModel>
+
+@if (Model != null && Model.Any())
+{
+	<table class="isolatereporttable">
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>AVNumber</th>
+				<th>Sample</th>
+				<th>Isolate</th>
+				<th>Date Of Change</th>
+				<th>User</th>
+				@* <th>User Name</th> *@
+				<th>Type</th>
+				<th>Characteristic</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.AvNumber</td>
+					<td>@item.SampleNumber</td>
+					<td>@item.IsolateNumber</td>
+					<td>@item.DateDone</td>
+					<td>@item.UserId</td>
+					@* <td>@item.UserName</td> *@
+					<td>@item.UpdateType</td>
+					<td>@item.VirusCharacteristic</td>
+					<td>@item.CharacteristicValue</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>There are no characteristic audit records matching the entered criteria.</p>
+}

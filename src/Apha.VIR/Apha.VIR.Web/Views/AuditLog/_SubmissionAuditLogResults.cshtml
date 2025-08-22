@@ -1,0 +1,60 @@
+﻿@model List<AuditSubmissionLogModel>
+
+@if (Model != null && Model.Any())
+{
+	<table class="isolatereporttable">
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>Date Of Change</th>
+				<th>AV Number</th>
+				<th>User</th>
+				@* <th>User Name</th> *@
+				<th>Type</th>
+				<th>Senders Ref Number</th>
+				<th>Date Received</th>
+				<th>RL Ref Number</th>
+				<th>Submitting Lab</th>
+				<th>Sender</th>
+				<th>Sender Organisation</th>
+				<th>Sender Address</th>
+				<th>Owner</th>
+				<th>Sampling Location</th>
+				<th>CPH Number</th>
+				<th>Country Of Origin</th>
+				<th>Submitting Country</th>
+				<th>Reason For Submission</th>
+				<th>No. Of Samples</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.DateDone</td>
+					<td>@item.AVNumber</td>
+					<td>@item.UserId</td>
+					@* <td>@item.UserName</td> *@
+					<td>@item.UpdateType</td>
+					<td>@item.SendersReferenceNumber</td>
+					<td>@item.DateSubmissionReceived</td>
+					<td>@item.RLReferenceNumber</td>
+					<td>@item.SubmittingLab</td>
+					<td>@item.Sender</td>
+					<td>@item.SenderOrganisation</td>
+					<td>@item.SenderAddress</td>
+					<td>@item.Owner</td>
+					<td>@item.SamplingLocationPremises</td>
+					<td>@item.CPHNumber</td>
+					<td>@item.CountryOfOrigin</td>
+					<td>@item.SubmittingCountry</td>
+					<td>@item.ReasonForSubmission</td>
+					<td>@item.NumberOfSamples</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>There are no submission audit records that match the entered criteria.</p>
+}

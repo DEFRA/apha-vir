@@ -1,16 +1,13 @@
-﻿namespace Apha.VIR.Core.Entities;
-
-public class AuditDispatchLog
+﻿namespace Apha.VIR.Web.Models.AuditLog;
+public class AuditDispatchLogModel
 {
     public string Avnumber { get; set; } = null!;
     public int? SampleNumber { get; set; }
     public int? IsolateNumber { get; set; }
-    public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
+    public string UserName { get; set; } = string.Empty;
     public DateTime DateDone { get; set; }
     public string? UpdateType { get; set; }
-    public Guid DispatchId { get; set; }
-    public Guid DispatchIsolateId { get; set; }
     public int NoOfAliquots { get; set; }
     public int PassageNumber { get; set; }
     public string? RecipientName { get; set; }

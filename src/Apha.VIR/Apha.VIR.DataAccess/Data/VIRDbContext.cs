@@ -32,5 +32,12 @@ public class VIRDbContext : DbContext
         modelBuilder.Entity<IsolateInfo>().HasNoKey();
         modelBuilder.Entity<IsolateDispatchInfo>().HasNoKey();
         modelBuilder.Entity<IsolateDispatch>().HasNoKey();
+        modelBuilder.Entity<AuditCharacteristicLog>().HasNoKey();
+        modelBuilder.Entity<AuditDispatchLog>().HasNoKey();
+        modelBuilder.Entity<AuditIsolateLog>().HasNoKey();
+        modelBuilder.Entity<AuditSampleLog>().HasNoKey();
+        modelBuilder.Entity<AuditSubmissionLog>().HasNoKey();
+        modelBuilder.Entity<AuditViabilityLog>().HasNoKey();
+        modelBuilder.Entity<AuditIsolateLogDetail>().HasNoKey();
     }
 }

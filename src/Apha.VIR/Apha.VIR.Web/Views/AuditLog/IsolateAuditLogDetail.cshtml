@@ -1,0 +1,79 @@
+﻿@using Apha.VIR.Web.Models.AuditLog
+@model AuditIsolateLogDetailsViewModel
+@{
+    ViewData["Title"] = "View Log Isolate Details | Virus Isolates Repository";
+}
+
+<div>
+    <div class="row mt-4">
+        <div class="col-sm-3 fw-bold">
+            AVNumber
+        </div>
+        <div class="col-sm-9" style ="margin-left:-70px;">
+            @Model.AVNumber
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3 fw-bold">
+            Family
+        </div>
+        <div class="col-sm-9" style="margin-left:-70px;">
+            @Model.Family
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-sm-3 fw-bold">
+            Type
+        </div>
+        <div class="col-sm-9" style="margin-left:-70px;">
+            @Model.Type
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3 fw-bold">
+            Date Of Change
+        </div>
+        <div class="col-sm-9" style="margin-left:-70px;">
+            @Model.DateOfChange.ToShortDateString()
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3 fw-bold">
+            User
+        </div>
+        <div class="col-sm-9" style="margin-left:-70px;">
+            @Model.User
+        </div>
+    </div>
+
+    <div class="form-group">
+        <br />
+        <label for="phylogeneticAnalysis">Phylogenetic Analysis</label>
+        <br/>
+        <textarea id="phylogeneticAnalysis" class="form-control" rows="10" readonly style="width:  547px; height: 150px;font-family: verdana, arial, helvetica, sans-serif; font-size: small;">@Model.PhylogeneticAnalysis</textarea>
+        <br />
+    </div>
+    <div class="form-group">
+        <br />
+        <label for="phylogeneticFileName">Phylogenetic Filename</label>
+        <br />
+        <input type="text" id="phylogeneticFileName" class="form-control" value="@Model.PhylogeneticFileName" readonly style="width:  547px;font-family: verdana, arial, helvetica, sans-serif; font-size: small;">
+        <br />
+    </div>
+    <div class="form-group">
+        <br />
+        <label for="comment">Comment</label>
+        <br/>
+        <textarea id="comment" class="form-control" rows="10" readonly style="width:  547px; height: 150px;font-family: verdana, arial, helvetica, sans-serif; font-size: small;">@Model.Comment</textarea>
+        <br />
+    </div>
+    <div class="text-center">
+        <form asp-action="SearchAudit" asp-controller="AuditLog" method="post" >
+            <button type="submit" class="btn-as-link" style="float: right; margin-right: 600px;">Back</button>
+        </form>
+    </div>
+</div>
