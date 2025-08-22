@@ -6,11 +6,20 @@
 		<thead>
 			<tr class=".isolatereport-header">
 				<th>Name</th>
-				<th>Alternate Name</th>
-				<th>Parent Name</th>
+				@if (Model.HasAlternateName)
+				{
+					<th>Alternate Name</th>
+				}
+				@if (Model.HasParent)
+				{
+					<th>Parent Name</th>
+				}
 				<th>Active</th>
-				<th>SMS</th>
-				<th>SMSCode</th>
+				@if (Model.IsSMSRelated)
+				{
+					<th>SMS</th>
+					<th>SMSCode</th>
+				}
 				<th>Edit</th>
 			</tr>
 		</thead>
@@ -19,11 +28,20 @@
 			{
 				<tr>
 					<td>@item.Name</td>
-					<td>@item.AlternateName</td>
-					<td>@item.ParentName</td>
+					@if (Model.HasAlternateName)
+					{
+						<td>@item.AlternateName</td>
+					}
+					@if (Model.HasParent)
+					{
+						<td>@item.ParentName</td>
+					}
 					<td>@item.Active</td>
-					<td>@item.Sms</td>
-					<td>@item.Smscode</td>
+					@if (Model.IsSMSRelated)
+					{
+						<td>@item.Sms</td>
+						<td>@item.Smscode</td>
+					}
 					<td>
 						<a asp-action="Edit" asp-route-lookupid="@item.Id"
 						   class="btn btn-primary">Edit</a>

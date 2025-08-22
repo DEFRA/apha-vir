@@ -6,11 +6,14 @@
 <h1>@Model.LookupName</h1>
 
 <section aria-labelledby="add-entry">
-	<h2 id="add-entry" class="sr-only">Add New Entry</h2>
-	<div class="mb-3">
-		<img src="~/images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-		<a asp-action="AddEntry" asp-route-lookup=@Model.LookupId class="btn btn-primary ml-2">Add new entry</a>
-	</div>
+	@if (!Model.IsReadOnly)
+	{
+		<div class="mb-3">
+			<br />
+			<img src="~/images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+			<a asp-action="AddEntry" asp-route-lookup=@Model.LookupId class="btn btn-primary ml-2">Add new entry</a>
+		</div>
+	}
 </section>
 
 <p>Edit an existing entry in the list by clicking on the links below.</p>
@@ -21,9 +24,9 @@
 	<script>
 		$(document).on('click','.pagination a', function (e) {
 			e.preventDefault();
-			var id = @Model.LookupId;
+			var id = "@Model.LookupId";
 			var pageNo=$(this).data('pageno');
-			$.get('BindLookupItemGridOnPagination', {lookupid: id, pageNo: 2, pageSize:10}, function (htmlData) {
+			$.get('BindLookupItemGridOnPagination', {lookupid: id, pageNo: pageNo, pageSize:10}, function (htmlData) {
 			$('#gridLookupItemResult').html(htmlData);
 			});
 			});

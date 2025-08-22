@@ -25,9 +25,17 @@ namespace Apha.VIR.DataAccess.Repositories
             return await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
         }
 
-        public async Task<PagedData<LookupItem>> GetAllLookupEntriesAsync(Guid LookupId, int pageNo, int pageSize)
+        public async Task<Lookup> GetLookupsByIdAsync(Guid lookupId)
         {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+            var result = await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
+             var lookup = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupId);
+
+            return lookup == null? new Lookup() : lookup;
+        }
+
+        public async Task<PagedData<LookupItem>> GetAllLookupEntriesAsync(Guid lookupId, int pageNo, int pageSize)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
             if (lookup != null)
             {
                 //stored procedure is non-composable SQL and EF does support AsQueryable to get performance of skip. 

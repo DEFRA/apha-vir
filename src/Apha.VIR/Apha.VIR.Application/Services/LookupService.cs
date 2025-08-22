@@ -23,6 +23,11 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupDTO>>(await _lookupRepository.GetAllLookupsAsync());
         }
 
+        public async Task<LookupDTO> GetLookupsByIdAsync(Guid LookupId)
+        {
+            return _mapper.Map<LookupDTO>(await _lookupRepository.GetLookupsByIdAsync(LookupId));
+        }
+
         public async Task<PaginatedResult<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId,int pageNo,int pageSize)
         {
             ArgumentNullException.ThrowIfNull(LookupId);
@@ -30,8 +35,7 @@ namespace Apha.VIR.Application.Services
             ArgumentNullException.ThrowIfNull(pageSize);
 
             return _mapper.Map<PaginatedResult<LookupItemDTO>>(
-                await _lookupRepository.GetAllLookupEntriesAsync(LookupId,  pageNo,  pageSize)
-                );
+                await _lookupRepository.GetAllLookupEntriesAsync(LookupId,  pageNo,  pageSize));
         }
 
         public async Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item)

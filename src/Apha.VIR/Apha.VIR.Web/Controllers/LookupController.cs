@@ -25,22 +25,33 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> LookupList(Guid lookupid, int pageNo = 1, int pageSize = 10)
         {
-            var result = await _lookupService.GetAllLookupEntriesAsync(lookupid, pageNo, pageSize);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid parameters.");
+            }
 
-            var lookups = _mapper.Map<IEnumerable<LookupItemModel>>(result.data);
+            var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupid);
+            var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+
+            var lookupEntries = await _lookupService.GetAllLookupEntriesAsync(lookupid, pageNo, pageSize);
+            var lookups = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data);
 
             var viewModel = new LookupItemViewModel
             {
-                LookupName = "ANIm",
+                LookupName = lookup.Name + " Look-up List",
                 LookupId = lookupid,
+                IsReadOnly = lookup.ReadOnly,
                 LookupItemResult = new LookupItemListViewModel
                 {
+                    HasParent  = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
+                    HasAlternateName = lookup.AlternateName,
+                    IsSMSRelated  =lookup.Smsrelated,
                     LookupItems = lookups.ToList(),
                     Pagination = new PaginationModel
                     {
                         PageNumber = pageNo,
                         PageSize = pageSize,
-                        TotalCount = result.TotalCount
+                        TotalCount = lookupEntries.TotalCount
                     }
                 }
             };
@@ -55,23 +66,27 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest("Invalid parameters.");
             }
 
+            var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupid);
+            var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
-            var result = await _lookupService.GetAllLookupEntriesAsync(lookupid, pageNo, pageSize);
-
-            var lookups = _mapper.Map<IEnumerable<LookupItemModel>>(result.data);
+            var lookupEntries = await _lookupService.GetAllLookupEntriesAsync(lookupid, pageNo, pageSize);
+            var lookups = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data);
 
             var LookupItemResult = new LookupItemListViewModel
             {
+                HasParent = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
+                HasAlternateName = lookup.AlternateName,
+                IsSMSRelated = lookup.Smsrelated,
                 LookupItems = lookups.ToList(),
                 Pagination = new PaginationModel
                 {
                     PageNumber = pageNo,
-                    //PageSize = pageSize,
-                    TotalCount = result.TotalCount
+                    PageSize = pageSize,
+                    TotalCount = lookupEntries.TotalCount
                 }
             };
 
-            return PartialView("_IsolateSearchResults", LookupItemResult);
+            return PartialView("_LookupItemList", LookupItemResult);
         }
     }
 }
