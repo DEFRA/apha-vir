@@ -15,7 +15,18 @@ public class SubmissionRepository : ISubmissionRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<Submission> GetSubmissionDetailsByAVNumberAsync(string AVNumber)
+    public async Task<bool> AVNumberExistsInVirAsync(string avNumber)
+    {
+        var countResult = await _context.Database
+                .SqlQuery<int>($"EXEC spSubmissionCountByAVNumber @AVNumber = {avNumber}")
+                .ToListAsync();
+
+        var count = countResult.FirstOrDefault();
+
+        return count > 0;
+    }
+
+    public async Task<Submission> GetSubmissionDetailsByAVNumberAsync(string avNumber)
     {
         Submission submission = null!;
         using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
@@ -30,7 +41,7 @@ public class SubmissionRepository : ISubmissionRepository
 
                 var param = command.CreateParameter();
                 param.ParameterName = "@AVNumber";
-                param.Value = AVNumber;
+                param.Value = avNumber;
                 command.Parameters.Add(param);
 
                 using (var reader = await command.ExecuteReaderAsync())

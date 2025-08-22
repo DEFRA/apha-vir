@@ -4,7 +4,8 @@ namespace Apha.VIR.Core.Interfaces;
 
 public interface ISubmissionRepository
 {
-    Task<Submission> GetSubmissionDetailsByAVNumberAsync(string AVNumber);
+    Task<bool> AVNumberExistsInVirAsync(string avNumber);
+    Task<Submission> GetSubmissionDetailsByAVNumberAsync(string avNumber);
     Task AddSubmissionAsync(Submission submission, string user);
     Task UpdateSubmissionAsync(Submission submission, string user);
 }

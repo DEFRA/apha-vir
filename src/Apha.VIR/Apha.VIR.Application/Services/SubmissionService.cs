@@ -18,9 +18,14 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<SubmissionDTO> GetSubmissionDetailsByAVNumberAsync(string AVNumber)
+        public async Task<bool> AVNumberExistsInVirAsync(string avNumber)
         {
-            var submission = await _submissionRepository.GetSubmissionDetailsByAVNumberAsync(AVNumber);
+            return await _submissionRepository.AVNumberExistsInVirAsync(avNumber);
+        }
+
+        public async Task<SubmissionDTO> GetSubmissionDetailsByAVNumberAsync(string avNumber)
+        {
+            var submission = await _submissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber);
             return _mapper.Map<SubmissionDTO>(submission);
         }
 
