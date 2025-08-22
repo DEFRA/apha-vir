@@ -95,11 +95,6 @@ public class AuditRepository : IAuditRepository
             new SqlParameter("@DateFrom",SqlDbType.DateTime){ Value = dateFrom == null ? DBNull.Value: dateFrom},
             new SqlParameter("@DateTo",SqlDbType.DateTime){ Value = dateTo == null ? DBNull.Value: dateTo},
             new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value =  userid == null ? DBNull.Value: userid}
-
-            //new SqlParameter("@AVNumber",avNumber),
-            //new SqlParameter("@DateFrom",dateFrom),
-            //new SqlParameter("@DateTo",dateTo),
-            //new SqlParameter("@UserID", userid)
         };
     }
 }
