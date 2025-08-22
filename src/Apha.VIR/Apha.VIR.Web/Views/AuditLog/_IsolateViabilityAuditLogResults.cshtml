@@ -1,0 +1,42 @@
+﻿@model List<AuditIsolateViabilityLogModel>
+
+@if (Model != null && Model.Any())
+{
+	<table class="isolatereporttable">
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>AVNumber</th>
+				<th>Sample</th>
+				<th>Isolate</th>
+				<th>Date Of Change</th>
+				<th>User</th>
+				@* <th>User Name</th> *@
+				<th>Type</th>
+				<th>Viable</th>
+				<th>Date Checked</th>
+				<th>Checked Bye</th>
+ 			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.Avnumber</td>
+					<td>@item.SampleNumber</td>
+					<td>@item.IsolateNumber</td>
+					<td>@item.DateDone</td>
+					<td>@item.UserId</td>
+					@* <td>@item.UserName</td> *@
+					<td>@item.UpdateType</td>
+					<td>@item.Viable</td>
+					<td>@item.DateChecked</td>
+					<td>@item.CheckedBy</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>There are no isolate viability audit records that match the entered criteria.</p>
+}

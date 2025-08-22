@@ -25,6 +25,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolatesService, IsolatesService>();
             services.AddScoped<IReportService, ReportService>();
             services.AddSingleton<NavigationService, NavigationService>();
+            services.AddScoped<IAuditLogService, AuditLogService>();
             services.AddScoped<ISenderService, SenderService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             return services;
@@ -43,6 +44,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolateSearchRepository, IsolateSearchRepository>();
             services.AddScoped<IIsolateViabilityRepository, IsolateViabilityRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IAuditRepository, AuditRepository>();
             services.AddScoped<ISenderRepository, SenderRepository>();
             services.AddScoped<ISubmissionRepository, SubmissionRepository>();
             return services;

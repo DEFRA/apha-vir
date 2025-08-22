@@ -2,14 +2,15 @@
 
 public class AuditSampleLogDTO
 {
+    public string AVNumber { get; set; } = null!;
     public int? SampleNumber { get; set; }
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
-    //This prop populate from auth db.
-    public string UserName { get; set; } = null!;
+    public string UserName { get; set; } = string.Empty;
     public DateTime DateDone { get; set; }
-    public string Avnumber { get; set; } = null!;
-    public string? SmsreferenceNumber { get; set; }
+    public Guid SampleId { get; set; }
+    public Guid SampleSubmissionId { get; set; }
+    public string? SMSReferenceNumber { get; set; }
     public string? SenderReferenceNumber { get; set; }
     public string? SamplingLocationHouse { get; set; }
     public string? SampleType { get; set; }

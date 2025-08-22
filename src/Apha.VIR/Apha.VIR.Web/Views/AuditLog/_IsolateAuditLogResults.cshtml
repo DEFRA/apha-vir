@@ -1,0 +1,87 @@
+﻿@model List<AuditIsolateLogModel>
+
+@if (Model != null && Model.Any())
+{
+	<table class="isolatereporttable">
+		<thead>
+			<tr class=".isolatereport-header">
+				<th>AV Number</th>
+				<th>Sample</th>
+				<th>Isolate</th>
+				<th>Date Of Change</th>
+				<th>User</th>
+				@* <th>User Name</th> *@
+				<th>Type</th>
+				<th>SMS Ref</th>
+				<th>Family</th>
+				<th>Type</th>
+				<th>Nomenclature</th>
+				<th>Year Of Isolation</th>
+				<th>Isolation Method</th>
+				<th>Antiserum ?</th>
+				<th>Antigen ?</th>
+				<th>MTA</th>
+				<th>MTA Location</th>
+				<th>Valid To Issue</th>
+				<th>Why Not Valid To Issue</th>
+				<th>Orig Sample Avail?</th>
+				<th>First Viable Passage</th>
+				<th>No Of Aliquots</th>
+				<th>Freezer</th>
+				<th>Tray</th>
+				<th>Well</th>
+				<th>More Info</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.AVNumber</td>
+					<td>@item.SampleNumber</td>
+					<td>@item.IsolateNumber</td>
+					<td>@item.DateDone</td>
+					<td>@item.UserId</td>
+					@* <td>@item.UserName</td> *@
+					<td>@item.UpdateType</td>
+					<td>@item.SMSReferenceNumber</td>
+					<td>@item.Family</td>
+					<td>@item.Type</td>
+					<td>@item.IsolateNomenclature</td>
+					<td>@item.YearOfIsolation</td>
+					<td>@item.IsolationMethod</td>
+					<td>
+						<input type="checkbox" disabled @(item.AntiserumProduced ? "checked" : "") />
+					</td>
+					<td>
+						<input type="checkbox" disabled @(item.AntigenProduced ? "checked" : "") />
+					</td>
+					<td>
+						<input type="checkbox" disabled @(item.MaterialTransferAgreement ? "checked" : "") />
+					</td>
+					<td>@item.MTALocation</td>
+					<td>
+						<input type="checkbox" disabled @(item.ValidToIssue? "checked" : "") />
+					</td>
+					<td>@item.WhyNotValidToIssue</td>
+					<td>
+						<input type="checkbox" disabled @(item.OriginalSampleAvailable ? "checked" : "") />
+					</td>
+					<td>@item.FirstViablePassageNumber</td>
+					<td>@item.NoOfAliquots</td>
+					<td>@item.Freezer</td>
+					<td>@item.Tray</td>
+					<td>@item.Well</td>
+					<td>
+						<a asp-action="GetIsolateLogDetail" asp-controller="AuditLog" asp-route-LogId="@item.LogId" asp-route-AvNumber="@item.AVNumber"
+						   class="btn btn-primary">More Info</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>There are no isolate audit records matching the entered criteria.</p>
+}
