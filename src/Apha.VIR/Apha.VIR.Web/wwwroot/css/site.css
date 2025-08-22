@@ -669,3 +669,235 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     color: #0b2677;
     font-size: x-large;
 }
+
+/*-- Edit Submission --*/
+.editsubmission-contentbox {
+    border-top: #0b2677 1px solid;
+    border-right: #0b2677 1px solid;
+    border-bottom: #0b2677 1px solid;
+    border-left: #0b2677 1px solid;
+    margin: 0px 0px 15px 0px;
+}
+
+.editsubmission-box_title {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    /* padding: 0.2em 1px 2px 14px; */
+    background-color: #0b2677;
+    color: #ffffff;
+    /* font-size: 0.9em; */
+    font-weight: bold;
+}
+
+.editsubmission-box_body {
+    padding-top: 0px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
+.editsubmission-form-group_row {
+    margin-top: 1
+}
+
+.editsubmission-body_title {
+    background-color: #ffffff;
+    color: #333333;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: small;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-weight: bold
+}
+
+.editsubmission-btn-link-custom {
+    background: none;
+    border: none;
+    font-family: verdana, arial, helvetica, sans-serif;
+    color: #0000FF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Basic fade effect */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* dim background */
+}
+
+    .modal.show {
+        display: block;
+    }
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 1.75rem auto;
+    max-width: 600px; /* adjust modal width */
+}
+
+.modal-content {
+    position: relative;
+    flex-direction: column;
+    background-color: lightcyan;
+}
+
+.modal-header,
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+}
+
+.modal-title {
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+}
+
+.custom-modal {
+    background-color: lightcyan;
+    border-color: rgb(224, 224, 224);
+    border-style: groove;
+    width: 552px;
+    position: fixed;
+    z-index: 100001;
+    left: 91px;
+    top: 183px;
+    display: none;
+}
+
+
+.modal {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.modalborder-div {
+    border: 3px solid darkgray;
+}
+
+.legend {
+    color: #15417e;
+}
+
+.editsubmission-control-width-normal {
+    width: 226px;
+}
+
+.editsubmission-control-width-large {
+    width: 377.95px;
+}
+
+/* Rows behave like table rows */
+.editsubmission-form-group_row {
+    display: table-row;
+}
+
+/* Cells behave like table cells */
+.editsubmission-addsender-cell {
+    display: table-cell;
+    border: 1px solid #000;
+    padding: 3px 8px 15px 8px;
+    vertical-align: middle;
+}
+
+.editsubmission-addsender-label {
+    width: 100px;
+    font-weight: normal;
+}
+
+
+.editsubmission-addsender-input {
+    width: 350px;
+}
+
+    .editsubmission-addsender-input input {
+        width: 100%;
+        height: 21px;
+        padding: 2px 2px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        font-size: 13px;
+        font-family: Arial;
+        border-color: darkgray;
+    }
+
+    .editsubmission-addsender-input textarea {
+        width: 100%;
+        height: 80px;
+        padding: 2px 2px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        font-size: 13px;
+        font-family: Arial;
+        border-color: darkgray;
+        resize: none;
+    }
+
+    .editsubmission-addsender-input select {
+        width: 100%;
+        height: 21px;
+        padding: 2px 2px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        font-size: 13px;
+        font-family: Arial;
+        border-color: darkgray;
+    }
+
+    .editsubmission-addsender-input textarea {
+        resize: none;
+        height: 80px;
+    }
+
+/* Validation message */
+.text-danger {
+    font-weight: bold;
+    color: red;
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+
+#AddSenderPopupForm fieldset {
+    display: table;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.editsubmission-form-group_row {
+    display: table-row;
+}
+
+.editsubmission-addsender-cell {
+    display: table-cell;
+    border: 1px solid gray;
+    padding: 3px 8px 15px 8px;
+    vertical-align: middle;
+}
+
+.editsubmission-addsender-label {
+    width: 100px;
+}
+
+.editsubmission-addsender-input {
+    width: 350px;
+}

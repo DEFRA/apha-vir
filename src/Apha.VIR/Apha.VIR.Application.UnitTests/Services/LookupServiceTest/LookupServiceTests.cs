@@ -677,5 +677,274 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             Assert.IsAssignableFrom<IEnumerable<LookupItemDTO>>(result);
             Assert.Empty(result);
         }
+
+        [Fact]
+        public async Task GetAllWorkGroupsAsync_ReturnsCorrectData()
+        {
+            // Arrange
+            var workGroups = new List<LookupItem>
+            {
+            new LookupItem { Id = Guid.NewGuid(), Name = "Group 1" },
+            new LookupItem { Id = Guid.NewGuid(), Name = "Group 2" }
+            };
+            var workGroupDTOs = new List<LookupItemDTO>
+            {
+            new LookupItemDTO { Id = workGroups[0].Id, Name = workGroups[0].Name },
+            new LookupItemDTO { Id = workGroups[1].Id, Name = workGroups[1].Name }
+            };
+
+            _mockLookupRepository.GetAllWorkGroupsAsync().Returns(workGroups);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(workGroupDTOs);
+
+            // Act
+            var result = await _mockLookupService.GetAllWorkGroupsAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+            await _mockLookupRepository.Received(1).GetAllWorkGroupsAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == workGroups));
+        }
+
+        [Fact]
+        public async Task GetAllWorkGroupsAsync_ReturnsEmptyList_WhenRepositoryReturnsEmptyList()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllWorkGroupsAsync().Returns(new List<LookupItem>());
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+
+            // Act
+            var result = await _mockLookupService.GetAllWorkGroupsAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetAllWorkGroupsAsync_ThrowsException_WhenRepositoryThrowsException()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllWorkGroupsAsync().ThrowsAsync(new Exception("Repository error"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllWorkGroupsAsync());
+        }
+
+        [Fact]
+        public async Task Test_GetAllStaffAsync_ReturnsStaffData()
+        {
+            // Arrange
+            var staffEntities = new List<LookupItem>
+            {
+            new LookupItem { Id = Guid.NewGuid(), Name = "Staff 1" },
+            new LookupItem { Id = Guid.NewGuid(), Name = "Staff 2" }
+            };
+            var staffDtos = new List<LookupItemDTO>
+            {
+            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Staff 1" },
+            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Staff 2" }
+            };
+
+            _mockLookupRepository.GetAllStaffAsync().Returns(staffEntities);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(staffDtos);
+
+            // Act
+            var result = await _mockLookupService.GetAllStaffAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+            await _mockLookupRepository.Received(1).GetAllStaffAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == staffEntities));
+        }
+
+        [Fact]
+        public async Task Test_GetAllStaffAsync_ReturnsEmptyList()
+        {
+            // Arrange
+            var emptyList = new List<LookupItem>();
+            _mockLookupRepository.GetAllStaffAsync().Returns(emptyList);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+
+            // Act
+            var result = await _mockLookupService.GetAllStaffAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+            await _mockLookupRepository.Received(1).GetAllStaffAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == emptyList));
+        }
+
+        [Fact]
+        public async Task Test_GetAllStaffAsync_ThrowsException()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllStaffAsync().Throws(new Exception("Database error"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllStaffAsync());
+            await _mockLookupRepository.Received(1).GetAllStaffAsync();
+            _mockMapper.DidNotReceive().Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
+        }
+
+        [Fact]
+        public async Task Test_GetAllViabilityAsync_ReturnsExpectedResult()
+        {
+            // Arrange
+            var viabilityEntities = new List<LookupItem> { new LookupItem(), new LookupItem() };
+            var expectedDtos = new List<LookupItemDTO> { new LookupItemDTO(), new LookupItemDTO() };
+
+            _mockLookupRepository.GetAllViabilityAsync().Returns(viabilityEntities);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(viabilityEntities).Returns(expectedDtos);
+
+            // Act
+            var result = await _mockLookupService.GetAllViabilityAsync();
+
+            // Assert
+            Assert.Equal(expectedDtos, result);
+        }
+
+        [Fact]
+        public async Task Test_GetAllViabilityAsync_CallsRepositoryMethod()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllViabilityAsync().Returns(new List<LookupItem>());
+
+            // Act
+            await _mockLookupService.GetAllViabilityAsync();
+
+            // Assert
+            await _mockLookupRepository.Received(1).GetAllViabilityAsync();
+        }
+
+        [Fact]
+        public async Task Test_GetAllViabilityAsync_HandlesEmptyResult()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllViabilityAsync().Returns(new List<LookupItem>());
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+
+            // Act
+            var result = await _mockLookupService.GetAllViabilityAsync();
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetAllSubmittingLabAsync_ShouldReturnMappedResults()
+        {
+            // Arrange
+            var submittingLabs = new List<LookupItem>
+            {
+            new LookupItem { Id = Guid.NewGuid(), Name = "Lab 1" },
+            new LookupItem { Id = Guid.NewGuid(), Name = "Lab 2" }
+            };
+            var expectedDtos = new List<LookupItemDTO>
+            {
+            new LookupItemDTO { Id = submittingLabs[0].Id, Name = submittingLabs[0].Name },
+            new LookupItemDTO { Id = submittingLabs[1].Id, Name = submittingLabs[1].Name }
+            };
+
+            _mockLookupRepository.GetAllSubmittingLabAsync().Returns(submittingLabs);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
+
+            // Act
+            var result = await _mockLookupService.GetAllSubmittingLabAsync();
+
+            // Assert
+            Assert.Equal(expectedDtos, result);
+            await _mockLookupRepository.Received(1).GetAllSubmittingLabAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == submittingLabs));
+        }
+
+        [Fact]
+        public async Task GetAllSubmittingLabAsync_ShouldReturnEmptyList_WhenNoLabsExist()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllSubmittingLabAsync().Returns(new List<LookupItem>());
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+
+            // Act
+            var result = await _mockLookupService.GetAllSubmittingLabAsync();
+
+            // Assert
+            Assert.Empty(result);
+            await _mockLookupRepository.Received(1).GetAllSubmittingLabAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => !x.Any()));
+        }
+
+        [Fact]
+        public async Task GetAllSubmittingLabAsync_ShouldThrowException_WhenRepositoryFails()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllSubmittingLabAsync().Returns(Task.FromException<IEnumerable<LookupItem>>(new Exception("Repository error")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllSubmittingLabAsync());
+            await _mockLookupRepository.Received(1).GetAllSubmittingLabAsync();
+        }
+
+        [Fact]
+        public async Task GetAllSubmittingLabAsync_ShouldThrowException_WhenMapperFails()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllSubmittingLabAsync().Returns(new List<LookupItem>());
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Throws(new AutoMapperMappingException("Mapping error"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<AutoMapperMappingException>(() => _mockLookupService.GetAllSubmittingLabAsync());
+            await _mockLookupRepository.Received(1).GetAllSubmittingLabAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
+        }
+
+        [Fact]
+        public async Task GetAllSubmissionReasonAsync_ShouldReturnMappedDTOs_WhenReasonExist()
+        {
+            // Arrange
+            var mockReasons = new List<LookupItem> { new LookupItem(), new LookupItem() };
+            var expectedDtos = new List<LookupItemDTO> { new LookupItemDTO(), new LookupItemDTO() };
+
+            _mockLookupRepository.GetAllSubmissionReasonAsync().Returns(mockReasons);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
+
+            // Act
+            var result = await _mockLookupService.GetAllSubmissionReasonAsync();
+
+            // Assert
+            Assert.Equal(expectedDtos, result);
+            await _mockLookupRepository.Received(1).GetAllSubmissionReasonAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == mockReasons));
+        }
+
+        [Fact]
+        public async Task GetAllSubmissionReasonAsync_ShouldReturnEmptyList_WhenNoReasonsExist()
+        {
+            // Arrange
+            var emptyList = new List<LookupItem>();
+            _mockLookupRepository.GetAllSubmissionReasonAsync().Returns(emptyList);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+
+            // Act
+            var result = await _mockLookupService.GetAllSubmissionReasonAsync();
+
+            // Assert
+            Assert.Empty(result);
+            await _mockLookupRepository.Received(1).GetAllSubmissionReasonAsync();
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == emptyList));
+        }
+
+        [Fact]
+        public async Task GetAllSubmissionReasonAsync_ShouldThrowException_WhenRepositoryThrows()
+        {
+            // Arrange
+            _mockLookupRepository.GetAllSubmissionReasonAsync().Returns(Task.FromException<IEnumerable<LookupItem>>(new Exception("Repository error")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllSubmissionReasonAsync());
+            await _mockLookupRepository.Received(1).GetAllSubmissionReasonAsync();
+        }
     }
 }
