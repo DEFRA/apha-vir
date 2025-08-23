@@ -43,9 +43,9 @@ namespace Apha.VIR.Web.Controllers
                 IsReadOnly = lookup.ReadOnly,
                 LookupItemResult = new LookupItemListViewModel
                 {
-                    HasParent  = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
-                    HasAlternateName = lookup.AlternateName,
-                    IsSMSRelated  =lookup.Smsrelated,
+                    ShowParent  = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
+                    ShowAlternateName = lookup.AlternateName,
+                    ShowSMSRelated = lookup.Smsrelated,
                     LookupItems = lookups.ToList(),
                     Pagination = new PaginationModel
                     {
@@ -74,9 +74,9 @@ namespace Apha.VIR.Web.Controllers
 
             var LookupItemResult = new LookupItemListViewModel
             {
-                HasParent = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
-                HasAlternateName = lookup.AlternateName,
-                IsSMSRelated = lookup.Smsrelated,
+                ShowParent = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
+                ShowAlternateName = lookup.AlternateName,
+                ShowSMSRelated = lookup.Smsrelated,
                 LookupItems = lookups.ToList(),
                 Pagination = new PaginationModel
                 {

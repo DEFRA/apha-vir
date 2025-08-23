@@ -6,16 +6,16 @@
 		<thead>
 			<tr class=".isolatereport-header">
 				<th>Name</th>
-				@if (Model.HasAlternateName)
+				@if (Model.ShowAlternateName)
 				{
 					<th>Alternate Name</th>
 				}
-				@if (Model.HasParent)
+				@if (Model.ShowParent)
 				{
 					<th>Parent Name</th>
 				}
 				<th>Active</th>
-				@if (Model.IsSMSRelated)
+				@if (Model.ShowSMSRelated)
 				{
 					<th>SMS</th>
 					<th>SMSCode</th>
@@ -28,16 +28,16 @@
 			{
 				<tr>
 					<td>@item.Name</td>
-					@if (Model.HasAlternateName)
+					@if (Model.ShowAlternateName)
 					{
 						<td>@item.AlternateName</td>
 					}
-					@if (Model.HasParent)
+					@if (Model.ShowParent)
 					{
 						<td>@item.ParentName</td>
 					}
 					<td>@item.Active</td>
-					@if (Model.IsSMSRelated)
+					@if (Model.ShowSMSRelated)
 					{
 						<td>@item.Sms</td>
 						<td>@item.Smscode</td>
