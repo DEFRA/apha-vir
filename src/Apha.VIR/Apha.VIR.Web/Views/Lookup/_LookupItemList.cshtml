@@ -43,7 +43,7 @@
 						<td>@item.Smscode</td>
 					}
 					<td>
-						<a asp-action="Edit" asp-route-lookupid="@item.Id"
+						<a asp-action="Edit" asp-route-lookupid="@Model.LookupId" asp-route-lookupItemId="@item.Id"
 						   class="btn btn-primary">Edit</a>
 					</td>
 				</tr>

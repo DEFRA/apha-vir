@@ -9,4 +9,5 @@ public class LookupItemModel
     public bool Active { get; set; }
     public bool Sms { get; set; }
     public string? Smscode { get; set; }
+    public byte[] LastModified { get; set; } = null!;
 }

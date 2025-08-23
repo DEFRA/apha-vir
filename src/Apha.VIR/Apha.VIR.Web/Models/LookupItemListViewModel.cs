@@ -2,6 +2,7 @@
 
 public class LookupItemListViewModel
 {
+    public Guid LookupId { get; set; }
     public bool ShowParent { get; set; }
     public bool ShowAlternateName { get; set; }
     public bool ShowSMSRelated { get; set; }

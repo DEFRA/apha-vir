@@ -1,0 +1,110 @@
+﻿@model LookupItemtViewModel
+@{
+    ViewData["Title"] = "Look-up List Entry Modification | Virus Isolates Repository";
+}
+
+<form asp-action="Edit" method="post">
+    <input asp-for="@Model.LookkupItem.Id" type="hidden" />
+    <input asp-for="@Model.LookkupItem.LastModified" type="hidden" />
+
+    <table>
+        <tr>
+            <td><label for="Name"></label></td>
+            <td><span class="spacer"></span></td>
+            <td>
+                <input id="Name" asp-for="@Model.LookkupItem.Name" class="form-control" disabled="@(Model.IsReadOnly ? "disabled" : null)" />
+                <span asp-validation-for="@Model.LookkupItem.Name" class="text-danger"></span>
+            </td>
+        </tr>
+        @if (Model.ShowAlternateName)
+        {
+            <tr>
+                <td><label for="AlternateName"></label></td>
+                <td><span class="spacer"></span></td>
+                <td>
+                    <input asp-for="@Model.LookkupItem.AlternateName" class="form-control" disabled="@(Model.IsReadOnly ? "disabled" : null)" />
+                </td>
+            </tr>
+        }
+        @if (Model.ShowParent)
+        {
+            <tr>
+                <td><label for="ParentName"></label></td>
+                <td><span class="spacer"></span></td>
+                <td>
+                    <select asp-for="@Model.LookkupItem.ParentName" asp-items="Model.LookupParentList" class="form-control" disabled="@(Model.IsReadOnly ? "disabled" : null)">
+                        <option value="">Please select the relevant parent for this item</option>
+                    </select>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td><label for="Active"></label></td>
+            <td><span class="spacer"></span></td>
+            <td>
+                <input asp-for="@Model.LookkupItem.Active" type="checkbox" />
+            </td>
+        </tr>
+        @if (Model.ShowSMSRelated)
+        {
+            <tr>
+                <td><label for="SMS"></label></td>
+                <td><span class="spacer"></span></td>
+                <td>
+                    <input asp-for="@Model.LookkupItem.Sms" type="checkbox" disabled />
+                </td>
+            </tr>
+            <tr>
+                <td><label for="Smscode"></label></td>
+                <td><span class="spacer"></span></td>
+                <td>
+                    <input asp-for="@Model.LookkupItem.Smscode" class="form-control" disabled />
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="3" class="text-right">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                @if (Model.LookkupItem.Id != Guid.Empty)
+                {
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmModal">Delete</button>
+                }
+            </td>
+        </tr>
+    </table>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <p>There are validation messages requiring your attention.</p>
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+}
+
+@if (Model.LookkupItem.Id != Guid.Empty)
+{
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please confirm that you want to delete this lookup list entry record.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" name="id" value="@Model.LookkupItem.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

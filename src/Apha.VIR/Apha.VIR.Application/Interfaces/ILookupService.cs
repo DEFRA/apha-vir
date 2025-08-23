@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Pagination;
+using Apha.VIR.Core.Entities;
 
 namespace Apha.VIR.Application.Interfaces
 {
@@ -7,6 +8,8 @@ namespace Apha.VIR.Application.Interfaces
     {
         Task<IEnumerable<LookupDTO>> GetAllLookupsAsync();
         Task<LookupDTO> GetLookupsByIdAsync(Guid LookupId);
+        Task<IEnumerable<LookupItemDTO>> GetLookupItemParentListAsync(Guid lookupId);
+        Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
         Task<PaginatedResult<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId, int pageNo, int pageSize);
         Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
         Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item);

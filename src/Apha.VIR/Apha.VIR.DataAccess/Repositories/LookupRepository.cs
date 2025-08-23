@@ -51,6 +51,34 @@ namespace Apha.VIR.DataAccess.Repositories
             return new PagedData<LookupItem>([], 0);
         }
 
+        public async Task<IEnumerable<LookupItem>> GetLookupItemParentListAsync(Guid lookupId)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            if (lookup != null)
+            {
+                //stored procedure is non-composable SQL and EF does support AsQueryable to get performance of skip. 
+                var result = await _context.Set<LookupItem>()
+                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+                return result;
+            }
+            return new List<LookupItem>();
+        }
+
+        public async Task<LookupItem> GetLookupItemAsync(Guid lookupId,Guid lookupItemId)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            if (lookup != null)
+            {
+                var result = await _context.Set<LookupItem>()
+                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+
+                var item = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupItemId);
+
+                return item == null ? new LookupItem() : item;
+            }
+            return new LookupItem();
+        }
+
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
          Justification = "Stored procedure name is validated against a whitelist from the database.")]
         public async Task InsertLookupEntryAsync(Guid LookupId, LookupItem Item)
