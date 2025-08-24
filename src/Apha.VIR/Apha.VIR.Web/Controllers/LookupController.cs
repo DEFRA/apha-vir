@@ -1,7 +1,13 @@
-﻿using Apha.VIR.Application.Interfaces;
+﻿using System.Linq;
+using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Services;
+using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -36,7 +42,7 @@ namespace Apha.VIR.Web.Controllers
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
             var lookupEntries = await _lookupService.GetAllLookupEntriesAsync(lookupid, pageNo, pageSize);
-            var lookups = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data);
+            var lookupItems = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data);
 
             var viewModel = new LookupItemViewModel
             {
@@ -49,7 +55,7 @@ namespace Apha.VIR.Web.Controllers
                     ShowParent  = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
                     ShowAlternateName = lookup.AlternateName,
                     ShowSMSRelated = lookup.Smsrelated,
-                    LookupItems = lookups.ToList(),
+                    LookupItems = lookupItems.ToList(),
                     Pagination = new PaginationModel
                     {
                         PageNumber = pageNo,
@@ -110,7 +116,7 @@ namespace Apha.VIR.Web.Controllers
 
             var viewModel = new LookupItemtViewModel
             {
-                //LookupId = lookup.Id,
+                LookupId = lookup.Id,
                 ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue ? true : false,
                 ShowAlternateName = lookup.AlternateName,
                 ShowSMSRelated = lookup.Smsrelated,
@@ -125,6 +131,37 @@ namespace Apha.VIR.Web.Controllers
             return View("EditLookupItem", viewModel);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(LookupItemtViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                if (model.ShowParent) 
+                { 
+                var lookupResult = await _lookupService.GetLookupsByIdAsync(model.LookupId);
+                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                    model.LookupParentList = GetLookupItemPresents(lookup).Result.Select(f => new SelectListItem
+                    {
+                        Value = f.Id.ToString(),
+                        Text = f.Name
+                    }).ToList();
+                }
+   
+                return View("EditLookupItem", model);
+            }
+
+            var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
+
+            await _lookupService.UpdateLookupEntryAsync(model.LookupId, dto);
+
+            return RedirectToAction(nameof(LookupList), new { lookupid = model.LookupId, pageNo = 1, pageSize = 10 });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete()
+        {
+            return RedirectToAction(nameof(LookupList), new { lookupid = "AA", pageNo = 1, pageSize = 10 });
+        }
         private async Task<IEnumerable<LookupItemModel>> GetLookupItemPresents(LookupViewModel lookup)
         {
             if (lookup.Parent.HasValue && lookup.Parent != Guid.Empty)

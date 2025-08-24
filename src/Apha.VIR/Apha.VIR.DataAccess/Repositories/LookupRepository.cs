@@ -7,6 +7,7 @@ using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.Repositories
 {
@@ -135,22 +136,25 @@ namespace Apha.VIR.DataAccess.Repositories
             if (!allowedProcedures.Contains(lookup.UpdateCommand))
                 throw new SecurityException($"Stored procedure '{lookup.UpdateCommand}' is not allowed.");
 
+            
             var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
 
             var parameters = new[]
              {
-                new SqlParameter("@ID", Item.Id),
-                new SqlParameter("@Name", Item.Name),
-                new SqlParameter("@AltName", Item.AlternateName),
-                new SqlParameter("@Parent", Item.ParentName),
-                new SqlParameter("@Active", Item.Active),
+                new SqlParameter("@ID", SqlDbType.UniqueIdentifier) { Value = Item.Id ==Guid.Empty  ? DBNull.Value: Item.Id},
+                new SqlParameter("@Name", SqlDbType.VarChar, 100) { Value =  Item.Name == null ? DBNull.Value: Item.Name},
+                new SqlParameter("@AltName", SqlDbType.VarChar, 100) { Value =  Item.AlternateName == null ? DBNull.Value: Item.AlternateName},
+                new SqlParameter("@Parent", SqlDbType.UniqueIdentifier) { Value = Item.Parent ==Guid.Empty || Item.Parent == null ? DBNull.Value: Item.Parent},
+
+                new SqlParameter("@Active", SqlDbType.Bit) { Value = Item.Active},
                 new SqlParameter  {
                     ParameterName = "@LastModified",
                     SqlDbType = SqlDbType.Timestamp,
-                    Direction = ParameterDirection.Output
+                    Direction = ParameterDirection.InputOutput,
+                    Value = Item.LastModified
                 }
             };
-
+  
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
