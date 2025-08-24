@@ -182,11 +182,12 @@ namespace Apha.VIR.DataAccess.Repositories
 
             var parameters = new[]
              {
-                new SqlParameter("@ID", Item.Id),
-                new SqlParameter  {
+                new SqlParameter("@ID", SqlDbType.UniqueIdentifier) { Value = Item.Id ==Guid.Empty  ? DBNull.Value: Item.Id},
+               new SqlParameter  {
                     ParameterName = "@LastModified",
                     SqlDbType = SqlDbType.Timestamp,
-                    Direction = ParameterDirection.Output
+                    Direction = ParameterDirection.InputOutput,
+                    Value = Item.LastModified
                 }
             };
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);

@@ -158,9 +158,29 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete(LookupItemtViewModel model)
         {
-            return RedirectToAction(nameof(LookupList), new { lookupid = "AA", pageNo = 1, pageSize = 10 });
+            if (!ModelState.IsValid)
+            {
+                if (model.ShowParent)
+                {
+                    var lookupResult = await _lookupService.GetLookupsByIdAsync(model.LookupId);
+                    var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                    model.LookupParentList = GetLookupItemPresents(lookup).Result.Select(f => new SelectListItem
+                    {
+                        Value = f.Id.ToString(),
+                        Text = f.Name
+                    }).ToList();
+                }
+
+                return View("EditLookupItem", model);
+            }
+
+            var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
+
+            await _lookupService.DeleeLookupEntryAsync(model.LookupId, dto);
+
+            return RedirectToAction(nameof(LookupList), new { lookupid = model.LookupId, pageNo = 1, pageSize = 10 });
         }
         private async Task<IEnumerable<LookupItemModel>> GetLookupItemPresents(LookupViewModel lookup)
         {
