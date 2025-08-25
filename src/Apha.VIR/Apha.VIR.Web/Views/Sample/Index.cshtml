@@ -1,0 +1,210 @@
+﻿@model SampleViewModel
+
+<style type="text/css">
+	.addeditsample-input {
+		width: 226px;
+		height: 21px;
+		padding: 2px 2px;
+		box-sizing: border-box;
+		border: 1px solid #ccc;
+		font-size: 13px;
+		font-family: Arial;
+		border-color: gray;
+	}
+
+	.addeditsample-addsender-select {
+		width: 6cm;
+		height: 21px;
+		padding: 2px 2px;
+		box-sizing: border-box;
+		border: 1px solid #ccc;
+		font-size: 13px;
+		font-family: Arial;
+		border-color: darkgray;
+	}
+
+	.addeditsample-btn-link-custom {
+		background: none;
+		border: none;
+		font-family: verdana, arial, helvetica, sans-serif;
+		color: #0000FF;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.contentbox {
+		border: #0b2677 1px solid;
+		width: 90%;
+	}
+
+		.contentbox .box_title {
+			padding-top: 3px;
+			padding-right: 10px;
+			padding-bottom: 3px;
+			padding-left: 10px;
+			background-color: #0b2677;
+			color: #ffffff;
+			font-weight: bold;
+		}
+</style>
+
+<div class="contentbox">
+	<div class="box_title">Enter/Update the Sample details</div>
+	<div class="row p-2">
+		<div class="col-md-10 ms-3">
+			<h4 class="mb-4">@Model.AVNumber</h4>
+			<form method="post">
+				<input type="hidden" asp-for="AVNumber" />
+				<input type="hidden" asp-for="SampleId" />
+				<input type="hidden" asp-for="SampleSubmissionID" />
+				<input type="hidden" asp-for="SampleNumber" />
+				<input type="hidden" asp-for="LastModified" />
+
+				<div class="form-group row mt-2">
+					<div class="col-sm-3">
+						<label asp-for="SMSReferenceNumber" class="col-form-label">SMS Reference</label>
+					</div>
+					<div class="col-sm-9">
+						<input asp-for="SMSReferenceNumber" class="form-control addeditsample-input" />
+					</div>
+				</div>
+
+				<div class="form-group row mt-1">
+					<div class="col-sm-3">
+						<label asp-for="SenderReferenceNumber" class="col-form-label">Senders Sample Reference</label>
+					</div>
+					<div class="col-sm-9">
+						<input asp-for="SenderReferenceNumber" class="form-control addeditsample-input" />
+						<span asp-validation-for="SenderReferenceNumber" style="color:red;font-weight: bold;"></span>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label asp-for="SampleType" class="col-form-label">Sample Type</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" tabindex="1" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label asp-for="HostSpecies" class="col-form-label">Host Group</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlHostSpecies" asp-for="HostSpecies" asp-items="Model.HostSpeciesList" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+						<button type="button" class="btn btn-link addeditsample-btn-link-custom"
+								id="latinBreedButton">
+							Latin Breeds
+						</button>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label asp-for="HostBreed" class="col-form-label">Host Species</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlHostBreed" asp-for="HostBreed" asp-items="Model.HostBreedList" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label asp-for="HostPurpose" class="col-form-label">Host Purpose</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label asp-for="SamplingLocationHouse" class="col-form-label">Sampling Location / House</label>
+					</div>
+					<div class="col-sm-9">
+						<input asp-for="SamplingLocationHouse" class="form-control addeditsample-input" />
+					</div>
+				</div>
+
+				<div class="form-group row mt-3 justify-content-end">
+					<div class="col-sm-9 offset-sm-3">
+						@if (Model.IsEditMode)
+						{
+							<button type="submit" asp-action="Update" class="btn btn-link addeditsample-btn-link-custom">Update</button>
+						}
+						else
+						{
+							<button type="submit" asp-action="Insert" class="btn btn-link addeditsample-btn-link-custom">Save</button>
+						}
+						<a asp-action="Index" class="btn  btn-link addeditsample-btn-link-custom">Cancel</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>
+
+<div class="modal fade" id="latinBreedModal" tabindex="-1" role="dialog" aria-labelledby="latinBreedModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">		
+		<div class="modal-content modalborder-div" style="border:groove" id="latinBreedContent">
+			<!-- Partial will load here -->
+		</div>
+	</div>
+</div>
+
+
+
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$('#latinBreedButton').click(function () {
+				$.get('@Url.Action("GetLatinBreadList", "Sample")', function (data) {
+					$('#latinBreedContent').html(data);
+					$("#latinBreedModal .modal-dialog").css("max-width", "550px");
+					$('#latinBreedModal .modal-dialog').css('margin-top', '190px');
+					$('#latinBreedModal').modal('show');
+					$('#latinBreedModal').on('shown.bs.modal', function () {
+						$(this).find('select, input, button').first().trigger('focus');
+					});
+				});				
+			});
+			
+			
+			$('#latinBreedOkButton').click(function () {
+				var selectedBreed = $('#latinBreedSelect').val();
+				if (selectedBreed) {
+					$('#HostBreed').val(selectedBreed);
+				}
+				$('#latinBreedModal').modal('hide');
+			});			
+
+			$('#ddlHostSpecies').change(function () {
+				var selectedSpecies = $(this).val();
+				$.ajax({
+					url: '@Url.Action("GetBreedsBySpecies", "Sample")',
+					type: 'GET',
+					data: { speciesId: selectedSpecies },
+					success: function (data) {
+						$('#ddlHostBreed').empty();
+						$('#ddlHostBreed').append($('<option></option>').val('').text(''));
+						$.each(data, function (i, item) {
+							$('#ddlHostBreed').append($('<option></option>').val(item.value).text(item.text));
+						});
+					}
+				});
+			});			
+		});
+	</script>
+}

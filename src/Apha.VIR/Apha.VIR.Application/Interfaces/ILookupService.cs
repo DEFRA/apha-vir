@@ -1,4 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Core.Entities;
 
 namespace Apha.VIR.Application.Interfaces
 {
@@ -15,6 +16,7 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllHostSpeciesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(Guid? hostSpecies);
+        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAltNameAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();

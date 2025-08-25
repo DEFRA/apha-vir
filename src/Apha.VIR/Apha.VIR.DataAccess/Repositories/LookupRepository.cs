@@ -181,6 +181,13 @@ namespace Apha.VIR.DataAccess.Repositories
             return await GetLookupItemsByParentAsync("HostBreed", hostSpecies);
         }
 
+        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsAltNameAsync()
+        {
+            return (await _context.Set<LookupItem>()
+             .FromSqlRaw($"EXEC spHostBreedGetAllAltName").ToListAsync())
+             .Where(vf => vf.Active).ToList();
+        }
+
         private async Task<IEnumerable<LookupItem>> GetLookupItemsByParentAsync(string Lookup, Guid? Parent)
         {
             var lookupItemList = new List<LookupItem>();
