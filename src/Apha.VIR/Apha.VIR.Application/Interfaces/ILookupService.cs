@@ -10,6 +10,8 @@ namespace Apha.VIR.Application.Interfaces
         Task<LookupDTO> GetLookupsByIdAsync(Guid LookupId);
         Task<IEnumerable<LookupItemDTO>> GetLookupItemParentListAsync(Guid lookupId);
         Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
+        Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId);
+        Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid lookupId);
         Task<PaginatedResult<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId, int pageNo, int pageSize);
         Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
         Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item);

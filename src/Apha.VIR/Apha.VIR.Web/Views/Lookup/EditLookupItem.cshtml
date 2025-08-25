@@ -20,7 +20,7 @@
 					   asp-for="@Model.LookkupItem.Name"
 					   class="form-control"
 					   disabled="@(Model.IsReadOnly ? "disabled" : null)" />
-				<span asp-validation-for="@Model.LookkupItem.Name" class="text-danger"></span>
+				<br><span asp-validation-for="@Model.LookkupItem.Name" class="Validation"></span>
 				@if (Model.IsReadOnly)
 				{
 					<input type="hidden" asp-for="@Model.LookkupItem.Name" />
@@ -132,3 +132,10 @@
 		</tr>
 	</table>
 </form>
+@if (!ViewData.ModelState.IsValid)
+{
+	<div class="validation">
+		<p>There are validation messages requiring your attention.</p>
+		<div asp-validation-summary="All" class="validation"></div>
+	</div>
+}

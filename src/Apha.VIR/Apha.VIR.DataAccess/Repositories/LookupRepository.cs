@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -52,6 +53,18 @@ namespace Apha.VIR.DataAccess.Repositories
             return new PagedData<LookupItem>([], 0);
         }
 
+        public async Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid lookupId)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            if (lookup != null)
+            {
+                var result = await _context.Set<LookupItem>()
+                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+
+                return result;
+            }
+            return new List<LookupItem>();
+        }
         public async Task<IEnumerable<LookupItem>> GetLookupItemParentListAsync(Guid lookupId)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
@@ -78,6 +91,33 @@ namespace Apha.VIR.DataAccess.Repositories
                 return item == null ? new LookupItem() : item;
             }
             return new LookupItem();
+        }
+
+        public async Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId)
+        {
+            bool result = false;
+
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            try
+            {
+                var sql = $"EXEC [{lookup.InUseCommand}] @ID";
+
+                var parameters = new[]
+                 {
+                new SqlParameter("@ID", SqlDbType.UniqueIdentifier) { Value = lookupItemId ==Guid.Empty  ? DBNull.Value: lookupItemId},
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+    
+            }
+            catch (Exception ex) {
+                if (ex is Microsoft.Data.SqlClient.SqlException sqlEx && sqlEx.Number == 547)
+                {
+                    result = true;
+                }
+            }
+
+           return result;  
         }
 
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
@@ -320,5 +360,7 @@ namespace Apha.VIR.DataAccess.Repositories
             .FromSqlRaw($"EXEC spViabilityGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
+
+       
     }
 }

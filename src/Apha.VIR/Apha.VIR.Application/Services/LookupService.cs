@@ -37,12 +37,27 @@ namespace Apha.VIR.Application.Services
         }
         public async Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId)
         {
+            ArgumentNullException.ThrowIfNull(lookupId);
             ArgumentNullException.ThrowIfNull(lookupItemId);
 
             return _mapper.Map<LookupItemDTO>(
                 await _lookupRepository.GetLookupItemAsync(lookupId,lookupItemId));
         }
 
+        public async Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId)
+        {
+            ArgumentNullException.ThrowIfNull(lookupId);
+            ArgumentNullException.ThrowIfNull(lookupItemId);
+
+            return  await _lookupRepository.IsLookupItemInUseAsync(lookupId, lookupItemId);
+        }
+        public async Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId)
+        {
+            ArgumentNullException.ThrowIfNull(LookupId);
+
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(
+                await _lookupRepository.GetAllLookupEntriesAsync(LookupId));
+        }
         public async Task<PaginatedResult<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId,int pageNo,int pageSize)
         {
             ArgumentNullException.ThrowIfNull(LookupId);
