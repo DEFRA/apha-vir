@@ -23,6 +23,18 @@ namespace Apha.VIR.Application.Services
             var sample = await _sampleRepository.GetSampleAsync(avNumber, sampleId);
             return _mapper.Map<SampleDTO>(sample);
         }
+
+        public async Task AddSample(SampleDTO sampleDto, string avNumber, string userName)
+        {
+            var sample = _mapper.Map<Sample>(sampleDto);
+            await _sampleRepository.AddSampleAsync(sample, avNumber, userName);            
+        }
+
+        public async Task UpdateSample(SampleDTO sampleDto, string userName)
+        {
+            var sample = _mapper.Map<Sample>(sampleDto);
+            await _sampleRepository.UpdateSampleAsync(sample, userName);
+        }
     }
 }
 

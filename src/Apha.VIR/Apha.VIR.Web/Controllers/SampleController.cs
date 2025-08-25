@@ -48,9 +48,10 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Insert(SampleViewModel model)
         {
             if (ModelState.IsValid)
-            {
+            {                
                 var sample = _mapper.Map<SampleDTO>(model);
-                // await _sampleService.InsertSample(sample);
+                await _sampleService.AddSample(sample, model.AVNumber!, "Test");
+                return RedirectToAction("Index", "Sample");
             }
 
             model.IsEditMode = false;
@@ -65,9 +66,12 @@ namespace Apha.VIR.Web.Controllers
             if (ModelState.IsValid)
             {
                 var sample = _mapper.Map<SampleDTO>(model);
-                //await _sampleService.UpdateSample(sample);
+                await _sampleService.UpdateSample(sample, "Test");
+                return RedirectToAction("Index", "Sample");
             }
-            return RedirectToAction("Index", "Sample", model);
+            model.IsEditMode = true;
+            await LoadSampleDetailsData(model);
+            return View("Index", model);
         }        
 
         [HttpGet]
@@ -101,7 +105,7 @@ namespace Apha.VIR.Web.Controllers
                     Smscode = p.Smscode
                 }).ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }           

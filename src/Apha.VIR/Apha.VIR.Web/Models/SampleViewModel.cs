@@ -13,10 +13,10 @@ namespace Apha.VIR.Web.Models
 
         [RegularExpression(@"[\da-zA-Z'.,\x2D\x5C\x20\x2F\x28\x29\x23]*", ErrorMessage = "Letters, numbers -#/\\() allowed")]
         public string? SenderReferenceNumber { get; set; }
-        public Guid SampleType { get; set; }
-        public Guid HostSpecies { get; set; }
-        public Guid HostBreed { get; set; }
-        public Guid HostPurpose { get; set; }
+        public Guid? SampleType { get; set; }
+        public Guid? HostSpecies { get; set; }
+        public Guid? HostBreed { get; set; }
+        public Guid? HostPurpose { get; set; }
         public string? SamplingLocationHouse { get; set; }
         public byte[]? LastModified { get; set; }
         public List<SelectListItem>? SampleTypeList { get; set; }
