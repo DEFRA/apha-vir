@@ -1,0 +1,72 @@
+﻿@model List<IsolateCharacteristicsViewModel>
+
+<div class="contentbox" style="width: 95%">
+    <div class="box_title">Enter/Update the Isolate Characteristics</div>
+    <div class="box_body">
+        <br />
+        @if (Model.Any())
+        {
+            <form id="characteristicForm" asp-action="SaveCharacteristics" method="post">
+                <div class="isolate_characteristics-grid" style="border: none;">
+                    @foreach (var characteristic in Model)
+                    {
+                        <div class="isolate_characteristics-cell isolate_characteristics-label">
+                            @characteristic.CharacteristicName
+                        </div>
+                        <div class="isolate_characteristics-cell" style="width:188px">
+                            @switch (characteristic.CharacteristicType)
+                            {
+                                case "Text":
+                                case "Numeric":
+                                    <input type="text" name="Characteristics[@characteristic.Id].Value" value="@characteristic.Value" class="form-control" style="width:177px"/>
+                                    break;
+                                case "YesNo":
+                                    <input type="checkbox" name="Characteristics[@characteristic.Id].Value" value="true" @(characteristic.Value == "true" ? "checked" : "") />
+                                    break;
+                                case "SingleList":
+                                    <select name="Characteristics[@characteristic.Id].Value" class="form-control">
+                                        <option value="">Select...</option>
+                                        @foreach (var option in characteristic.Options)
+                                        {
+                                            var selected = characteristic.Value == option ? "selected" : "";
+                                            <option value="@option" selected>@option</option>
+                                        }
+                                    </select>
+                                    break;
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="isolate_characteristics-form-actions">
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <button type="submit" class="btn btn-link editsubmission-btn-link-custom">Save these Characteristics</button>
+                    <br />
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <img src="~/Images/spacer.gif" width="2" height="5" alt="" />
+                    <a asp-action="Cancel" class="btn btn-secondary">Discard changes and return to the previous page</a>
+                </div>
+            </form>
+        }
+        else
+        {
+            <p>There are no characteristics defined for the virus family and type of this isolate.</p>
+        }
+    </div>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <p>There are validation messages requiring your attention.</p>
+        <ul>
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
