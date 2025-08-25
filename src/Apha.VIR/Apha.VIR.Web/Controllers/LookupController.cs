@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
+using DocumentFormat.OpenXml.InkML;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -95,6 +98,74 @@ namespace Apha.VIR.Web.Controllers
             };
 
             return PartialView("_LookupItemList", LookupItemResult);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create(Guid lookupId,int currentPage = 1)
+        {
+            if (lookupId == Guid.Empty || !ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
+            }
+
+            var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupId);
+            var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+
+            var viewModel = new LookupItemtViewModel
+            {
+                LookupId = lookup.Id,
+                ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue ? true : false,
+                ShowAlternateName = lookup.AlternateName,
+                ShowSMSRelated = lookup.Smsrelated,
+                IsReadOnly = lookup.ReadOnly,
+                LookupParentList = lookup.Parent != Guid.Empty && lookup.Parent.HasValue
+                ? GetLookupItemPresents(lookup).Result.Select(f => new SelectListItem
+                {
+                    Value = f.Id.ToString(),
+                    Text = f.Name
+                }).ToList()
+                : null,
+                LookkupItem = new LookupItemModel(),
+                ShowErrorSummary = false
+            };
+
+            return View("CreateLookupItem", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(LookupItemtViewModel model)
+        {
+            ModelState.Remove("LookkupItem.LastModified");
+            var showerrorSummary = false;
+            if (ModelState.IsValid)
+            {
+                await ValidateModel(model, ModelState, "create");
+                showerrorSummary = true;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                if (model.ShowParent)
+                {
+                    var lookupResult = await _lookupService.GetLookupsByIdAsync(model.LookupId);
+                    var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                    model.LookupParentList = GetLookupItemPresents(lookup).Result.Select(f => new SelectListItem
+                    {
+                        Value = f.Id.ToString(),
+                        Text = f.Name
+                    }).ToList();
+                }
+                model.ShowErrorSummary = showerrorSummary;
+
+                return View("CreateLookupItem", model);
+            }
+
+            var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
+
+            await _lookupService.InsertLookupEntryAsync(model.LookupId, dto);
+
+            return RedirectToAction(nameof(LookupList), new { lookupid = model.LookupId, pageNo = 1, pageSize = 10 });
         }
 
         [HttpGet]
@@ -238,6 +309,10 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<bool> GetItemInUse(LookupItemtViewModel model, string action, bool IsitemInUse)
         {
+            if (action == "create")
+            {
+                IsitemInUse = false;
+            }
             if (!model.LookkupItem.Active && action == "edit")
             {
                 IsitemInUse = await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookkupItem.Id);
@@ -257,6 +332,12 @@ namespace Apha.VIR.Web.Controllers
                 ValidationContext context,
                 IEnumerable<LookupItemModel> lookupItems)
         {
+            
+            if (action == "create")
+            {
+                return model.LookkupItem.ValidateLookUpItemAdd(context, lookupItems,
+                 model.ShowParent, IsitemInUse);
+            }
             if (action == "Edit")
             {
                 return model.LookkupItem.ValidateLookUpItemUpdate(context, lookupItems,

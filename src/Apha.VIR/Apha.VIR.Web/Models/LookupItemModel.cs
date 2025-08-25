@@ -20,6 +20,49 @@ public class LookupItemModel
     public string? Smscode { get; set; }
     public byte[] LastModified { get; set; } = null!;
 
+    public IEnumerable<ValidationResult> ValidateLookUpItemAdd(
+        ValidationContext validationContext,
+        IEnumerable<LookupItemModel> lookupItemList,
+        bool parentExist = false,
+        bool isIteminUse = false)
+    {
+        var results = new List<ValidationResult>();
+        bool isDuplicate;
+
+        if (Name == string.Empty)
+        {
+            results.Add(new ValidationResult("- Name not specified for this item."));
+        }
+
+        //Ensure that the parent is chosen (if required)
+        if (parentExist && (Parent == Guid.Empty || Parent == null))
+        {
+            results.Add(new ValidationResult("- Parent item not specified for this item"));
+        }
+
+
+        //Ensure the item does not already exist
+        if (parentExist)
+        {
+            isDuplicate = lookupItemList.Any(listItem =>
+                listItem.Id == Id || 
+                listItem.Name == Name);
+        }
+        else
+        {
+            isDuplicate = lookupItemList.Any(listItem =>
+                listItem.Id == Id ||
+                (listItem.Name == Name &&
+                listItem.Parent == Parent));
+        }
+
+        if (isDuplicate)
+        {
+            results.Add(new ValidationResult("- Item already exists."));
+        }
+
+        return results;
+    }
     public IEnumerable<ValidationResult> ValidateLookUpItemUpdate(
         ValidationContext validationContext,
         IEnumerable<LookupItemModel> lookupItemList,

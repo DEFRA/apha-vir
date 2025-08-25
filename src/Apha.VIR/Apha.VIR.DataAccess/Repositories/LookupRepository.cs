@@ -142,16 +142,18 @@ namespace Apha.VIR.DataAccess.Repositories
             var sql = $"EXEC [{lookup.InsertCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
 
             var parameters = new[]
-            {
-                new SqlParameter("@ID", Item.Id),
-                new SqlParameter("@Name", Item.Name),
-                new SqlParameter("@AltName", Item.AlternateName),
-                new SqlParameter("@Parent", Item.ParentName),
-                new SqlParameter("@Active", Item.Active),
+             {
+                new SqlParameter("@ID", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid()},
+                new SqlParameter("@Name", SqlDbType.VarChar, 100) { Value =  Item.Name == null ? DBNull.Value: Item.Name},
+                new SqlParameter("@AltName", SqlDbType.VarChar, 100) { Value =  Item.AlternateName == null ? DBNull.Value: Item.AlternateName},
+                new SqlParameter("@Parent", SqlDbType.UniqueIdentifier) { Value = Item.Parent ==Guid.Empty || Item.Parent == null ? DBNull.Value: Item.Parent},
+
+                new SqlParameter("@Active", SqlDbType.Bit) { Value = Item.Active},
                 new SqlParameter  {
                     ParameterName = "@LastModified",
                     SqlDbType = SqlDbType.Timestamp,
                     Direction = ParameterDirection.Output
+                    //Value = Item.LastModified
                 }
             };
 

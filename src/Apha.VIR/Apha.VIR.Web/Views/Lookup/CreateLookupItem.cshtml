@@ -1,0 +1,101 @@
+﻿@model LookupItemtViewModel
+@{
+	ViewData["Title"] = "Look-up List Entry Modification | Virus Isolates Repository";
+}
+
+<form method="post">
+@* 	<input asp-for="@Model.LookkupItem.Id" type="hidden" />
+	<input asp-for="@Model.LookkupItem.LastModified" type="hidden" /> *@
+	<input asp-for="@Model.LookupId" type="hidden" />
+	<input asp-for="@Model.ShowAlternateName" type="hidden" />
+	<input asp-for="@Model.ShowParent" type="hidden" />
+	<input asp-for="@Model.ShowSMSRelated" type="hidden" />
+	<input asp-for="@Model.IsReadOnly" type="hidden" />
+	<table>
+		<tr>
+			<td><label for="Name">Name</label></td>
+			<td><span class="spacer"></span></td>
+			<td>
+				<input id="Name"
+					   asp-for="@Model.LookkupItem.Name"
+					   class="form-control"/>
+				<br><span asp-validation-for="@Model.LookkupItem.Name" class="Validation"></span>
+			</td>
+		</tr>
+		@if (Model.ShowAlternateName)
+		{
+			<tr>
+				<td><label for="AlternateName">Alternate Name</label></td>
+				<td><span class="spacer"></span></td>
+				<td>
+					<input id="AlternateName"
+						   asp-for="@Model.LookkupItem.AlternateName"
+						   class="form-control"/>
+				</td>
+			</tr>
+		}
+		
+		@if (Model.ShowParent)
+		{
+			<tr>
+				<td><label for="ParentName">Parent</label></td>
+				<td><span class="spacer"></span></td>
+				<td>
+					<select id="ParentName"
+							asp-for="@Model.LookkupItem.Parent"
+							asp-items="Model.LookupParentList"
+							class="form-control">
+						<option value="">Please select the relevant parent for this item</option>
+					</select>
+ 				</td>
+			</tr>
+		}
+		<tr>
+			<td><label for="Active">Active</label></td>
+			<td><span class="spacer"></span></td>
+			<td>
+				<input id="Active"
+					   asp-for=" @Model.LookkupItem.Active"
+					   type="checkbox" />
+			</td>
+		</tr>
+		@if (Model.ShowSMSRelated)
+		{
+			<tr>
+				<td><label for="SMS">Imported from SMS?</label></td>
+				<td><span class="spacer"></span></td>
+				<td>
+					<input id="SMS"
+						   asp-for="@Model.LookkupItem.Sms"
+						   type="checkbox" disabled />
+
+					<input type="hidden" asp-for="@Model.LookkupItem.Sms" />
+				</td>
+			</tr>
+			<tr>
+				<td><label for="Smscode">SMS Code</label></td>
+				<td><span class="spacer"></span></td>
+				<td>
+					<input id="Smscode"
+						   asp-for="@Model.LookkupItem.Smscode"
+						   class="form-control" disabled />
+
+					<input type="hidden" asp-for="@Model.LookkupItem.Smscode" />
+				</td>
+			</tr>
+		}
+		<tr>
+			<td colspan="3" class="text-right">
+				<button type="submit" asp-action="Create" class="btn btn-primary">Insert</button>
+				<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+			</td>
+		</tr>
+	</table>
+</form>
+@if (!ViewData.ModelState.IsValid)
+{
+	<div class="validation">
+		<p>There are validation messages requiring your attention.</p>
+		<div asp-validation-summary="All" class="validation"></div>
+	</div>
+}
