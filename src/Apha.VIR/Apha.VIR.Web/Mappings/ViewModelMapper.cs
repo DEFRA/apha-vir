@@ -10,6 +10,7 @@ namespace Apha.VIR.Web.Mappings
         public ViewModelMapper()
         {
             CreateMap<LookupDTO, LookupViewModel>();
+            CreateMap<LookupItemDTO, LookupItemModel>().ReverseMap();
             CreateMap<IsolateDispatchHistory, IsolateDispatchInfoDTO>().ReverseMap();
             CreateMap<SearchCriteria, SearchRepositoryViewModel>();
             CreateMap<CharacteristicCriteria, CharacteristicSearchViewModel>();
@@ -33,7 +34,6 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<AuditSubmissionLogDTO, AuditSubmissionLogModel>().ReverseMap();
             CreateMap<AuditViabilityLogDTO, AuditIsolateViabilityLogModel>().ReverseMap();
             CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetailsViewModel>().ReverseMap();
-            CreateMap<LookupItemDTO, LookupItemModel>().ReverseMap();
         }
     }
 }

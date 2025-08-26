@@ -1,9 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Application.Validation;
-using Apha.VIR.Web.Utilities;
-using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Apha.VIR.Web.Models;
 

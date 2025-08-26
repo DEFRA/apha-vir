@@ -72,7 +72,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

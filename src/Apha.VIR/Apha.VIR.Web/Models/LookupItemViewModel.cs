@@ -1,9 +1,15 @@
-﻿namespace Apha.VIR.Web.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Apha.VIR.Web.Models;
 
 public class LookupItemViewModel
 {
-    public string LookupName { get; set; }=string.Empty;
-    public Guid LookupId { get; set; } = Guid.Empty;
+    public Guid LookupId { get; set; }
     public bool IsReadOnly { get; set; }
-    public LookupItemListViewModel LookupItemResult { get; set; }=new LookupItemListViewModel();
+    public bool ShowParent { get; set; }
+    public bool ShowAlternateName { get; set; }
+    public bool ShowSMSRelated { get; set; }
+    public bool ShowErrorSummary { get; set; } 
+    public List<SelectListItem>? LookupParentList { get; set; }
+    public required LookupItemModel LookkupItem { get; set; }
 }

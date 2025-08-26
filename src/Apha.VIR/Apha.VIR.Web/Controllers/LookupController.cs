@@ -42,7 +42,7 @@ namespace Apha.VIR.Web.Controllers
             var lookupEntries = await _lookupService.GetAllLookupItemsAsync(lookupid, pageNo, pageSize);
             var lookupItems = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data);
 
-            var viewModel = new LookupItemViewModel
+            var viewModel = new LookupListViewModel
             {
                 LookupName = lookup.Name + " Look-up List",
                 LookupId = lookup.Id,
@@ -109,7 +109,7 @@ namespace Apha.VIR.Web.Controllers
             var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupId);
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
-            var viewModel = new LookupItemtViewModel
+            var viewModel = new LookupItemViewModel
             {
                 LookupId = lookup.Id,
                 ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue ? true : false,
@@ -131,7 +131,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(LookupItemtViewModel model)
+        public async Task<IActionResult> Create(LookupItemViewModel model)
         {
             ModelState.Remove("LookkupItem.LastModified");
             var showerrorSummary = false;
@@ -180,7 +180,7 @@ namespace Apha.VIR.Web.Controllers
             var lookupItemResult = await _lookupService.GetLookupItemAsync(lookupId, lookupItemId);
             var lookupItem = _mapper.Map<LookupItemModel>(lookupItemResult);
 
-            var viewModel = new LookupItemtViewModel
+            var viewModel = new LookupItemViewModel
             {
                 LookupId = lookup.Id,
                 ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue ? true : false,
@@ -202,7 +202,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(LookupItemtViewModel model)
+        public async Task<IActionResult> Edit(LookupItemViewModel model)
         {
             var showerrorSummary = false;
             if (ModelState.IsValid)
@@ -236,7 +236,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(LookupItemtViewModel model)
+        public async Task<IActionResult> Delete(LookupItemViewModel model)
         {
             var showerrorSummary = false;
             if (ModelState.IsValid)
@@ -282,7 +282,7 @@ namespace Apha.VIR.Web.Controllers
             return new List<LookupItemModel>();
         }
 
-        private async Task ValidateModel(LookupItemtViewModel model, ModelStateDictionary modelState, string action)
+        private async Task ValidateModel(LookupItemViewModel model, ModelStateDictionary modelState, string action)
         {
             bool IsitemInUse = false;
             var context = new ValidationContext(model.LookkupItem);
@@ -304,7 +304,7 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        private async Task<bool> GetItemInUse(LookupItemtViewModel model, string action, bool IsitemInUse)
+        private async Task<bool> GetItemInUse(LookupItemViewModel model, string action, bool IsitemInUse)
         {
             if (action == "create")
             {
@@ -323,7 +323,7 @@ namespace Apha.VIR.Web.Controllers
             return IsitemInUse;
         }
 
-        static IEnumerable<ValidationResult> GetValidationResult(LookupItemtViewModel model,
+        static IEnumerable<ValidationResult> GetValidationResult(LookupItemViewModel model,
                 string action,
                 bool IsitemInUse,
                 ValidationContext context,
