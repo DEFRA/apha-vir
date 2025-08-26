@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\SystemInformation\**" />
+    <Content Remove="Views\SystemInformation\**" />
+    <EmbeddedResource Remove="Views\SystemInformation\**" />
+    <None Remove="Views\SystemInformation\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\SystemInformationControllerOld.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\SystemInformation\SystemInfo.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="ClosedXML" Version="0.105.0" />
 	<PackageReference Include="Microsoft.Identity.Web" Version="3.9.2" />
 	<PackageReference Include="Microsoft.Identity.Web.UI" Version="3.9.2" />

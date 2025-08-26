@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Repositories;
+using YourNamespace.Services;
 
 namespace Apha.VIR.Web.Extensions
 {
@@ -22,6 +23,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolateSearchService, IsolateSearchService>();
             services.AddScoped<IIsolateViabilityService, IsolateViabilityService>();
             services.AddScoped<IIsolatesService, IsolatesService>();
+            services.AddScoped<ISystemInfoService, SystemInfoService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)
@@ -37,6 +39,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IVirusCharacteristicListEntryRepository, VirusCharacteristicListEntryRepository>();
             services.AddScoped<IIsolateSearchRepository, IsolateSearchRepository>();
             services.AddScoped<IIsolateViabilityRepository, IsolateViabilityRepository>();
+            services.AddScoped<ISystemInfoRepository, SystemInfoRepository>();
             return services;
         }
     }

@@ -23,6 +23,7 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>();
             CreateMap<IsolateDispatchInfoDTO, IsolateDispatchEditViewModel>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>().ReverseMap();
+            CreateMap<SystemInfoDTO, SystemInformationViewModel>().ReverseMap();
         }
     }
 }

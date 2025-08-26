@@ -540,3 +540,72 @@ body {
     text-wrap-mode: wrap!important;
 }
 /* end view isolate details */
+
+/* Flex layout for term/value pairs */
+.info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Each row: label left, value right */
+.info-row {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 5px 0; /* matches old cellpadding=5 vertical space */
+}
+
+/* Labels (dt) */
+.info-row dt {
+    min-width: 220px; /* match old label column width */
+    font-weight: normal;
+    margin: 0;
+}
+
+/* Values (dd) */
+.info-row dd {
+    margin: 0;
+    flex: 1;
+}
+
+/* Box Styles */
+#contentbox {
+    border-top: #0b2677 1px solid;
+    border-right: #0b2677 1px solid;
+    border-bottom: #0b2677 1px solid;
+    border-left: #0b2677 1px solid;
+    margin: 0px 0px 15px 0px;
+}
+
+    #contentbox .box_title {
+        padding-top: 3px;
+        padding-right: 10px;
+        padding-bottom: 3px;
+        padding-left: 10px;
+        /* padding: 0.2em 1px 2px 14px; */
+        background-color: #0b2677;
+        color: #ffffff;
+        /* font-size: 0.9em; */
+        font-weight: bold;
+    }
+
+    #contentbox .box_body {
+        padding-top: 0px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+    }
+
+    #contentbox .box_body_nav {
+        padding-top: 7px;
+        padding-right: 10px;
+        padding-bottom: 7px;
+        padding-left: 10px;
+        font-size: x-small;
+    }
+
+    #contentbox .box_body dl {
+        margin-top: 0;
+        margin-bottom: 0;
+    }

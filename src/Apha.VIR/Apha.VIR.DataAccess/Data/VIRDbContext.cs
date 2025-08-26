@@ -5,6 +5,8 @@ namespace Apha.VIR.DataAccess.Data;
 
 public class VIRDbContext : DbContext
 {
+    public VIRDbContext()
+    { }
     public VIRDbContext(DbContextOptions<VIRDbContext> options) : base(options)
     { }
 
