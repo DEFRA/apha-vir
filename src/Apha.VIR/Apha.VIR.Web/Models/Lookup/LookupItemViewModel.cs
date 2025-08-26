@@ -5,7 +5,7 @@ namespace Apha.VIR.Web.Models.Lookup;
 
 public class LookupItemViewModel
 {
-    public Guid? LookupId { get; set; }
+    public Guid LookupId { get; set; } = Guid.Empty;
     public bool IsReadOnly { get; set; }=false;
     public bool ShowParent { get; set; }=false;
     public bool ShowAlternateName { get; set; } = false;
