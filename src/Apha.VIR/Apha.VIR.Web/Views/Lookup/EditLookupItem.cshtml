@@ -114,14 +114,16 @@
 			<input type="hidden" asp-for="@Model.LookkupItem.Smscode" />
 		}
 		<tr>
-			<td colspan="3" class="text-right">
-				<button type="submit" asp-action="Edit" class="btn btn-primary">Update</button>
-				<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+			<td colspan="3">
+				<button type="submit" asp-action="Edit" class="btn-as-link me-3">Update</button>
+				<img src="Images\spacer.gif" width="10" height="5" alt="" />
+				<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
+				<img src="Images\spacer.gif" width="10" height="5" alt="" />
 				@if (Model.LookkupItem.Id != Guid.Empty)
 				{
 					<button type="submit"
 							asp-action="Delete"
-							class="btn btn-danger"
+							class="btn-as-link me-3"
 							data-toggle="modal"
 							disabled="@(Model.LookkupItem.Sms ? "disabled" : null)"
 							onclick="return confirm('Please confirm that you want to delete this viability record');">

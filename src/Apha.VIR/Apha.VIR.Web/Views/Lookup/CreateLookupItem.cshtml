@@ -83,8 +83,9 @@
 		}
 		<tr>
 			<td colspan="3" class="text-right">
-				<button type="submit" asp-action="Create" class="btn btn-primary">Insert</button>
-				<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+				<button type="submit" asp-action="Create" class="btn-as-link me-3">Insert</button>
+				<img src="Images\spacer.gif" width="10" height="5" alt="" />
+				<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
 			</td>
 		</tr>
 	</table>
