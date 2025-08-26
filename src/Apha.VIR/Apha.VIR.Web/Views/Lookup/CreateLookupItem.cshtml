@@ -10,84 +10,87 @@
 	<input asp-for="@Model.ShowSMSRelated" type="hidden" />
 	<input asp-for="@Model.IsReadOnly" type="hidden" />
 	<table>
-		<tr>
-			<td><label for="Name">Name</label></td>
-			<td><span class="spacer"></span></td>
-			<td>
-				<input id="Name"
-					   asp-for="@Model.LookkupItem.Name"
-					   class="form-control"/>
-				<br><span asp-validation-for="@Model.LookkupItem.Name" class="Validation"></span>
-			</td>
-		</tr>
-		@if (Model.ShowAlternateName)
-		{
+		<thead><tr><th></th><th></th><th></th></tr></thead>
+		<tbody>
 			<tr>
-				<td><label for="AlternateName">Alternate Name</label></td>
+				<td><label for="Name">Name</label></td>
 				<td><span class="spacer"></span></td>
 				<td>
-					<input id="AlternateName"
-						   asp-for="@Model.LookkupItem.AlternateName"
-						   class="form-control"/>
+					<input id="Name"
+						   asp-for="@Model.LookkupItem.Name"
+						   class="form-control" />
+					<br><span asp-validation-for="@Model.LookkupItem.Name" class="Validation"></span>
 				</td>
 			</tr>
-		}
-		@if (Model.ShowParent)
-		{
+			@if (Model.ShowAlternateName)
+			{
+				<tr>
+					<td><label for="AlternateName">Alternate Name</label></td>
+					<td><span class="spacer"></span></td>
+					<td>
+						<input id="AlternateName"
+							   asp-for="@Model.LookkupItem.AlternateName"
+							   class="form-control" />
+					</td>
+				</tr>
+			}
+			@if (Model.ShowParent)
+			{
+				<tr>
+					<td><label for="ParentName">Parent</label></td>
+					<td><span class="spacer"></span></td>
+					<td>
+						<select id="ParentName"
+								asp-for="@Model.LookkupItem.Parent"
+								asp-items="Model.LookupParentList"
+								class="form-control">
+							<option value="">Please select the relevant parent for this item</option>
+						</select>
+					</td>
+				</tr>
+			}
 			<tr>
-				<td><label for="ParentName">Parent</label></td>
+				<td><label for="Active">Active</label></td>
 				<td><span class="spacer"></span></td>
 				<td>
-					<select id="ParentName"
-							asp-for="@Model.LookkupItem.Parent"
-							asp-items="Model.LookupParentList"
-							class="form-control">
-						<option value="">Please select the relevant parent for this item</option>
-					</select>
- 				</td>
+					<input id="Active"
+						   asp-for=" @Model.LookkupItem.Active"
+						   type="checkbox" />
+				</td>
 			</tr>
-		}
-		<tr>
-			<td><label for="Active">Active</label></td>
-			<td><span class="spacer"></span></td>
-			<td>
-				<input id="Active"
-					   asp-for=" @Model.LookkupItem.Active"
-					   type="checkbox" />
-			</td>
-		</tr>
-		@if (Model.ShowSMSRelated)
-		{
-			<tr>
-				<td><label for="SMS">Imported from SMS?</label></td>
-				<td><span class="spacer"></span></td>
-				<td>
-					<input id="SMS"
-						   asp-for="@Model.LookkupItem.Sms"
-						   type="checkbox" disabled />
+			@if (Model.ShowSMSRelated)
+			{
+				<tr>
+					<td><label for="SMS">Imported from SMS?</label></td>
+					<td><span class="spacer"></span></td>
+					<td>
+						<input id="SMS"
+							   asp-for="@Model.LookkupItem.Sms"
+							   type="checkbox" disabled />
 
-					<input type="hidden" asp-for="@Model.LookkupItem.Sms" />
-				</td>
-			</tr>
-			<tr>
-				<td><label for="Smscode">SMS Code</label></td>
-				<td><span class="spacer"></span></td>
-				<td>
-					<input id="Smscode"
-						   asp-for="@Model.LookkupItem.Smscode"
-						   class="form-control" disabled />
+						<input type="hidden" asp-for="@Model.LookkupItem.Sms" />
+					</td>
+				</tr>
+				<tr>
+					<td><label for="Smscode">SMS Code</label></td>
+					<td><span class="spacer"></span></td>
+					<td>
+						<input id="Smscode"
+							   asp-for="@Model.LookkupItem.Smscode"
+							   class="form-control" disabled />
 
-					<input type="hidden" asp-for="@Model.LookkupItem.Smscode" />
+						<input type="hidden" asp-for="@Model.LookkupItem.Smscode" />
+					</td>
+				</tr>
+			}
+			<tr>
+				<td colspan="3" class="text-right">
+					<button type="submit" asp-action="Create" class="btn-as-link me-3">Insert</button>
+					<img src="Images\spacer.gif" width="10" height="5" alt="" />
+					<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
 				</td>
 			</tr>
-		}
-		<tr>
-			<td colspan="3" class="text-right">
-				<button type="submit" asp-action="Create" class="btn-as-link me-3">Insert</button>
-				<img src="Images\spacer.gif" width="10" height="5" alt="" />
-				<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
-			</td>
-		</tr>
+		</tbody>
 	</table>
 </form>
 @if (!ViewData.ModelState.IsValid)
