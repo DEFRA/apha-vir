@@ -32,7 +32,7 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> LookupList(Guid lookupid, int pageNo = 1, int pageSize = 10)
         {
-            if (!ModelState.IsValid)
+            if (lookupid == Guid.Empty || !ModelState.IsValid)
             {
                 return BadRequest("Invalid parameters.");
             }
@@ -69,7 +69,7 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> BindLookupItemGridOnPagination(Guid lookupid, int pageNo, int pageSize)
         {
-            if (!ModelState.IsValid)
+            if (lookupid == Guid.Empty || !ModelState.IsValid)
             {
                 return BadRequest("Invalid parameters.");
             }
@@ -135,7 +135,9 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Create(LookupItemViewModel model)
         {
             ModelState.Remove("LookkupItem.LastModified");
+            
             var showerrorSummary = false;
+
             if (ModelState.IsValid)
             {
                 await ValidateModel(model, ModelState, "create");
@@ -206,6 +208,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Edit(LookupItemViewModel model)
         {
             var showerrorSummary = false;
+
             if (ModelState.IsValid)
             {
                 await ValidateModel(model, ModelState, "edit");
@@ -240,6 +243,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Delete(LookupItemViewModel model)
         {
             var showerrorSummary = false;
+
             if (ModelState.IsValid)
             {
                 await ValidateModel(model, ModelState, "delete");
@@ -247,7 +251,6 @@ namespace Apha.VIR.Web.Controllers
             }
           
             if (!ModelState.IsValid)
-
             {
                 if (model.ShowParent)
                 {
@@ -259,6 +262,7 @@ namespace Apha.VIR.Web.Controllers
                         Text = f.Name
                     }).ToList();
                 }
+
                 model.ShowErrorSummary = showerrorSummary;
 
                 return View("EditLookupItem", model);
@@ -307,46 +311,37 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<bool> GetItemInUse(LookupItemViewModel model, string action, bool IsitemInUse)
         {
-            if (action == "create")
+            switch (action)
             {
-                IsitemInUse = false;
-            }
-            if (!model.LookkupItem.Active && action == "edit")
-            {
-                IsitemInUse = await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookkupItem.Id);
-            }
+                case "create":
+                    return false;
+                
+                case "edit":
+                    if (!model.LookkupItem.Active)
+                    {
+                        return await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookkupItem.Id);
+                    }
+                    return false;
 
-            if (action == "delete")
-            {
-                IsitemInUse = await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookkupItem.Id);
-            }
+                case "delete":
+                    return await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookkupItem.Id);
 
-            return IsitemInUse;
+                default:
+                    return IsitemInUse;
+            }
         }
 
         static IEnumerable<ValidationResult> GetValidationResult(LookupItemViewModel model,
-                string action,
-                bool IsitemInUse,
-                ValidationContext context,
-                IEnumerable<LookupItemModel> lookupItems)
+                string action, bool IsitemInUse, ValidationContext context, IEnumerable<LookupItemModel> lookupItems)
         {
-            
-            if (action == "create")
+            return action switch
             {
-                return model.LookkupItem.ValidateLookUpItemAdd(context, lookupItems,
-                 model.ShowParent, IsitemInUse);
-            }
-            if (action == "Edit")
-            {
-                return model.LookkupItem.ValidateLookUpItemUpdate(context, lookupItems,
-                 model.ShowParent, IsitemInUse);
-            }
-            else if (action == "delete")
-            {
-                return model.LookkupItem.ValidateLookUpItemDelete(context, lookupItems, IsitemInUse);
-            }
-
-            return Enumerable.Empty<ValidationResult>();
+                "create" => model.LookkupItem.ValidateLookUpItemAdd(context, lookupItems, model.ShowParent),
+                "edit" => model.LookkupItem.ValidateLookUpItemUpdate(context, lookupItems, model.ShowParent, IsitemInUse),
+                "delete" => model.LookkupItem.ValidateLookUpItemDelete(context, lookupItems, IsitemInUse),
+                _ => Enumerable.Empty<ValidationResult>(),
+            };
+   
         }
     }
 }

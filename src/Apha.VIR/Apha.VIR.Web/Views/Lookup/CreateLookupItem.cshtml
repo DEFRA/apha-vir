@@ -4,8 +4,6 @@
 }
 
 <form method="post">
-@* 	<input asp-for="@Model.LookkupItem.Id" type="hidden" />
-	<input asp-for="@Model.LookkupItem.LastModified" type="hidden" /> *@
 	<input asp-for="@Model.LookupId" type="hidden" />
 	<input asp-for="@Model.ShowAlternateName" type="hidden" />
 	<input asp-for="@Model.ShowParent" type="hidden" />
@@ -34,7 +32,6 @@
 				</td>
 			</tr>
 		}
-		
 		@if (Model.ShowParent)
 		{
 			<tr>
