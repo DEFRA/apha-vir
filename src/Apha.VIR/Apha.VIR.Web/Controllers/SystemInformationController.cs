@@ -34,27 +34,17 @@ namespace Apha.VIR.Web.Controllers
             sysInfo.IsAuthenticated = (User.Identity?.IsAuthenticated ?? false) ? "Yes" : "No";
 
             // Set URL for Error log button
-            //ViewBag.ErrorLogUrl = $"{ErrorReportingURL()}?app={CurrentApplicationID()}";
+            ViewBag.ErrorLogUrl = $"{ErrorReportingURL()}";
 
             return View(sysInfo);
         }
 
-        private Guid CurrentApplicationID()
-        {
-            var appIdString = _configuration["ApplicationID"];
-            if (Guid.TryParse(appIdString, out Guid appId))
-            {
-                return appId;
-            }
-            throw new InvalidOperationException("The ApplicationID configuration setting was not found or is not a valid GUID");
-        }
-
         private string ErrorReportingURL()
         {
-            var url = _configuration["ErrorReportingURL"];
+            var url = _configuration["URL:LogMonitor"];
             if (string.IsNullOrEmpty(url))
             {
-                throw new InvalidOperationException("The ErrorReportingURL configuration setting was not found");
+                throw new InvalidOperationException("AWS Log Monitoring URL configuration setting was not found");
             }
             return url;
         }

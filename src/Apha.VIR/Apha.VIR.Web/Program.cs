@@ -10,7 +10,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment())
+if (builder.Environment.IsEnvironment("local"))
 {
     builder.Host.UseSerilog((ctx, lc) =>
     {
