@@ -4,7 +4,7 @@ namespace Apha.VIR.Web.Models.Lookup;
 
 public class LookupItemModel
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
     [Required(ErrorMessage = "Name must be enetered.")]
     public string Name { get; set; } = null!;
     public Guid? Parent { get; set; }
