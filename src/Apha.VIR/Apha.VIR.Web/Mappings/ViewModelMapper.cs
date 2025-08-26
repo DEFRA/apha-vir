@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Models.Lookup;
 using AutoMapper;
 
 namespace Apha.VIR.Web.Mappings

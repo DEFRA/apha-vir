@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Apha.VIR.Web.Models;
+namespace Apha.VIR.Web.Models.Lookup;
 
 public class LookupItemModel
 {
@@ -47,8 +47,8 @@ public class LookupItemModel
         {
             isDuplicate = lookupItemList.Any(listItem =>
                 listItem.Id == Id ||
-                (listItem.Name == Name &&
-                listItem.Parent == Parent));
+                listItem.Name == Name &&
+                listItem.Parent == Parent);
         }
 
         if (isDuplicate)

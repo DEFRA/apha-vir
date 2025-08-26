@@ -1,4 +1,4 @@
-﻿namespace Apha.VIR.Web.Models;
+﻿namespace Apha.VIR.Web.Models.Lookup;
 
 public class LookupListViewModel
 {
