@@ -27,15 +27,20 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string AVNumber, Guid? Sample)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var viewModel = new SampleViewModel();
             if (Sample.HasValue)
-            {               
+            {
                 var result = await this._sampleService.GetSampleAsync(AVNumber, Sample);
                 viewModel = _mapper.Map<SampleViewModel>(result);
                 viewModel.IsEditMode = true;
             }
             else
-            {                
+            {
                 viewModel.IsEditMode = false;
             }
             viewModel.AVNumber = AVNumber;
@@ -47,36 +52,42 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Insert(SampleViewModel model)
         {
-            if (ModelState.IsValid)
-            {                
-                var sample = _mapper.Map<SampleDTO>(model);
-                await _sampleService.AddSample(sample, model.AVNumber!, "Test");
-                return RedirectToAction("Index", "Sample");
+            if (!ModelState.IsValid)
+            {
+                model.IsEditMode = false;
+                await LoadSampleDetailsData(model);
+                return View("Index", model);
             }
 
-            model.IsEditMode = false;
-            await LoadSampleDetailsData(model);
-            return View("Index", model);
+            var sample = _mapper.Map<SampleDTO>(model);
+            await _sampleService.AddSample(sample, model.AVNumber!, "Test");
+            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber});
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(SampleViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var sample = _mapper.Map<SampleDTO>(model);
-                await _sampleService.UpdateSample(sample, "Test");
-                return RedirectToAction("Index", "Sample");
+                model.IsEditMode = true;
+                await LoadSampleDetailsData(model);
+                return View("Index", model);
             }
-            model.IsEditMode = true;
-            await LoadSampleDetailsData(model);
-            return View("Index", model);
-        }        
+
+            var sample = _mapper.Map<SampleDTO>(model);
+            await _sampleService.UpdateSample(sample, "Test");
+            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetBreedsBySpecies(Guid? speciesId)
-        {   
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var breeds = await _lookupService.GetAllHostBreedsByParentAsync(speciesId);
             var breedList = breeds.Select(b => new SelectListItem
             {
@@ -90,25 +101,22 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetLatinBreadList()
         {
-            var latinBreedDto = await _lookupService.GetAllHostBreedsAltNameAsync();
-            List<LatinBreed> latinBreedList = new List<LatinBreed>();
-            try
+            if (!ModelState.IsValid)
             {
-                latinBreedList = latinBreedDto.Select(p => new LatinBreed
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    ParentName = p.ParentName,
-                    AlternateName = p.AlternateName,
-                    Active = p.Active,
-                    Sms = p.Sms,
-                    Smscode = p.Smscode
-                }).ToList();
+                return BadRequest(ModelState);
             }
-            catch (Exception)
-            {
 
-            }           
+            var latinBreedDto = await _lookupService.GetAllHostBreedsAltNameAsync();
+            List<LatinBreed> latinBreedList = latinBreedDto.Select(p => new LatinBreed
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ParentName = p.ParentName,
+                AlternateName = p.AlternateName,
+                Active = p.Active,
+                Sms = p.Sms,
+                Smscode = p.Smscode
+            }).ToList();
             return PartialView("_LatinBreed", latinBreedList);
         }
 

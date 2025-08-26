@@ -62,7 +62,7 @@
 
 				<div class="form-group row mt-2">
 					<div class="col-sm-3">
-						<label asp-for="SMSReferenceNumber" class="col-form-label">SMS Reference</label>
+						<label for="SMSReferenceNumber" class="col-form-label">SMS Reference</label>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="SMSReferenceNumber" class="form-control addeditsample-input" />
@@ -71,7 +71,7 @@
 
 				<div class="form-group row mt-1">
 					<div class="col-sm-3">
-						<label asp-for="SenderReferenceNumber" class="form-control col-form-label">Senders Sample Reference</label>
+						<label for="SenderReferenceNumber" class="form-control col-form-label">Senders Sample Reference</label>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="SenderReferenceNumber" class="form-control addeditsample-input" />
@@ -81,7 +81,7 @@
 
 				<div class="form-group row mt-3">
 					<div class="col-sm-3">
-						<label asp-for="SampleType" class="form-control col-form-label">Sample Type</label>
+						<label for="SampleType" class="form-control col-form-label">Sample Type</label>
 					</div>
 					<div class="col-sm-9">
 						<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" class="form-control addeditsample-addsender-select">
@@ -92,7 +92,7 @@
 
 				<div class="form-group row mt-3">
 					<div class="col-sm-3">
-						<label asp-for="HostSpecies" class="form-control col-form-label">Host Group</label>
+						<label for="HostSpecies" class="form-control col-form-label">Host Group</label>
 					</div>
 					<div class="col-sm-9">
 						<select id="ddlHostSpecies" asp-for="HostSpecies" asp-items="Model.HostSpeciesList" class="form-control addeditsample-addsender-select">
@@ -107,7 +107,7 @@
 
 				<div class="form-group row mt-3">
 					<div class="col-sm-3">
-						<label asp-for="HostBreed" class="form-control col-form-label">Host Species</label>
+						<label for="HostBreed" class="form-control col-form-label">Host Species</label>
 					</div>
 					<div class="col-sm-9">
 						<select id="ddlHostBreed" asp-for="HostBreed" asp-items="Model.HostBreedList" class="form-control addeditsample-addsender-select">
@@ -118,7 +118,7 @@
 
 				<div class="form-group row mt-3">
 					<div class="col-sm-3">
-						<label asp-for="HostPurpose" class="form-control col-form-label">Host Purpose</label>
+						<label for="HostPurpose" class="form-control col-form-label">Host Purpose</label>
 					</div>
 					<div class="col-sm-9">
 						<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" class="form-control addeditsample-addsender-select">
@@ -129,7 +129,7 @@
 
 				<div class="form-group row mt-3">
 					<div class="col-sm-3">
-						<label asp-for="SamplingLocationHouse" class="form-control col-form-label">Sampling Location / House</label>
+						<label for="SamplingLocationHouse" class="form-control col-form-label">Sampling Location / House</label>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="SamplingLocationHouse" class="form-control addeditsample-input" />
@@ -137,7 +137,7 @@
 				</div>
 
 				<div class="form-group row mt-3 justify-content-end">
-					<div class="col-sm-9 offset-sm-3">
+					<div class="col-sm-3 offset-sm-9">
 						@if (Model.IsEditMode)
 						{
 							<button type="submit" asp-action="Update" class="btn btn-link addeditsample-btn-link-custom">Update</button>
@@ -155,8 +155,8 @@
 
 </div>
 
-<div class="modal fade" id="latinBreedModal" role="dialog" aria-labelledby="latinBreedModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">		
+<div class="modal fade" id="latinBreedModal" aria-labelledby="latinBreedModalLabel" aria-hidden="true">
+	<div class="modal-dialog">		
 		<div class="modal-content modalborder-div" style="border:groove" id="latinBreedContent">
 			<!-- Partial will load here -->
 		</div>

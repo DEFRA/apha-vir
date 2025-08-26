@@ -22,39 +22,40 @@ public class SampleRepository : ISampleRepository
         if (string.IsNullOrEmpty(avNumber) || !sampleId.HasValue)
             return null;
 
-        var submission = await _context.Submissions            
+        var submission = await _context.Submissions
             .FirstOrDefaultAsync(s => s.Avnumber == avNumber);
 
         if (submission == null)
             return null;
 
-        return await _context.Samples            
+        return await _context.Samples
             .FirstOrDefaultAsync(s => s.SampleSubmissionId == submission.SubmissionId && s.SampleId == sampleId.Value);
     }
 
     public async Task AddSampleAsync(Sample sample, string avNumber, string User)
-    {        
+    {
         if (!string.IsNullOrEmpty(avNumber))
         {
             var submission = await _context.Submissions.FirstOrDefaultAsync(s => s.Avnumber == avNumber);
-            sample.SampleSubmissionId = submission?.SubmissionId ?? Guid.Empty;
+            if (submission != null)
+                sample.SampleSubmissionId = submission.SubmissionId;
         }
 
-        sample.SampleNumber = _context.Samples.Select(e => e.SampleNumber).OrderByDescending(n => n).FirstOrDefault() + 1;        
+        sample.SampleNumber = await _context.Samples.Select(e => e.SampleNumber).OrderByDescending(n => n).FirstOrDefaultAsync() + 1;
 
         var parameters = new[]
         {
            new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
            new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid() },
-           new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleSubmissionId ?? Guid.Empty },
+           new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleSubmissionId ?? DBNull.Value },
            new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
            new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SmsreferenceNumber ?? DBNull.Value },
            new SqlParameter("@SenderReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)sample.SenderReferenceNumber  ?? DBNull.Value },
-           new SqlParameter("@SampleType", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleType ?? Guid.Empty },
-           new SqlParameter("@HostSpecies", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostSpecies ?? Guid.Empty },
-           new SqlParameter("@HostBreed", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostBreed ?? Guid.Empty },
-           new SqlParameter("@HostPurpose", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostPurpose ?? Guid.Empty },
-           new SqlParameter("@SamplingLocationHouse",  SqlDbType.VarChar, 50) { Value = (object?)sample.SamplingLocationHouse ?? DBNull.Value },          
+           new SqlParameter("@SampleType", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleType ?? DBNull.Value },
+           new SqlParameter("@HostSpecies", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostSpecies ?? DBNull.Value },
+           new SqlParameter("@HostBreed", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostBreed ?? DBNull.Value },
+           new SqlParameter("@HostPurpose", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostPurpose ?? DBNull.Value },
+           new SqlParameter("@SamplingLocationHouse",  SqlDbType.VarChar, 50) { Value = (object?)sample.SamplingLocationHouse ?? DBNull.Value },
            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)sample.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
         };
 
@@ -69,15 +70,15 @@ public class SampleRepository : ISampleRepository
         await _context.Database.ExecuteSqlRawAsync(
            "EXEC spSampleUpdate @UserID, @sampleID, @SampleSubmissionId, @SampleNumber, @SMSReferenceNumber, @SenderReferenceNumber, @SampleType, @HostSpecies, @HostBreed, @HostPurpose, @SamplingLocationHouse, @LastModified OUTPUT",
                 new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
-                new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleId ?? Guid.Empty },
-                new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleSubmissionId ?? Guid.Empty },
+                new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleId ?? DBNull.Value },
+                new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleSubmissionId ?? DBNull.Value },
                 new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
                 new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SmsreferenceNumber ?? DBNull.Value },
                 new SqlParameter("@SenderReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)sample.SenderReferenceNumber ?? DBNull.Value },
-                new SqlParameter("@SampleType", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleType ?? Guid.Empty },
-                new SqlParameter("@HostSpecies", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostSpecies ?? Guid.Empty },
-                new SqlParameter("@HostBreed", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostBreed ?? Guid.Empty },
-                new SqlParameter("@HostPurpose", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostPurpose ?? Guid.Empty },
+                new SqlParameter("@SampleType", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleType ?? DBNull.Value },
+                new SqlParameter("@HostSpecies", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostSpecies ?? DBNull.Value },
+                new SqlParameter("@HostBreed", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostBreed ?? DBNull.Value },
+                new SqlParameter("@HostPurpose", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostPurpose ?? DBNull.Value },
                 new SqlParameter("@SamplingLocationHouse", SqlDbType.VarChar, 50) { Value = (object?)sample.SamplingLocationHouse ?? DBNull.Value },
                 new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)sample.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
            );

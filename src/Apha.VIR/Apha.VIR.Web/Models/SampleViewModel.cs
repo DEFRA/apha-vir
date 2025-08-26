@@ -5,8 +5,8 @@ namespace Apha.VIR.Web.Models
 {
     public class SampleViewModel
     {
-        public Guid SampleId { get; set; }
-        public Guid SampleSubmissionID { get; set; }        
+        public Guid? SampleId { get; set; }
+        public Guid? SampleSubmissionID { get; set; }        
         public string? AVNumber { get; set; }       
         public string? SampleNumber { get; set; }        
         public string? SMSReferenceNumber { get; set; }
@@ -24,7 +24,7 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? HostBreedList { get; set; }
         public List<SelectListItem>? HostPurposeList { get; set; }
         public List<LatinBreed>? LatinBreedList { get; set; }
-        public bool IsEditMode { get; set; }        
+        public bool IsEditMode { get; set; } = false;
     }
 
     public class LatinBreed
