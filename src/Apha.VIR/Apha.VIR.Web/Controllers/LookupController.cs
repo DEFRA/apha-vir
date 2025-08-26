@@ -1,11 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
-using DocumentFormat.OpenXml.InkML;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -42,7 +39,7 @@ namespace Apha.VIR.Web.Controllers
             var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupid);
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
-            var lookupEntries = await _lookupService.GetAllLookupEntriesAsync(lookupid, pageNo, pageSize);
+            var lookupEntries = await _lookupService.GetAllLookupItemsAsync(lookupid, pageNo, pageSize);
             var lookupItems = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data);
 
             var viewModel = new LookupItemViewModel
@@ -79,7 +76,7 @@ namespace Apha.VIR.Web.Controllers
             var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupid);
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
-            var lookupEntries = await _lookupService.GetAllLookupEntriesAsync(lookupid, pageNo, pageSize);
+            var lookupEntries = await _lookupService.GetAllLookupItemsAsync(lookupid, pageNo, pageSize);
             var lookups = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data);
 
             var LookupItemResult = new LookupItemListViewModel
@@ -163,7 +160,7 @@ namespace Apha.VIR.Web.Controllers
 
             var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
 
-            await _lookupService.InsertLookupEntryAsync(model.LookupId, dto);
+            await _lookupService.InsertLookupItemAsync(model.LookupId, dto);
 
             return RedirectToAction(nameof(LookupList), new { lookupid = model.LookupId, pageNo = 1, pageSize = 10 });
         }
@@ -233,7 +230,7 @@ namespace Apha.VIR.Web.Controllers
 
             var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
 
-            await _lookupService.UpdateLookupEntryAsync(model.LookupId, dto);
+            await _lookupService.UpdateLookupItemAsync(model.LookupId, dto);
 
             return RedirectToAction(nameof(LookupList), new { lookupid = model.LookupId, pageNo = 1, pageSize = 10 });
         }
@@ -268,7 +265,7 @@ namespace Apha.VIR.Web.Controllers
 
             var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
 
-            await _lookupService.DeleeLookupEntryAsync(model.LookupId, dto);
+            await _lookupService.DeleteLookupItemAsync(model.LookupId, dto);
 
             return RedirectToAction(nameof(LookupList), new { lookupid = model.LookupId, pageNo = 1, pageSize = 10 });
         }
@@ -290,7 +287,7 @@ namespace Apha.VIR.Web.Controllers
             bool IsitemInUse = false;
             var context = new ValidationContext(model.LookkupItem);
 
-            var lookupEntries = await _lookupService.GetAllLookupEntriesAsync(model.LookupId);
+            var lookupEntries = await _lookupService.GetAllLookupItemsAsync(model.LookupId);
             var lookupItems = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries);
 
             IsitemInUse = await GetItemInUse(model, action, IsitemInUse);

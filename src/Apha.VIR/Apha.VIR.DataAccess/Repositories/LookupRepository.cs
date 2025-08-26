@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Security;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -8,7 +7,6 @@ using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.Repositories
 {
@@ -30,12 +28,27 @@ namespace Apha.VIR.DataAccess.Repositories
         public async Task<Lookup> GetLookupsByIdAsync(Guid lookupId)
         {
             var result = await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
-             var lookup = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupId);
+            var lookup = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupId);
 
-            return lookup == null? new Lookup() : lookup;
+            return lookup ?? new Lookup();
         }
 
-        public async Task<PagedData<LookupItem>> GetAllLookupEntriesAsync(Guid lookupId, int pageNo, int pageSize)
+        public async Task<LookupItem> GetLookupItemAsync(Guid lookupId, Guid lookupItemId)
+        {
+            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            if (lookup != null)
+            {
+                var result = await _context.Set<LookupItem>()
+                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+
+                var item = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupItemId);
+
+                return item ?? new LookupItem();
+            }
+            return new LookupItem();
+        }
+
+        public async Task<PagedData<LookupItem>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
             if (lookup != null)
@@ -47,13 +60,13 @@ namespace Apha.VIR.DataAccess.Repositories
                 var totalRecords = result.Count;
                 var lookupitems = result.Skip((pageNo - 1) * pageSize)
                     .Take(pageSize).ToList();
- 
+
                 return new PagedData<LookupItem>(lookupitems, totalRecords);
             }
             return new PagedData<LookupItem>([], 0);
         }
 
-        public async Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid lookupId)
+        public async Task<IEnumerable<LookupItem>> GetAllLookupItemsAsync(Guid lookupId)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
             if (lookup != null)
@@ -65,32 +78,10 @@ namespace Apha.VIR.DataAccess.Repositories
             }
             return new List<LookupItem>();
         }
+
         public async Task<IEnumerable<LookupItem>> GetLookupItemParentListAsync(Guid lookupId)
         {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
-            if (lookup != null)
-            {
-                //stored procedure is non-composable SQL and EF does support AsQueryable to get performance of skip. 
-                var result = await _context.Set<LookupItem>()
-                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
-                return result;
-            }
-            return new List<LookupItem>();
-        }
-
-        public async Task<LookupItem> GetLookupItemAsync(Guid lookupId,Guid lookupItemId)
-        {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
-            if (lookup != null)
-            {
-                var result = await _context.Set<LookupItem>()
-                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
-
-                var item = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupItemId);
-
-                return item == null ? new LookupItem() : item;
-            }
-            return new LookupItem();
+            return await GetAllLookupItemsAsync(lookupId);
         }
 
         public async Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId)
@@ -100,29 +91,33 @@ namespace Apha.VIR.DataAccess.Repositories
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
             try
             {
-                var sql = $"EXEC [{lookup.InUseCommand}] @ID";
+                if (lookup != null)
+                {
+                    var sql = $"EXEC [{lookup.InUseCommand}] @ID";
 
-                var parameters = new[]
-                 {
-                new SqlParameter("@ID", SqlDbType.UniqueIdentifier) { Value = lookupItemId ==Guid.Empty  ? DBNull.Value: lookupItemId},
-                };
+                    var parameters = new[]
+                     {
+                        new SqlParameter("@ID", SqlDbType.UniqueIdentifier) 
+                        { Value = lookupItemId ==Guid.Empty  ? DBNull.Value: lookupItemId}
+                    };
 
-                await _context.Database.ExecuteSqlRawAsync(sql, parameters);
-    
+                    await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+                }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 if (ex is Microsoft.Data.SqlClient.SqlException sqlEx && sqlEx.Number == 547)
                 {
                     result = true;
                 }
             }
 
-           return result;  
+            return result;
         }
 
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
          Justification = "Stored procedure name is validated against a whitelist from the database.")]
-        public async Task InsertLookupEntryAsync(Guid LookupId, LookupItem Item)
+        public async Task InsertLookupItemAsync(Guid LookupId, LookupItem Item)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
@@ -147,13 +142,11 @@ namespace Apha.VIR.DataAccess.Repositories
                 new SqlParameter("@Name", SqlDbType.VarChar, 100) { Value =  Item.Name == null ? DBNull.Value: Item.Name},
                 new SqlParameter("@AltName", SqlDbType.VarChar, 100) { Value =  Item.AlternateName == null ? DBNull.Value: Item.AlternateName},
                 new SqlParameter("@Parent", SqlDbType.UniqueIdentifier) { Value = Item.Parent ==Guid.Empty || Item.Parent == null ? DBNull.Value: Item.Parent},
-
                 new SqlParameter("@Active", SqlDbType.Bit) { Value = Item.Active},
                 new SqlParameter  {
                     ParameterName = "@LastModified",
                     SqlDbType = SqlDbType.Timestamp,
                     Direction = ParameterDirection.Output
-                    //Value = Item.LastModified
                 }
             };
 
@@ -162,7 +155,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
          Justification = "Stored procedure name is validated against a whitelist from the database.")]
-        public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item)
+        public async Task UpdateLookupItemAsync(Guid LookupId, LookupItem Item)
         {
             Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
 
@@ -178,7 +171,7 @@ namespace Apha.VIR.DataAccess.Repositories
             if (!allowedProcedures.Contains(lookup.UpdateCommand))
                 throw new SecurityException($"Stored procedure '{lookup.UpdateCommand}' is not allowed.");
 
-            
+
             var sql = $"EXEC [{lookup.UpdateCommand}] @ID, @Name, @AltName, @Parent, @Active, @LastModified OUT";
 
             var parameters = new[]
@@ -187,7 +180,6 @@ namespace Apha.VIR.DataAccess.Repositories
                 new SqlParameter("@Name", SqlDbType.VarChar, 100) { Value =  Item.Name == null ? DBNull.Value: Item.Name},
                 new SqlParameter("@AltName", SqlDbType.VarChar, 100) { Value =  Item.AlternateName == null ? DBNull.Value: Item.AlternateName},
                 new SqlParameter("@Parent", SqlDbType.UniqueIdentifier) { Value = Item.Parent ==Guid.Empty || Item.Parent == null ? DBNull.Value: Item.Parent},
-
                 new SqlParameter("@Active", SqlDbType.Bit) { Value = Item.Active},
                 new SqlParameter  {
                     ParameterName = "@LastModified",
@@ -196,13 +188,13 @@ namespace Apha.VIR.DataAccess.Repositories
                     Value = Item.LastModified
                 }
             };
-  
+
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
          Justification = "Stored procedure name is validated against a whitelist from the database.")]
-        public async Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item)
+        public async Task DeleteLookupItemAsync(Guid LookupId, LookupItem Item)
         {
 
             var allowedProcedures = (await _context.Lookups.ToListAsync())
@@ -362,7 +354,5 @@ namespace Apha.VIR.DataAccess.Repositories
             .FromSqlRaw($"EXEC spViabilityGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
-
-       
     }
 }

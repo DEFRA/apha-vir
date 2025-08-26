@@ -7,14 +7,14 @@ namespace Apha.VIR.Core.Interfaces
     {
         Task<IEnumerable<Lookup>> GetAllLookupsAsync();
         Task<Lookup> GetLookupsByIdAsync(Guid lookupId);
-        Task<IEnumerable<LookupItem>> GetLookupItemParentListAsync(Guid lookupId);
         Task<LookupItem> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
-        Task<PagedData<LookupItem>> GetAllLookupEntriesAsync(Guid lookupId, int pageNo, int pageSize);
-        Task<IEnumerable<LookupItem>> GetAllLookupEntriesAsync(Guid lookupId);
+        Task<PagedData<LookupItem>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize);
+        Task<IEnumerable<LookupItem>> GetAllLookupItemsAsync(Guid lookupId);
+        Task<IEnumerable<LookupItem>> GetLookupItemParentListAsync(Guid lookupId);
         Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId);
-        Task InsertLookupEntryAsync(Guid LookupId, LookupItem Item);
-        Task UpdateLookupEntryAsync(Guid LookupId, LookupItem Item);
-        Task DeleteLookupEntryAsync(Guid LookupId, LookupItem Item);
+        Task InsertLookupItemAsync(Guid LookupId, LookupItem Item);
+        Task UpdateLookupItemAsync(Guid LookupId, LookupItem Item);
+        Task DeleteLookupItemAsync(Guid LookupId, LookupItem Item);
         Task<IEnumerable<LookupItem>> GetAllVirusFamiliesAsync();
         Task<IEnumerable<LookupItem>> GetAllVirusTypesAsync();
         Task<IEnumerable<LookupItem>> GetAllVirusTypesByParentAsync(Guid? virusFamily);
