@@ -2,7 +2,6 @@
 {
     public class SystemInformationViewModel
     {
-        //public Guid ID { get; set; }
         public string? SystemName { get; set; }
         public string? DatabaseVersion { get; set; }
         public DateTime ReleaseDate { get; set; }
