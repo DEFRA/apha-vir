@@ -11,7 +11,7 @@ public class LookupItemModel
     public string? ParentName { get; set; }
     public string? AlternateName { get; set; }
     public bool? Active { get; set; }=true;
-    public bool Sms { get; set; }=false;
+    public bool? Sms { get; set; }=false;
     public string? Smscode { get; set; }
     public byte[] LastModified { get; set; } = null!;
 
