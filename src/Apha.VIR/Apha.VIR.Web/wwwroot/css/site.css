@@ -482,8 +482,6 @@ body {
         background-color: #efefef;
     }
 
-}
-
 .isolate-grid-table tr form button:hover {
     text-decoration-line: underline
 }
@@ -699,7 +697,7 @@ a:hover {color: #0000FF;  text-decoration: underline; }
 }
 
 .editsubmission-form-group_row {
-    margin-top: 1
+    margin-top: 1px;
 }
 
 .editsubmission-body_title {

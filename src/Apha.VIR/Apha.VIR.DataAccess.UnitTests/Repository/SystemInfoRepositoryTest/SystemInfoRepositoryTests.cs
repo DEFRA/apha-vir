@@ -1,7 +1,6 @@
 ﻿using Apha.VIR.Core.Entities;
 using Apha.VIR.DataAccess.Data;
 using Apha.VIR.DataAccess.Repositories;
-using Microsoft.Data.SqlClient;
 using Moq;
 
 namespace Apha.VIR.DataAccess.UnitTests.Repository

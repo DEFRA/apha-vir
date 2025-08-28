@@ -1,4 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
