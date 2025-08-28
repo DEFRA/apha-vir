@@ -1,0 +1,29 @@
+﻿<div class="modalborder-div">
+	<fieldset>
+		<legend class="legend">Pick By Organisation (Sender) Country</legend>
+		<div class="modal-content">
+			Shows only those from the Submitting Country picked above.
+			<br>
+			<br>
+			<div style="display: flex; justify-content: center;">
+				<select id="popupDropdown" style="width:560px;">
+					@foreach (var item in Model)
+					{
+						<option value="@item.SenderId"
+								data-sendername="@item.SenderName"
+								data-senderorganisation="@item.SenderOrganisation"
+								data-senderaddress="@item.SenderAddress"
+								data-country="@item.Country">
+							@item.OrgAndSender
+						</option>
+					}
+				</select>
+			</div>
+
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-left: 220px;" onclick="OrganisationPopupOkClick()">OK</button>
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-right: 220px;" data-bs-dismiss="modal">Cancel</button>
+		</div>
+	</fieldset>
+</div>

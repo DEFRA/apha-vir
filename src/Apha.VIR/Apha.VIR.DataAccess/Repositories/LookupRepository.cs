@@ -277,5 +277,19 @@ namespace Apha.VIR.DataAccess.Repositories
             .FromSqlRaw($"EXEC spViabilityGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
+
+        public async Task<IEnumerable<LookupItem>> GetAllSubmittingLabAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spSubmittingLabGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllSubmissionReasonAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spSubmissionReasonGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
     }
 }

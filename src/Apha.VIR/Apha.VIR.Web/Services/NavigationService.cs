@@ -8,7 +8,7 @@ namespace Apha.VIR.Web.Services
         private readonly Task<List<NavItem>> _navItemsTask;
         private static readonly JsonSerializerOptions _defaultJsonOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true          
+            PropertyNameCaseInsensitive = true
         };
 
         public NavigationService(IWebHostEnvironment env)

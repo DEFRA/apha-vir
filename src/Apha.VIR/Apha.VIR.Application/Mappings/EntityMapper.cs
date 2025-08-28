@@ -49,6 +49,15 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<IsolateViability, IsolateViabilityDTO>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViability>().ReverseMap();
             CreateMap<IsolateDispatchReportDTO, IsolateDispatchInfo>().ReverseMap();
+            CreateMap<AuditCharacteristicLogDTO, AuditCharacteristicLog>().ReverseMap();
+            CreateMap<AuditDispatchLogDTO, AuditDispatchLog>().ReverseMap();
+            CreateMap<AuditIsolateLogDTO, AuditIsolateLog>().ReverseMap();
+            CreateMap<AuditSampleLogDTO, AuditSampleLog>().ReverseMap();
+            CreateMap<AuditSubmissionLogDTO, AuditSubmissionLog>().ReverseMap();
+            CreateMap<AuditViabilityLogDTO, AuditViabilityLog>().ReverseMap();
+            CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetail>().ReverseMap();
+            CreateMap<SenderDTO, Sender>().ReverseMap();
+            CreateMap<SubmissionDTO, Submission>().ReverseMap();
             CreateMap<Sample, SampleDTO>().ReverseMap();
             CreateMap<SampleDTO, Sample>().ReverseMap();
         }

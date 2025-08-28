@@ -5,12 +5,10 @@ public class AuditDispatchLog
     public string Avnumber { get; set; } = null!;
     public int? SampleNumber { get; set; }
     public int? IsolateNumber { get; set; }
-    //This prop populate from auth db.
-    public string UserName { get; set; } = null!;
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;
     public DateTime DateDone { get; set; }
-    public string UpdateType { get; set; } = null!;
+    public string? UpdateType { get; set; }
     public Guid DispatchId { get; set; }
     public Guid DispatchIsolateId { get; set; }
     public int NoOfAliquots { get; set; }

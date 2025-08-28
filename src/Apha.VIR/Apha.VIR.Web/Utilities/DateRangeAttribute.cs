@@ -19,9 +19,26 @@ namespace Apha.VIR.Web.Utilities
                 return ValidationResult.Success;
 
             if (dateValue < _minDate || dateValue > DateTime.Today)
-                return new ValidationResult(ErrorMessage);
+            {
+                var errorMessage = FormatErrorMessage(validationContext.DisplayName);
+                return new ValidationResult(errorMessage);
+            }
 
             return ValidationResult.Success;
+        }
+
+        public override string FormatErrorMessage(string name)
+        {
+            if (!string.IsNullOrWhiteSpace(ErrorMessage) &&
+                ErrorMessage.Contains("{0}") &&
+                ErrorMessage.Contains("{1}"))
+            {
+                return string.Format(ErrorMessage, _minDate.ToString("dd/MM/yyyy"), DateTime.Today.ToString("dd/MM/yyyy"));
+            }
+            else
+            {
+                return ErrorMessage!;
+            }
         }
     }
 }

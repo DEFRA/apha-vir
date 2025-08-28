@@ -1,6 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -87,9 +86,6 @@ namespace Apha.VIR.Web.Controllers
 
                 return View("Edit", model);
             }
-            //ModelState.Remove("IsolateViability.ViabilityStatus");
-            //ModelState.Remove("IsolateViability.CheckedByName");
-            //ModelState.Remove("IsolateViability.ViableName");
 
             var dto = _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability);
 
