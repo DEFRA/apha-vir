@@ -1,0 +1,269 @@
+[
+    {
+        "title": "Home",
+        "url": "/",
+        "description": "The Virus Isolates Respository Application Home Page",
+        "children": [
+            {
+                "title": "Submission Selection",
+                "url": "/GetAVNumber",
+                "description": "Enter AV Number",
+                "children": []
+            },
+            {
+                "title": "Submission - Samples and Isolates",
+                "url": "/SubmissionSamples",
+                "description": "",
+                "children": [
+                    {
+                        "title": "Samples from SMS",
+                        "url": "/SMSamples",
+                        "description": "",
+                        "children": []
+                    },
+                    {
+                        "title": "Isolates from SMS",
+                        "url": "/SMIsolates",
+                        "description": "",
+                        "children": []
+                    },
+                    {
+                        "title": "Submission Details",
+                        "url": "/SubmissionDetails",
+                        "description": "Submission Details",
+                        "children": []
+                    },
+                    {
+                        "title": "Submission Letter",
+                        "url": "/SubmissionLetter",
+                        "description": "",
+                        "children": []
+                    },
+                    {
+                        "title": "Sample Details",
+                        "url": "/SampleDetails",
+                        "description": "",
+                        "children": []
+                    },
+                    {
+                        "title": "Isolate Details",
+                        "url": "/IsolateDetails",
+                        "description": "",
+                        "children": [
+                            {
+                                "title": "Isolate Characteristics",
+                                "url": "/IsolateCharacteristics",
+                                "description": "",
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Relocation Management",
+                "url": "/IsolateRelocationManagement",
+                "description": "Relocates Virus Isolate Aliquots",
+                "children": [
+                    {
+                        "title": "Relocate Virus Isolates",
+                        "url": "/IsolateRelocate",
+                        "description": "Relocates Virus Isolate Aliquots",
+                        "children": []
+                    },
+                    {
+                        "title": "Relocate Freezer Tray",
+                        "url": "/TrayRelocate",
+                        "description": "Relocates Freezer Trays",
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "title": "Report Selection Page",
+                "url": "/Reports",
+                "description": "",
+                "children": [
+                    {
+                        "title": "Isolate Dispatch Report Page",
+                        "url": "/IsolateDispatchReport",
+                        "description": "",
+                        "children": []
+                    },
+                    {
+                        "title": "Missing Isolates Report Page",
+                        "url": "/MissingIsolatesReport",
+                        "description": "",
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "title": "Dispatch Virus Isolates",
+                "url": "/IsolateDispatch/Create",
+                "description": "Dispatch Virus Isolate Aliquots",
+                "children": []
+            },
+            {
+                "title": "Isolate Dispatch Confirmation",
+                "url": "/IsolateDispatch/Confirmation",
+                "description": "",
+                "children": []
+            },
+            {
+                "title": "Look-up Lists",
+                "url": "/LookupLists",
+                "description": "Manage look-up lists",
+                "children": [
+                    {
+                        "title": "Look-up List Entries",
+                        "url": "/LookupListEntries",
+                        "description": "Manage look-up list entries",
+                        "children": [
+                            {
+                                "title": "Modify Look-up List Entry",
+                                "url": "/LookupListEntryEdit",
+                                "description": "Edit look-up list entry",
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Virus Characteristic Management",
+                "url": "/VirusCharacteristicManagement",
+                "description": "Manage virus characteristics",
+                "children": [
+                    {
+                        "title": "Virus Characteristics",
+                        "url": "/VirusCharacteristics",
+                        "description": "Manage virus characteristic",
+                        "children": [
+                            {
+                                "title": "Modify Virus Characteristic",
+                                "url": "/VirusCharacteristicEdit",
+                                "description": "Edit Virus Characteristic",
+                                "children": []
+                            },
+                            {
+                                "title": "Virus Characteristic List Entries",
+                                "url": "/VirusCharacteristicListEntries",
+                                "description": "Manage Virus Characteristic List Entries",
+                                "children": [
+                                    {
+                                        "title": "Modify Virus Characteristic List Entries",
+                                        "url": "/VirusCharacteristicListEntryEdit",
+                                        "description": "Edit Virus Characteristic List Entries",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Virus Characteristic Associations",
+                        "url": "/VirusFamilyAndType",
+                        "description": "Manage Virus Family and Type characteristic associations",
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "title": "Sender Management",
+                "url": "/SenderManagement",
+                "description": "Manages list of senders",
+                "children": []
+            },
+            {
+                "title": "Search Repository",
+                "url": "/SearchRepository",
+                "description": "Search the Isolates Repository",
+                "children": [
+                    {
+                        "title": "View Isolate Details",
+                        "url": "/Isolates/ViewIsolateDetails",
+                        "description": "View Isolate Details",
+                        "children": [
+                            {
+                                "title": "Isolate Dispatch History",
+                                "url": "/IsolateDispatch/History",
+                                "description": "",
+                                "children": [
+                                    {
+                                        "title": "Edit Isolate Dispatch History",
+                                        "url": "/IsolateDispatch/Edit",
+                                        "description": "",
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "title": "Isolate Viability History",
+                                "url": "/IsolateViability/History",
+                                "description": "",
+                                "children": [
+                                    {
+                                        "title": "Edit Isolate Viability History",
+                                        "url": "/IsolateViability/Edit",
+                                        "description": "",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Search Audit Log",
+                "url": "/SearchAuditLog",
+                "description": "Search Audit Log",
+                "children": [
+                    {
+                        "title": "Log Isolate Details",
+                        "url": "/LogIsolateDetails",
+                        "description": "Log Isolate Details",
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "title": "Unauthorised Access",
+                "url": "/Unauthorised",
+                "description": "Unauthorised access to page",
+                "children": []
+            },
+            {
+                "title": "System Information",
+                "url": "/SystemInformation",
+                "description": "Displays information about the system",
+                "children": []
+            },
+            {
+                "title": "Contact Us",
+                "url": "/ContactUs",
+                "description": "Contact Us",
+                "children": []
+            },
+            {
+                "title": "Error Page",
+                "url": "/ErrorPage",
+                "description": "Error Page",
+                "children": []
+            },
+            {
+                "title": "Concurrency Error Page",
+                "url": "/ConcurrencyError",
+                "description": "Concurrency Error Page",
+                "children": []
+            },
+            {
+                "title": "Session Timeout Error Page",
+                "url": "/TimeoutError",
+                "description": "Session Timeout Error Page",
+                "children": []
+            }
+        ]
+    }
+]

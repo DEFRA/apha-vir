@@ -51,7 +51,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                     RecipientName = "Test Recipient",
                     RecipientAddress = "123 Test Street, Test City",
                     ReasonForDispatch = "Research",
-                    DispatchedDate = new DateTime(2024, 1, 1),
+                    DispatchedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                     DispatchedByName = "Test Dispatcher",
                     Avnumber = avNumber,
                     Nomenclature = "Test Nomenclature",
@@ -330,8 +330,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             // Assert
             Assert.NotNull(result);
             Assert.Equal("History", result.ActionName);
-            Assert.Equal(model.Avnumber, result.RouteValues["AVNumber"]);
-            Assert.Equal(model.DispatchIsolateId, result.RouteValues["IsolateId"]);
+            Assert.Equal(model.Avnumber, result!.RouteValues?["AVNumber"]);
+            Assert.Equal(model.DispatchIsolateId, result!.RouteValues?["IsolateId"]);
             await _mockIsolateDispatchService.Received(1).UpdateDispatchAsync(Arg.Any<IsolateDispatchInfoDTO>(), "TestUser");
         }
 

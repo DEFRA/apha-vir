@@ -144,7 +144,7 @@
                 <button type="submit" class="btn btn-link" style="padding:0;border:none;background:none;text-decoration:underline;color:darkblue;cursor:pointer;">Save</button>
 
                 <img src="~/images/spacer.gif" width="10" height="5" alt="" />
-                <a asp-action="Index" asp-controller="IsolateDispatchHistory" class="btn btn-secondary">Cancel</a>
+                <a asp-action="History" asp-controller="IsolateDispatch" asp-route-AVNumber="@Model.Avnumber" asp-route-IsolateId="@Model.DispatchIsolateId" class="btn btn-secondary">Cancel</a>
             </td>
         </tr>
     </table>

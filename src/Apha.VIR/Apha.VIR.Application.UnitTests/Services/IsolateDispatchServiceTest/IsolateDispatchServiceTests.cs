@@ -9,7 +9,7 @@ using NSubstitute.ExceptionExtensions;
 
 namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
 {
-    public class IsolateDispatchServiceTests : IDisposable
+    public class IsolateDispatchServiceTests
     {
         private readonly IIsolateDispatchRepository _isolateDispatchRepository;
         private readonly IIsolateRepository _isolateRepository;
@@ -257,15 +257,6 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             _service.GetDispatcheConfirmationAsync(isolateId));
         }
 
-        private string InvokeGetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
-        {
-            var methodInfo = typeof(IsolateDispatchService).GetMethod("GetCharacteristicNomenclature", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (methodInfo == null)
-                throw new InvalidOperationException("GetCharacteristicNomenclature method not found.");
-            var result = methodInfo.Invoke(_service, new object[] { characteristicList });
-            return result as string ?? string.Empty;
-        }
-
         [Fact]
         public async Task UpdateDispatchAsync_SuccessfulUpdate_CallsRepositoryMethod()
         {
@@ -320,8 +311,6 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _service.UpdateDispatchAsync(dto, user));
         }
-
-
 
         [Fact]
         public async Task GetDispatchForIsolateAsync_WithValidInputs_ReturnsIsolateDispatchInfoDTO()
@@ -398,7 +387,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             Guid dispatchIsolateId = Guid.NewGuid();
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetDispatchForIsolateAsync(null, dispatchId, dispatchIsolateId));
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetDispatchForIsolateAsync(null!, dispatchId, dispatchIsolateId));
             await Assert.ThrowsAsync<ArgumentException>(() => _service.GetDispatchForIsolateAsync(string.Empty, dispatchId, dispatchIsolateId));
         }
 
@@ -432,10 +421,173 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
             Assert.Equal("DispatchIsolateId cannot be empty. (Parameter 'DispatchIsolateId')", ex.Message);
         }
 
-        public void Dispose()
+        [Fact]
+        public async Task GetIsolateInfoByAVNumberAndIsolateIdAsync_SuccessfulRetrieval_ReturnsCorrectDTO()
         {
-            GC.SuppressFinalize(this);
+            // Arrange
+            var avNumber = "AV123";
+            var isolateId = Guid.NewGuid();
+            var isolateInfo = new IsolateInfo { IsolateId = isolateId, AvNumber = avNumber };
+            var isolateInfoDTO = new IsolateInfoDTO { IsolateId = isolateId, Avnumber = avNumber };
+
+            _isolateRepository.GetIsolateInfoByAVNumberAsync(avNumber)
+            .Returns(new List<IsolateInfo> { isolateInfo });
+            _mapper.Map<IsolateInfoDTO>(isolateInfo).Returns(isolateInfoDTO);
+
+            // Act
+            var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId);
+
+            // Assert
+            Assert.Equal(isolateInfoDTO, result);
+            await _isolateRepository.Received(1).GetIsolateInfoByAVNumberAsync(avNumber);
+            _mapper.Received(1).Map<IsolateInfoDTO>(isolateInfo);
         }
 
+        [Fact]
+        public async Task GetIsolateInfoByAVNumberAndIsolateIdAsync_EmptyResult_ReturnsNull()
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var isolateId = Guid.NewGuid();
+
+            _isolateRepository.GetIsolateInfoByAVNumberAsync(avNumber)
+            .Returns(new List<IsolateInfo>());
+
+            // Act
+            var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetIsolateInfoByAVNumberAndIsolateIdAsync_RepositoryReturnsNull_ReturnsNull()
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var isolateId = Guid.NewGuid();
+
+            _isolateRepository.GetIsolateInfoByAVNumberAsync(avNumber)
+            .Returns(new List<IsolateInfo>());
+
+            // Act
+            var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetIsolateInfoByAVNumberAndIsolateIdAsync_InvalidIsolateId_ReturnsNull()
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var invalidIsolateId = Guid.NewGuid();
+            var isolateInfo = new IsolateInfo { IsolateId = Guid.NewGuid(), AvNumber = avNumber };
+
+            _isolateRepository.GetIsolateInfoByAVNumberAsync(avNumber)
+            .Returns(new List<IsolateInfo> { isolateInfo });
+
+            // Act
+            var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, invalidIsolateId);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task AddDispatchAsync_SuccessfulAddition_CallsRepositoryWithCorrectParameters()
+        {
+            // Arrange
+            var dispatchInfoDto = new IsolateDispatchInfoDTO();
+            var dispatchInfo = new IsolateDispatchInfo();
+            var user = "testUser";
+
+            _mapper.Map<IsolateDispatchInfo>(dispatchInfoDto).Returns(dispatchInfo);
+
+            // Act
+            await _service.AddDispatchAsync(dispatchInfoDto, user);
+
+            // Assert
+            await _isolateDispatchRepository.Received(1).AddDispatchAsync(dispatchInfo, user);
+        }
+
+        [Fact]
+        public async Task AddDispatchAsync_RepositoryThrowsException_PropagatesException()
+        {
+            // Arrange
+            var dispatchInfoDto = new IsolateDispatchInfoDTO();
+            var dispatchInfo = new IsolateDispatchInfo();
+            var user = "testUser";
+            var expectedException = new Exception("Repository error");
+
+            _mapper.Map<IsolateDispatchInfo>(dispatchInfoDto).Returns(dispatchInfo);
+            _isolateDispatchRepository.AddDispatchAsync(dispatchInfo, user).Throws(expectedException);
+
+            // Act & Assert
+            var actualException = await Assert.ThrowsAsync<Exception>(() =>
+            _service.AddDispatchAsync(dispatchInfoDto, user));
+            Assert.Equal(expectedException.Message, actualException.Message);
+        }
+
+        [Fact]
+        public async Task GetLastViabilityByIsolateAsync_WithValidIsolateId_ReturnsLastViability()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var viabilityList = new List<IsolateViability>
+{
+new IsolateViability { DateChecked = DateTime.Now.AddDays(-2) },
+new IsolateViability { DateChecked = DateTime.Now },
+new IsolateViability { DateChecked = DateTime.Now.AddDays(-1) }
+};
+
+            _isolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(viabilityList);
+
+            var expectedViability = viabilityList.OrderByDescending(v => v.DateChecked).First();
+            var expectedDto = new IsolateViabilityDTO();
+
+            _mapper.Map<IsolateViabilityDTO>(expectedViability).Returns(expectedDto);
+
+            // Act
+            var result = await _service.GetLastViabilityByIsolateAsync(isolateId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Same(expectedDto, result);
+            await _isolateViabilityRepository.Received(1).GetViabilityByIsolateIdAsync(isolateId);
+            _mapper.Received(1).Map<IsolateViabilityDTO>(expectedViability);
+        }
+
+        [Fact]
+        public async Task GetLastViabilityByIsolateAsync_WithValidIsolateIdNoRecords_ReturnsNull()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            _isolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(new List<IsolateViability>());
+
+            // Act
+            var result = await _service.GetLastViabilityByIsolateAsync(isolateId);
+
+            // Assert
+            Assert.Null(result);
+            await _isolateViabilityRepository.Received(1).GetViabilityByIsolateIdAsync(isolateId);
+            _mapper.DidNotReceive().Map<IsolateViabilityDTO>(Arg.Any<IsolateViability>());
+        }
+
+        [Fact]
+        public async Task GetLastViabilityByIsolateAsync_WithEmptyGuid_ThrowsArgumentException()
+        {
+            // Arrange
+            var emptyGuid = Guid.Empty;
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+            _service.GetLastViabilityByIsolateAsync(emptyGuid));
+
+            await _isolateViabilityRepository.DidNotReceive().GetViabilityByIsolateIdAsync(Arg.Any<Guid>());
+        }
     }
 }

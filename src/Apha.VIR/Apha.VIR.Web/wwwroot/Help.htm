@@ -1,0 +1,926 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+    <head>
+        <title>Virus Isolates Repository - Help Page</title>
+        <link href="vla.css" rel="stylesheet" type="text/css" />    
+        <style type="text/css">
+            <!--
+            .style3 {color: black}
+            .style4 {font-size: small}
+            .style5 {color: #610063; }
+            -->
+        </style>
+    </head>
+    <body>
+        <div id="pageFrame">
+            <div id="master_header_top">
+                <label onclick="javascript:window.close();">Close</label>
+            </div>
+            <div id="master_header_middle" style="background-image:url(Images/intravet_banner.png); background-repeat:no-repeat">
+                <div id="Title">Virus Isolates Repository</div>
+            </div>
+            <div id="master_header_bottom">Help</div>
+            <div id="master_content">
+                <a id="#GeneralInformation"></a>
+                <h2>General Information</h2>
+                <br />
+                <h3>Page Header</h3>
+                <p>All the pages in the application use a standard page header that includes:</p>
+                <ul>
+                    <li>At the top: Links to the <a href="Help.htm#Home.aspx">Home</a> page, <a href="Help.htm#ContactUs.aspx">Contact Us</a> page and this Help page</li>
+                    <li>Next to the application title: Your Login and User Names are displayed, as well as the User Group to which you belong</li>
+                    <li>At the top: A series of links showing where you are in the application and allowing you to navigate back to a previous page</li>
+                </ul>
+                <h3>Required Fields</h3>
+                <p>Required fields will be marked with a * at the end of the field name. These fields must be entered in order to insert or update a record in the repository.</p>
+                <h3>Calendar Controls</h3>
+                <p>In a number of places you will see the following <img src="Images/calendar.png" alt="Calendar" /> icon displayed next to date fields.</p>
+                <ul>
+                    <li>By clicking the <img src="Images/calendar.png" alt="Calendar"/> icon a calendar will be displayed allowing you to select the relevant date</li>
+                    <li>To close the calendar without selecting a date, click  the <img src="Images/calendar.png" alt="calendar"/> icon again</li>
+                    <li>Please try and use the calendars when entering date fields as opposed to manual entry to help avoid formatting problems</li>
+                </ul>
+                <h3>Picklists</h3>
+                <p>Where the fields are limited to a picklist of values, these can behave in two ways.</p>
+                <ul>
+                    <li>For long lists, if you click the field and start typing, the list will jump to the first matching entry of the list.  This is shown by "<em>Type to search</em>" appearing above the list. </li>
+                    <li>For short lists, the list will jump to the entries starting with the last character typed.</li>
+                </ul> 
+
+                <h3>Validation Messages</h3>
+                <p>Validation messages will be displayed when data is either entered in correctly or omitted, and are displayed in one of two ways:</p>
+                <ul>
+                    <li>Beneath fields: In most cases an instruction written in <strong style="color: red">red text</strong> will appear beneath the field instructing you as to what is required, these will usually vanish once corrected</li>
+                    <li>At the bottom of the page: Some validation messages will only appear at the bottom of the page, these will only disappear when you click  one of the links again</li>
+                </ul>
+                <a id="#Home.aspx"></a>
+                <h2 class="HelpSection">Home Page</h2>
+                <p>This is the Home Page, it acts as a central switchboard, allowing you access to various aspects of the application.</p>
+                <p>To start using the application you will need to click the one the links displayed:</p>
+                <ul>
+                    <li><a href="Help.htm#GetAVNumber.aspx">Register or Update Submission, Samples and Isolates</a>: Allows you to add, update and delete submission, sample and isolate records from the repository</li>
+                    <li><a href="Help.htm#SearchRepository.aspx">Search Repository</a>: Allows you to search for records with the repository</li>
+                    <li><a href="Help.htm#IsolateRelocate.aspx">Relocate Virus Isolates</a>: Allows you to relocate virus isolates</li>
+                    <li><a href="Help.htm#Reports.aspx">Produce Reports</a>: Allows you to produce reports</li>
+                    <li><a href="Help.htm#LookupLists.aspx">Maintain Look-up Data</a>: Allows you to maintain the look-up lists used by the repository</li>
+                    <li><a href="Help.htm#VirusCharacteristicManagement.aspx">Maintain Virus Characteristics</a>: Allows you to maintain the list of virus characteristics used by the repository</li>
+                    <li><a href="Help.htm#SenderManagement.aspx">Maintain Sender Information</a>: Allows you to maintain the list of senders used by the repository</li>
+                    <li><a href="Help.htm#SearchAuditLog.aspx">View Audit Logs</a>: Allows you to view the audit logs</li>
+                    <li><a href="Help.htm#SystemInformation.aspx">System Information</a>: Allows you to view the system information</li>
+                    <li>
+                      <label style="color:blue"><span class="style3">'User Management'</span></label>
+                    : Opens a new window displaying the User Management application. Allows you to manage user access to the application</li>
+                </ul>
+                <p style="font-style: italic; font-size: smaller">Note: Some of these options will only be displayed if you are a part of the relevant User Group</p>
+                <a id="#GetAVNumber.aspx"></a>
+                <h2 class="HelpSection">Submission Selection Page</h2>
+                <p>In order to insert or update a submission, or it's components you will first need to specify it's AV or PD number:</p>
+                <ul>
+                    <li>Enter the AV, PD, SI or BN number into the space provided</li>
+                    <li>AV numbers should be in the format AV000000-00</li>
+                    <li>PD numbers should be in the format PD0000-00</li>
+                    <li>SI numbers should be in the format SI000000-00</li>
+                    <li>BN numbers should be in the format BN000000-00</li>
+                </ul>
+                <p>Click the 
+                  <label style="color:blue"><span class="style3">'Next'</span></label>
+                   link or press the [Enter] key to continue:</p>
+                <ul>
+                    <li>New Submission: You will be redirected to the <a href="Help.htm#SubmissionDetails.aspx">Submission Details Page</a></li>
+                    <li>Existing Submission: You will be redirected to the <a href="Help.htm#SubmissionSamples.aspx">Submission Summary Page</a></li>
+                </ul>
+                <a id="#SubmissionDetails.aspx"></a>
+                <h2 class="HelpSection">Submission Details Page</h2>
+                <p>This page allows you to create or amend a submission record.</p>
+                <h3>Submission Information</h3>
+                <ul>
+                    <li>AV Number: Read-only copy of the AV number</li>
+                    <li>RL Reference Number: Sample Manager (FarmFile, SMS) identifier </li>
+                    <li>Submitting Lab: This is shown for UK diagnostic submissions </li>
+                    <li>Sender's Submission Reference Number: </li>
+                    <li>Sender: Sender's name </li>
+                    <li>Sender Organisation: Sender organisation full name </li>
+                    <li>Sender Address: Sender address </li>
+                    <li>Submitting Country: The name of the country which made the submission</li>
+                    <li>Country of Origin: The country from which the submission originated</li>
+                    <li>Reason for Submission: The reason why the submission was made</li>
+                    <li>Date Submission Received: The date on which the submission was received at Weybridge</li>
+                    <li>No. Samples Received: Number of samples in submission (SMS) </li>
+                    <li>CPH Number: The CPH number from which the submission came (if applicable)</li>
+                    <li>Owner: The name of the owner of the location from which the submission came</li>
+                    <li>Sampling Location / Premises: Location of sampling </li>
+                </ul>
+                <p>
+                    The link <span class="Link style3">'Get by RL Reference Number</span>' requires a valid RL reference number to be entered. Clicking this link imports data from the Sample Manager (FarmFile, SMS) database. As some fields may not have values you may want to edit them before Inserting or Updating. </p>
+                <p>Please note that if the Sample Manager submission
+                      has a valid AV number it will be ignored and the one you typed in will be used instead. A message is displayed if the AV number entered is different from the one in SMS.</p>
+                <p>
+                    When you are editing an existing submission, clicking the link <span class="Link style3">'Reimport from SMS</span><span class="style3">'</span>                  will reimport the data and overwrite any fields with values from Sample Manager (FarmFile) once you click 
+                  <label style="color:blue"><span class="style3">'Update'</span></label>. This won't affect any sample data you may have previously imported.
+              </p>
+                <h3 >Senders Details</h3>
+                <p>
+                    The main senders are held in a list for quickly adding their details to the submission.  
+                </p> 
+                <ul>
+                    <li>Clicking the <span class="Link style3">'Main Senders</span>' link brings up a blue panel with a drop down list of senders, 
+                    sorted by sender name, organisation and country.  </li>
+                    <li>Clicking the <span class="Link style3">'Main Organisations'</span> link brings up a blue panel with the same list, but sorted by 
+                     organisation, sender name and country.  </li>                     
+                    <li>These lists are limited to those senders from the country in the submitting country field,
+                     so if you can't see the one you want, clear this field.</li>
+                     <li>Select the sender and press OK to enter their details, or Cancel to close the blue panel</li>
+                     <li>Clicking the <span class="Link style3">'Add' link </span> brings up a blue panel to add a new sender details, 
+                    only add new senders here if you want to see them in the blue panels for quick entry.  </li>                                          
+                </ul>
+                 
+                <p>
+                    Once you have finished, click either the 
+                      <label style="color:blue"><span class="style3">'Insert'</span></label> 
+                    or 
+                    <label style="color:blue"><span class="style3">'Update'</span></label> 
+                    links to continue on to the <a href="Help.htm#SubmissionSamples.aspx">Submission Summary Page</a>.
+                </p>
+                <p>Alternatively, click the 
+                  <label style="color:blue"><span class="style3">'Cancel'</span></label> link to discard your changes and return to the previous page.</p>
+                
+                <a id="#SubmissionSamples.aspx"></a>
+                <h2 class="HelpSection">Submission Summary Page</h2>
+                <p>This page displays a summary of the samples and isolates currently recorded for the selected submission.</p>
+                <h3>Tasks</h3>
+                <p>It provides a series of links allowing you to manage the submission, its samples and isolates:</p>
+                <ul>
+                    <li><a href="Help.htm#SubmissionDetails.aspx">Edit this Submission</a>: Allows you to edit the details of the submission</li>
+                    <li><a href="Help.htm#SampleDetails.aspx">Add a new sample</a>: Allows you add a new sample to the submission</li>
+                    <li><span class="Link style3">'Get SMS Samples</span>': This option is enabled if the submission is found in Sample Manager. Click this to open the <a href="#SMSamples.aspx">SMS Sample Import Page </a></li>
+                    <li><span class="Link style3">Missing Details Letter</span>: Brings up a letter that can be mailed to the sender for missing information. Click this to open the <a href="#SubmissionLetter.aspx">Submission Letter Page</a></li>
+                    <li><span style="color: #610063">
+                      <label style="color:blue"></label>
+                    </span><span style="color: black"><label style="color:blue"></label>'Delete this Submission'                    
+                    <label style="color:blue"></label>
+                    </span>: Deletes the current submission (You can only delete a submission if there are no samples or isolates recorded against the submission)</li>
+                    <li><a href="Help.htm#Home.aspx">Finish editing this Submission</a>: Completes editing this submission and returns you to the <a href="Help.htm#Home.aspx">Home</a> page</li>
+                </ul>
+                <h3>Samples for this submission</h3>
+                <p>The table shows a list of all samples currently registered for the selected submission:</p>
+                <ul>
+                    <li>Sample Number: A system assigned sequential number for the sample. Used to identify samples and their associated isolates</li>
+                    <li>SMS Ref: The Sample Manager (FarmFile, SMS)&nbsp; reference number for the sample</li>
+                    <li>Sender Ref: The reference number given to the sample by the sender</li>
+                    <li>Group: The group from which the sample is taken</li>
+                    <li>Species: The species from which the sample is taken</li>
+                    <li><a href="Help.htm#SampleDetails.aspx">Edit</a>: Allows you to edit the sample</li>
+                  <li>
+                    <label style="color:blue"><span class="style3">Delete</span></label>
+                    <span class="style3">:</span> Deletes the sample (You can only delete a sample if there are no isolates associated with it)</li>
+                    <li><a href="Help.htm#IsolateDetails.aspx">Add Isolate</a>: Adds a new isolate associated with the sample</li>
+                </ul>
+                <h3>Isolates for this submission</h3>
+                <p>The table shows a list of all the isolates currently registered for the selected submission:</p>
+                <ul>
+                    <li>Sample Number: Identifies which sample the isolate belongs to</li>
+                    <li>Virus Type: The virus type to which the isolate belongs</li>
+                    <li>Year of Isolation: The year in which the isolate was made</li>
+                    <li>Characteristics: Displays a list of visible characteristics, separated by semicolons</li>
+                    <li>Nomenclature: Indicates whether or not the nomenclature of the isolate is unique</li>
+                    <li><a href="Help.htm#IsolateDetails.aspx">Edit</a>: Allows you to edit the isolate</li>
+                    <li>
+                    <label style="color:blue"></label>
+                    Delete: Deletes the isolate (You can olnly delete an isolate if it has not been dispatched)</li>
+                    <li><a href="Help.htm#IsolateDispatch.aspx">Dispatch</a>: Redirects you to the isolate dispatch page</li>
+                </ul>
+                <a id="#SMSamples.aspx"></a>
+                <h2 class="HelpSection">SMS Sample Import Page</h2>
+                <p>
+                    This page is opened from the <a href="#SubmissionSamples.aspx">Submission Summary Page.</a> It displays a table of samples in the Sample Manager (FarmFile, SMS) database.
+                    <br />
+                    You can easily copy one or several samples to the database. Once imported you may edit the samples as described in <a href="Help.htm#SubmissionSamples.aspx">Submission Summary Page.</a>
+                </p>
+                <ul>
+                    <li>SMS Reference:Sample Manager sample identifier </li>
+                    <li>Sender Ref.: Sender reference number </li>
+                    <li>Sample Type: Sample type </li>
+                    <li>Host Group: Host group </li>
+                    <li>Host Species: Host species</li>
+                    <li>Host Purpose: Host purpose</li>
+                    <li>Sampling Location / House: Location of sampling</li>
+                    <li>Select option: A check box to select samples, the one in the header selects and unselects all samples. Samples that are already in the Virus Isolates database are marked as selected and cannot be reselected.</li>
+                    <li>View tests: Clicking this link opens the <a href="#SMTests.aspx">SMS Test Information Display Page</a> </li>
+                    <li>Some samples are animal identifiers in SMS, there are no tests for these and they cannot be copied. </li>
+                    <li><span class="Link style3">Copy selected samples</span>: Clicking this link copies selected samples to the database. </li>
+                    <li>Result log: Displays number of samples copied. The page is refreshed. </li>
+                    <li><span class="style3">Back to Submission - Samples and Isolates:</span> Click this to return to the previous page. </li>
+                </ul>
+                <p>
+                    If you need to re-import samples from Sample Manager you need to delete the samples
+                    from the database first. Please note that re-importing overwrites any sample data you may have previously edited.
+                </p>
+                <h2 class="HelpSection">SMS Test Information Display Page</h2>
+                <p>
+                    This page opens in a separate window and displays a list of tests for a sample from the Sample Manager (FarmFile, SMS) database.<br />
+                    This list shows test numbers (ids), descriptions, tests (test codes) and results.
+                </p>
+                <ul>
+                    <li>Test Number: Sample Manager (FarmFile, SMS) reference number </li>
+                    <li>Description: Description of the test</li>
+                    <li>Test/Result: Combined test code and result with the SMS status indicator.</li>
+                    <li><span class="Link style3">Close window:</span> Closes the window</li>
+                </ul>
+                <a id="#SubmissionLetter.aspx"></a>
+                <h2 class="HelpSection">Submission Letter Page</h2>
+                <p>This page shows a standard letter with details filled in from the existing information in the database, and some text showing where data is missing.  
+                This can be edited here and printed off or copied and pasted into word.</p>
+                <p>Note that this can only show information where it knows it is missing, so for example if you haven't created any isolates 
+                it will not say if the year of isolation is missing or not.</p> 
+                <p>If you do print from here you may get some unwanted header and footer information.  (e.g. Page Title, page 1 of 1, etc.).
+                To clear this, from Internet Explorer, from the File menu, choose Page Setup, and then clear the boxes for Header and Footer.
+                Note:  This will apply to all pages printed from Internet Explorer.</p>
+                <a id="#SampleDetails.aspx"></a>
+                <h2 class="HelpSection">Sample Details Page</h2>
+                <p>This page allows you to create or amend a sample record.</p>
+                <h3>Sample Information</h3>
+                <ul>
+                    <li>SMS Reference: Sample Manager (FarmFile) sample identifier</li>
+                    <li>Senders Sample Reference: The sample reference used by the sender</li>
+                    <li>Sample Type: The type of sample received</li>
+                    <li>Host Group: The group to which the animal belonged</li>
+                    <li>Host Species: The species to which the animal belonged</li>
+                    <li>Host Purpose: The purpose for which the animal was used</li>
+                    <li>Sampling Location / House: The located where the animal was kept</li>
+                </ul>
+                <p>Note that the Host Species is limited to those belonging to the Host Group.</p>
+                <p>The <label style="color:blue"><span class="style3">'Latin Breeds'</span></label> 
+                link brings up a blue panel that allows you to choose the species by its Latin name.  This will fill in both the Host Group and the Host Species fields. </p>
+                <p>Once you have finished, click either the 
+                  <label style="color:blue"><span class="style3">'Insert</span></label><span class="style3">'</span>                   or 
+                   <label style="color:blue"><span class="style3">'Update</span></label><span class="style3">'</span> links to return to the <a href="Help.htm#SubmissionSamples.aspx">Submission Summary Page</a>.</p>
+                <p>Alternatively, click the 
+                  <label style="color:blue"><span class="style3">'Cancel'</span></label> link to discard your changes and return to the previous page.</p>
+                <a id="#IsolateDetails.aspx"></a>
+                <h2 class="HelpSection">Isolate Details Page</h2>
+                <p>This page allows you to create or amend an isolate record.</p>
+                <h3>Isolate Information</h3>
+                <ul>
+                    <li>Virus Family: The virus family to which the isolate belongs</li>
+                    <li>Virus Type: The virus type to which the isolate belongs</li>
+                    <li>Year Of Isolation: The year in which the isolate was isolated</li>
+                    <li>Is Mixed Isolate: Indicates whether the isolate is mixed</li>
+                    <li>Isolation Method: The method used for isolation</li>
+                    <li>Antiserum produced: Whether antiserum was produced</li>
+                    <li>Antigen Produced: Whether antigen was produced</li>
+                    <li>Phylogenetic Analysis: The details of the Phylogenetic analysis of the isolate</li>
+                    <li>Material Transfer Agreement: Whether there is a MTA present</li>
+                    <li>MTA Location: The location of the MTA</li>
+                    <li>Comment: Any comments</li>
+                    <li>Valid To Issue: Whether the isolate is valid for issue</li>
+                    <li>Why Not Valid To Issue: The reason the isolate is not valid for issue</li>
+                    <li>Original Sample Available: Whether the original sample is available</li>
+                    <li>First Viable Passage Number: The first viable passage number</li>
+                    <li>No. Of Aliquots: The number of aliquots currently available</li>
+                    <li>Freezer: The freezer in which the isolate is located</li>
+                    <li>Tray: The Tray in which the isolate is located</li>
+                    <li>Well: The Well in which the isolate is located</li>
+                    <li>Current Nomenclature: Read only field displaying the current nomenclature of the isolate</li>
+                    <li>Alternate Nomenclature: The alternate nomenclature of the isolate, this replaces the default calculated value.<br /><strong>Note: This value should only be used where the value of the alternate nomenclature is different from the value generated by the system</strong></li>
+                    <li>Note that the virus type is limited to those belonging to the virus family.</li>
+                </ul>
+                <p>Note that the tray is limited to those belonging to the freezer.</p>
+                <p>
+                    The following fields relate to the viability of the isolate, when ammending a record.&nbsp;
+                    They will be default be filled out with the most recent status of the isolate or blank if nothing has yet been recorded.</p>
+                <ul>
+                    <li>Current Viability: The viability status of the isolate </li>
+                    <li>Date Checked: The date the viability of the isolate was checked in the format dd/mm/yyyy
+                        eg. 28/01/2001 </li>
+                    <li>Checked By: The name of the person who checked the viability of the isolate </li>
+                </ul>
+                <h3>
+                    Record New Isolate Viability Information</h3>
+                <p>The following fields relate to a new viability of the isolate.&nbsp; They must all
+                    be filled out as a group, or left blank.</p>
+                <ul>
+                    <li>Viability: The viability status of the isolate</li>
+                    <li>Date Checked: The date the viability of the isolate was checked in the format dd/mm/yyyy eg. 28/01/2001 </li>
+                    <li>Checked By: The name of the person who checked the viability of the isolate</li>
+                </ul>
+                <p>Once you have finished, click the 
+                  <label style="color:blue"><span class="style3"><a id="ctl00_ContentPlaceHolder1_lnkSave" href='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolder1$lnkSave", "", true, "", "", false, true))'>
+                          Save Isolate and Continue to Characteristics</a> </span></label> <label style="color:blue">
+    <span class="style3"><span style="color: #333333"></span></span></label> links to continue on to the <a href="Help.htm#IsolateCharacteristics.aspx">Isolate Characteristics Page</a>
+                    or click on
+                    <label style="color:blue">
+                        <span class="style3"><a id="ctl00_ContentPlaceHolder1_lnkSaveImmediate" href='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolder1$lnkSaveImmediate", "", true, "", "", false, true))'>
+                            Save Isolate and return to summary screen</a><span style="color: #333333"> </span>
+                        </span>
+                    </label>
+                    return to the previous page .</p>
+                <p>Alternatively, click the 
+                  <label style="color:blue"><span class="style3">'Cancel'</span></label> link to discard your changes and return to the previous page.</p>
+                <a id="#IsolateCharacteristics.aspx"></a>
+                <h2 class="HelpSection">Isolate Characteristics Page</h2>
+                <p>This page allows you to amend the characteristic details of an isolate.</p>
+                <h3>Characteristic Details</h3>
+                <p>These vary depending on the virus family and type to which the isolate belongs.</p>
+                <a id="#IsolateRelocationManagement.aspx"></a>
+                <h2 class="HelpSection">Isolate Relocation Management Page</h2>
+                <p>This page allows you to choose to either relocate isolates or trays</p>
+                <ul>
+                    <li><a href="Help.htm#IsolateRelocate.aspx">Isolate Relocation Page</a>: Allows you to relocate virus isolates</li>
+                    <li><a href="Help.htm#TrayRelocate.aspx">Tray Relocation Page</a>: Allows you to relocate trays</li>
+                </ul>
+                <a id="#IsolateRelocate.aspx"></a>
+                <h2 class="HelpSection">Isolate Relocation Page</h2>
+                <p>This page allows you to relocate an isolate, or series of Isolates between different freezers and trays.</p>
+                <h3>Search Criteria</h3>
+                <ul>
+                    <li>Min AV Number or Single: The minimum AV number to be displayed within a range or single AV number to be displayed</li>
+                    <li>Max AV Number: The maximum AV number to be displayed within a range</li>
+                    <li>Freezer: The freezer whose contents are to be displayed</li>
+                    <li>Tray: The tray whose contents are to be displayed</li>
+                </ul>
+                <h3>Search Results</h3>
+                <p>Select the isolates you wish to relocate by clicking the box to the right of the row.</p>
+                <ul>
+                    <li>Click the <label style="color:blue"><span class="style3">'Select All'</span></label> link to select all the isolates shown</li>
+                    <li>Click the <label style="color:blue"><span class="style3">'Unselect All'</span></label> link to unselect all the isolates shown</li>
+                </ul>
+                <h3>New location for the selected Isolates</h3>
+                <ul>
+                    <li>Freezer: The name of the freezer into which the selected isolates will be relocated</li>
+                    <li>Tray: The name of the tray into which the selected isolates will be relocated</li>
+                </ul>
+                <a id="#TrayRelocate.aspx"></a>
+                <h2 class="HelpSection">Tray Relocation Page</h2>
+                <p>This page allows you to relocate a tray between different freezers.</p>
+                <h3>Search Criteria</h3>
+                <ul>
+                    <li>Freezer: The name of the freezer from which you wish to display trays</li>
+                    <li>Tray: The name of the tray which you wish to move</li>
+                </ul>
+                <h3>Search Results</h3>
+                <p>Displays the list of isolates that will be effected by the change.</p>
+                <h3>New location for the selected Tray</h3>
+                <ul>
+                    <li>Freezer: The name of the freezer into which the tray is to be relocated</li>
+                </ul>                
+                <p>Use the <span class="style3">'Save'</span> link to record the changes to the database.</p>
+                <p>If successful, the table above will automatically update and a <label style="color:green"><span class="style3">'Update Successful'</span></label> message will be displayed.</p>
+                <a id="#Reports.aspx"></a>
+                <h2 class="HelpSection">Report Selection Page</h2>
+                <p>This page allows you to select a report to display.</p>
+                <h3>Isolate Dispatch Report</h3>
+                <p>This report displays a summary of the Isolate Dispatch records between two dates.</p>
+                <a id="#IsolateDispatchReport.aspx"></a>
+                <h2 class="HelpSection">Isolate Dispatch Report Page</h2>
+                <p>This report displays a summary of the Isolate Dispatch records between two dates.</p>
+                <h3>Report Criteria</h3>
+                <ul>
+                    <li>Date From: The date from which to start displaying isolate dispatch records</li>
+                    <li>Date To: The date up to which to display dispatch records</li>
+                </ul>
+                <p>Click on the <label style="color:blue">Generate Report</label> link to display a list of matching results.</p>
+                <p>Click on the <label style="color:blue">Export to Excel</label> link to export the results into Excel.</p>
+                <a id="#IsolateDispatch.aspx"></a>
+                <h2 class="HelpSection">Isolate Dispatch Page</h2>
+                <p>This page allows you to dispatch aliquots of isolates to both internal and external recipients.</p>
+                <h3>Dispatch Information</h3>
+                <ul>
+                    <li>AV Number: The AV Number of the submission to which the isolate belongs</li>
+                    <li>No. Of Aliquots: The number of aliquots currently stored for the isolate</li>
+                    <li>Nomenclature: The nomenclature of the isolate</li>
+                    <li>Valid to Issue: Whether or not the isolate is valid to issue</li>
+                    <li>Viability: The most recent viability status of the isolate</li>
+                    <li>No of Aliquots To Be Dispatched: The number of aliquots to be dispatched, this is limited to ensure that there is always at least one aliquot remaining</li>
+                    <li>Passage Number: The passage number of the aliquots being dispatched</li>
+                    <li>Recipient Location: The location of the recipient, either internal or external </li>
+                    <li>Recipient: The identity of the recipient</li>
+                    <li>Recipient Name: The name of the recipient</li>
+                    <li>Recipient Address: The address of the recipient</li>
+                    <li>Reason For Dispatch: The reason that aliquots were requested</li>
+                    <li>Dispatched Date: The date aliquots were dispatched</li>
+                    <li>Dispatched By: The name of the person who performed the dispatch</li>
+                </ul>
+                <p>Once you have finished, click the 
+                <label style="color:blue"><span class="style3">'Dispatch'</span></label> link to continue on to the <a href="Help.htm#IsolateDispatchConfirmation.aspx">Isolate Dispatch Confirmation Page</a>.</p>
+                <p>Alternatively, click the 
+                  <label style="color:blue"><span class="style3">'Cancel'</span></label>
+                   link to discard your changes and return to the <a href="Help.htm#Home.aspx">Home Page</a>.</p>
+                <a id="#IsolateDispatchConfirmation.aspx"></a>
+                <h2 class="HelpSection">Isolate Dispatch Confirmation Page</h2>
+                <p>This page displays confirmation of the dispatch of an isolate, and a history of all the dispatches made for that isolate.</p>
+                <p>Clicking the 
+                <label style="color:blue"><span class="style3">'Return to the Search Repository Page' link </span></label> 
+                will take you back to the <a href="Help.htm#SearchRepository.aspx">Search Repository Page</a>.</p>
+                <a id="#LookupLists.aspx"></a>
+                <h2 class="HelpSection">Look-up Lists Page</h2>
+                <p>This page displays a list of all the look-up lists held within the application.</p>
+                <p>Click the 
+                  <label style="color:blue"><span class="style3">'Edit'</span></label> link to be redirected to the <a href="Help.htm#LookupListEntries.aspx">Look-up List Entries</a> page.</p>
+                <a id="#LookupListEntries.aspx"></a>
+                <h2 class="HelpSection">Look-up List Entries Page</h2>
+                <p>This page displays a list of all the entries within the selected Look-up List.</p>
+                <ul>
+                    <li>SMS Lists: These are look-up lists imported from Sample Manager (FarmFile). For the most part these lists are read only.</li>
+                    <li>Application Specific Lists: These lists are specific to the application.</li>
+                </ul>
+                <p>Click either the 
+                  <label style="color:blue"><span class="style3">'Add new entry'</span></label> or <label style="color:blue"><span class="style3">'Edit'</span></label>
+                  links to continue to the <a href="Help.htm#LookupListEntryEdit.aspx">Modify Look-up List Entry Page</a>.</p>
+                <a id="#LookupListEntryEdit.aspx"></a>
+                <h2 class="HelpSection">Modify Look-up List Entry Page</h2>
+                <p>This page allows you to insert or edit an entry in the Look-up Lists.</p>
+                <h3>SMS Lists</h3>
+                <ul>
+                    <li>Name: The value that will be displayed in all the look-up lists</li>
+                    <li>Alternate Name (Species list only):Used for the Latin name of the species, can be blank </li>
+                    <li>Parent Name (Species list only):Name of group the species belongs to, never blank </li>
+                    <li>Active: Whether the value is to be displayed in the look-up lists, this is the only value you can change</li>
+                    <li>SMS: Whether the value comes from Sample Manager (FarmFile) , always True</li>
+                    <li>SMS Code: Sample Manager (FarmFile) identifier</li>
+                </ul>
+                <p>The following information is imported from the Sample Manager (FarmFile) database:</p>
+                <ul>
+                  <li>Country information</li>
+                  <li>Regional Lab information</li>
+                  <li>Group information</li>
+                  <li>Species information, belongs to a group </li>
+                  <li>Purpose information</li>
+                  <li>Sample Type information </li>
+                </ul>
+                <p>New data is imported regularly, existing data is not amended. New items are marked as active when imported and can be changed to non-active.</p>
+                <p>Note that any changes in Sample Manager descriptions are not updated by the import routine.</p>
+                <p>&nbsp;</p>
+                <h3>Application Specific Lists</h3>
+                <ul>
+                    <li>Name: The value that will be displayed in all the look-up lists</li>
+                    <li>Active: Whether the value is to be displayed in the look-up lists</li>
+                </ul>
+                <a id="#VirusCharacteristicManagement.aspx"></a>
+                <h2 class="HelpSection">Virus Characteristic Management Page</h2>
+                <p>From this page you can access either of two other functions:</p>
+                <ul>
+                    <li><a href="Help.htm#VirusCharacteristics.aspx"> Manage the list of available Virus Characteristics</a>: Allows you to display, add and update the list of the virus characteristics held by the application</li>
+                    <li><a href="Help.htm#VirusFamilyAndType.aspx">Associate Virus Characteristic to a Virus Family and Type</a>: Allows you to associate or remove characteristics from virus families and types</li>
+                </ul>
+                <a id="#VirusCharacteristics.aspx"></a>
+                <h2 class="HelpSection">Virus Characteristics Display Page</h2>
+                <p>This page displays a list of all the virus characteristics currently held by the application.</p>
+                <p>Clicking either the 
+                  <label style="color:blue"><span class="style3">'Add a new Virus Characteristic'</span></label> link or the <label style="color:blue"><span class="style3">'Edit'</span></label> link will take you to the <a href="Help.htm#VirusCharacteristicEdit.aspx">Virus Characteristic Modification</a> page.</p>
+                <p>For characteristics that have a fixed list of values, click the 
+                  <label style="color:blue"><span class="style3">'Edit list entries'</span></label> link to get to the <a href="Help.htm#VirusCharacteristicListEntries.aspx">Virus Characteristic Entry Listing</a> page.</p>
+                <a id="#VirusCharacteristicEdit.aspx"></a>
+                <h2 class="HelpSection">Virus Characteristic Modification Page</h2>
+                <p>This page allows you to add, edit or delete virus characteristics.</p>
+                <h3>Virus Characteristic Information</h3>
+                <ul>
+                    <li>Name: The name of the virus characteristic</li>
+                    <li>Characteristic Type: The type of characteristic (text, numeric, yes/no or single list)</li>
+                    <li>Numeric Sort: Whether the characteristic should be sorted in numerical order</li>
+                    <li>Display In Nomenclature: Whether the characteristic should be displayed in the Isolate
+                        Nomenclature and on the Submission summary page </li>
+                    <li>Prefix: The prefix to be added to the value of the characteristic when displayed</li>
+                    <li>Min Value: The minimum value of the characteristic (Numeric only)</li>
+                    <li>Max Value: The maximum value of the characteristic (Numeric only)</li>
+                    <li>Decimal Places: The number of decimal places required for the characteristic (Numeric only)</li>
+                    <li>Length: The maximum length of the characteristic (Text and Numeric only)</li>
+                    <li>Display Order: This is a numeric value which determines in what position the characteristic will appear. For example the characteristic with the lowerst value will appear first followed by the next lowest and so on</li>
+                </ul>
+                <p>Once you have finished click the 
+                  <label style="color:blue"><span class="style3">'Insert'</span></label><span class="para-black-small"> or                  </span><span class="style4">
+                  <label class="para-black-small">'Update'</label>
+                </span><span class="para-black-small">                  </span> link to save your changes.</p>
+                <p>Alternatively click the 'Delete' link to remove the virus characteristic, or
+                    <label style="color:blue"><span class="style3">'Cancel'</span></label> to return to the previous page.</p>
+                <a id="#VirusCharacteristicListEntries.aspx"></a>
+                <h2 class="HelpSection">Virus Characteristic Entry Listing Page</h2>
+                <p>This page displays a listing of the fixed entries available for the selected virus characteristic.</p>
+                <a id="#VirusCharacteristicListEntryEdit.aspx"></a>
+                <h2 class="HelpSection">Virus Characteristic Entry Listing Modification Page</h2>
+                <p>This page allows you to add, edit or delete fixed entries for a virus characteristic.</p>
+                <a id="#VirusFamilyAndType.aspx"></a>
+                <h2 class="HelpSection">Virus Characteristic Assignment Page</h2>
+                <p>This page allows you to associate virus characteristics with a selected virus family and fype.</p>
+                <ul>
+                    <li>First select the relevant virus family and type</li>
+                    <li>Then click the 
+                      <label style="color:blue"><span class="style3">'Add' link </span></label> to add a characteristic or the 
+                      <label style="color:blue"><span class="style3">'Remove'</span></label> link to remove a characteristic</li>
+                </ul>
+                <a id="#SearchRepository.aspx"></a>
+                <h2 class="HelpSection">Search Repository Page</h2>
+                <p>This page allows you to search the repository for isolates matching the criteria specified.</p>
+                <h3>Search Criteria</h3>
+                <p>Select values from the picklists that are going to be included in the search: </p>
+                <ul>
+                    <li>AV Number: The AV Number of the submission</li>
+                    <li>Virus Family: The virus family</li>
+                    <li>Virus Type: The virus type</li>
+                    
+                    <li>Virus Characteristics: The virus characteristics, limited to those available for
+                        the selected virus type.&nbsp; 
+                                                                                  
+                        Up to three characteristics can be selected.
+                    </li>
+                </ul>
+               
+                <blockquote>
+                  <p>	When you select a Virus Characteristic, the system will offer you operators and
+                      entry fields/pick list appropriate to the Characteristic type: </p>
+                </blockquote>
+                    <table style="width: 809px">
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px; background-color: whitesmoke;">
+                                <strong>List Type:
+                                    <br />
+                                </strong>e.g. 'H Type'
+                            </td>
+                            <td style="width: 94px; font-style: italic;">
+                                <em>=</em></td>
+                            <td style="width: 583px">
+                                if you don't select a value from the picklist, the search will look for isolates
+                                with that characteristic type (whether they have a value or not) and return them
+                                all</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px">
+                            </td>
+                            <td style="width: 94px; font-style: italic;">
+                            </td>
+                            <td style="width: 583px">
+                                if you select a value from the pick list, the search will look for isolates that
+                                have that characteristic set to the value you selected in the pick list</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 7px">
+                            </td>
+                            <td style="width: 119px; height: 7px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 7px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 47px;">
+                            </td>
+                            <td style="width: 119px; height: 47px;">
+                            </td>
+                            <td style="width: 94px; font-style: italic; height: 47px;">
+                                <em>not equal to</em></td>
+                            <td style="width: 583px; height: 47px;">
+                                if you don't select a value from the pick list, the search will look for isolates
+                                with that characteristic type that have a value entered (blank entries will not
+                                be returned)</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px">
+                            </td>
+                            <td style="width: 94px; font-style: italic;">
+                            </td>
+                            <td style="width: 583px">
+                                if you select a value from the pick list, the search will look for isolates that
+                                have that characteristic and a value not equal to the one you selected (blank entries
+                                will be returned)</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 7px">
+                            </td>
+                            <td style="width: 119px; height: 7px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 7px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 39px">
+                            </td>
+                            <td style="width: 119px; height: 39px">
+                            </td>
+                            <td style="width: 94px; font-style: italic;">
+                                begins with</td>
+                            <td style="width: 583px; height: 39px">
+                                if you don't enter a value in the field, the search will look for isolates with
+                                that characteristic type (whether they have a value or not) and return them all</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 35px;">
+                            </td>
+                            <td style="width: 119px; height: 35px;">
+                            </td>
+                            <td style="width: 94px; font-style: italic; height: 35px;">
+                            </td>
+                            <td style="width: 583px; height: 35px;">
+                                if you enter a value in the field, the search will look for isolates that have that
+                                characteristic and have a value that begins with the value you have entered</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 18px">
+                            </td>
+                            <td style="width: 119px; height: 18px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 18px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px; background-color: whitesmoke;">
+                                <strong>Numeric Type: </strong>
+                                <br />
+                                e.g. 'IVPI'</td>
+                            <td style="width: 94px; font-style: italic;">
+                                =</td>
+                            <td style="width: 583px">
+                                if you don't enter a value in the field, the search will look for isolates with
+                                that characteristic type (whether they have a value or not) and return them all
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 7px">
+                            </td>
+                            <td style="width: 119px; height: 7px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 7px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px">
+                            </td>
+                            <td style="width: 94px; font-style: italic;">
+                                &lt;, &gt;, &lt;=, &gt;=</td>
+                            <td style="width: 583px">
+                                if you select one of these comparators, the system will compare the value you enter
+                                in the field with the value held against that characteristic and return all isolates
+                                that satisfy the comparison</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 7px">
+                            </td>
+                            <td style="width: 119px; height: 7px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 7px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px">
+                            </td>
+                            <td style="width: 94px; font-style: italic;">
+                                between</td>
+                            <td style="width: 583px">
+                                you can enter two values between which (inclusively) you want to search for - if
+                                you leave any of the two fields blank it will in effect perform either a &gt;=
+                                or &lt;= comparison depending on which of the two you left blank - for example,
+                                if you put 0.5 in the first field and leave the second field blank, the system will
+                                search for values &gt;=0.5</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 18px">
+                            </td>
+                            <td style="width: 119px; height: 18px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 18px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px; background-color: whitesmoke;">
+                                <strong>Yes/No Type:<br />
+                                </strong>e.g. 'Calcification Present'</td>
+                            <td style="width: 94px; font-style: italic;">
+                                =</td>
+                            <td style="width: 583px">
+                                select either 'Yes' or 'No' from the pick list<br />
+                                <br />
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 18px">
+                            </td>
+                            <td style="width: 119px; height: 18px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 18px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px">
+                            </td>
+                            <td style="width: 119px; background-color: whitesmoke;">
+                                <strong>Text Type:
+                                    <br />
+                                </strong>e.g. 'Descriptive Analysis'</td>
+                            <td style="width: 94px; font-style: italic;">
+                                =
+                            </td>
+                            <td style="width: 583px">
+                                enter the text you wish to search for in the field - note: only those isolates that
+                                match that text exactly will be returned
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 5px">
+                            </td>
+                            <td style="width: 119px; height: 5px">
+                            </td>
+                            <td style="width: 94px; font-style: italic">
+                            </td>
+                            <td style="width: 583px; height: 5px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px; height: 39px">
+                            </td>
+                            <td style="width: 119px; height: 39px">
+                            </td>
+                            <td style="width: 94px; height: 39px; font-style: italic;">
+                                contains
+                            </td>
+                            <td style="width: 583px; height: 39px">
+                                enter the text you wish to search for in the field - the system will return isolates
+                                that have that text anywhere in the characteristic value</td>
+                        </tr>
+                    </table>
+                               
+                <ul>
+                        
+                    <li>Group: The host group</li>
+                    <li>Species: The host species</li>
+                    <li>Country of Origin: The country of origin</li>
+                    <li>Year of Isolation: The year of isolation</li>
+                    <li>Year Submission Received: The year of submission</li>
+                    <li>Received From Date: The minimum received date </li>
+                    <li>Received To Date: The maximum received date </li>
+                </ul>
+                <p>Once you have finished entering criteria click the 
+                  <label style="color:blue"><span class="style3">'Search'</span></label> 
+                  link.</p>
+                <p>The system will return isolates matching ALL of the criteria you specified</p> 
+                <p>To view full details of any isolate, click  the <a href="Help.htm#ViewIsolateDetails.aspx" class="style5">View</a> link at the end of the appropriate row.</p>
+                <p>If you have sufficient access rights, you can click  the <a href="Help.htm#IsolateDispatch.aspx">Dispatch</a> link to dispatch any given isolate.</p>
+                <p>Clicking the  <strong>'Export to Excel</strong>' link will prompt whether you want to open or save the search results in spreadsheet format:</p>
+                <ul>
+                  <li><strong>Open</strong> - click to open the result table in a spreadsheet displayed in a separate window. <br />
+                    Note: if you want to save from this page, you need to select 'Save As' and then change the file type to Excel format. <br />
+                  </li>
+                  <li><strong>Save</strong> - prompts you to set a folder and assign a file name for the Excel spreadsheet. You can then work on this file using Excel. </li>
+                </ul>
+                <blockquote>
+                  <p>	Note that the spreadsheet data is sorted by the AV Number regardless of the sorting in your search results page </p>
+                </blockquote>
+                <p>
+                  To clear the criteria and search results, click the 
+                  <label style="color:blue"><span class="style3">'Clear Search'</span></label> link.</p>
+                <a id="#ViewIsolateDetails.aspx"></a>
+                <h2 class="HelpSection">View Isolate Details Page</h2>
+                <p>This page displays the full details of the selected isolate in read-only mode. <br />
+                The fields are not described here as it is obvious what they contain. </p>
+                <p>In addition there are grids displaying additional information, if available:</p>
+                <p>Viability Check Information: Shows viability status, date checked and checked by details</p>
+                <blockquote>
+                  <p>	Click the 'Edit Viability History' link to open the <a href="#IsolateViabilityHistory.aspx">Isolate Viability History page</a> </p>
+                </blockquote>
+                <p>Dispatch Information: Shows recipient name, recipient address, reason, number of aliquots, dispatched by and dispatch date details</p>
+                <blockquote>
+                  <p>Click the 'Edit Dispatch History' link to open the <a href="#IsolateDispatchHistory.aspx">Isolate Dispatch History page</a></p>
+                </blockquote>
+                <p>Characteristics Information: Shows charasteristics name and characteristics value details.</p>
+                <p>There is no facility to edit characteristics information from this page  </p>
+                <p>Click the <a href="Help.htm#SearchRepository.aspx">Back to Search Results</a> link to return to the Search Repository page.</p>
+                <a id="#IsolateDispatchHistory.aspx"></a>
+                <h2 class="HelpSection">Isolate Dispatch History Page</h2>
+                <p>This page displays the dispatch history for the selected isolate.</p>
+                <h3>Isolates for this submission</h3>
+                <p>The nomenclature of the isolate is displayed at the top of the page.</p>
+                <p>The table shows a list of all the isolate currently registered for the selected submission:</p>
+                <ul>
+                    <li>No of Aliquots: The number of aliquots to be dispatched, this is limited to ensure that there is always at least one aliquot remaining</li>
+                    <li>Passage Number: The passage number of the aliquots being dispatched</li>
+                    <li>Recipient Location: The location of the recipient</li>
+                    <li>Recipient: The identity of the recipient</li>
+                    <li>Recipient Name: The name of the recipient</li>
+                    <li>Recipient Address: The address of the recipient</li>
+                    <li>Reason For Dispatch: The reason that aliquots were requested</li>
+                    <li>Dispatched Date: The date aliquots were dispatched</li>
+                    <li>Dispatched By: The name of the person who performed the dispatch</li>
+                    <li><a href="Help.htm#IsolateDispatchHistoryEdit.aspx">Edit</a>: Allows you to edit the isolate dispatch record</li>
+                    <li><span style="color: black">
+                      <label style="color:blue"></label>
+                    </span>Delete:Deletes the isolate dispatch record</li>
+                </ul>
+                <p>Click <a href="Help.htm#ViewIsolateDetails.aspx">Return to View Isolate Details Page</a> to return to that screen.</p>
+                <a id="#IsolateDispatchHistoryEdit.aspx"></a>
+                <h2 class="HelpSection">Edit Isolate Dispatch History Page</h2>
+                <p>This page allows you to edit the dispatch information for an isolate.</p>
+                <h3>Dispatch Information</h3>
+                <ul>
+                    <li>AV Number: The AV number of the submission to which the isolate belongs</li>
+                    <li>No. Of Aliquots: The number of aliquots currently stored for the isolate</li>
+                    <li>Nomenclature: The nomenclature of the isolate</li>
+                    <li>Valid to Issue: Whether or not the isolate is valid to issue</li>
+                    <li>Viability: The most recent viability status of the isolate</li>
+                    <li>No of Aliquots To Be Dispatched: The number of aliquots to be dispatched, this is limited to ensure that there is always at least one aliquot remaining</li>
+                    <li>Passage Number: The passage number of the aliquots being dispatched</li>
+                    <li>Recipient Location: The location of the recipient</li>
+                    <li>Recipient: The identity of the recipient</li>
+                    <li>Recipient Name: The name of the recipient</li>
+                    <li>Recipient Address: The address of the recipient</li>
+                    <li>Reason For Dispatch: The reason that aliquots were requested</li>
+                    <li>Dispatched Date: The date aliquots were dispatched</li>
+                    <li>Dispatched By: The name of the person who performed the dispatch</li>
+                </ul>
+                <p>Clink the 
+                <label style="color:blue"><span class="style3">'Save'</span></label> link to save your changes or the <label style="color:blue"><span class="style3">'Cancel'</span></label> link to return to the previous page.</p>
+                <a id="#IsolateViabilityHistory.aspx"></a>
+                <h2 class="HelpSection">Isolate Viability History Page</h2>
+                <p>This page displays the viability information history for the selected isolate.</p>
+                <p>The nomenclature is shown above the grid with the following information</p>
+                <ul>
+                  <li>Viable: viability status</li>
+                  <li>Date Checked: date the viability was checked</li>
+                  <li>Checked By: who checked the viability</li>
+                </ul>
+                <p> 'Edit' link: clicking this opens the current record for editing and makes two links available</p>
+                <blockquote>
+                  <p>'Update': click this to save your changes and revert to viewing the records</p>
+                  <p>'Cancel': click this to cancel any edits and to revert to viewing the records </p>
+                </blockquote>
+                <p>'Delete' link is always present: click to delete the current record. You will be asked to confirm the deletion.</p>
+                <p>Click the link 'Return to Isolate Details page' to return to the previous page.  </p>
+                <a id="#SearchAuditLog.aspx"></a>
+                <h2 class="HelpSection">View Audit Logs Page</h2>
+                <p>This will display any details from the audit log that match the entered criteria:</p>
+                <ul>
+                    <li>AV Number: The AV number to be displayed</li>
+                    <li>Date/Time From: The minimum date for records to be displayed</li>
+                    <li>Date/Time To: The maximum date for records to be displayed</li>
+                    <li>User: The User to be displayed</li>
+                </ul>
+                <p>A set of links will be displayed which will allow you to view the audit records for:</p>
+                <ul>
+                    <li>Submissions</li> 
+                    <li>Samples</li>
+                    <li>Isolates</li>
+                    <li>Characteristics</li>
+                    <li>Isolate Dispatches</li>
+                    <li>Isolate Viability</li>
+                </ul>
+                <p>The audit records list the user responsible for the change, the date and time of the change and the type of change (Insert, Update or Delete).</p>
+                <p>There then follows a list of all the data items in the log for the specified item type:</p>
+                <ul>
+                    <li>Isolate audit records contain two large fields Phylogenetic analysis and Comments</li>
+                    <li>As these may be large they are not displayed in the table</li>
+                    <li>They may be accessed by clicking the <a href="Help.htm#LogIsolateDetails.aspx" class="style3">'more'</a> link at the end of the appropriate row</li>
+                </ul>
+                <a id="#LogIsolateDetails.aspx"></a>
+                <h2 class="HelpSection">View Log Isolate Details Page</h2>
+                <p>This page shows the Phylogenetic analysis and comment stored for the specific isolate audit log record.</p>
+                <a id="#ContactUs.aspx"></a>
+                <h2 class="HelpSection">Contact Us Page</h2>
+                <p>This page has a link to the ITU Helpdesk where you can log any errors, comments or suggestions regarding the application.</p>
+                <a id="#SystemInformation.aspx"></a>
+                <h2 class="HelpSection">System Information Page</h2>
+                <p>This page gives information about the system including the application name, database and current user.</p>
+                <p>The release notes for the application can be seen by clicking the 'release notes' link.</p>
+                <p>Any errors that have occurred in the system over the last 5 days can be seen by clicking the 'Error Log' link.</p>
+                <a id="#ErrorPage.aspx"></a>
+                <h2 class="HelpSection">Error Page</h2>
+                <p>This page will be displayed when an error occurs within the system.</p>
+                <p>Using the navigation links displayed, you will need to return to the Home page.</p>
+                <p>If the error persists then it should immediately be reported to the ITU Helpdesk via the link on the <a href="Help.htm#ContactUs.aspx">Contact Us</a> page.</p>
+                <a id="#Unauthorised.aspx"></a>
+                <h2 class="HelpSection">Unauthorised Access Page</h2>
+                <p>This page will be displayed when you try and load a page to which you are not allowed access.</p>
+                <p>Using the navigation links displayed, you will need to return to the Home page.</p>
+                <a id="#ConcurrencyError.aspx"></a>
+                <h2 class="HelpSection">Concurrency Error Page</h2>
+                <p>This page will be displayed when another user has updated the item you are looking at, since you last retrieved it.</p>
+                <p>The purpose of this is to prevent changes from being overwritten as the data that was being displayed is not the most up to date.</p>
+                <p>You will need to reselect the item and reapply the changes.</p>
+                <p>Using the navigation links displayed, return to the Home page.</p>
+            </div>
+        </div>
+    </body>
+</html>

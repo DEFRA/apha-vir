@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Models.AuditLog;
 using AutoMapper;
 
 namespace Apha.VIR.Web.Mappings
@@ -23,6 +24,18 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>();
             CreateMap<IsolateDispatchInfoDTO, IsolateDispatchEditViewModel>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>().ReverseMap();
+            CreateMap<IsolateDispatchCreateViewModel, IsolateDispatchInfoDTO>();
+            CreateMap<IsolateDispatchReportDTO, IsolateDispatchReportModel>().ReverseMap();
+            CreateMap<AuditCharacteristicLogDTO, AuditCharacteristicsLogModel>().ReverseMap();
+            CreateMap<AuditDispatchLogDTO, AuditDispatchLogModel>().ReverseMap();
+            CreateMap<AuditIsolateLogDTO, AuditIsolateLogModel>().ReverseMap();
+            CreateMap<AuditSampleLogDTO, AuditSampleLogModel>().ReverseMap();
+            CreateMap<AuditSubmissionLogDTO, AuditSubmissionLogModel>().ReverseMap();
+            CreateMap<AuditViabilityLogDTO, AuditIsolateViabilityLogModel>().ReverseMap();
+            CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetailsViewModel>().ReverseMap();
+            CreateMap<SenderDTO, SenderViewModel>().ReverseMap();
+            CreateMap<SubmissionDTO, SubmissionEditViewModel>().ReverseMap();
+            CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
             CreateMap<SystemInfoDTO, SystemInformationViewModel>().ReverseMap();
         }
     }

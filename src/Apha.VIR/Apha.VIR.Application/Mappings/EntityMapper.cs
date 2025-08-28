@@ -40,12 +40,24 @@ namespace Apha.VIR.Application.Mappings
              .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => MappingHelper.ToDateStringFormat(src.ReceivedDate)));
             CreateMap<IsolateFullDetail, IsolateFullDetailDTO>().ReverseMap();
             CreateMap<IsolateInfoDTO, IsolateInfo>().ReverseMap();
-            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>().ReverseMap();
+            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>()
+             .ForMember(dest => dest.NoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquotsToBeDispatched))
+             .ForMember(dest => dest.IsolateNoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquots)).ReverseMap();
             CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfo, IsolateViability>().ReverseMap();
             CreateMap<IsolateViability, IsolateViabilityDTO>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViability>().ReverseMap();
+            CreateMap<IsolateDispatchReportDTO, IsolateDispatchInfo>().ReverseMap();
+            CreateMap<AuditCharacteristicLogDTO, AuditCharacteristicLog>().ReverseMap();
+            CreateMap<AuditDispatchLogDTO, AuditDispatchLog>().ReverseMap();
+            CreateMap<AuditIsolateLogDTO, AuditIsolateLog>().ReverseMap();
+            CreateMap<AuditSampleLogDTO, AuditSampleLog>().ReverseMap();
+            CreateMap<AuditSubmissionLogDTO, AuditSubmissionLog>().ReverseMap();
+            CreateMap<AuditViabilityLogDTO, AuditViabilityLog>().ReverseMap();
+            CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetail>().ReverseMap();
+            CreateMap<SenderDTO, Sender>().ReverseMap();
+            CreateMap<SubmissionDTO, Submission>().ReverseMap();
             CreateMap<SystemInfo, SystemInfoDTO>().ReverseMap();
         }
     }

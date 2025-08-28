@@ -1,6 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +55,7 @@ namespace Apha.VIR.Web.Controllers
 
             var result = await _isolateViabilityService.
                 GetViabilityHistoryAsync(AVNumber, Isolate);
-           
+
             var viability = _mapper.Map<IEnumerable<IsolateViabilityModel>>
                 (result.Where(x => x.IsolateViabilityId == IsolateViabilityId));
 
@@ -76,10 +75,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(IsolateViabilityViewModel model)
         {
-            string userid = "TestUser";            
+            string userid = "TestUser";
 
             if (!ModelState.IsValid)
-            {       
+            {
                 var vaibilities = await _lookupService.GetAllViabilityAsync();
                 var staffs = await _lookupService.GetAllStaffAsync();
                 model.ViabilityList = vaibilities.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
@@ -87,9 +86,6 @@ namespace Apha.VIR.Web.Controllers
 
                 return View("Edit", model);
             }
-            //ModelState.Remove("IsolateViability.ViabilityStatus");
-            //ModelState.Remove("IsolateViability.CheckedByName");
-            //ModelState.Remove("IsolateViability.ViableName");
 
             var dto = _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability);
 

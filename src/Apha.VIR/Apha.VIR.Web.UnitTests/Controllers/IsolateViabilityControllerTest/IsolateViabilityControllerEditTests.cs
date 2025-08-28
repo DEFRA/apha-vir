@@ -162,6 +162,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             Assert.Equal(model.IsolateViability.IsolateViabilityIsolateId, redirectResult.RouteValues["Isolate"]);
 
             await _isolateViabilityService.Received(1).UpdateIsolateViabilityAsync(dto, "TestUser");
-        }        
+        }
     }
 }

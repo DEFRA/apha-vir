@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Apha.VIR.Web.Utilities;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.Extensions.Options;
 
 namespace Apha.VIR.Web.Models
 {
@@ -37,7 +37,7 @@ namespace Apha.VIR.Web.Models
             }
             else
             {
-                if (!string.IsNullOrEmpty(AVNumber) && !Submission.IsAVNumberValid(AVNumber))
+                if (!string.IsNullOrEmpty(AVNumber) && !AVNumberUtil.IsAVNumberValid(AVNumber))
                 {
                     results.Add(new ValidationResult("The correct format for an AV number is either AVNNNNNN-YY, PDNNNN-NN SINNNNNN-YY. Please amend and try again"));
                 }
