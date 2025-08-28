@@ -1,0 +1,228 @@
+@model IsolateRelocateViewModel
+@{
+    ViewData["Title"] = "Virus Isolate Relocation | Virus Isolates Repository";
+}
+<p>Please specify the criteria you wish to use to search for isolates:</p>
+<div class="d-flex" style="font-size:small">
+    <div class="search-criteria flex-grow-1 me-3" style="width: 500px;">
+
+        <div class="form-group row mb-0" style="width:85%;">
+            <div class="col-sm-3">
+                <label for="MinimumAVNumber" style="white-space: nowrap;">AV Number or AV Number Range</label>
+            </div>
+            <div class="col-sm-3">
+                <label for="MinimumAVNumber">Min AV Number or Single:</label>
+                <input type="text" id="MinimumAVNumber" asp-for="MinAVNumber" class="d-block w-250" />
+            </div>
+        </div>
+        <div class="form-group row mb-0" style="width:85%;">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+                <label for="MinimumAVNumber">Max AV Number:</label>
+                <input type="text" id="MaximumAVNumber" asp-for="MaxAVNumber" class="d-block w-250" />
+            </div>
+        </div>
+        <div class="form-group row mb-0 mt-2" style="width:85%;">
+            <div class="col-sm-3">
+                <label  style="white-space: nowrap;">Freezer & Tray</label>
+            </div>
+            <div class="col-sm-3">
+                <label for="SelectedFreezer">Freezer</label>
+                <select id="FreezerSearch" asp-for="SelectedFreezer" asp-items="Model.FreezerSelectList" class="d-block w-250" asp-option-label="Select Freezer">
+                </select>
+            </div>
+            <div class="col-sm-3" style="width:60px"></div>
+            <div id="divNewFreezer" class="col-sm-3" style="width:400px;display: none;">
+                <label style="white-space: nowrap;"> New location for the selected Isolates </label>
+                <div class="d-flex align-items-center">
+                    <label for="NewFreezer" class="me-2 mb-0">Freezer</label>
+                    <img src="~\Images\spacer.gif" width="31px" height="5" alt="">
+                    <select id="NewFreezer" asp-for="SelectedNewFreezer" asp-items="Model.FreezerSelectList" class="w-250 d-inline-block align-middle me-3" asp-option-label="Select Freezer">
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group row mb-0" style="width:85%;">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+                <label for="FreezerSearch">Tray</label>
+                <select id="TraySearch" asp-for="SelectedTray" asp-items="Model.TraySelectList" class="d-block w-250">
+                </select>
+            </div>
+            <div class="col-sm-3" style="width:60px"></div>
+            <div id="divNewTray" class="col-sm-3" style="width:400px;display: none;">
+                <img src="~\Images\spacer.gif" width="200px" height="5" alt="">
+                <div class="d-flex align-items-center">
+                    <label for="NewTray">Tray</label>
+                    <img src="~\Images\spacer.gif" width="60px" height="5" alt="">
+                    <select id="NewTray" asp-for="SelectedNewTray" asp-items="Model.TraySelectList" class="w-250 d-inline-block align-middle me-3">
+                    </select>
+                    
+                </div>
+                <button id="saveButton" class="btn btn-link isolaterelocate-btn-link-custom">Save</button>
+            </div>
+        </div>
+        <div class="form-group row mb-0 mt-4" style="width:85%;">
+
+            <div class="col-sm-3 offset-sm-5">
+                <button id="searchButton" class="btn  btn-link isolaterelocate-btn-link-custom">Search</button>
+            </div>
+         </div>
+
+    </div>
+
+</div>
+
+
+
+<div id="updateMessage" class="alert alert-success" style="display: none;">
+    Update successful.
+</div>
+
+<div id="validationPanel" class="alert alert-danger" style="display: none;">
+    <p>There are validation messages requiring your attention.</p>
+    <p id="validationMessage"></p>
+</div>
+
+Search Results
+
+    <div style="text-align: right; margin-right: 650px;">
+        <button id="selectAllButton" class="btn btn-link isolaterelocate-btn-link-custom">Select All</button>
+        <button id="unselectAllButton" class="btn btn-link isolaterelocate-btn-link-custom">Unselect All</button>
+    </div>
+
+
+
+<div id="noIsolatesMessage" style="margin: 20px 0; border: 1px solid #ccc; border-spacing: 2px; width: fit-content;">
+    There are no isolates matching the criteria specified
+</div>
+<table id="isolatesTable" class="IsolateRelocatetable" style="display:none;">
+    <thead>
+        <tr>
+            <th>AV Number</th>
+            <th>Nomenclature</th>
+            <th>Freezer</th>
+            <th>Tray</th>
+            <th>Well</th>
+            <th>Select</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table> 
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#FreezerSearch').change(function () {
+                updateTrayList('TraySearch', $(this).val());
+            });
+
+            $('#NewFreezer').change(function () {
+                updateTrayList('NewTray', $(this).val());
+            });
+
+            $('#searchButton').click(function () {
+                performSearch();
+            });
+
+            $('#saveButton').click(function () {
+                if (confirm('Please confirm you wish to relocate the selected Isolates')) {
+                    saveRelocations();
+                }
+            });
+
+            $('#selectAllButton').click(function () {
+                $('.select-isolate').prop('checked', true);
+            });
+
+            $('#unselectAllButton').click(function () {
+                $('.select-isolate').prop('checked', false);
+            });
+
+            $(document).on('click', '.edit-isolate', function () {
+                var isolateId = $(this).data('id');
+                editIsolate(isolateId);
+            });
+        });
+
+        function updateTrayList(traySelectId, freezerId) {
+            $.ajax({
+                url: '/IsolateRelocate/GetTrayList',
+                type: 'GET',
+                data: { freezerId: freezerId },
+                success: function (data) {
+                    var traySelect = $('#' + traySelectId);
+                    traySelect.empty();
+                    traySelect.append($('<option></option>').val('').text('Select Tray'));
+                    $.each(data, function (i, item) {
+                        traySelect.append($('<option></option>').val(item.value).text(item.text));
+                    });
+                }
+            });
+        }
+
+         function performSearch() {
+            $.ajax({
+                url: '/IsolateRelocate/Search',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    MinAVNumber: $('#MinimumAVNumber').val(),
+                    MaxAVNumber: $('#MaximumAVNumber').val(),
+                    SelectedFreezer: $('#FreezerSearch').val(),
+                    SelectedTray: $('#TraySearch').val()
+                }),
+                success: function (data) {
+                    $('#isolatesTable tbody').html(data);
+                    $('#divNewFreezer').show();
+                    $('#divNewTray').show();
+                    if ($.trim(data).length == 0) {
+                        $('#isolatesTable').hide();
+                        $('#noIsolatesMessage').show();
+                    } else {
+                        $('#isolatesTable').show();
+                        $('#noIsolatesMessage').hide();
+                    }
+                }
+            });
+        }
+
+
+        function saveRelocations() {
+            var selectedIsolates = [];
+            $('.select-isolate:checked').each(function () {
+                selectedIsolates.push($(this).data('id'));
+            });
+
+            $.ajax({
+                url: '/IsolateRelocate/SaveRelocations',
+                type: 'POST',
+                data: {
+                    isolateIds: selectedIsolates,
+                    newFreezerId: $('#NewFreezer').val(),
+                    newTrayId: $('#NewTray').val()
+                },
+                success: function (data) {
+                    if (data.success) {
+                        $('#updateMessage').show().delay(3000).fadeOut();
+                        performSearch();
+                    } else {
+                        $('#validationMessage').text(data.message);
+                        $('#validationPanel').show();
+                    }
+                }
+            });
+        }
+
+        function editIsolate(isolateId) {
+            
+            console.log('Edit isolate with ID: ' + isolateId);
+        }
+    </script>
+}

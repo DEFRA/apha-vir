@@ -828,6 +828,10 @@ body {
     width: 210px !important;
 }
 
+.w-250 {
+    width: 250px !important;
+}
+
 .w-500 {
     width: 500px !important;
 }
@@ -900,4 +904,50 @@ body {
     margin-top: 20px;
 }
 
+.IsolateRelocatetable {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    table-layout: auto; /* auto-sizes columns based on content */
+    width: auto; /* do not force 100% */
+    box-sizing: border-box;
+}
 
+    .IsolateRelocatetable thead th {
+        background-color: #0b2677;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 100%;
+    }
+
+    .IsolateRelocatetable tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+    .IsolateRelocatetable tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .IsolateRelocatetable th,
+    .IsolateRelocatetable td {
+        border: 1px solid gray;
+        padding: 6px 10px;
+        white-space: nowrap; /* keeps columns as wide as their content */
+    }
+
+.isolaterelocate-btn-link-custom {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    font-family: Verdana, Arial, Helvetica, sans-serif !important;
+    color: #0000FF !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+}
+
+button.isolaterelocate-btn-link-custom.btn-link {
+    all: unset; /* strips Bootstrap styles */
+    color: #0000FF;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    text-decoration: underline;
+    cursor: pointer;
+}
