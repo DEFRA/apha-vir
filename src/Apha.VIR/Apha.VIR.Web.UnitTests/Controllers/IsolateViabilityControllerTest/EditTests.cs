@@ -9,13 +9,13 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
 {
-    public class IsolateViabilityControllerEditTests
+    public class EditTests
     {
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
         private readonly IsolateViabilityController _controller;
         private readonly ILookupService _lookupService;
-        public IsolateViabilityControllerEditTests()
+        public EditTests()
         {
             _lookupService = Substitute.For<ILookupService>();
             _isolateViabilityService = Substitute.For<IIsolateViabilityService>();
