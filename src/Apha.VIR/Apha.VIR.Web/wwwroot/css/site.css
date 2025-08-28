@@ -901,3 +901,50 @@ a:hover {color: #0000FF;  text-decoration: underline; }
 .editsubmission-addsender-input {
     width: 350px;
 }
+
+/*-- Add/Edit Sample --*/
+.addeditsample-input {
+    width: 226px;
+    height: 21px;
+    padding: 2px 2px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    font-family: Arial;
+    border-color: gray;
+}
+
+.addeditsample-addsender-select {
+    width: 6cm;
+    height: 21px;
+    padding: 2px 2px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    font-family: Arial;
+    border-color: darkgray;
+}
+
+.addeditsample-btn-link-custom {
+    background: none;
+    border: none;
+    font-family: verdana, arial, helvetica, sans-serif;
+    color: #0000FF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.contentbox {
+    border: #0b2677 1px solid;
+    width: 90%;
+}
+
+    .contentbox .box_title {
+        padding-top: 3px;
+        padding-right: 10px;
+        padding-bottom: 3px;
+        padding-left: 10px;
+        background-color: #0b2677;
+        color: #ffffff;
+        font-weight: bold;
+    }
