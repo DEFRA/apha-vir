@@ -37,7 +37,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var lookupEntries = new PaginatedResult<LookupItemDTO> { data = new List<LookupItemDTO>(), TotalCount = 0 };
             var lookupItems = new List<LookupItemModel>();
 
-            _lookupService.GetLookupsByIdAsync(lookupId).Returns(lookupResult);
+            _lookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
 
             _lookupService.GetAllLookupItemsAsync(lookupId, 1, 10).Returns(lookupEntries);
@@ -63,7 +63,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var lookupEntries = new PaginatedResult<LookupItemDTO> { data = new List<LookupItemDTO>(), TotalCount = 100 };
             var lookupItems = new List<LookupItemModel>();
 
-            _lookupService.GetLookupsByIdAsync(lookupId).Returns(lookupResult);
+            _lookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
             _lookupService.GetAllLookupItemsAsync(lookupId, 2, 20).Returns(lookupEntries);
             _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data).Returns(lookupItems);

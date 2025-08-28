@@ -6,7 +6,7 @@ namespace Apha.VIR.Core.Interfaces
     public interface ILookupRepository
     {
         Task<IEnumerable<Lookup>> GetAllLookupsAsync();
-        Task<Lookup> GetLookupsByIdAsync(Guid lookupId);
+        Task<Lookup> GetLookupByIdAsync(Guid lookupId);
         Task<LookupItem> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
         Task<PagedData<LookupItem>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize);
         Task<IEnumerable<LookupItem>> GetAllLookupItemsAsync(Guid lookupId);

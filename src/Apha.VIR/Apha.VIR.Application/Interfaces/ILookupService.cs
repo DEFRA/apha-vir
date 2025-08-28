@@ -6,7 +6,7 @@ namespace Apha.VIR.Application.Interfaces
     public interface ILookupService
     {
         Task<IEnumerable<LookupDTO>> GetAllLookupsAsync();
-        Task<LookupDTO> GetLookupsByIdAsync(Guid lookupId);
+        Task<LookupDTO> GetLookupByIdAsync(Guid lookupId);
         Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
         Task<PaginatedResult<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize);
         Task<IEnumerable<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId);

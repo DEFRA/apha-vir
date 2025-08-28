@@ -37,7 +37,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var lookupResult = new LookupDTO { Id = lookupId, Name = "Test Lookup" };
             var lookupViewModel = new LookupViewModel { Id = lookupId, Name = "Test Lookup" };
 
-            _mockLookupService.GetLookupsByIdAsync(lookupId).Returns(lookupResult);
+            _mockLookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mockMapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
 
             // Act
@@ -50,7 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             Assert.Equal(lookupId, model.LookupId);
             Assert.False(model.ShowErrorSummary);
 
-            await _mockLookupService.Received(1).GetLookupsByIdAsync(lookupId);
+            await _mockLookupService.Received(1).GetLookupByIdAsync(lookupId);
             _mockMapper.Received(1).Map<LookupViewModel>(lookupResult);
         }
 
@@ -83,7 +83,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var parentItems = new[] { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Parent Item" } };
             var parentItemModels = new[] { new LookupItemModel { Id = Guid.NewGuid(), Name = "Parent Item" } };
 
-            _mockLookupService.GetLookupsByIdAsync(lookupId).Returns(lookupResult);
+            _mockLookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mockMapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
             _mockLookupService.GetLookupItemParentListAsync(parentId).Returns(parentItems);
             _mockMapper.Map<IEnumerable<LookupItemModel>>(parentItems).Returns(parentItemModels);
@@ -100,7 +100,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             Assert.NotNull(model.LookupParentList);
             Assert.Single(model.LookupParentList);
 
-            await _mockLookupService.Received(1).GetLookupsByIdAsync(lookupId);
+            await _mockLookupService.Received(1).GetLookupByIdAsync(lookupId);
             await _mockLookupService.Received(1).GetLookupItemParentListAsync(parentId);
             _mockMapper.Received(1).Map<LookupViewModel>(lookupResult);
             _mockMapper.Received(1).Map<IEnumerable<LookupItemModel>>(parentItems);
@@ -207,7 +207,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 
             var lookup = new LookupViewModel { Id = model.LookupId, Parent = Guid.NewGuid() };
             var lookupdto = new LookupDTO { Id = model.LookupId, Parent = Guid.NewGuid() };
-            _mockLookupService.GetLookupsByIdAsync(model.LookupId).Returns(lookupdto);
+            _mockLookupService.GetLookupByIdAsync(model.LookupId).Returns(lookupdto);
             _mockMapper.Map<LookupViewModel>(Arg.Any<object>()).Returns(lookup);
 
             // Act

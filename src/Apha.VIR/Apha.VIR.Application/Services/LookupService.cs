@@ -23,9 +23,9 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupDTO>>(await _lookupRepository.GetAllLookupsAsync());
         }
 
-        public async Task<LookupDTO> GetLookupsByIdAsync(Guid lookupId)
+        public async Task<LookupDTO> GetLookupByIdAsync(Guid lookupId)
         {
-            return _mapper.Map<LookupDTO>(await _lookupRepository.GetLookupsByIdAsync(lookupId));
+            return _mapper.Map<LookupDTO>(await _lookupRepository.GetLookupByIdAsync(lookupId));
         }
         
         public async Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId)

@@ -25,7 +25,7 @@ namespace Apha.VIR.DataAccess.Repositories
             return await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
         }
 
-        public async Task<Lookup> GetLookupsByIdAsync(Guid lookupId)
+        public async Task<Lookup> GetLookupByIdAsync(Guid lookupId)
         {
             var result = await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
             var lookup = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupId);

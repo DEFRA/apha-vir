@@ -53,7 +53,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             { data = new List<LookupItemDTO> { new LookupItemDTO() }, TotalCount = 0 };
             var lookupItems = new List<LookupItemModel>();
 
-            _mockLookupService.GetLookupsByIdAsync(lookupId).Returns(lookupResult);
+            _mockLookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mockMapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
             _mockLookupService.GetAllLookupItemsAsync(lookupId, pageNo, pageSize).Returns(lookupEntries);
             _mockMapper.Map<IEnumerable<LookupItemModel>>(lookupEntries.data).Returns(lookupItems);

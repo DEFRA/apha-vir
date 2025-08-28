@@ -37,7 +37,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest("Invalid parameters.");
             }
 
-            var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupid);
+            var lookupResult = await _lookupService.GetLookupByIdAsync(lookupid);
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
             var lookupEntries = await _lookupService.GetAllLookupItemsAsync(lookupid, pageNo, pageSize);
@@ -74,7 +74,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest("Invalid parameters.");
             }
 
-            var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupid);
+            var lookupResult = await _lookupService.GetLookupByIdAsync(lookupid);
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
             var lookupEntries = await _lookupService.GetAllLookupItemsAsync(lookupid, pageNo, pageSize);
@@ -107,7 +107,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupId);
+            var lookupResult = await _lookupService.GetLookupByIdAsync(lookupId);
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
             var viewModel = new LookupItemViewModel
@@ -148,7 +148,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 if (model.ShowParent)
                 {
-                    var lookupResult = await _lookupService.GetLookupsByIdAsync(model.LookupId);
+                    var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
                     var lookup = _mapper.Map<LookupViewModel>(lookupResult);
                     model.LookupParentList = GetLookupItemPresents(lookup).Result.Select(f => new SelectListItem
                     {
@@ -177,7 +177,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var lookupResult = await _lookupService.GetLookupsByIdAsync(lookupId);
+            var lookupResult = await _lookupService.GetLookupByIdAsync(lookupId);
             var lookup = _mapper.Map<LookupViewModel>(lookupResult);
 
             var lookupItemResult = await _lookupService.GetLookupItemAsync(lookupId, lookupItemId);
@@ -219,7 +219,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 if (model.ShowParent)
                 {
-                    var lookupResult = await _lookupService.GetLookupsByIdAsync(model.LookupId);
+                    var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
                     var lookup = _mapper.Map<LookupViewModel>(lookupResult);
                     model.LookupParentList = GetLookupItemPresents(lookup).Result.Select(f => new SelectListItem
                     {
@@ -254,7 +254,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 if (model.ShowParent)
                 {
-                    var lookupResult = await _lookupService.GetLookupsByIdAsync(model.LookupId);
+                    var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
                     var lookup = _mapper.Map<LookupViewModel>(lookupResult);
                     model.LookupParentList = GetLookupItemPresents(lookup).Result.Select(f => new SelectListItem
                     {
