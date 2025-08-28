@@ -14,24 +14,33 @@ namespace Apha.VIR.Application.Services
 
         public SampleService(ISampleRepository sampleRepository, IMapper mapper)
         {
-            _sampleRepository = sampleRepository;
+            _sampleRepository = sampleRepository ?? throw new ArgumentNullException(nameof(sampleRepository));
             _mapper = mapper;
         }
 
         public async Task<SampleDTO> GetSampleAsync(string avNumber, Guid? sampleId)
         {
+            if (avNumber == null)
+                throw new ArgumentNullException(nameof(avNumber));
+
             var sample = await _sampleRepository.GetSampleAsync(avNumber, sampleId);
             return _mapper.Map<SampleDTO>(sample);
         }
 
         public async Task AddSample(SampleDTO sampleDto, string avNumber, string userName)
         {
+            if (sampleDto == null)
+                throw new ArgumentNullException(nameof(sampleDto));
+
             var sample = _mapper.Map<Sample>(sampleDto);
             await _sampleRepository.AddSampleAsync(sample, avNumber, userName);            
         }
 
         public async Task UpdateSample(SampleDTO sampleDto, string userName)
         {
+            if (sampleDto == null)
+                throw new ArgumentNullException(nameof(sampleDto));
+
             var sample = _mapper.Map<Sample>(sampleDto);
             await _sampleRepository.UpdateSampleAsync(sample, userName);
         }
