@@ -50,11 +50,3 @@ namespace Apha.VIR.Web.Controllers
         }
     }
 }
-
-
-// This controller handles the system information display functionality.
-// It uses dependency injection to receive the ISysInfoService and IConfiguration.
-// The Index action method retrieves system information and user details, then passes them to the view.
-// CurrentApplicationID and ErrorReportingURL methods are implemented to retrieve configuration values.
-// Error handling and null checks are implemented to ensure robustness.
-// The controller follows ASP.NET Core MVC standards and best practices.
