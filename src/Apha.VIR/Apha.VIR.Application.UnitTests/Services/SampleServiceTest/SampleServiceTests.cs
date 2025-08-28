@@ -75,7 +75,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             Guid? sampleId = null;
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _sampleService.GetSampleAsync(avNumber, sampleId));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _sampleService.GetSampleAsync(avNumber!, sampleId));
         }
 
         [Fact]

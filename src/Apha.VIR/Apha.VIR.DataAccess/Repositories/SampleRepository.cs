@@ -47,7 +47,7 @@ public class SampleRepository : ISampleRepository
         {
            new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
            new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid() },
-           new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleSubmissionId ?? DBNull.Value },
+           new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = sample.SampleSubmissionId },
            new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
            new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SmsreferenceNumber ?? DBNull.Value },
            new SqlParameter("@SenderReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)sample.SenderReferenceNumber  ?? DBNull.Value },
@@ -70,8 +70,8 @@ public class SampleRepository : ISampleRepository
         await _context.Database.ExecuteSqlRawAsync(
            "EXEC spSampleUpdate @UserID, @sampleID, @SampleSubmissionId, @SampleNumber, @SMSReferenceNumber, @SenderReferenceNumber, @SampleType, @HostSpecies, @HostBreed, @HostPurpose, @SamplingLocationHouse, @LastModified OUTPUT",
                 new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
-                new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleId ?? DBNull.Value },
-                new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleSubmissionId ?? DBNull.Value },
+                new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = sample.SampleId },
+                new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = sample.SampleSubmissionId },
                 new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
                 new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SmsreferenceNumber ?? DBNull.Value },
                 new SqlParameter("@SenderReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)sample.SenderReferenceNumber ?? DBNull.Value },

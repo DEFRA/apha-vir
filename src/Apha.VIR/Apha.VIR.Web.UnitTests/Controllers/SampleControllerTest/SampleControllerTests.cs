@@ -65,8 +65,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
 
             // Assert
             Assert.NotNull(result);
+            Assert.NotNull(result.Model); // Ensure the model is not null before dereferencing
             Assert.IsType<SampleViewModel>(result.Model);
             var model = result.Model as SampleViewModel;
+            Assert.NotNull(model); // Ensure the model is not null before dereferencing
             Assert.False(model.IsEditMode);
             Assert.Equal(avNumber, model.AVNumber);
         }
