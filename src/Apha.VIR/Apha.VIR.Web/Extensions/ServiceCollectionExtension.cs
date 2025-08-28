@@ -2,7 +2,6 @@
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Repositories;
-using YourNamespace.Services;
 
 namespace Apha.VIR.Web.Extensions
 {

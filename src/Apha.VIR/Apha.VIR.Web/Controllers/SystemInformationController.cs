@@ -1,4 +1,3 @@
-using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using AutoMapper;
