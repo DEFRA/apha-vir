@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             Assert.Equal("EditLookupItem", result.ViewName);
             var viewModel = Assert.IsType<LookupItemViewModel>(result.Model);
             Assert.Equal(lookupId, viewModel.LookupId);
-            Assert.Equal(lookupItem, viewModel.LookkupItem);
+            Assert.Equal(lookupItem, viewModel.LookupItem);
         }
 
 
@@ -142,7 +142,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = lookupId,
-                LookkupItem = new LookupItemModel
+                LookupItem = new LookupItemModel
                 {
                     Id= lookupItemId,
                     Name="Test",
@@ -160,7 +160,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 
        
             var dto = new LookupItemDTO();
-            _mapper.Map<LookupItemDTO>(model.LookkupItem).Returns(dto);
+            _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
 
             // Act
             var result = await _controller.Edit(model);
@@ -176,7 +176,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         public async Task Edit_InvalidModelState_ReturnsViewResult()
         {
             // Arrange
-            var model = new LookupItemViewModel { LookkupItem = new LookupItemModel() };
+            var model = new LookupItemViewModel { LookupItem = new LookupItemModel() };
             _controller.ModelState.AddModelError("Error", "Test error");
 
             // Act
@@ -196,7 +196,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             {
                 LookupId = Guid.NewGuid(),
                 ShowParent = true,
-                LookkupItem = new LookupItemModel()
+                LookupItem = new LookupItemModel()
             };
             _controller.ModelState.AddModelError("Error", "Test error");
 
@@ -225,7 +225,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel()
+                LookupItem = new LookupItemModel()
             };
 
             _lookupService.GetAllLookupItemsAsync(model.LookupId).Returns(new List<LookupItemDTO>());
@@ -247,10 +247,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel()
+                LookupItem = new LookupItemModel()
             };
             var dto = new LookupItemDTO();
-            _mapper.Map<LookupItemDTO>(model.LookkupItem).Returns(dto);
+            _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
             _lookupService.UpdateLookupItemAsync(model.LookupId, dto).Returns(Task.FromException(new Exception("Test exception")));
 
             // Act

@@ -38,7 +38,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = lookupId,
-                LookkupItem = new LookupItemModel
+                LookupItem = new LookupItemModel
                 {
                     Id = lookupItemId,
                     Name = "Test",
@@ -67,7 +67,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         public async Task Delete_InvalidModelState_ReturnsViewResult()
         {
             // Arrange
-            var model = new LookupItemViewModel { LookkupItem= new LookupItemModel()};
+            var model = new LookupItemViewModel { LookupItem= new LookupItemModel()};
             _controller.ModelState.AddModelError("error", "some error");
 
             // Act
@@ -84,7 +84,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel { Id = Guid.NewGuid() }
+                LookupItem = new LookupItemModel { Id = Guid.NewGuid() }
             };
             _mockLookupService.IsLookupItemInUseAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(true);
 
@@ -103,7 +103,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel { Id = Guid.NewGuid() }
+                LookupItem = new LookupItemModel { Id = Guid.NewGuid() }
             };
             _mockLookupService.IsLookupItemInUseAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(false);
             _mockMapper.Map<LookupItemDTO>(Arg.Any<LookupItemModel>()).Returns(new LookupItemDTO());

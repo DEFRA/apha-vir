@@ -4,8 +4,8 @@
 }
 
 <form method="post">
-	<input asp-for="@Model.LookkupItem.Id" type="hidden" />
-	<input asp-for="@Model.LookkupItem.LastModified" type="hidden" />
+	<input asp-for="@Model.LookupItem.Id" type="hidden" />
+	<input asp-for="@Model.LookupItem.LastModified" type="hidden" />
 	<input asp-for="@Model.LookupId" type="hidden" />
 	<input asp-for="@Model.ShowAlternateName" type="hidden" />
 	<input asp-for="@Model.ShowParent" type="hidden" />
@@ -19,13 +19,13 @@
 				<td><span class="spacer"></span></td>
 				<td>
 					<input id="Name"
-						   asp-for="@Model.LookkupItem.Name"
+						   asp-for="@Model.LookupItem.Name"
 						   class="form-control"
 						   disabled="@(Model.IsReadOnly ? "disabled" : null)" />
-					<br><span asp-validation-for="@Model.LookkupItem.Name" class="Validation"></span>
+					<br><span asp-validation-for="@Model.LookupItem.Name" class="Validation"></span>
 					@if (Model.IsReadOnly)
 					{
-						<input type="hidden" asp-for="@Model.LookkupItem.Name" />
+						<input type="hidden" asp-for="@Model.LookupItem.Name" />
 					}
 				</td>
 			</tr>
@@ -36,19 +36,19 @@
 					<td><span class="spacer"></span></td>
 					<td>
 						<input id="AlternateName"
-							   asp-for="@Model.LookkupItem.AlternateName"
+							   asp-for="@Model.LookupItem.AlternateName"
 							   class="form-control"
 							   disabled="@(Model.IsReadOnly ? "disabled" : null)" />
 						@if (Model.IsReadOnly)
 						{
-							<input type="hidden" asp-for="@Model.LookkupItem.AlternateName" />
+							<input type="hidden" asp-for="@Model.LookupItem.AlternateName" />
 						}
 					</td>
 				</tr>
 			}
 			else
 			{
-				<input type="hidden" asp-for="@Model.LookkupItem.AlternateName" />
+				<input type="hidden" asp-for="@Model.LookupItem.AlternateName" />
 			}
 			@if (Model.ShowParent)
 			{
@@ -57,7 +57,7 @@
 					<td><span class="spacer"></span></td>
 					<td>
 						<select id="ParentName"
-								asp-for="@Model.LookkupItem.Parent"
+								asp-for="@Model.LookupItem.Parent"
 								asp-items="Model.LookupParentList"
 								class="form-control"
 								disabled="@(Model.IsReadOnly ? "disabled" : null)">
@@ -65,23 +65,23 @@
 						</select>
 						@if (Model.IsReadOnly)
 						{
-							<input type="hidden" asp-for="@Model.LookkupItem.Parent" />
+							<input type="hidden" asp-for="@Model.LookupItem.Parent" />
 						}
-						<input type="hidden" asp-for="@Model.LookkupItem.ParentName" />
+						<input type="hidden" asp-for="@Model.LookupItem.ParentName" />
 					</td>
 				</tr>
 			}
 			else
 			{
-				<input type="hidden" asp-for="@Model.LookkupItem.Parent" />
-				<input type="hidden" asp-for="@Model.LookkupItem.ParentName" />
+				<input type="hidden" asp-for="@Model.LookupItem.Parent" />
+				<input type="hidden" asp-for="@Model.LookupItem.ParentName" />
 			}
 			<tr>
 				<td><label for="Active">Active</label></td>
 				<td><span class="spacer"></span></td>
 				<td>
 					<input id="Active"
-						   asp-for=" @Model.LookkupItem.Active"
+						   asp-for=" @Model.LookupItem.Active"
 						   type="checkbox" />
 				</td>
 			</tr>
@@ -92,10 +92,10 @@
 					<td><span class="spacer"></span></td>
 					<td>
 						<input id="SMS"
-							   asp-for="@Model.LookkupItem.Sms"
+							   asp-for="@Model.LookupItem.Sms"
 							   type="checkbox" disabled />
 
-						<input type="hidden" asp-for="@Model.LookkupItem.Sms" />
+						<input type="hidden" asp-for="@Model.LookupItem.Sms" />
 					</td>
 				</tr>
 				<tr>
@@ -103,17 +103,17 @@
 					<td><span class="spacer"></span></td>
 					<td>
 						<input id="Smscode"
-							   asp-for="@Model.LookkupItem.Smscode"
+							   asp-for="@Model.LookupItem.Smscode"
 							   class="form-control" disabled />
 
-						<input type="hidden" asp-for="@Model.LookkupItem.Smscode" />
+						<input type="hidden" asp-for="@Model.LookupItem.Smscode" />
 					</td>
 				</tr>
 			}
 			else
 			{
-				<input type="hidden" asp-for="@Model.LookkupItem.Sms" />
-				<input type="hidden" asp-for="@Model.LookkupItem.Smscode" />
+				<input type="hidden" asp-for="@Model.LookupItem.Sms" />
+				<input type="hidden" asp-for="@Model.LookupItem.Smscode" />
 			}
 			<tr>
 				<td colspan="3">
@@ -121,13 +121,13 @@
 					<img src="Images\spacer.gif" width="10" height="5" alt="" />
 					<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
 					<img src="Images\spacer.gif" width="10" height="5" alt="" />
-					@if (Model.LookkupItem.Id != Guid.Empty)
+					@if (Model.LookupItem.Id != Guid.Empty)
 					{
 						<button type="submit"
 								asp-action="Delete"
 								class="btn-as-link me-3"
 								data-toggle="modal"
-								disabled="@(Model.LookkupItem.Sms ? "disabled" : null)"
+								disabled="@(Model.LookupItem.Sms ? "disabled" : null)"
 								onclick="return confirm('Please confirm that you want to delete this viability record');">
 							Delete
 						</button>

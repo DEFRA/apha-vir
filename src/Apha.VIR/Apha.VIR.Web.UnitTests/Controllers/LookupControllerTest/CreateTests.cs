@@ -111,7 +111,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var model = new LookupItemViewModel { LookupId = lookupId, LookkupItem= new LookupItemModel() };
+            var model = new LookupItemViewModel { LookupId = lookupId, LookupItem= new LookupItemModel() };
             _controller.ModelState.AddModelError("", "Test error");
 
             // Act
@@ -132,11 +132,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel { Name = "Test Item" }
+                LookupItem = new LookupItemModel { Name = "Test Item" }
             };
 
             var dto = new LookupItemDTO();
-            _mockMapper.Map<LookupItemDTO>(model.LookkupItem).Returns(dto);
+            _mockMapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
 
             // Act
             var result = await _controller.Create(model);
@@ -153,7 +153,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel { Name = "" } // Invalid model
+                LookupItem = new LookupItemModel { Name = "" } // Invalid model
             };
 
             _controller.ModelState.AddModelError("LookkupItem.Name", "Name is required");
@@ -174,7 +174,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel { Name = "Test Item" }
+                LookupItem = new LookupItemModel { Name = "Test Item" }
             };
 
             var Items = new[] { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Parent Item" } };
@@ -197,7 +197,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel
             {
                 LookupId = Guid.NewGuid(),
-                LookkupItem = new LookupItemModel { Name = "Duplicate" },
+                LookupItem = new LookupItemModel { Name = "Duplicate" },
                 ShowParent = true
             };
 

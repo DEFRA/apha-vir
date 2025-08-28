@@ -12,5 +12,5 @@ public class LookupItemViewModel
     public bool ShowSMSRelated { get; set; } = false;
     public bool? ShowErrorSummary { get; set; } =false;
     public List<SelectListItem>? LookupParentList { get; set; }
-    public required LookupItemModel LookkupItem { get; set; }
+    public required LookupItemModel LookupItem { get; set; }
 }

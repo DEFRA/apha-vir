@@ -124,7 +124,7 @@ namespace Apha.VIR.Web.Controllers
                     Text = f.Name
                 }).ToList()
                 : null,
-                LookkupItem = new LookupItemModel(),
+                LookupItem = new LookupItemModel(),
                 ShowErrorSummary = false
             };
 
@@ -161,7 +161,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("CreateLookupItem", model);
             }
 
-            var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
+            var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
 
             await _lookupService.InsertLookupItemAsync(model.LookupId, dto);
 
@@ -197,7 +197,7 @@ namespace Apha.VIR.Web.Controllers
                     Text = f.Name
                 }).ToList()
                 : null,
-                LookkupItem = lookupItem,
+                LookupItem = lookupItem,
                 ShowErrorSummary = false
             };
 
@@ -232,7 +232,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("EditLookupItem", model);
             }
 
-            var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
+            var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
 
             await _lookupService.UpdateLookupItemAsync(model.LookupId, dto);
 
@@ -268,7 +268,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("EditLookupItem", model);
             }
 
-            var dto = _mapper.Map<LookupItemDTO>(model.LookkupItem);
+            var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
 
             await _lookupService.DeleteLookupItemAsync(model.LookupId, dto);
 
@@ -290,7 +290,7 @@ namespace Apha.VIR.Web.Controllers
         private async Task ValidateModel(LookupItemViewModel model, ModelStateDictionary modelState, string action)
         {
             bool IsitemInUse = false;
-            var context = new ValidationContext(model.LookkupItem);
+            var context = new ValidationContext(model.LookupItem);
 
             var lookupEntries = await _lookupService.GetAllLookupItemsAsync(model.LookupId);
             var lookupItems = _mapper.Map<IEnumerable<LookupItemModel>>(lookupEntries);
@@ -317,14 +317,14 @@ namespace Apha.VIR.Web.Controllers
                     return false;
                 
                 case "edit":
-                    if (!model.LookkupItem.Active)
+                    if (!model.LookupItem.Active)
                     {
-                        return await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookkupItem.Id);
+                        return await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookupItem.Id);
                     }
                     return false;
 
                 case "delete":
-                    return await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookkupItem.Id);
+                    return await _lookupService.IsLookupItemInUseAsync(model.LookupId, model.LookupItem.Id);
 
                 default:
                     return IsitemInUse;
@@ -336,9 +336,9 @@ namespace Apha.VIR.Web.Controllers
         {
             return action switch
             {
-                "create" => model.LookkupItem.ValidateLookUpItemAdd(context, lookupItems, model.ShowParent),
-                "edit" => model.LookkupItem.ValidateLookUpItemUpdate(context, lookupItems, model.ShowParent, IsitemInUse),
-                "delete" => model.LookkupItem.ValidateLookUpItemDelete(context, lookupItems, IsitemInUse),
+                "create" => model.LookupItem.ValidateLookUpItemAdd(context, lookupItems, model.ShowParent),
+                "edit" => model.LookupItem.ValidateLookUpItemUpdate(context, lookupItems, model.ShowParent, IsitemInUse),
+                "delete" => model.LookupItem.ValidateLookUpItemDelete(context, lookupItems, IsitemInUse),
                 _ => Enumerable.Empty<ValidationResult>(),
             };
    
