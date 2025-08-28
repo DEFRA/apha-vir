@@ -1,6 +1,9 @@
-﻿namespace Apha.VIR.Core.Interfaces;
+using Apha.VIR.Core.Entities;
 
-public interface ISystemInfoRepository
+namespace Apha.VIR.Core.Interfaces
 {
-
+    public interface ISystemInfoRepository
+    {
+        Task<SystemInfo> GetLatestSysInfoAsync();
+    }
 }

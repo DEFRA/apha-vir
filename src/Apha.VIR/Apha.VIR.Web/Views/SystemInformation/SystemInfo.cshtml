@@ -1,0 +1,65 @@
+﻿@* @model SystemInformationViewModel *@
+@{
+    ViewData["Title"] = "System Information | Virus Isolates Repository";
+}
+
+<div id="contentbox" style="width:600px">
+    <div class="box_title">System Information</div>
+    <div class="box_body">
+        <dl class="info-grid no-separator">
+            <div class="info-row">
+                <dt>.Net Framework Version</dt>
+                <dd>@Model.FrameworkVersion</dd>
+            </div>
+            <div class="info-row">
+                <dt>System Name</dt>
+                <dd>@Model.SystemName</dd>
+            </div>
+            <div class="info-row">
+                <dt>System Type</dt>
+                <dd>@Model.Environment</dd>
+            </div>
+            <div class="info-row">
+                <dt>Database version</dt>
+                <dd>@Model.DatabaseVersion</dd>
+            </div>
+            <div class="info-row">
+                <dt>Database Release Date</dt>
+                <dd>@Model.ReleaseDate</dd>
+            </div>
+            <div class="info-row">
+                <dt>Database Release Notes</dt>
+                <dd>@Model.ReleaseNotes</dd>
+            </div>
+        </dl>
+        <nav>
+            <a href="@ViewBag.ErrorLogUrl" target="_blank">Error Log</a>
+            <span>|</span>
+            <a href="~/ReleaseNotes.htm" target="_blank">Release Notes</a>
+        </nav>
+    </div>
+</div>
+
+<div id="contentbox" style="width:600px">
+    <div class="box_title">User Information</div>
+    <div class="box_body">
+        <dl class="info-grid no-separator">
+            <div class="info-row">
+                <dt>User Name</dt>
+                <dd>@Model.UserName</dd>
+            </div>
+            <div class="info-row">
+                <dt>Host Address</dt>
+                <dd>@Model.HostAddress</dd>
+            </div>
+            <div class="info-row">
+                <dt>Authentication Type</dt>
+                <dd>@Model.AuthenticationType</dd>
+            </div>
+            <div class="info-row">
+                <dt>Authenticated?</dt>
+                <dd>@Model.IsAuthenticated</dd>
+            </div>
+        </dl>
+    </div>
+</div>
