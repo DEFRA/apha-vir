@@ -10,20 +10,20 @@ using NSubstitute.ExceptionExtensions;
 
 namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
 {
-    public class GetAllLookupEntriesAsyncTests
+    public class GetAllLookupItemsAsync
     {
         private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
         private readonly LookupService _mockLookupService;
 
-        public GetAllLookupEntriesAsyncTests()
+        public GetAllLookupItemsAsync()
         {
             _mockLookupRepository = Substitute.For<ILookupRepository>();
             _mockMapper = Substitute.For<IMapper>();
             _mockLookupService = new LookupService(_mockLookupRepository, _mockMapper);
         }
         [Fact]
-        public async Task GetAllLookupEntriesAsync_SuccessfulRetrieval_ReturnsLookupItems()
+        public async Task GetAllLookupItemsAsync_SuccessfulRetrieval_ReturnsLookupItems()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
@@ -58,7 +58,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllLookupEntriesAsync_ExceptionThrown_PropagatesException()
+        public async Task GetAllLookupItemsAsync_ExceptionThrown_PropagatesException()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
