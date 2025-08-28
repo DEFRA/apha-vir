@@ -16,6 +16,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ISampleService _sampleService;
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
+        private const string sampleIndex = "Index";
 
         public SampleController(ISampleService sampleService, ILookupService lookupService, IMapper mapper)
         {
@@ -56,12 +57,12 @@ namespace Apha.VIR.Web.Controllers
             {
                 model.IsEditMode = false;
                 await LoadSampleDetailsData(model);
-                return View("Index", model);
+                return View(sampleIndex, model);
             }
 
             var sample = _mapper.Map<SampleDTO>(model);
             await _sampleService.AddSample(sample, model.AVNumber!, "Test");
-            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber});
+            return RedirectToAction(sampleIndex, "SubmissionSamples", new { AVNumber = model.AVNumber});
         }
 
         [HttpPost]
@@ -72,12 +73,12 @@ namespace Apha.VIR.Web.Controllers
             {
                 model.IsEditMode = true;
                 await LoadSampleDetailsData(model);
-                return View("Index", model);
+                return View(sampleIndex, model);
             }
 
             var sample = _mapper.Map<SampleDTO>(model);
             await _sampleService.UpdateSample(sample, "Test");
-            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber });
+            return RedirectToAction(sampleIndex, "SubmissionSamples", new { AVNumber = model.AVNumber });
         }
 
         [HttpGet]

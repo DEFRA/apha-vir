@@ -9,6 +9,7 @@ using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
@@ -270,6 +271,114 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Update(model));
+        }
+
+        [Fact]
+        public async Task Test_GetBreedsBySpecies_ValidSpeciesId_ReturnsBreedList()
+        {
+            // Arrange
+            var speciesId = Guid.NewGuid();
+            var breeds = new List<LookupItemDTO>
+            {
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed1" },
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed2" }
+            };
+            _lookupService.GetAllHostBreedsByParentAsync(speciesId).Returns(breeds);
+
+            // Act
+            var result = await _controller.GetBreedsBySpecies(speciesId);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var breedList = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Equal(2, breedList.Count);
+            Assert.Equal("Breed1", breedList[0].Text);
+            Assert.Equal("Breed2", breedList[1].Text);
+        }
+
+        [Fact]
+        public async Task Test_GetBreedsBySpecies_NullSpeciesId_ReturnsEmptyList()
+        {
+            // Arrange
+            _lookupService.GetAllHostBreedsByParentAsync(null).Returns(new List<LookupItemDTO>());
+
+            // Act
+            var result = await _controller.GetBreedsBySpecies(null);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var breedList = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Empty(breedList);
+        }
+
+        [Fact]
+        public async Task Test_GetBreedsBySpecies_InvalidModelState_ReturnsBadRequest()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "Some error");
+
+            // Act
+            var result = await _controller.GetBreedsBySpecies(Guid.NewGuid());
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Test_GetLatinBreadList_ReturnsPartialView_WhenModelStateIsValid()
+        {
+            // Arrange
+            var latinBreedDtos = new List<LookupItemDTO>
+            {
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed", ParentName = "Test Species", AlternateName = "Test Alt", Active = true, Sms = true, Smscode = "123" }
+            };
+            _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
+
+            // Act
+            var result = await _controller.GetLatinBreadList();
+
+            // Assert
+            var viewResult = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_LatinBreed", viewResult.ViewName);
+            var model = Assert.IsAssignableFrom<List<LatinBreed>>(viewResult.Model);
+            Assert.Single(model);
+        }
+
+        [Fact]
+        public async Task Test_GetLatinBreadList_ReturnsBadRequest_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Error", "Test error");
+
+            // Act
+            var result = await _controller.GetLatinBreadList();
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Test_GetLatinBreadList_ReturnsCorrectData()
+        {
+            // Arrange
+            var latinBreedDtos = new List<LookupItemDTO>
+            {
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 1", ParentName = "Test Species 1", AlternateName = "Test Alt 1", Active = true, Sms = true, Smscode = "123" },
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 2", ParentName = "Test Species 2", AlternateName = "Test Alt 2", Active = false, Sms = false, Smscode = "456" }
+            };
+            _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
+
+            // Act
+            var result = await _controller.GetLatinBreadList();
+
+            // Assert
+            var viewResult = Assert.IsType<PartialViewResult>(result);
+            var model = Assert.IsAssignableFrom<List<LatinBreed>>(viewResult.Model);
+            Assert.Equal(2, model.Count);
+            Assert.Equal("Test Breed 1", model[0].Name);
+            Assert.Equal("Test Breed 2", model[1].Name);
+            Assert.True(model[0].Active);
+            Assert.False(model[1].Active);
         }
     }
 }
