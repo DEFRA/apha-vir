@@ -22,7 +22,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllLookupsAsync_ShouldReturnMappedDTOs_WhenRepositoryReturnsData()
+        public async Task GetAllLookupsAsync_ShouldReturnMappedDTOsList_WhenRepositoryReturnsData()
         {
             // Arrange
             var lookups = new List<Lookup> { new Lookup(), new Lookup() };

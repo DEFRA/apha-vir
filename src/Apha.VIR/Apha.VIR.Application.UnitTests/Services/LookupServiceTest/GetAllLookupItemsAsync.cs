@@ -23,7 +23,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             _mockLookupService = new LookupService(_mockLookupRepository, _mockMapper);
         }
         [Fact]
-        public async Task GetAllLookupItemsAsync_SuccessfulRetrieval_ReturnsLookupItems()
+        public async Task GetAllLookupItemsAsync_ReturnsPagedLookupItems_WhenSuccessfulRetrieval()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
@@ -58,7 +58,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllLookupItemsAsync_ExceptionThrown_PropagatesException()
+        public async Task GetAllLookupItemsAsync_PropagatesException_WhenExceptionThrown()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
@@ -73,5 +73,44 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             _mockMapper.DidNotReceive().Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
         }
 
+        [Fact]
+        public async Task GetAllLookupItemsAsync_ReturnsLookupItems_WhenSuccessfulRetrieval()
+        {
+            // Arrange
+            var lookupId = Guid.NewGuid();
+            var lookupItems = new List<LookupItem> { new LookupItem(), new LookupItem() };
+            var expectedDtos = new List<LookupItemDTO> { new LookupItemDTO(), new LookupItemDTO() };
+
+            _mockLookupRepository.GetAllLookupItemsAsync(lookupId).Returns(lookupItems);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(lookupItems).Returns(expectedDtos);
+
+            // Act
+            var result = await _mockLookupService.GetAllLookupItemsAsync(lookupId);
+
+            // Assert
+            await _mockLookupRepository.Received(1).GetAllLookupItemsAsync(lookupId);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(lookupItems);
+            Assert.Equal(expectedDtos, result);
+        }
+
+        [Fact]
+        public async Task GetAllLookupItemsAsync_ReturnsEmptyList_WhenNoLookitemFound()
+        {
+            // Arrange
+            var lookupId = Guid.NewGuid();
+            var emptyList = new List<LookupItem>();
+            var emptyDtoList = new List<LookupItemDTO>();
+
+            _mockLookupRepository.GetAllLookupItemsAsync(lookupId).Returns(emptyList);
+            _mockMapper.Map<IEnumerable<LookupItemDTO>>(emptyList).Returns(emptyDtoList);
+
+            // Act
+            var result = await _mockLookupService.GetAllLookupItemsAsync(lookupId);
+
+            // Assert
+            await _mockLookupRepository.Received(1).GetAllLookupItemsAsync(lookupId);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(emptyList);
+            Assert.Empty(result);
+        }
     }
 }

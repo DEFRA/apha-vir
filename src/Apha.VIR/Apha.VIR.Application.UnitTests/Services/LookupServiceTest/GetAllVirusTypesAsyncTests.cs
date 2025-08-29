@@ -23,7 +23,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllVirusTypesAsync_ShouldReturnMappedVirusTypes_WhenRepositoryReturnsData()
+        public async Task GetAllVirusTypesAsync_ShouldReturnMappedVirusTypesList_WhenRepositoryReturnsData()
         {
             // Arrange
             var repositoryResult = new List<LookupItem>

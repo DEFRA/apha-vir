@@ -21,7 +21,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             _mockLookupService = new LookupService(_mockLookupRepository, _mockMapper);
         }
         [Fact]
-        public async Task GetAllHostBreedsAsync_ReturnsExpectedResult()
+        public async Task GetAllHostBreedsAsync_ReturnsHostBreedList()
         {
             // Arrange
             var mockHostBreeds = new List<LookupItem>

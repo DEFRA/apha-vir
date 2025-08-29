@@ -30,9 +30,6 @@ namespace Apha.VIR.Application.Services
         
         public async Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId)
         {
-            ArgumentNullException.ThrowIfNull(lookupId);
-            ArgumentNullException.ThrowIfNull(lookupItemId);
-
             return _mapper.Map<LookupItemDTO>(
                 await _lookupRepository.GetLookupItemAsync(lookupId,lookupItemId));
         }
@@ -49,25 +46,18 @@ namespace Apha.VIR.Application.Services
         
         public async Task<IEnumerable<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId)
         {
-            ArgumentNullException.ThrowIfNull(lookupId);
-
             return _mapper.Map<IEnumerable<LookupItemDTO>>(
                 await _lookupRepository.GetAllLookupItemsAsync(lookupId));
         }
         
         public async Task<IEnumerable<LookupItemDTO>> GetLookupItemParentListAsync(Guid lookupId)
         {
-            ArgumentNullException.ThrowIfNull(lookupId);
-
             return _mapper.Map<IEnumerable<LookupItemDTO>>(
                 await _lookupRepository.GetLookupItemParentListAsync(lookupId));
         }
         
         public async Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId)
         {
-            ArgumentNullException.ThrowIfNull(lookupId);
-            ArgumentNullException.ThrowIfNull(lookupItemId);
-
             return await _lookupRepository.IsLookupItemInUseAsync(lookupId, lookupItemId);
         }
         

@@ -21,7 +21,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             _mockLookupService = new LookupService(_mockLookupRepository, _mockMapper);
         }
         [Fact]
-        public async Task GetAllHostBreedsByParentAsync_ValidHostSpecies_ReturnsLookupItemDTOs()
+        public async Task GetAllHostBreedsByParentAsyncs_ReturnsLookupItemDTOsList_WhenValidHostSpecie()
         {
             // Arrange
             Guid hostSpecies = Guid.NewGuid();
@@ -41,7 +41,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostBreedsByParentAsync_NullHostSpecies_ReturnsLookupItemDTOs()
+        public async Task GetAllHostBreedsByParentAsync_ReturnsLookupItemDTOsList_WhenNullHostSpecies()
         {
             // Arrange
             Guid? hostSpecies = null;
@@ -61,7 +61,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostBreedsByParentAsync_EmptyList_ReturnsEmptyList()
+        public async Task GetAllHostBreedsByParentAsync_ReturnsEmptyList_WhenNoPresentPresent()
         {
             // Arrange
             Guid hostSpecies = Guid.NewGuid();
@@ -81,7 +81,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostBreedsByParentAsync_RepositoryThrowsException_ThrowsException()
+        public async Task GetAllHostBreedsByParentAsync_ThrowsException_WhenRepositoryThrowsException()
         {
             // Arrange
             Guid hostSpecies = Guid.NewGuid();

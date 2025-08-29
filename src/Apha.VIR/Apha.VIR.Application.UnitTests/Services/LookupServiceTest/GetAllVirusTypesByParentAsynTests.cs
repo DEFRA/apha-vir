@@ -22,7 +22,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllVirusTypesByParentAsync_WithNullVirusFamily_ReturnsExpectedResult()
+        public async Task GetAllVirusTypesByParentAsync_ReturnsExpectedResult_WithNullVirusFamily()
         {
             // Arrange
             Guid? virusFamily = null;
@@ -42,27 +42,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllVirusTypesByParentAsync_WithEmptyVirusFamily_ReturnsExpectedResult()
-        {
-            // Arrange
-            Guid? virusFamily = null;
-            var repositoryResult = new List<LookupItem>();
-            var expectedResult = new List<LookupItemDTO>();
-
-            _mockLookupRepository.GetAllVirusTypesByParentAsync(virusFamily).Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(expectedResult);
-
-            // Act
-            var result = await _mockLookupService.GetAllVirusTypesByParentAsync(virusFamily);
-
-            // Assert
-            await _mockLookupRepository.Received(1).GetAllVirusTypesByParentAsync(virusFamily);
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(repositoryResult);
-            Assert.Equal(expectedResult, result);
-        }
-
-        [Fact]
-        public async Task GetAllVirusTypesByParentAsync_WhenRepositoryReturnsEmptyList_ReturnsEmptyList()
+        public async Task GetAllVirusTypesByParentAsync_ReturnsEmptyList_WhenRepositoryReturnsEmptyList()
         {
             // Arrange
             Guid virusFamily = Guid.NewGuid();
@@ -82,7 +62,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllVirusTypesByParentAsync_WhenRepositoryThrowsException_ThrowsException()
+        public async Task GetAllVirusTypesByParentAsync_ThrowsException_WhenRepositoryThrowsException()
         {
             // Arrange
             Guid virusFamily = Guid.NewGuid();

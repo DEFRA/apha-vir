@@ -22,7 +22,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
         
         [Fact]
-        public async Task GetAllSampleTypesAsync_ReturnsExpectedResult()
+        public async Task GetAllSampleTypesAsync_ReturnsExpectedSampleTypesList()
         {
             // Arrange
             var sampleTypes = new List<LookupItem>
@@ -62,7 +62,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllSampleTypesAsync_ReturnsEmptyList_WhenNoSampleTypesFound()
+        public async Task GetAllSampleTypesAsync_ReturnsEmptyList_WhenNoSampleTypesNotFound()
         {
             // Arrange
             _mockLookupRepository.GetAllSampleTypesAsync().Returns(new List<LookupItem>());

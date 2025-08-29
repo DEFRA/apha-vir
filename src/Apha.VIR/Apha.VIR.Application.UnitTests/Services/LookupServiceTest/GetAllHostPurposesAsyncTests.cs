@@ -22,7 +22,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostPurposesAsync_SuccessfulScenario_ReturnsExpectedResult()
+        public async Task GetAllHostPurposesAsync_ReturnsExpectedHostPurposesList_WhenSuccessfulRetrival()
         {
             // Arrange
             var repositoryResult = new List<LookupItem>
@@ -50,7 +50,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostPurposesAsync_RepositoryThrowsException_ThrowsException()
+        public async Task GetAllHostPurposesAsync_ThrowsException_WhenRepositoryThrowsException()
         {
             // Arrange
             _mockLookupRepository.GetAllHostPurposesAsync().Throws(new Exception("Repository error"));
@@ -61,7 +61,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostPurposesAsync_MapperThrowsException_ThrowsException()
+        public async Task GetAllHostPurposesAsync_ThrowsException_WhenMapperThrowsException()
         {
             // Arrange
             var repositoryResult = new List<LookupItem>();

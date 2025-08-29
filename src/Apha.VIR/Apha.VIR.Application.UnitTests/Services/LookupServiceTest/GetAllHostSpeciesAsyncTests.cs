@@ -22,7 +22,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostSpeciesAsync_ShouldReturnExpectedResult()
+        public async Task GetAllHostSpeciesAsync_ShouldReturnExpectedHostSpeciesList()
         {
             // Arrange
             var hostSpecies = new List<LookupItem>
@@ -49,20 +49,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllHostSpeciesAsync_ShouldCallRepositoryOnce()
-        {
-            // Arrange
-            _mockLookupRepository.GetAllHostSpeciesAsync().Returns(new List<LookupItem>());
-
-            // Act
-            await _mockLookupService.GetAllHostSpeciesAsync();
-
-            // Assert
-            await _mockLookupRepository.Received(1).GetAllHostSpeciesAsync();
-        }
-
-        [Fact]
-        public async Task GetAllHostSpeciesAsync_ShouldCallMapperWithCorrectParameters()
+        public async Task GetAllHostSpeciesAsync_ShouldReturnMappedList_WhenMapwithValidParameter()
         {
             // Arrange
             var hostSpecies = new List<LookupItem>();

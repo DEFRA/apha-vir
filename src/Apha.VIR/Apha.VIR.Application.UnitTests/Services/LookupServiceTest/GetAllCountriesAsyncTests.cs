@@ -21,7 +21,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllCountriesAsync_ShouldReturnMappedCountries()
+        public async Task GetAllCountriesAsync_ShouldReturnCountries()
         {
             // Arrange            
             var countries = new List<LookupItem>
