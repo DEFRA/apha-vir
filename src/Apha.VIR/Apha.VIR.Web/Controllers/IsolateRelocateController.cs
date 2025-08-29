@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
-    public class IsolateRelocateController : Controller 
+    public class IsolateRelocateController : Controller
     {
         public IActionResult Index()
         {
@@ -18,7 +18,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-       public IActionResult Search([FromBody] IsolateRelocateViewModel model)
+        public IActionResult Search([FromBody] IsolateRelocateViewModel model)
         {
             var results = GetDummySearchResults();
 
@@ -110,7 +110,13 @@ namespace Apha.VIR.Web.Controllers
                 new IsolateRelocation { ID = Guid.NewGuid(), AVNumber = "AV003", Nomenclature = "Isolate 3", FreezerName = "Freezer 2", TrayName = "Tray 1", Well = "C3" }
             };
         }
+        public IActionResult Management()
+        {
+            return View();
+        }
     }
 
 
+
+    
 }

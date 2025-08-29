@@ -569,14 +569,14 @@ body {
     font-weight: bold;
 }
 
-/* Custom link style for recent AV numbers */
-.av-number-recent-av-link {
+
+.recent-av-link {
     text-decoration: none;
-    color: inherit;
+    color: #0000FF;
     transition: text-decoration 0.2s;
 }
 
-    .av-number-recent-av-link:hover, .av-number-recent-av-link:focus {
+    .recent-av-link:hover, .recent-av-link:focus {
         text-decoration: underline;
     }
 
