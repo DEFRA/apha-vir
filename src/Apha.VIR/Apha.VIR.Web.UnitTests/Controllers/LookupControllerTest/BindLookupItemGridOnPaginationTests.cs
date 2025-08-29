@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Controllers;
@@ -67,6 +62,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = Assert.IsType<LookupItemListViewModel>(partialViewResult.Model);
             Assert.Equal(lookupId, model.LookupId);
         }
+
         [Fact]
         public async Task BindLookupItemGridOnPagination_InvalidLookupId_ReturnsBadRequest()
         {
@@ -99,6 +95,5 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Invalid parameters.", badRequestResult.Value);
         }
-
     }
 }

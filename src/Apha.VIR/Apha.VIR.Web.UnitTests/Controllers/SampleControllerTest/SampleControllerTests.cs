@@ -323,7 +323,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             // Assert
             var viewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_LatinBreed", viewResult.ViewName);
-            var model = Assert.IsAssignableFrom<List<LatinBreed>>(viewResult.Model);
+            var model = Assert.IsAssignableFrom<List<LatinBreedModel>>(viewResult.Model);
             Assert.Single(model);
         }
 
@@ -356,7 +356,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
 
             // Assert
             var viewResult = Assert.IsType<PartialViewResult>(result);
-            var model = Assert.IsAssignableFrom<List<LatinBreed>>(viewResult.Model);
+            var model = Assert.IsAssignableFrom<List<LatinBreedModel>>(viewResult.Model);
             Assert.Equal(2, model.Count);
             Assert.Equal("Test Breed 1", model[0].Name);
             Assert.Equal("Test Breed 2", model[1].Name);

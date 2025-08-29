@@ -113,7 +113,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var latinBreedDto = await _lookupService.GetAllHostBreedsAltNameAsync();
-            List<LatinBreed> latinBreedList = latinBreedDto.Select(p => new LatinBreed
+            List<LatinBreedModel> latinBreedList = latinBreedDto.Select(p => new LatinBreedModel
             {
                 Id = p.Id,
                 Name = p.Name,

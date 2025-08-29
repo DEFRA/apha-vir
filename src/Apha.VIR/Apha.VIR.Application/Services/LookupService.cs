@@ -36,10 +36,6 @@ namespace Apha.VIR.Application.Services
 
         public async Task<PaginatedResult<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize)
         {
-            ArgumentNullException.ThrowIfNull(lookupId);
-            ArgumentNullException.ThrowIfNull(pageNo);
-            ArgumentNullException.ThrowIfNull(pageSize);
-
             return _mapper.Map<PaginatedResult<LookupItemDTO>>(
                 await _lookupRepository.GetAllLookupItemsAsync(lookupId, pageNo, pageSize));
         }

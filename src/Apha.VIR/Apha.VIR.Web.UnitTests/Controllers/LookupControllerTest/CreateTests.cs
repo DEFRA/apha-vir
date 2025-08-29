@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.Lookup;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
@@ -27,7 +20,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             _mockMapper = Substitute.For<IMapper>();
             _controller = new LookupController(_mockLookupService, _mockMapper);
         }
-
 
         [Fact]
         public async Task Create_ValidInput_ReturnsViewWithCorrectModel()
@@ -164,7 +156,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             // Assert
             Assert.IsType<ViewResult>(result);
             var viewResult = result as ViewResult;
-            Assert.Equal("CreateLookupItem", viewResult.ViewName);
+            Assert.Equal("CreateLookupItem", viewResult?.ViewName);
         }
 
         [Fact]
@@ -216,9 +208,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             // Assert
             Assert.IsType<ViewResult>(result);
             var viewResult = result as ViewResult;
-            Assert.Equal("CreateLookupItem", viewResult.ViewName);
+            Assert.Equal("CreateLookupItem", viewResult?.ViewName);
             Assert.True(_controller.ModelState.ErrorCount > 0);
         }
-
     }
 }

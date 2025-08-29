@@ -21,7 +21,6 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<Lookup>> GetAllLookupsAsync()
         {
-
             return await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
         }
 

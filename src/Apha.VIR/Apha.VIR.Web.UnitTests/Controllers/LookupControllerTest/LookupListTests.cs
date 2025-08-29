@@ -74,9 +74,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<LookupListViewModel>(viewResult.Model);
-            Assert.Equal(2, model.LookupItemResult.Pagination.PageNumber);
-            Assert.Equal(20, model.LookupItemResult.Pagination.PageSize);
-            Assert.Equal(100, model.LookupItemResult.Pagination.TotalCount);
+            Assert.Equal(2, model.LookupItemResult?.Pagination?.PageNumber);
+            Assert.Equal(20, model.LookupItemResult?.Pagination?.PageSize);
+            Assert.Equal(100, model.LookupItemResult?.Pagination?.TotalCount);
         }
 
         [Fact]

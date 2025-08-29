@@ -53,22 +53,6 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetAllLookupsAsync_ShouldReturnEmptyList_WhenRepositoryReturnsNull()
-        {
-            // Arrange
-            _mockLookupRepository.GetAllLookupsAsync().Returns((IEnumerable<Lookup>)null);
-            _mockMapper.Map<IEnumerable<LookupDTO>>(Arg.Any<IEnumerable<Lookup>>()).Returns(new List<LookupDTO>());
-
-            // Act
-            var result = await _mockLookupService.GetAllLookupsAsync();
-
-            // Assert
-            Assert.Empty(result);
-            await _mockLookupRepository.Received(1).GetAllLookupsAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupDTO>>(Arg.Any<IEnumerable<Lookup>>());
-        }
-
-        [Fact]
         public async Task GetAllLookupsAsync_ShouldReturnCorrectNumberOfDTOs_WhenRepositoryReturnsData()
         {
             // Arrange

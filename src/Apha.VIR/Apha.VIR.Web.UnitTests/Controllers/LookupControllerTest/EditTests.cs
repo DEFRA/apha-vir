@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.Lookup;
 using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
@@ -66,7 +58,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             Assert.True(modelState.ContainsKey(""));
             Assert.Equal("Invalid parameters.", ((string[])modelState[""])[0]);
         }
-
 
         [Fact]
         public async Task Edit_InvalidLookupItemId_ReturnsBadRequest()
@@ -131,12 +122,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             Assert.Equal(lookupItem, viewModel.LookupItem);
         }
 
-
         [Fact]
         public async Task Edit_ValidModel_ReturnsRedirectToActionResult()
         {
             // Arrange
-
             var lookupId = Guid.NewGuid();
             var lookupItemId = Guid.NewGuid();
             var model = new LookupItemViewModel

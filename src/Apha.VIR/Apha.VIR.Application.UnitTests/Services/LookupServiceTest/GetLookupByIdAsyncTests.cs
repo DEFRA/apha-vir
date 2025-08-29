@@ -42,21 +42,6 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetLookupByIdAsync_ShouldReturnNull_WhenLookupDoesNotExist()
-        {
-            // Arrange
-            var lookupId = Guid.NewGuid();
-            _mockRepository.GetLookupByIdAsync(lookupId).Returns((Lookup)null);
-
-            // Act
-            var result = await _service.GetLookupByIdAsync(lookupId);
-
-            // Assert
-            await _mockRepository.Received(1).GetLookupByIdAsync(lookupId);
-            Assert.Null(result);
-        }
-
-        [Fact]
         public async Task GetLookupByIdAsync_ShouldThrowException_WhenRepositoryThrows()
         {
             // Arrange

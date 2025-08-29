@@ -23,15 +23,15 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? HostSpeciesList { get; set; }
         public List<SelectListItem>? HostBreedList { get; set; }
         public List<SelectListItem>? HostPurposeList { get; set; }
-        public List<LatinBreed>? LatinBreedList { get; set; }
+        public List<LatinBreedModel>? LatinBreedList { get; set; }
     }
 
-    public class LatinBreed
+    public class LatinBreedModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
-        public string ParentName { get; set; } = null!;
-        public string AlternateName { get; set; } = null!;
+        public string? ParentName { get; set; } = null!;
+        public string? AlternateName { get; set; } = null!;
         public bool Active { get; set; }
         public bool Sms { get; set; }
         public string? Smscode { get; set; }
