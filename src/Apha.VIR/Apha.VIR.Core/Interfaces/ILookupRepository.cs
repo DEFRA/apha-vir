@@ -15,6 +15,7 @@ namespace Apha.VIR.Core.Interfaces
         Task<IEnumerable<LookupItem>> GetAllHostSpeciesAsync();
         Task<IEnumerable<LookupItem>> GetAllHostBreedsAsync();
         Task<IEnumerable<LookupItem>> GetAllHostBreedsByParentAsync(Guid? hostSpecies);
+        Task<IEnumerable<LookupItem>> GetAllHostBreedsAltNameAsync();
         Task<IEnumerable<LookupItem>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItem>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItem>> GetAllSampleTypesAsync();

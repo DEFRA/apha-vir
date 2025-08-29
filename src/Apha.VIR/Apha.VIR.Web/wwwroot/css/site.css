@@ -935,6 +935,7 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     border-bottom: #0b2677 1px solid;
     border-left: #0b2677 1px solid;
     margin: 0px 0px 15px 0px;
+    width: 88%;
 }
 
     #contentbox .box_title {
@@ -968,3 +969,37 @@ a:hover {color: #0000FF;  text-decoration: underline; }
         margin-top: 0;
         margin-bottom: 0;
     }
+
+
+
+/*-- Add/Edit Sample --*/
+.addeditsample-input {
+    width: 226px;
+    height: 21px;
+    padding: 2px 2px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    font-family: Arial;
+    border-color: gray;
+}
+
+.addeditsample-addsender-select {
+    width: 6cm;
+    height: 21px;
+    padding: 2px 2px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    font-family: Arial;
+    border-color: darkgray;
+}
+
+.addeditsample-btn-link-custom {
+    background: none;
+    border: none;
+    font-family: verdana, arial, helvetica, sans-serif;
+    color: #0000FF;
+    text-decoration: underline;
+    cursor: pointer;
+}

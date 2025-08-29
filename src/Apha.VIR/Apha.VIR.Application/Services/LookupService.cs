@@ -75,6 +75,11 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsByParentAsync(hostSpecies));
         }
 
+        public async Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAltNameAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsAltNameAsync());
+        }
+
         public async Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync()
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllCountriesAsync());
