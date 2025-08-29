@@ -1,0 +1,35 @@
+﻿@using Apha.VIR.Web.Models.Lookup
+@model LookupListViewModel
+@{
+	ViewData["Title"] = "Manage Look-up List Page | Virus Isolates Repository";
+}
+
+<h3 style="color:#333333;">@Model.LookupName</h3>
+
+<section aria-labelledby="add-entry">
+	@if (!Model.IsReadOnly)
+	{
+		<div class="mb-3">
+			<br />
+			<img src="~/images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+			<a asp-action="Create" asp-route-lookupId=@Model.LookupId class="btn btn-primary ml-2">Add new entry</a>
+		</div>
+	}
+</section>
+
+<p>Edit an existing entry in the list by clicking on the links below.</p>
+<div id="gridLookupItemResult">
+	<partial name="_LookupItemList" for="@Model.LookupItemResult" />
+</div>
+@section Scripts {
+	<script>
+		$(document).on('click','.pagination a', function (e) {
+			e.preventDefault();
+			var id = "@Model.LookupId";
+			var pageNo=$(this).data('pageno');
+			$.get('BindLookupItemGridOnPagination', {lookupid: id, pageNo: pageNo, pageSize:10}, function (htmlData) {
+			$('#gridLookupItemResult').html(htmlData);
+			});
+			});
+	</script>
+}

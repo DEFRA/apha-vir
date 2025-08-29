@@ -12,6 +12,7 @@ namespace Apha.VIR.Application.Mappings
         {
             CreateMap<Lookup, LookupDTO>().ReverseMap();
             CreateMap<LookupItem, LookupItemDTO>().ReverseMap();
+            CreateMap<PagedData<LookupItem>, PaginatedResult<LookupItemDTO>>();
             CreateMap<VirusCharacteristic, VirusCharacteristicDTO>().ReverseMap();
             CreateMap<VirusCharacteristicListEntry, VirusCharacteristicListEntryDTO>().ReverseMap();
             CreateMap<SearchCriteriaDTO, SearchCriteria>();

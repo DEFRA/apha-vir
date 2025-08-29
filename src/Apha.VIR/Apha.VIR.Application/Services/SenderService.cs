@@ -11,7 +11,7 @@ namespace Apha.VIR.Application.Services
         private readonly ISenderRepository _senderRepository;
         private readonly IMapper _mapper;
 
-        public SenderService(ISenderRepository senderRepository, 
+        public SenderService(ISenderRepository senderRepository,
             IMapper mapper)
         {
             _senderRepository = senderRepository ?? throw new ArgumentNullException(nameof(senderRepository));
@@ -20,8 +20,8 @@ namespace Apha.VIR.Application.Services
 
         public async Task<IEnumerable<SenderDTO>> GetAllSenderOrderByOrganisationAsync(Guid? countryId)
         {
-           var senders = await _senderRepository.GetAllSenderOrderByOrganisationAsync(countryId);
-           return _mapper.Map<IEnumerable<SenderDTO>>(senders);
+            var senders = await _senderRepository.GetAllSenderOrderByOrganisationAsync(countryId);
+            return _mapper.Map<IEnumerable<SenderDTO>>(senders);
         }
 
         public async Task<IEnumerable<SenderDTO>> GetAllSenderOrderBySenderAsync(Guid? countryId)

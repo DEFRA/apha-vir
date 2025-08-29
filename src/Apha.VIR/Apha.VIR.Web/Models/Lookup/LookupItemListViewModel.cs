@@ -1,0 +1,11 @@
+﻿namespace Apha.VIR.Web.Models.Lookup;
+
+public class LookupItemListViewModel
+{
+    public Guid LookupId { get; set; }
+    public bool ShowParent { get; set; }
+    public bool ShowAlternateName { get; set; }
+    public bool ShowSMSRelated { get; set; }
+    public List<LookupItemModel> LookupItems { get; set; } = new List<LookupItemModel>();
+    public PaginationModel? Pagination { get; set; }
+}

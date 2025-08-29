@@ -142,7 +142,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
 
             // Assert
             await _mockSubmissionRepository.Received(1).AddSubmissionAsync(Arg.Is<Submission>(s => s.Avnumber == "AV123"), "testUser");
-        }       
+        }
 
         [Fact]
         public async Task AddSubmissionAsync_RepositoryThrowsException_ExceptionPropagated()
@@ -161,8 +161,8 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
         public async Task UpdateSubmissionAsync_ValidSubmission_CallsRepositoryUpdate()
         {
             // Arrange
-            var submissionDto = new SubmissionDTO {SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
-            var submissionEntity = new Submission {SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
+            var submissionDto = new SubmissionDTO { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
+            var submissionEntity = new Submission { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
             _mockMapper.Map<Submission>(submissionDto).Returns(submissionEntity);
 
             // Act
@@ -170,13 +170,13 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
 
             // Assert
             await _mockSubmissionRepository.Received(1).UpdateSubmissionAsync(Arg.Is<Submission>(s => s == submissionEntity), Arg.Is<string>(u => u == "testUser"));
-        }   
+        }
 
         [Fact]
         public async Task UpdateSubmissionAsync_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var submissionDto = new SubmissionDTO {SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
+            var submissionDto = new SubmissionDTO { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
             var submissionEntity = new Submission { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
             _mockMapper.Map<Submission>(submissionDto).Returns(submissionEntity);
             _mockSubmissionRepository.UpdateSubmissionAsync(Arg.Any<Submission>(), Arg.Any<string>())

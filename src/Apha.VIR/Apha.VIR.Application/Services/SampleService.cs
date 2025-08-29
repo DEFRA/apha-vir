@@ -31,12 +31,12 @@ namespace Apha.VIR.Application.Services
             ArgumentNullException.ThrowIfNull(sampleDto);
 
             var sample = _mapper.Map<Sample>(sampleDto);
-            await _sampleRepository.AddSampleAsync(sample, avNumber, userName);            
+            await _sampleRepository.AddSampleAsync(sample, avNumber, userName);
         }
 
         public async Task UpdateSample(SampleDTO sampleDto, string userName)
         {
-            ArgumentNullException.ThrowIfNull(sampleDto); 
+            ArgumentNullException.ThrowIfNull(sampleDto);
 
             var sample = _mapper.Map<Sample>(sampleDto);
             await _sampleRepository.UpdateSampleAsync(sample, userName);

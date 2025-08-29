@@ -40,7 +40,7 @@ namespace Apha.VIR.Web.Models
         [RegularExpression(@"\d{2}/\d{3}/\d{4}(/\d{2}|)", ErrorMessage = "Format is 00/000/0000 or 00/000/0000/00")]
         public string? CPHNumber { get; set; }
         public string? Owner { get; set; }
-        public string? SamplingLocationPremises { get; set; }        
+        public string? SamplingLocationPremises { get; set; }
         public List<SelectListItem>? SubmittingLabList { get; set; }
         public List<SelectListItem>? SubmissionReasonList { get; set; }
         public List<SelectListItem>? CountryList { get; set; }

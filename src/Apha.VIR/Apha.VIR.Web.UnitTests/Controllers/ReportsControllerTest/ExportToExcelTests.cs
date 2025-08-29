@@ -8,13 +8,13 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
 {
-    public class ReportsControllerExportToExcelTests
+    public class ExportToExcelTests
     {
         private readonly IReportService _mockReportService;
         private readonly IMapper _mockMapper;
         private readonly ReportsController _controller;
 
-        public ReportsControllerExportToExcelTests()
+        public ExportToExcelTests()
         {
             _mockReportService = Substitute.For<IReportService>();
             _mockMapper = Substitute.For<IMapper>();

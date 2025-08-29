@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Models.Lookup;
 using AutoMapper;
 
 namespace Apha.VIR.Web.Mappings
@@ -10,6 +11,7 @@ namespace Apha.VIR.Web.Mappings
         public ViewModelMapper()
         {
             CreateMap<LookupDTO, LookupViewModel>();
+            CreateMap<LookupItemDTO, LookupItemModel>().ReverseMap();
             CreateMap<IsolateDispatchHistory, IsolateDispatchInfoDTO>().ReverseMap();
             CreateMap<SearchCriteria, SearchRepositoryViewModel>();
             CreateMap<CharacteristicCriteria, CharacteristicSearchViewModel>();
