@@ -26,24 +26,14 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string AVNumber, Guid? Sample)
+        public async Task<IActionResult> Create(string AVNumber)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var viewModel = new SampleViewModel();
-            if (Sample.HasValue)
-            {
-                var result = await this._sampleService.GetSampleAsync(AVNumber, Sample);
-                viewModel = _mapper.Map<SampleViewModel>(result);
-                viewModel.IsEditMode = true;
-            }
-            else
-            {
-                viewModel.IsEditMode = false;
-            }
+            var viewModel = new SampleViewModel();            
             viewModel.AVNumber = AVNumber;
             await LoadSampleDetailsData(viewModel);
             return View(viewModel);
@@ -51,29 +41,44 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Insert(SampleViewModel model)
+        public async Task<IActionResult> Create(SampleViewModel model)
         {
             if (!ModelState.IsValid)
-            {
-                model.IsEditMode = false;
+            {  
                 await LoadSampleDetailsData(model);
-                return View(sampleIndex, model);
+                return View(model);
             }
 
             var sample = _mapper.Map<SampleDTO>(model);
             await _sampleService.AddSample(sample, model.AVNumber!, "Test");
-            return RedirectToAction(sampleIndex, "SubmissionSamples", new { AVNumber = model.AVNumber});
+            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber});
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string AVNumber, Guid Sample)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await this._sampleService.GetSampleAsync(AVNumber, Sample);
+            var viewModel = _mapper.Map<SampleViewModel>(result);            
+
+            viewModel.AVNumber = AVNumber;
+            await LoadSampleDetailsData(viewModel);
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(SampleViewModel model)
+        public async Task<IActionResult> Edit(SampleViewModel model)
         {
             if (!ModelState.IsValid)
-            {
-                model.IsEditMode = true;
+            {  
                 await LoadSampleDetailsData(model);
-                return View(sampleIndex, model);
+                return View(model);
             }
 
             var sample = _mapper.Map<SampleDTO>(model);

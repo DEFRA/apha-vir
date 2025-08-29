@@ -60,6 +60,7 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<SubmissionDTO, Submission>().ReverseMap();
             CreateMap<Sample, SampleDTO>().ReverseMap();
             CreateMap<SampleDTO, Sample>().ReverseMap();
+            CreateMap<SystemInfo, SystemInfoDTO>().ReverseMap();
         }
     }
 }

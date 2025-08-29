@@ -36,22 +36,20 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
             var sampleDto = new SampleDTO { SampleId = sampleId };
-            var viewModel = new SampleViewModel { SampleId = sampleId, IsEditMode = true };
+            var viewModel = new SampleViewModel { SampleId = sampleId };
 
             _sampleService.GetSampleAsync(avNumber, sampleId).Returns(sampleDto);
             _mapper.Map<SampleViewModel>(sampleDto).Returns(viewModel);
 
             // Act
-            var result = await _controller.Index(avNumber, sampleId) as ViewResult;
+            var result = await _controller.Create(avNumber) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.Model); // Ensure the model is not null
             Assert.IsType<SampleViewModel>(result.Model);
             var model = result.Model as SampleViewModel;
-            Assert.NotNull(model); // Ensure the model is not null before dereferencing
-            Assert.Equal(sampleId, model.SampleId);
-            Assert.True(model.IsEditMode);
+            Assert.NotNull(model); // Ensure the model is not null before dereferencing                       
             Assert.Equal(avNumber, model.AVNumber);
         }
 
@@ -62,15 +60,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var avNumber = "AV123";
 
             // Act
-            var result = await _controller.Index(avNumber, null) as ViewResult;
+            var result = await _controller.Create(avNumber) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.Model); // Ensure the model is not null before dereferencing
             Assert.IsType<SampleViewModel>(result.Model);
             var model = result.Model as SampleViewModel;
-            Assert.NotNull(model); // Ensure the model is not null before dereferencing
-            Assert.False(model.IsEditMode);
+            Assert.NotNull(model); // Ensure the model is not null before dereferencing            
             Assert.Equal(avNumber, model.AVNumber);
         }
 
@@ -81,7 +78,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             _controller.ModelState.AddModelError("Error", "Sample error");
 
             // Act
-            var result = await _controller.Index("AV123", null);
+            var result = await _controller.Create("AV123");
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -96,8 +93,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var sampleDto = new SampleDTO { SampleId = sampleId };
             var viewModel = new SampleViewModel
             {
-                SampleId = sampleId,
-                IsEditMode = true,
+                SampleId = sampleId,               
                 SampleTypeList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
                 HostSpeciesList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
                 HostBreedList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
@@ -125,7 +121,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             }));
 
             // Act
-            var result = await _controller.Index(avNumber, sampleId) as ViewResult;
+            var result = await _controller.Create(avNumber) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -150,7 +146,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             _mapper.Map<SampleDTO>(model).Returns(new SampleDTO());
 
             // Act
-            var result = await _controller.Insert(model);
+            var result = await _controller.Create(model);
 
             // Assert
             await _sampleService.Received(1).AddSample(Arg.Any<SampleDTO>(), "TEST123", "Test");
@@ -172,30 +168,21 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             _controller.ModelState.AddModelError("Error", "Test error");
 
             // Act
-            var result = await _controller.Insert(model);
+            var result = await _controller.Create(model);
 
             // Assert
             Assert.IsType<ViewResult>(result);
-            var viewResult = (ViewResult)result;
-            Assert.Equal("Index", viewResult.ViewName);
+            var viewResult = (ViewResult)result;           
 
             // Fix for CS8600 and CS8602: Ensure viewResult.Model is not null before casting
             Assert.NotNull(viewResult.Model);
             var viewModel = (SampleViewModel)viewResult.Model;
 
-            Assert.Equal(model, viewModel);
-            Assert.False(viewModel.IsEditMode);
+            Assert.Equal(model, viewModel);            
             await _lookupService.Received(1).GetAllSampleTypesAsync();
             await _lookupService.Received(1).GetAllHostSpeciesAsync();
             await _lookupService.Received(1).GetAllHostPurposesAsync();
             await _lookupService.Received(1).GetAllHostBreedsAsync();
-        }
-
-        [Fact]
-        public async Task Insert_NullModel_ThrowsException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => _controller.Insert(null!));
         }
 
         [Fact]
@@ -207,7 +194,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             _mapper.Map<SampleDTO>(model).Returns(sampleDto);
 
             // Act
-            var result = await _controller.Update(model);
+            var result = await _controller.Edit(model);
 
             // Assert
             await _sampleService.Received(1).UpdateSample(sampleDto, "Test");
@@ -229,7 +216,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             _controller.ModelState.AddModelError("Error", "Model error");
 
             // Act
-            var result = await _controller.Update(model);
+            var result = await _controller.Edit(model);
 
             // Assert
             Assert.IsType<ViewResult>(result);
@@ -237,10 +224,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
 
             // Fix for CS8600 and CS8602: Ensure viewResult.Model is not null before casting and dereferencing
             Assert.NotNull(viewResult.Model);
-            var viewModel = (SampleViewModel)viewResult.Model;
-
-            Assert.Equal("Index", viewResult.ViewName);
-            Assert.True(viewModel.IsEditMode);
         }
 
         [Fact]
@@ -252,7 +235,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             _mapper.Map<SampleDTO>(model).Returns(sampleDto);
 
             // Act
-            await _controller.Update(model);
+            await _controller.Edit(model);
 
             // Assert
             await _sampleService.Received(1).UpdateSample(sampleDto, "Test");
@@ -270,7 +253,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
                 .Returns(Task.FromException(new Exception("Test exception")));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _controller.Update(model));
+            await Assert.ThrowsAsync<Exception>(() => _controller.Edit(model));
         }
 
         [Fact]

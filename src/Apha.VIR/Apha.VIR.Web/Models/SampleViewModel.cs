@@ -23,8 +23,7 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? HostSpeciesList { get; set; }
         public List<SelectListItem>? HostBreedList { get; set; }
         public List<SelectListItem>? HostPurposeList { get; set; }
-        public List<LatinBreed>? LatinBreedList { get; set; }
-        public bool IsEditMode { get; set; } = false;
+        public List<LatinBreed>? LatinBreedList { get; set; }        
     }
 
     public class LatinBreed
