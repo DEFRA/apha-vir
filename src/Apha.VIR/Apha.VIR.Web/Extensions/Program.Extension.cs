@@ -84,7 +84,7 @@ namespace Apha.VIR.Web.Extensions
             app.UseAuthentication();
             app.UseAuthorization();
 
-           
+
 
             // Default route
             app.MapControllerRoute(
