@@ -25,7 +25,7 @@ namespace Apha.VIR.Web.Extensions
             return services;
         }
 
-        private static async Task HandleTokenValidatedAsync(TokenValidatedContext context)
+        private static Task HandleTokenValidatedAsync(TokenValidatedContext context)
         {
             var identity = context.Principal?.Identity as ClaimsIdentity;
             if (identity == null)
@@ -42,6 +42,7 @@ namespace Apha.VIR.Web.Extensions
             {
                 throw new UnauthorizedAccessException("User Identifier not received from IDP");
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
