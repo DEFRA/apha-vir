@@ -21,11 +21,14 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllHostSpeciesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(Guid? hostSpecies);
+        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAltNameAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllStaffAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllSubmittingLabAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllSubmissionReasonAsync();
     }
 }

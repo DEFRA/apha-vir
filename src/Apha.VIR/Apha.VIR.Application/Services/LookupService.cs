@@ -112,14 +112,19 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsByParentAsync(hostSpecies));
         }
 
-        public async Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync()
+        public async Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAltNameAsync()
         {
-            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllCountriesAsync());
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsAltNameAsync());
         }
 
         public async Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync()
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostPurposesAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllCountriesAsync());
         }
 
         public async Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync()
@@ -140,6 +145,16 @@ namespace Apha.VIR.Application.Services
         public async Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync()
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllViabilityAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllSubmittingLabAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllSubmittingLabAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllSubmissionReasonAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllSubmissionReasonAsync());
         }
     }
 }

@@ -265,6 +265,13 @@ namespace Apha.VIR.DataAccess.Repositories
             return await GetLookupItemsByParentAsync("HostBreed", hostSpecies);
         }
 
+        public async Task<IEnumerable<LookupItem>> GetAllHostBreedsAltNameAsync()
+        {
+            return (await _context.Set<LookupItem>()
+             .FromSqlRaw($"EXEC spHostBreedGetAllAltName").ToListAsync())
+             .Where(vf => vf.Active).ToList();
+        }
+
         private async Task<IEnumerable<LookupItem>> GetLookupItemsByParentAsync(string Lookup, Guid? Parent)
         {
             var lookupItemList = new List<LookupItem>();
@@ -352,6 +359,20 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             return (await _context.Set<LookupItem>()
             .FromSqlRaw($"EXEC spViabilityGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllSubmittingLabAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spSubmittingLabGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllSubmissionReasonAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spSubmissionReasonGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
     }

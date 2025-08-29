@@ -1,0 +1,55 @@
+﻿@model SenderViewModel
+
+<div class="modalborder-div">
+	<form id="AddSenderPopupForm" method="post" style="width:450px; padding:2px;">
+		<fieldset style="width:100%">
+			<legend class="legend">Add New Sender:</legend>
+
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="Name">Sender:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<input asp-for="SenderName" />
+					<span asp-validation-for="SenderName" class="text-danger"></span>
+				</div>
+			</div>
+
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="Organisation">Sender Organisation:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<textarea asp-for="SenderOrganisation" style="height:55px" id="txtSenderOrganisation"></textarea>
+					<span asp-validation-for="SenderOrganisation" class="text-danger"></span>
+				</div>
+			</div>
+
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="Address">Sender Address:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<textarea asp-for="SenderAddress" id="txtSenderAddress"></textarea>
+					<span asp-validation-for="SenderAddress" class="text-danger"></span>
+				</div>
+			</div>
+
+			<div class="editsubmission-form-group_row">
+				<div class="editsubmission-addsender-cell editsubmission-addsender-label">
+					<label for="Country">Sender Country:</label>
+				</div>
+				<div class="editsubmission-addsender-cell editsubmission-addsender-input">
+					<select asp-for="Country" asp-items="@Model.CountryList">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</fieldset>
+
+		<div class="modal-footer">
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" style="margin-left:320px" onclick="submitSender()">Insert</button>
+			<button type="button" class="btn btn-link editsubmission-btn-link-custom" data-bs-dismiss="modal">Cancel</button>
+		</div>
+	</form>
+</div>

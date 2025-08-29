@@ -6,13 +6,14 @@ using Apha.VIR.Web.Extensions;
 using Apha.VIR.Web.Mappings;
 using Apha.VIR.Web.Middleware;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment())
+if (builder.Environment.IsEnvironment("local"))
 {
     builder.Host.UseSerilog((ctx, lc) =>
     {
@@ -62,8 +63,13 @@ var localizationOptions = new RequestLocalizationOptions
     SupportedUICultures = supportedCultures
 };
 app.UseRequestLocalization(localizationOptions);
+// Health checks endpoint
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    Predicate = _ => false
+});
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("local"))
 {
     app.UseDeveloperExceptionPage();
 }
@@ -72,16 +78,17 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-//app.UseMiddleware<ExceptionMiddleware>();
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapHealthChecks("/health");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
