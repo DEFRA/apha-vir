@@ -1,0 +1,53 @@
+﻿@using Apha.VIR.Web.Models
+@model VirusCharacteristicListEntriesViewModel
+
+@{
+    ViewData["Title"] = "Virus Characteristic List Entries | Virus Isolates Repository";
+}
+
+<div>
+	<div>
+        <strong>@Model.CharacteristicName</strong>       
+    </div>
+
+    <div>
+        <br />
+        <table>
+            <thead class="sr-only"><tr><th scope="col"></th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
+                    <td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
+                    <td>
+                        <a asp-action="Edit" asp-route-characteristic="@Model.CharacteristicId">
+                            Add a new list entry
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
+                    <td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
+                    <td>
+                        <a asp-action="Back">Return to Virus Characteristics Page</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br />
+        <span>
+            Edit an existing list entry by clicking on the links below.
+        </span>
+
+        <div id="listEntries" class="mt-3">
+            @if (!Model.Entries.Any())
+            {
+                <p>No entries recorded for this virus characteristic at this time.</p>
+            }
+            else
+            {
+                <partial name="_VirusCharacteristicListEntriesTable" for="@Model.Entries" />
+            }
+        </div>
+    </div>
+</div>

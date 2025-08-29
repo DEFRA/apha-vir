@@ -36,6 +36,9 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<SenderDTO, SenderViewModel>().ReverseMap();
             CreateMap<SubmissionDTO, SubmissionEditViewModel>().ReverseMap();
             CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
+            CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryViewModel>().ReverseMap();           
+            CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryEditViewModel>().ReverseMap();
+
         }
     }
 }

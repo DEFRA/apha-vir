@@ -1,0 +1,31 @@
+﻿@model List<Apha.VIR.Web.Models.VirusCharacteristicListEntryViewModel>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">No entries recorded for this virus characteristic at this time.</div>
+}
+else
+{
+    <table class="isolatereporttable" style="width: 180px;">
+        <thead>
+            <tr class="isolatereport-header">
+                <th>List Entry Text</th>
+                <th style="padding:5px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var entry = Model[i];
+                <tr class="@(i % 2 == 0 ? "odd" : "even")">
+                    <td>@entry.Name</td>
+                    <td>
+                        <a asp-controller="VirusCharacteristics" asp-action="Edit"
+                           asp-route-Characteristic="@entry.VirusCharacteristicId"
+                           asp-route-Entry="@entry.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

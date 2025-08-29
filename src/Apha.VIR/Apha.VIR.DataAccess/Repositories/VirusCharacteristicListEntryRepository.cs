@@ -19,4 +19,42 @@ public class VirusCharacteristicListEntryRepository : IVirusCharacteristicListEn
         return await _context.Set<VirusCharacteristicListEntry>()
               .FromSqlInterpolated($"EXEC spVirusCharacteristicListEntryGetById @VirusCharacteristicId = {virusCharacteristicId}").ToListAsync();
     }
+    public async Task<VirusCharacteristicListEntry?> GetByIdAsync(Guid id)
+    {
+        return await _context.Set<VirusCharacteristicListEntry>()
+            .FromSqlInterpolated($"SELECT * FROM tlkpVirusCharacteristicListEntry WHERE Id = {id}")
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task AddEntryAsync(VirusCharacteristicListEntry entry)
+    {
+        var lastModified = new byte[8];
+        await _context.Database.ExecuteSqlInterpolatedAsync(
+            $@"EXEC spVirusCharacteristicListEntryInsert 
+            @Id = {entry.Id}, 
+            @Name = {entry.Name}, 
+            @Characteristic = {entry.VirusCharacteristicId}, 
+            @LastModified = {lastModified}");
+        entry.LastModified = lastModified;
+    }
+
+    public async Task UpdateEntryAsync(VirusCharacteristicListEntry entry)
+    {
+        var lastModified = entry.LastModified ?? new byte[8];
+        await _context.Database.ExecuteSqlInterpolatedAsync(
+            $@"EXEC spVirusCharacteristicListEntryUpdate 
+            @Id = {entry.Id}, 
+            @Name = {entry.Name}, 
+            @Characteristic = {entry.VirusCharacteristicId}, 
+            @LastModified = {lastModified}");
+        entry.LastModified = lastModified;
+    }
+
+    public async Task DeleteEntryAsync(Guid id, byte[] lastModified)
+    {
+        await _context.Database.ExecuteSqlInterpolatedAsync(
+            $@"EXEC spVirusCharacteristicListEntryDelete 
+            @Id = {id}, 
+            @LastModified = {lastModified}");
+    }
 }
