@@ -10,17 +10,38 @@ namespace Apha.VIR.Web.Extensions
         public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-             .AddMicrosoftIdentityWebApp(options =>
-             {
-                 configuration.Bind("AzureAd", options);
-                 options.Events = new OpenIdConnectEvents
-                 {
-                     OnRedirectToIdentityProvider = context => HandleRedirectToIdentityProvider(context)
-                 };
+                .AddMicrosoftIdentityWebApp(options =>
+                {
+                    configuration.Bind("AzureAd", options);
+                    options.Events = new OpenIdConnectEvents
+                    {
+                        OnTokenValidated = context => HandleTokenValidatedAsync(context),
+                        OnRedirectToIdentityProvider = context => HandleRedirectToIdentityProvider(context),
+                        OnRemoteFailure = context => HandleRemoteFailure(context)
+                    };
 
-             });
+                });
 
             return services;
+        }
+
+        private static async Task HandleTokenValidatedAsync(TokenValidatedContext context)
+        {
+            var identity = context.Principal?.Identity as ClaimsIdentity;
+            if (identity == null)
+            {
+                throw new UnauthorizedAccessException("Unauthorized Access");
+            }
+            var email = identity.FindFirst(ClaimTypes.Email)?.Value
+                        ?? identity.FindFirst("preferred_username")?.Value;
+            if (!string.IsNullOrEmpty(email))
+            {
+                //Authenticated user
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("User Identifier not received from IDP");
+            }
         }
 
         /// <summary>
@@ -34,18 +55,24 @@ namespace Apha.VIR.Web.Extensions
         /// <returns>A completed task.</returns>
         private static Task HandleRedirectToIdentityProvider(RedirectContext context)
         {
-            Console.WriteLine($"Redirect URL : {context.ProtocolMessage.RedirectUri}");
             // Check if the redirect URI starts with "http://"
             if (context.ProtocolMessage.RedirectUri?.StartsWith("http://", StringComparison.OrdinalIgnoreCase) == true)
             {
                 // Replace "http://" with "https://"
                 context.ProtocolMessage.RedirectUri =
                     string.Concat("https://", context.ProtocolMessage.RedirectUri.AsSpan("http://".Length));
-                Console.WriteLine($"Redirect URL After replace : {context.ProtocolMessage.RedirectUri}");
-
             }
             return Task.CompletedTask;
         }
 
+        private static Task HandleRemoteFailure(RemoteFailureContext context)
+        {
+            if (context.Failure?.InnerException is UnauthorizedAccessException unauthorizedEx)
+            {
+                throw unauthorizedEx;
+            }
+
+            throw context.Failure ?? new Exception("Unknown authentication error.");
+        }
     }
-}
+ }

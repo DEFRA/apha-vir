@@ -1,10 +1,12 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
+    [Authorize]  //Kept for testing, can be removed if System info page can be displayed without authentication
     public class SystemInformationController : Controller
     {
         private readonly ISystemInfoService _sysInfoService;
@@ -19,7 +21,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SystemInfo()
+        public async Task<IActionResult> Index()
         {
             var sysInfoDTO = await _sysInfoService.GetLatestSysInfo();
 
@@ -35,7 +37,7 @@ namespace Apha.VIR.Web.Controllers
             // Set URL for Error log button
             ViewBag.ErrorLogUrl = $"{ErrorReportingURL()}";
 
-            return View(sysInfo);
+            return View("SystemInfo", sysInfo);
         }
 
         private string ErrorReportingURL()
