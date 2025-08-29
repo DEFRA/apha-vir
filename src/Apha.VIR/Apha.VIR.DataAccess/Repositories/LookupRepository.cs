@@ -97,7 +97,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
                     var parameters = new[]
                      {
-                        new SqlParameter("@ID", SqlDbType.UniqueIdentifier) 
+                        new SqlParameter("@ID", SqlDbType.UniqueIdentifier)
                         { Value = lookupItemId ==Guid.Empty  ? DBNull.Value: lookupItemId}
                     };
 

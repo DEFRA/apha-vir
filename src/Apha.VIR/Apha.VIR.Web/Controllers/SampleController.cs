@@ -33,7 +33,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var viewModel = new SampleViewModel();            
+            var viewModel = new SampleViewModel();
             viewModel.AVNumber = AVNumber;
             await LoadSampleDetailsData(viewModel);
             return View(viewModel);
@@ -44,14 +44,14 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Create(SampleViewModel model)
         {
             if (!ModelState.IsValid)
-            {  
+            {
                 await LoadSampleDetailsData(model);
                 return View(model);
             }
 
             var sample = _mapper.Map<SampleDTO>(model);
             await _sampleService.AddSample(sample, model.AVNumber!, "Test");
-            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber});
+            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber });
         }
 
 
@@ -64,7 +64,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var result = await this._sampleService.GetSampleAsync(AVNumber, Sample);
-            var viewModel = _mapper.Map<SampleViewModel>(result);            
+            var viewModel = _mapper.Map<SampleViewModel>(result);
 
             viewModel.AVNumber = AVNumber;
             await LoadSampleDetailsData(viewModel);
@@ -76,7 +76,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Edit(SampleViewModel model)
         {
             if (!ModelState.IsValid)
-            {  
+            {
                 await LoadSampleDetailsData(model);
                 return View(model);
             }

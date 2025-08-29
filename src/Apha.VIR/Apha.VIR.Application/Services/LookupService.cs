@@ -27,58 +27,58 @@ namespace Apha.VIR.Application.Services
         {
             return _mapper.Map<LookupDTO>(await _lookupRepository.GetLookupByIdAsync(lookupId));
         }
-        
+
         public async Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId)
         {
             return _mapper.Map<LookupItemDTO>(
-                await _lookupRepository.GetLookupItemAsync(lookupId,lookupItemId));
+                await _lookupRepository.GetLookupItemAsync(lookupId, lookupItemId));
         }
-        
-        public async Task<PaginatedResult<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId,int pageNo,int pageSize)
+
+        public async Task<PaginatedResult<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize)
         {
             ArgumentNullException.ThrowIfNull(lookupId);
             ArgumentNullException.ThrowIfNull(pageNo);
             ArgumentNullException.ThrowIfNull(pageSize);
 
             return _mapper.Map<PaginatedResult<LookupItemDTO>>(
-                await _lookupRepository.GetAllLookupItemsAsync(lookupId,  pageNo,  pageSize));
+                await _lookupRepository.GetAllLookupItemsAsync(lookupId, pageNo, pageSize));
         }
-        
+
         public async Task<IEnumerable<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId)
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(
                 await _lookupRepository.GetAllLookupItemsAsync(lookupId));
         }
-        
+
         public async Task<IEnumerable<LookupItemDTO>> GetLookupItemParentListAsync(Guid lookupId)
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(
                 await _lookupRepository.GetLookupItemParentListAsync(lookupId));
         }
-        
+
         public async Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId)
         {
             return await _lookupRepository.IsLookupItemInUseAsync(lookupId, lookupItemId);
         }
-        
+
         public async Task InsertLookupItemAsync(Guid LookupId, LookupItemDTO Item)
         {
             var itemData = _mapper.Map<LookupItem>(Item);
-            
+
             await _lookupRepository.InsertLookupItemAsync(LookupId, itemData);
         }
 
         public async Task UpdateLookupItemAsync(Guid LookupId, LookupItemDTO Item)
         {
             var itemData = _mapper.Map<LookupItem>(Item);
-            
+
             await _lookupRepository.UpdateLookupItemAsync(LookupId, itemData);
         }
 
         public async Task DeleteLookupItemAsync(Guid LookupId, LookupItemDTO Item)
         {
             var itemData = _mapper.Map<LookupItem>(Item);
-            
+
             await _lookupRepository.DeleteLookupItemAsync(LookupId, itemData);
         }
 
@@ -131,7 +131,7 @@ namespace Apha.VIR.Application.Services
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllSampleTypesAsync());
         }
-        
+
         public async Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync()
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllWorkGroupsAsync());

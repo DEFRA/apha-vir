@@ -144,12 +144,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 LookupId = lookupId,
                 LookupItem = new LookupItemModel
                 {
-                    Id= lookupItemId,
-                    Name="Test",
-                    
+                    Id = lookupItemId,
+                    Name = "Test",
+
                 }
             };
-            var lookupListdto= new List<LookupItemDTO> { new LookupItemDTO {Id= lookupItemId } };
+            var lookupListdto = new List<LookupItemDTO> { new LookupItemDTO { Id = lookupItemId } };
             var lookuitemList = new List<LookupItemModel> { new LookupItemModel { Id = lookupItemId } };
 
             var lookup = new LookupViewModel { Id = lookupId, Parent = Guid.NewGuid() };
@@ -158,7 +158,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             _lookupService.GetAllLookupItemsAsync(lookupId).Returns(lookupListdto);
             _mapper.Map<IEnumerable<LookupItemModel>>(lookupListdto).Returns(lookuitemList);
 
-       
+
             var dto = new LookupItemDTO();
             _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
 

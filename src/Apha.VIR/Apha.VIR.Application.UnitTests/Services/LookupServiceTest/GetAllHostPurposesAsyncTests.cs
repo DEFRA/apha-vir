@@ -13,7 +13,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
         private readonly LookupService _mockLookupService;
- 
+
         public GetAllHostPurposesAsyncTests()
         {
             _mockLookupRepository = Substitute.For<ILookupRepository>();

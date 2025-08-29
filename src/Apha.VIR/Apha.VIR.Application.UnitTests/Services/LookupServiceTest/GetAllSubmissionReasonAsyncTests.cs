@@ -13,7 +13,7 @@ using NSubstitute;
 namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
 {
     public class GetAllSubmissionReasonAsyncTests
-    { 
+    {
         private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
         private readonly LookupService _mockLookupService;

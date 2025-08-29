@@ -20,7 +20,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             _mockMapper = Substitute.For<IMapper>();
             _mockLookupService = new LookupService(_mockLookupRepository, _mockMapper);
         }
-        
+
         [Fact]
         public async Task GetAllSampleTypesAsync_ReturnsExpectedSampleTypesList()
         {

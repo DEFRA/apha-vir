@@ -67,7 +67,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         public async Task Delete_InvalidModelState_ReturnsViewResult()
         {
             // Arrange
-            var model = new LookupItemViewModel { LookupItem= new LookupItemModel()};
+            var model = new LookupItemViewModel { LookupItem = new LookupItemModel() };
             _controller.ModelState.AddModelError("error", "some error");
 
             // Act

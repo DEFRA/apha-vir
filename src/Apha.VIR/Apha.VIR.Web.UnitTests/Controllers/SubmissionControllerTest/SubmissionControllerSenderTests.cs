@@ -198,13 +198,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             var result = await _controller.AddSender(senderModel);
 
             // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);   
+            var jsonResult = Assert.IsType<JsonResult>(result);
             var jsonString = JsonSerializer.Serialize(jsonResult.Value);
             JsonDocument doc = JsonDocument.Parse(jsonString);
             JsonElement jsonElement = doc.RootElement;
             bool success = jsonElement.GetProperty("success").GetBoolean();
             string? message = jsonElement.GetProperty("message").GetString();
-            Assert.False(success);            
+            Assert.False(success);
             Assert.Equal("Add sender failed!", message);
             await _mockSenderService.DidNotReceive().AddSenderAsync(Arg.Any<SenderDTO>());
         }

@@ -20,7 +20,7 @@ public class SenderRepository : ISenderRepository
     {
         var senders = await _context.Set<Sender>()
         .FromSqlRaw($"EXEC spSenderGetAllOrderBySender").ToListAsync();
-        if (countryId != null && countryId != Guid.Empty) 
+        if (countryId != null && countryId != Guid.Empty)
         {
             senders = senders.Where(s => s.Country == countryId).ToList();
         }
@@ -30,7 +30,7 @@ public class SenderRepository : ISenderRepository
     public async Task<IEnumerable<Sender>> GetAllSenderOrderByOrganisationAsync(Guid? countryId)
     {
         var senders = await _context.Set<Sender>()
-        .FromSqlRaw($"EXEC spSenderGetAllOrderByOrganisation").ToListAsync();        
+        .FromSqlRaw($"EXEC spSenderGetAllOrderByOrganisation").ToListAsync();
         if (countryId != null && countryId != Guid.Empty)
         {
             senders = senders.Where(s => s.Country == countryId).ToList();
@@ -41,12 +41,12 @@ public class SenderRepository : ISenderRepository
     public async Task AddSenderAsync(Sender sender)
     {
         var parameters = new[]
-        {           
+        {
            new SqlParameter("@SenderID", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid() },
            new SqlParameter("@Sender", SqlDbType.VarChar, 50) { Value = (object?)sender.SenderName ?? DBNull.Value  },
            new SqlParameter("@SenderOrganisation", SqlDbType.VarChar, 200) { Value = (object?)sender.SenderOrganisation ?? DBNull.Value },
            new SqlParameter("@SenderAddress", SqlDbType.VarChar, 500) { Value = (object?)sender.SenderAddress ?? DBNull.Value },
-           new SqlParameter("@Country", SqlDbType.UniqueIdentifier) { Value = sender.Country.HasValue ? sender.Country : DBNull.Value }           
+           new SqlParameter("@Country", SqlDbType.UniqueIdentifier) { Value = sender.Country.HasValue ? sender.Country : DBNull.Value }
         };
 
         await _context.Database.ExecuteSqlRawAsync(

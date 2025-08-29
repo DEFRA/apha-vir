@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 AlternateName = lookupResult.AlternateName,
                 Smsrelated = lookupResult.Smsrelated
             }; ;
-            var lookupEntries = new PaginatedResult<LookupItemDTO> 
+            var lookupEntries = new PaginatedResult<LookupItemDTO>
             { data = new List<LookupItemDTO> { new LookupItemDTO() }, TotalCount = 0 };
             var lookupItems = new List<LookupItemModel>();
 

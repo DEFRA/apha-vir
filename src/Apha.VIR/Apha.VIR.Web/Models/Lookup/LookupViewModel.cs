@@ -8,4 +8,4 @@ public class LookupViewModel
     public bool ReadOnly { get; set; }
     public bool AlternateName { get; set; }
     public bool Smsrelated { get; set; }
- }
+}

@@ -10,8 +10,8 @@ public class LookupItemModel
     public Guid? Parent { get; set; }
     public string? ParentName { get; set; }
     public string? AlternateName { get; set; }
-    public bool Active { get; set; }=true;
-    public bool Sms { get; set; }=false;
+    public bool Active { get; set; } = true;
+    public bool Sms { get; set; } = false;
     public string? Smscode { get; set; }
     public byte[] LastModified { get; set; } = null!;
 
@@ -50,12 +50,12 @@ public class LookupItemModel
         return results;
     }
     public IEnumerable<ValidationResult> ValidateLookUpItemUpdate(ValidationContext validationContext,
-        IEnumerable<LookupItemModel> lookupItemList,bool parentExist = false,bool isIteminUse =false)
+        IEnumerable<LookupItemModel> lookupItemList, bool parentExist = false, bool isIteminUse = false)
     {
         var results = new List<ValidationResult>();
         bool isDuplicate;
 
-        if (Id  == Guid.Empty)
+        if (Id == Guid.Empty)
         {
             results.Add(new ValidationResult("- Id not specified for this item."));
         }
@@ -100,11 +100,11 @@ public class LookupItemModel
         return results;
     }
 
-    public IEnumerable<ValidationResult> ValidateLookUpItemDelete(ValidationContext validationContext, 
-        IEnumerable<LookupItemModel> lookupItemList,bool isIteminUse = false)
+    public IEnumerable<ValidationResult> ValidateLookUpItemDelete(ValidationContext validationContext,
+        IEnumerable<LookupItemModel> lookupItemList, bool isIteminUse = false)
     {
         var results = new List<ValidationResult>();
-  
+
         //Ensure the item already exists
         bool found = lookupItemList.Any(listItem => listItem.Id == Id);
 

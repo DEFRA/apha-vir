@@ -99,7 +99,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create(Guid lookupId,int currentPage = 1)
+        public async Task<IActionResult> Create(Guid lookupId, int currentPage = 1)
         {
             if (lookupId == Guid.Empty || !ModelState.IsValid)
             {
@@ -135,7 +135,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Create(LookupItemViewModel model)
         {
             ModelState.Remove("LookkupItem.LastModified");
-            
+
             var showerrorSummary = false;
 
             if (ModelState.IsValid)
@@ -249,7 +249,7 @@ namespace Apha.VIR.Web.Controllers
                 await ValidateModel(model, ModelState, "delete");
                 showerrorSummary = true;
             }
-          
+
             if (!ModelState.IsValid)
             {
                 if (model.ShowParent)
@@ -274,7 +274,7 @@ namespace Apha.VIR.Web.Controllers
 
             return RedirectToAction(nameof(LookupList), new { lookupid = model.LookupId, pageNo = 1, pageSize = 10 });
         }
-        
+
         private async Task<IEnumerable<LookupItemModel>> GetLookupItemPresents(LookupViewModel lookup)
         {
             if (lookup.Parent.HasValue && lookup.Parent != Guid.Empty)
@@ -315,7 +315,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 case "create":
                     return false;
-                
+
                 case "edit":
                     if (!model.LookupItem.Active)
                     {
@@ -341,7 +341,7 @@ namespace Apha.VIR.Web.Controllers
                 "delete" => model.LookupItem.ValidateLookUpItemDelete(context, lookupItems, IsitemInUse),
                 _ => Enumerable.Empty<ValidationResult>(),
             };
-   
+
         }
     }
 }

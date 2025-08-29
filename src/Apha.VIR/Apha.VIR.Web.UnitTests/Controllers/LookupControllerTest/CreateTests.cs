@@ -64,7 +64,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var result = await _controller.Create(invalidLookupId) as BadRequestObjectResult;
 
             // Assert
-           
+
             Assert.NotNull(result);
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
@@ -111,7 +111,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var model = new LookupItemViewModel { LookupId = lookupId, LookupItem= new LookupItemModel() };
+            var model = new LookupItemViewModel { LookupId = lookupId, LookupItem = new LookupItemModel() };
             _controller.ModelState.AddModelError("", "Test error");
 
             // Act

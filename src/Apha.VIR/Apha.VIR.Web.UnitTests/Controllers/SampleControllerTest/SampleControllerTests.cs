@@ -93,7 +93,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var sampleDto = new SampleDTO { SampleId = sampleId };
             var viewModel = new SampleViewModel
             {
-                SampleId = sampleId,               
+                SampleId = sampleId,
                 SampleTypeList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
                 HostSpeciesList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
                 HostBreedList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
@@ -172,13 +172,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
 
             // Assert
             Assert.IsType<ViewResult>(result);
-            var viewResult = (ViewResult)result;           
+            var viewResult = (ViewResult)result;
 
             // Fix for CS8600 and CS8602: Ensure viewResult.Model is not null before casting
             Assert.NotNull(viewResult.Model);
             var viewModel = (SampleViewModel)viewResult.Model;
 
-            Assert.Equal(model, viewModel);            
+            Assert.Equal(model, viewModel);
             await _lookupService.Received(1).GetAllSampleTypesAsync();
             await _lookupService.Received(1).GetAllHostSpeciesAsync();
             await _lookupService.Received(1).GetAllHostPurposesAsync();
@@ -205,7 +205,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             Assert.NotNull(redirectResult.RouteValues); // Ensure RouteValues is not null
             Assert.Equal("TEST123", redirectResult.RouteValues["AVNumber"]);
             Assert.Equal("Index", redirectResult.ActionName);
-            Assert.Equal("SubmissionSamples", redirectResult.ControllerName);           
+            Assert.Equal("SubmissionSamples", redirectResult.ControllerName);
         }
 
         [Fact]
