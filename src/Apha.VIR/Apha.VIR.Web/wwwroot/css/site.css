@@ -1,4 +1,4 @@
-body {
+﻿body {
     background-color: #ffffff;
     color: #333333;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -668,4 +668,49 @@ a:hover {color: #0000FF;  text-decoration: underline; }
 .para-darkblue-xlarge {
     color: #0b2677;
     font-size: x-large;
+}
+
+
+.auto-width-table {
+    table-layout: auto; /* default: lets browser size based on content */
+    width: auto; /* prevent stretching */
+    border-collapse: collapse;
+}
+
+    .auto-width-table th,
+    .auto-width-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        white-space: nowrap; /* prevents wrapping → column grows to fit */
+    }
+
+
+.lookuptable {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    margin-bottom: 20px;
+}
+
+    .lookuptable th, .lookuptable td {
+        border: 1px solid gray;
+        padding: 5px 5px;
+        text-align: left;
+    }
+
+    .lookuptable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .lookuptable tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+    .lookuptable tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+.w-200 {
+    width: 200px;
 }

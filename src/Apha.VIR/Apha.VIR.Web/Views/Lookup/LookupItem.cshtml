@@ -1,9 +1,10 @@
-﻿@model LookupListViewModel
+﻿@using Apha.VIR.Web.Models.Lookup
+@model LookupListViewModel
 @{
 	ViewData["Title"] = "Manage Look-up List Page | Virus Isolates Repository";
 }
 
-<h1>@Model.LookupName</h1>
+<h3 style="color:#333333;">@Model.LookupName</h3>
 
 <section aria-labelledby="add-entry">
 	@if (!Model.IsReadOnly)
@@ -17,7 +18,7 @@
 </section>
 
 <p>Edit an existing entry in the list by clicking on the links below.</p>
-<div id="gridLookupItemResult" class="searchRepo-grid-table ">
+<div id="gridLookupItemResult">
 	<partial name="_LookupItemList" for="@Model.LookupItemResult" />
 </div>
 @section Scripts {

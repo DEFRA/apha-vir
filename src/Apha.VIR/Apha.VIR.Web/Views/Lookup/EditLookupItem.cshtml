@@ -1,4 +1,5 @@
-﻿@model LookupItemViewModel
+﻿@using Apha.VIR.Web.Models.Lookup
+@model LookupItemViewModel
 @{
 	ViewData["Title"] = "Look-up List Entry Modification | Virus Isolates Repository";
 }
@@ -16,7 +17,7 @@
 		<tbody>
 			<tr>
 				<td><label for="Name">Name</label></td>
-				<td><span class="spacer"></span></td>
+				<td><img src="Images\spacer.gif" width="25" height="5" alt="" /></td>
 				<td>
 					<input id="Name"
 						   asp-for="@Model.LookupItem.Name"
@@ -29,8 +30,10 @@
 					}
 				</td>
 			</tr>
+			
 			@if (Model.ShowAlternateName)
 			{
+				<tr class="spacer-row"><td colspan="3"></td></tr>
 				<tr>
 					<td><label for="AlternateName">Alternate Name</label></td>
 					<td><span class="spacer"></span></td>
@@ -52,6 +55,7 @@
 			}
 			@if (Model.ShowParent)
 			{
+				<tr class="spacer-row"><td colspan="3"></td></tr>
 				<tr>
 					<td><label for="ParentName">Parent</label></td>
 					<td><span class="spacer"></span></td>
@@ -76,6 +80,7 @@
 				<input type="hidden" asp-for="@Model.LookupItem.Parent" />
 				<input type="hidden" asp-for="@Model.LookupItem.ParentName" />
 			}
+			<tr class="spacer-row"><td colspan="3"></td></tr>
 			<tr>
 				<td><label for="Active">Active</label></td>
 				<td><span class="spacer"></span></td>
@@ -87,6 +92,7 @@
 			</tr>
 			@if (Model.ShowSMSRelated)
 			{
+				<tr class="spacer-row"><td colspan="3"></td></tr>
 				<tr>
 					<td><label for="SMS">Imported from SMS?</label></td>
 					<td><span class="spacer"></span></td>
@@ -98,6 +104,7 @@
 						<input type="hidden" asp-for="@Model.LookupItem.Sms" />
 					</td>
 				</tr>
+				<tr class="spacer-row"><td colspan="3"></td></tr>
 				<tr>
 					<td><label for="Smscode">SMS Code</label></td>
 					<td><span class="spacer"></span></td>
@@ -115,10 +122,11 @@
 				<input type="hidden" asp-for="@Model.LookupItem.Sms" />
 				<input type="hidden" asp-for="@Model.LookupItem.Smscode" />
 			}
+			<tr class="spacer-row"><td colspan="3"></td></tr>
 			<tr>
-				<td colspan="3">
+				<td colspan="3" align="right">
 					<button type="submit" asp-action="Edit" class="btn-as-link me-3">Update</button>
-					<img src="Images\spacer.gif" width="10" height="5" alt="" />
+					<img src="Images\spacer.gif" width="5" height="5" alt="" />
 					<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
 					<img src="Images\spacer.gif" width="10" height="5" alt="" />
 					@if (Model.LookupItem.Id != Guid.Empty)

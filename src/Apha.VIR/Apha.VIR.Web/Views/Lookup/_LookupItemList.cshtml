@@ -1,29 +1,30 @@
-﻿@model LookupItemListViewModel
+﻿@using Apha.VIR.Web.Models.Lookup
+@model LookupItemListViewModel
 
 @if (Model != null && Model.LookupItems.Any())
 {
-	<table class="isolatereporttable">
+    <table class="lookuptable" style="width:75%;">
 		<thead>
 			<tr class=".isolatereport-header">
-				<th>Name</th>
+				<th style="width:20%">Name</th>
 				@if (Model.ShowAlternateName)
 				{
-					<th>Alternate Name</th>
+					<th style="width:20%">Alternate Name</th>
 				}
 				@if (Model.ShowParent)
 				{
-					<th>Parent Name</th>
+					<th style="width:20%">Parent Name</th>
 				}
-				<th>Active</th>
+				<th style="width:10%">Active</th>
 				@if (Model.ShowSMSRelated)
 				{
-					<th>SMS</th>
-					<th>SMSCode</th>
+					<th style="width:10%">SMS</th>
+					<th style="width:20%">SMSCode</th>
 				}
-				<th>Edit</th>
+				<th></th>
 			</tr>
 		</thead>
-		<tbody>
+        <tbody>
 			@foreach (var item in Model.LookupItems)
 			{
 				<tr>
@@ -36,23 +37,38 @@
 					{
 						<td>@item.ParentName</td>
 					}
-					<td>@item.Active</td>
+                    <td>
+						<input type="checkbox" @(item.Active ? "checked" : null) disabled="disabled" />
+                    </td>
 					@if (Model.ShowSMSRelated)
 					{
-						<td>@item.Sms</td>
+                        <td>
+                            <input type="checkbox" disabled="disabled" @(item.Sms ? "checked" : null) />
+                        </td>
 						<td>@item.Smscode</td>
 					}
 					<td>
 						<a asp-action="Edit" asp-route-lookupid="@Model.LookupId" asp-route-lookupItemId="@item.Id"
-						   class="btn btn-primary">Edit</a>
+							class="btn btn-primary">Edit</a>
 					</td>
 				</tr>
 			}
-		</tbody>
+			@{
+				int colspan = 3; // Name + Active + Edit button
+				if (Model.ShowAlternateName) colspan++;
+				if (Model.ShowParent) colspan++;
+				if (Model.ShowSMSRelated) colspan += 2;
+			}
+			<tr>
+				<td colspan="@colspan">
+					<div id="girdPagination" class="pagination" style="text-align:right">
+						@await Component.InvokeAsync("Pagination", Model.Pagination)
+					</div>
+				</td>
+			</tr>
+        </tbody>
 	</table>
-	<div id="girdPagination" class="pagination" style="text-align:right">
-		@await Component.InvokeAsync("Pagination", Model.Pagination)
-	</div>
+
 }
 else
 {
