@@ -1,0 +1,39 @@
+﻿@model List<Apha.VIR.Web.Models.LatinBreed>
+
+<fieldset id="latinBreedModal">
+	<legend class="legend">Pick By Latin Breed (English)</legend>
+	<div class="py-4" style="display: flex; justify-content: start;">
+		<select id="ddlLatinBreed" class="form-control addeditsample-addsender-select">
+			@foreach (var item in Model)
+			{
+				var latinBreedName = item.AlternateName + " (" + item.Name + ")";
+				<option value="@item.Id"
+						data-parent="@item.ParentName">
+					@latinBreedName
+				</option>
+			}
+		</select>
+	</div>
+	<div class="modal-footer p-0 mt-2">
+		<button type="button" class="btn-as-link" style="margin-left: 220px;" onclick="selectLatinBreed()">OK</button>
+		<button type="button" class="btn-as-link" style="margin-right: 220px;" data-bs-dismiss="modal">Cancel</button>
+	</div>
+</fieldset>
+<script>
+	function selectLatinBreed() {
+				debugger;
+				var ddl = $('#ddlLatinBreed');
+				var selectedOption = ddl.find("option:selected");
+				var selectedName = selectedOption.data("parent");				
+
+				$('#ddlHostSpecies option').filter(function(){
+						return $(this).text() === selectedName;
+				}).prop('selected', true);
+
+				$('#ddlHostBreed option').filter(function(){
+						return $(this).val() === selectedOption.val();
+				}).prop('selected', true);
+
+				$('#latinBreedModal').modal('hide');
+			}
+</script>

@@ -1,0 +1,155 @@
+﻿@model SampleViewModel
+
+<div id="contentbox">
+	<div class="box_title">Enter the Sample details</div>
+	<div class="row p-2">
+		<div class="col-md-10 ms-3">
+			<h4 class="mb-4">@Model.AVNumber</h4>
+			<form method="post">
+				<input type="hidden" asp-for="AVNumber" />
+				<input type="hidden" asp-for="SampleId" />
+				<input type="hidden" asp-for="SampleSubmissionID" />
+				<input type="hidden" asp-for="SampleNumber" />
+				<input type="hidden" asp-for="LastModified" />
+
+				<div class="form-group row mt-2">
+					<div class="col-sm-3">
+						<label for="SMSReferenceNumber" class="col-form-label">SMS Reference</label>
+					</div>
+					<div class="col-sm-9">
+						<input asp-for="SMSReferenceNumber" class="form-control addeditsample-input" />
+					</div>
+				</div>
+
+				<div class="form-group row mt-1">
+					<div class="col-sm-3">
+						<label for="SenderReferenceNumber" class="form-control col-form-label">Senders Sample Reference</label>
+					</div>
+					<div class="col-sm-9">
+						<input asp-for="SenderReferenceNumber" class="form-control addeditsample-input" />
+						<span asp-validation-for="SenderReferenceNumber" style="color:red;font-weight: bold;"></span>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label for="SampleType" class="form-control col-form-label">Sample Type</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label for="HostSpecies" class="form-control col-form-label">Host Group</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlHostSpecies" asp-for="HostSpecies" asp-items="Model.HostSpeciesList" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+						<button type="button" class="btn btn-link addeditsample-btn-link-custom"
+								id="latinBreedButton">
+							Latin Breeds
+						</button>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label for="HostBreed" class="form-control col-form-label">Host Species</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlHostBreed" asp-for="HostBreed" asp-items="Model.HostBreedList" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label for="HostPurpose" class="form-control col-form-label">Host Purpose</label>
+					</div>
+					<div class="col-sm-9">
+						<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" class="form-control addeditsample-addsender-select">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row mt-3">
+					<div class="col-sm-3">
+						<label for="SamplingLocationHouse" class="form-control col-form-label">Sampling Location / House</label>
+					</div>
+					<div class="col-sm-9">
+						<input asp-for="SamplingLocationHouse" class="form-control addeditsample-input" />
+					</div>
+				</div>
+
+				<div class="form-group row mt-3 justify-content-end">
+					<div class="col-sm-3 offset-sm-9">						
+						<button type="submit" asp-action="Create" class="btn btn-link addeditsample-btn-link-custom">Save</button>
+						<a href="~/SubmissionSamples?AVNumber=@Model.AVNumber" class="btn  btn-link addeditsample-btn-link-custom">Cancel</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>
+
+<div class="modal fade" id="latinBreedModal" aria-labelledby="latinBreedModalLabel" aria-hidden="true">
+	<div class="modal-dialog">		
+		<div class="modal-content modalborder-div" style="border:groove" id="latinBreedContent">
+			<!-- Partial will load here -->
+		</div>
+	</div>
+</div>
+
+
+
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$('#latinBreedButton').click(function () {
+				$.get('@Url.Action("GetLatinBreadList", "Sample")', function (data) {
+					$('#latinBreedContent').html(data);
+					$("#latinBreedModal .modal-dialog").css("max-width", "550px");
+					$('#latinBreedModal .modal-dialog').css('margin-top', '190px');
+					$('#latinBreedModal').modal('show');
+					$('#latinBreedModal').on('shown.bs.modal', function () {
+						$(this).find('select, input, button').first().trigger('focus');
+					});
+				});				
+			});
+			
+			
+			$('#latinBreedOkButton').click(function () {
+				var selectedBreed = $('#latinBreedSelect').val();
+				if (selectedBreed) {
+					$('#HostBreed').val(selectedBreed);
+				}
+				$('#latinBreedModal').modal('hide');
+			});			
+
+			$('#ddlHostSpecies').change(function () {
+				var selectedSpecies = $(this).val();
+				$.ajax({
+					url: '@Url.Action("GetBreedsBySpecies", "Sample")',
+					type: 'GET',
+					data: { speciesId: selectedSpecies },
+					success: function (data) {
+						$('#ddlHostBreed').empty();
+						$('#ddlHostBreed').append($('<option></option>').val('').text(''));
+						$.each(data, function (i, item) {
+							$('#ddlHostBreed').append($('<option></option>').val(item.value).text(item.text));
+						});
+					}
+				});
+			});			
+		});
+	</script>
+}
