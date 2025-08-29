@@ -73,7 +73,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
             _controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = System.Net.IPAddress.Parse("127.0.0.1");
 
             // Act
-            var result = await _controller.SystemInfo();
+            var result = await _controller.Index();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -101,7 +101,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
             };
 
             // Act
-            var result = await _controller.SystemInfo();
+            var result = await _controller.Index();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -125,7 +125,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
             };
 
             // Act
-            var result = await _controller.SystemInfo();
+            var result = await _controller.Index();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -146,7 +146,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _controller.SystemInfo());
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _controller.Index());
         }
     }
 }

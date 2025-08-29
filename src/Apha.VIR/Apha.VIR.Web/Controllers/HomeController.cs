@@ -6,17 +6,18 @@ namespace Apha.VIR.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController()
+        private readonly IConfiguration _configuration;
+
+        public HomeController(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
+            // Set URL for Error log button
+            ViewBag.UserMgmtUrl = $"{UserMgmtUrl()}";
 
-        public IActionResult Privacy()
-        {
             return View();
         }
 
@@ -24,6 +25,16 @@ namespace Apha.VIR.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private string UserMgmtUrl()
+        {
+            var url = _configuration["URL:UserMgmt"];
+            if (string.IsNullOrEmpty(url))
+            {
+                throw new InvalidOperationException("Azure Entra Group/Role Management URL configuration setting was not found");
+            }
+            return url;
         }
     }
 }
