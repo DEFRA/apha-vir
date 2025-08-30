@@ -1,6 +1,8 @@
 ﻿using System.Data;
+using System.Linq;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
+using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +40,19 @@ public class SenderRepository : ISenderRepository
         return senders;
     }
 
+    public async Task<PagedData<Sender>> GetAllSenderAsync(int pageNo, int pageSize)
+    {
+        //stored procedure is non-composable SQL and EF does support AsQueryable to get performance of skip. 
+        var result = await _context.Set<Sender>()
+           .FromSqlInterpolated($"EXEC spSenderGetAllOrderBySender").ToListAsync();
+
+        var totalRecords = result.Count;
+        var senders = result.Skip((pageNo - 1) * pageSize)
+            .Take(pageSize).ToList();
+
+        return new PagedData<Sender>(senders, totalRecords);
+    }
+
     public async Task AddSenderAsync(Sender sender)
     {
         var parameters = new[]
@@ -52,4 +67,6 @@ public class SenderRepository : ISenderRepository
         await _context.Database.ExecuteSqlRawAsync(
             @"EXEC spSenderInsert @SenderID, @Sender, @SenderOrganisation, @SenderAddress, @Country", parameters);
     }
+
+
 }

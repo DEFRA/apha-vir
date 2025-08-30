@@ -1,0 +1,41 @@
+﻿@model SenderListViewModel
+
+@if (Model != null && Model.Senders.Any())
+{
+    <table class="sendertable" aria-label="Sender List">
+        <thead>
+            <tr>
+                <th scope="col">Sender</th>
+                <th scope="col">Sender Organisation</th>
+                <th scope="col">Sender Address</th>
+                <th scope="col">Country</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sender in Model.Senders)
+            {
+                <tr>
+                    <td>@sender.SenderName</td>
+                    <td>@sender.SenderOrganisation</td>
+                    <td>@sender.SenderAddress</td>
+                    <td>@sender.CountryName</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-senderid="SenderID" class="btn btn-primary">Edit</a>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="5">
+                    <div id="girdPagination" class="pagination" style="text-align:left">
+                        @await Component.InvokeAsync("Pagination", Model.Pagination)
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+	<p>There are no serner records available.</p>
+}

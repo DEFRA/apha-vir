@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
@@ -28,6 +29,12 @@ namespace Apha.VIR.Application.Services
         {
             var senders = await _senderRepository.GetAllSenderOrderBySenderAsync(countryId);
             return _mapper.Map<IEnumerable<SenderDTO>>(senders);
+        }
+
+        public async Task<PaginatedResult<SenderDTO>> GetAllSenderAsync(int pageNo, int pageSize)
+        {
+            return _mapper.Map<PaginatedResult<SenderDTO>>(
+                await _senderRepository.GetAllSenderAsync(pageNo, pageSize));
         }
 
         public async Task AddSenderAsync(SenderDTO sender)

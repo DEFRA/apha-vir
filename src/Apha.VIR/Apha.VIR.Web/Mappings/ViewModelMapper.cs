@@ -40,6 +40,7 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
             CreateMap<SampleDTO, SampleViewModel>().ReverseMap();
             CreateMap<SystemInfoDTO, SystemInformationViewModel>().ReverseMap();
+            CreateMap<SenderDTO, SenderMViewModel>().ReverseMap();
         }
     }
 }
