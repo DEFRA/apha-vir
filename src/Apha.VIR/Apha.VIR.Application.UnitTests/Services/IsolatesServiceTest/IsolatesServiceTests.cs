@@ -76,5 +76,75 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             await _mockIsolateRepository.Received(1).GetIsolateFullDetailsByIdAsync(isolateId);
             _mockMapper.DidNotReceive().Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>());
         }
+
+        [Fact]
+        public async Task GetIsolateByIsolateAndAVNumberAsync_WhenFamilyNameIsParamyxoviridae_ShouldAppendTypeNameToNomenclature()
+        {
+            // Arrange
+            var avNumber = "AV001";
+            var isolateId = Guid.NewGuid();
+            var isolate = new Isolate { FamilyName = "Paramyxoviridae", Nomenclature = "Test", TypeName = "Type1" };
+            _mockIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
+            _mockMapper.Map<IsolateDTO>(Arg.Any<Isolate>()).Returns(new IsolateDTO { Nomenclature = isolate.Nomenclature + " (" + isolate.TypeName + ")" });
+
+            // Act
+            var result = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+
+            // Assert
+            Assert.Equal("Test (Type1)", result.Nomenclature);
+            await _mockIsolateRepository.Received(1).GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+        }
+
+        [Fact]
+        public async Task GetIsolateByIsolateAndAVNumberAsync_WhenFamilyNameIsNotParamyxoviridaeAndIsolateNomenclatureIsNotEmpty_ShouldNotModifyNomenclature()
+        {
+            // Arrange
+            var avNumber = "AV002";
+            var isolateId = Guid.NewGuid();
+            var isolate = new Isolate { FamilyName = "OtherFamily", Nomenclature = "Test", IsolateNomenclature = "IsolateNomenclature" };
+            _mockIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
+            _mockMapper.Map<IsolateDTO>(Arg.Any<Isolate>()).Returns(new IsolateDTO { Nomenclature = isolate.Nomenclature });
+
+            // Act
+            var result = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+
+            // Assert
+            Assert.Equal("Test", result.Nomenclature);
+            await _mockIsolateRepository.Received(1).GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+        }
+
+        [Fact]
+        public async Task GetIsolateByIsolateAndAVNumberAsync_WhenFamilyNameIsNotParamyxoviridaeAndIsolateNomenclatureIsEmpty_ShouldAppendCharacteristicNomenclature()
+        {
+            // Arrange
+            var avNumber = "AV003";
+            var isolateId = Guid.NewGuid();
+            var isolate = new Isolate { FamilyName = "OtherFamily", Nomenclature = "Test", IsolateNomenclature = "" };
+            var characteristics = new List<IsolateCharacteristicInfo> { new IsolateCharacteristicInfo { CharacteristicName = "Char1" } };
+            _mockIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
+            _mockCharacteristicRepository.GetIsolateCharacteristicInfoAsync(isolateId).Returns(characteristics);
+            _mockMapper.Map<IsolateDTO>(Arg.Any<Isolate>()).Returns(new IsolateDTO { Nomenclature = isolate.Nomenclature + " Char1" });
+
+            // Act
+            var result = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+
+            // Assert
+            Assert.Equal("Test Char1", result.Nomenclature);
+            await _mockIsolateRepository.Received(1).GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+            await _mockCharacteristicRepository.Received(1).GetIsolateCharacteristicInfoAsync(isolateId);
+        }
+
+        [Fact]
+        public async Task GetIsolateByIsolateAndAVNumberAsync_WithInvalidInput_ShouldThrowException()
+        {
+            // Arrange
+            var avNumber = "InvalidAV";
+            var isolateId = Guid.NewGuid();
+            _mockIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns((Isolate)null!);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NullReferenceException>(() => _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId));
+            await _mockIsolateRepository.Received(1).GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+        }
     }
 }
