@@ -6,20 +6,19 @@ namespace Apha.VIR.Web.Models
     public class IsolateAddEditViewModel
     {
         public Guid? IsolateId { get; set; }
-        public Guid IsolateSampleId { get; set; }
+        public Guid? IsolateSampleId { get; set; }
         public int? IsolateNumber { get; set; }
         public string? AVNumber { get; set; }               
         public Guid? Family { get; set; }
         public string? FamilyName { get; set; }
         public Guid? Type { get; set; }
 
-        [Display(Name = "Year Of Isolation")]
-        [Range(1900, 2100, ErrorMessage = "Year must be between 1900 and now.")]
+        [Display(Name = "Year Of Isolation")]        
         public int? YearOfIsolation { get; set; }
-        public bool IsMixedIsolate { get; set; }
+        public bool? IsMixedIsolate { get; set; }
         public Guid? IsolationMethod { get; set; }
-        public bool AntiserumProduced { get; set; }
-        public bool AntigenProduced { get; set; }
+        public bool? AntiserumProduced { get; set; }
+        public bool? AntigenProduced { get; set; }
         public string? PhylogeneticAnalysis { get; set; }
         public string? MTALocation { get; set; }
         public string? Comment { get; set; }
@@ -30,9 +29,9 @@ namespace Apha.VIR.Web.Models
         public string? Well { get; set; }
 
         [Range(0, 4, ErrorMessage = "No of Aliquots must be between 0 and 4")]
-        public int NoOfAliquots { get; set; }
-        public bool MaterialTransferAgreement { get; set; }
-        public bool OriginalSampleAvailable { get; set; }
+        public int? NoOfAliquots { get; set; }
+        public bool? MaterialTransferAgreement { get; set; }
+        public bool? OriginalSampleAvailable { get; set; }
 
         [Display(Name = "First Viable Passage Number")]
         [RegularExpression(@"^\d+$", ErrorMessage = "First Viable Passage Number must be an numeric value")]

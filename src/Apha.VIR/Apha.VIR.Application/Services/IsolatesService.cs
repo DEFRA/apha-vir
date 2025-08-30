@@ -75,13 +75,13 @@ namespace Apha.VIR.Application.Services
             var sample = samples.FirstOrDefault(s => s.SampleId == sampleId);
 
             nomenclature.Append(!string.IsNullOrEmpty(virusType) ? virusType : "[Virus Type]");
-            nomenclature.Append("/");
+            nomenclature.Append('/');
             nomenclature.Append(string.IsNullOrEmpty(sample?.HostBreedName) ? sample?.HostSpeciesName : sample.HostBreedName);
-            nomenclature.Append("/");
+            nomenclature.Append('/');
             nomenclature.Append(submission.CountryOfOriginName);
-            nomenclature.Append("/");
+            nomenclature.Append('/');
             nomenclature.Append(sample?.SenderReferenceNumber);
-            nomenclature.Append("/");
+            nomenclature.Append('/');
             nomenclature.Append(!string.IsNullOrEmpty(yearOfIsolation) ? yearOfIsolation : "[Year of Isolation]");
 
             return nomenclature.ToString();

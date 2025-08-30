@@ -186,48 +186,54 @@ namespace Apha.VIR.DataAccess.Repositories
             var lookupItemList = new List<LookupItem>();
             string commandName = string.Empty;
             if (Lookup == "HostBreed")
+            {
                 commandName = "spHostBreedGetByParent";
+            }                
             else if (Lookup == "VirusType")
+            {
                 commandName = "spVirusTypeGetByParent";
+            }                
             else if (Lookup == "Tray")
+            {
                 commandName = "spTrayGetByParent";
+            }                
 
-                using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
+            using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
+            {
+                if (connection.State != ConnectionState.Open)
+                    await connection.OpenAsync();
+
+                using (var command = connection.CreateCommand())
                 {
-                    if (connection.State != ConnectionState.Open)
-                        await connection.OpenAsync();
+                    command.CommandText = commandName;
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    using (var command = connection.CreateCommand())
+                    var param = command.CreateParameter();
+                    param.ParameterName = "@Parent";
+                    param.Value = Parent;
+                    command.Parameters.Add(param);
+
+                    using (var result = await command.ExecuteReaderAsync())
                     {
-                        command.CommandText = commandName;
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        var param = command.CreateParameter();
-                        param.ParameterName = "@Parent";
-                        param.Value = Parent;
-                        command.Parameters.Add(param);
-
-                        using (var result = await command.ExecuteReaderAsync())
+                        while (await result.ReadAsync())
                         {
-                            while (await result.ReadAsync())
+                            if ((bool)result["Active"])
                             {
-                                if ((bool)result["Active"])
+                                var dto = new LookupItem
                                 {
-                                    var dto = new LookupItem
-                                    {
-                                        Id = (Guid)result["Id"],
-                                        Name = (string)result["Name"],
-                                        AlternateName = result["AltName"] as string,
-                                        Active = (bool)result["Active"],
-                                        Sms = (bool)result["SMS"],
-                                        Smscode = result["SMSCode"] as string
-                                    };
-                                    lookupItemList.Add(dto);
-                                }
+                                    Id = (Guid)result["Id"],
+                                    Name = (string)result["Name"],
+                                    AlternateName = result["AltName"] as string,
+                                    Active = (bool)result["Active"],
+                                    Sms = (bool)result["SMS"],
+                                    Smscode = result["SMSCode"] as string
+                                };
+                                lookupItemList.Add(dto);
                             }
                         }
                     }
                 }
+            }
             return lookupItemList;
         }
 

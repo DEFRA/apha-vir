@@ -16,6 +16,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ISubmissionService _submissionService;
         private readonly ISampleService _sampleService;
         private readonly IMapper _mapper;
+        private const string IndexActionName = "Index";
 
         public IsolatesController(IIsolatesService isolatesService,
              ILookupService lookupService,
@@ -113,11 +114,11 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.ActionType == "SaveAndContinue")
             {
-                return RedirectToAction("Index", "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
+                return RedirectToAction(IndexActionName, "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
             }
             else
             {
-                return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
+                return RedirectToAction(IndexActionName, "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
             }
         }
 
@@ -192,11 +193,11 @@ namespace Apha.VIR.Web.Controllers
 
             if(isolateModel.ActionType == "SaveAndContinue")
             {
-                return RedirectToAction("Index", "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
+                return RedirectToAction(IndexActionName, "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
             }
             else
             {
-                return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
+                return RedirectToAction(IndexActionName, "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
             }               
         }
 
@@ -303,7 +304,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.YearOfIsolation.HasValue && isolateModel.YearOfIsolation > DateTime.Now.Year)
             {
-                validationErrors.Add("- Year of Isolation cannot be in the future.");
+                validationErrors.Add("- Year of Isolation cannot be in the future.");                
             }
 
             if (Apha.VIR.Web.Models.SearchCriteria.IsNullOrEmptyGuid(isolateModel.Freezer))
@@ -351,7 +352,7 @@ namespace Apha.VIR.Web.Controllers
                 else
                 {
                     var isolateViabilities = await _isolateViabilityService.GetViabilityByIsolateIdAsync(IsolateId ?? Guid.Empty);
-                    if (isolateViabilities?.Count(v => v.DateChecked == DateChecked) > 0)
+                    if (isolateViabilities != null &&  isolateViabilities.Any(v => v.DateChecked == DateChecked))
                     {
                         ValidationErrors.Add("- There is already a viability for this isolate on this date.  (This can be edited via the search screen).");
                         IsViabilityInsert = false;

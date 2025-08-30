@@ -123,7 +123,7 @@ public class IsolateRepository : IIsolateRepository
     {
         isolate.IsolateId = Guid.NewGuid();
         int nextIsolateNumber = await _context.Isolates
-        .Select(u => (int?)u.IsolateNumber)
+        .Select(u => u.IsolateNumber)
         .MaxAsync() ?? 0;
 
         isolate.IsolateNumber = nextIsolateNumber + 1;
