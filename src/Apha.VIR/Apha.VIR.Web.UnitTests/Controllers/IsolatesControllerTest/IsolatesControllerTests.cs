@@ -12,14 +12,27 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
     public class IsolatesControllerTests
     {
         private readonly IIsolatesService _mockIsolatesService;
+        private readonly ILookupService _mockLookupService;
+        private readonly IIsolateViabilityService _mockIsolateViabilityService;
+        private readonly ISubmissionService _mockSubmissionService;
+        private readonly ISampleService _mockSampleService;
         private readonly IMapper _mockMapper;
         private readonly IsolatesController _controller;
 
         public IsolatesControllerTests()
         {
             _mockIsolatesService = Substitute.For<IIsolatesService>();
+            _mockLookupService = Substitute.For<ILookupService>();
+            _mockIsolateViabilityService = Substitute.For<IIsolateViabilityService>();
+            _mockSubmissionService = Substitute.For<ISubmissionService>();
+            _mockSampleService = Substitute.For<ISampleService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new IsolatesController(_mockIsolatesService, _mockMapper);
+            _controller = new IsolatesController(_mockIsolatesService, 
+                _mockLookupService, 
+                _mockIsolateViabilityService,
+                _mockSubmissionService,
+                _mockSampleService,
+                _mockMapper);
         }
 
         [Fact]

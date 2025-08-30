@@ -82,4 +82,27 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
         return result;
 
     }
+
+    public async Task AddIsolateViabilityAsync(IsolateViability isolateViability, string userId)
+    {
+        var parameters = new[]
+        {
+            new SqlParameter("@IsolateViabilityId", Guid.NewGuid()),
+            new SqlParameter("@IsolateViabilityIsolateID",isolateViability.IsolateViabilityIsolateId),
+            new SqlParameter("@Viable",isolateViability.Viable),
+            new SqlParameter("@DateChecked",isolateViability.DateChecked),
+            new SqlParameter("@CheckedByID",isolateViability.CheckedById),
+                new SqlParameter("@UserID", userId),
+                new SqlParameter  {
+                    ParameterName = "@LastModified",
+                    SqlDbType = SqlDbType.Timestamp,
+                    Value = isolateViability.LastModified,
+                    Direction = ParameterDirection.InputOutput,
+                }
+            };
+
+        await _context.Database
+            .ExecuteSqlRawAsync($"EXEC spIsolateViabilityInsert @UserID, @IsolateViabilityId, " +
+            $"@IsolateViabilityIsolateID, @Viable, @DateChecked, @CheckedByID, @LastModified OUTPUT", parameters);
+    }
 }

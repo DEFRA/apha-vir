@@ -23,5 +23,9 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSubmittingLabAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSubmissionReasonAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllIsolationMethodsAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllFreezerAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllTraysAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllTraysByParentAsync(Guid? freezer);
     }
 }

@@ -28,6 +28,12 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<IEnumerable<IsolateViabilityInfoDTO>> GetViabilityByIsolateIdAsync(Guid isolateId)
+        {
+            var isolateViability = await _isolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId);
+            return _mapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(isolateViability);
+        }
+
         public async Task<IEnumerable<IsolateViabilityInfoDTO>> GetViabilityHistoryAsync(string AVNumber, Guid IsolateId)
         {
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
@@ -48,13 +54,13 @@ namespace Apha.VIR.Application.Services
 
             var characteristicList = await _iCharacteristicRepository.GetIsolateCharacteristicInfoAsync(matchIsolateId);
 
-            var charNomenclature = GetCharacteristicNomenclature(characteristicList.ToList());
+            var charNomenclature = ServiceHelper.GetCharacteristicNomenclature(characteristicList.ToList());
 
             var nomenclature = string.IsNullOrEmpty(charNomenclature) ? matchIsolate[0].Nomenclature : charNomenclature;
             var staffs = await _lookupRepository.GetAllStaffAsync();
             var Viabilities = await _lookupRepository.GetAllViabilityAsync();
 
-            GetNomenclature(viabilityHistorList, nomenclature, AVNumber);
+            GetNomenclature(viabilityHistorList, nomenclature!, AVNumber);
             GetCheckedByName(viabilityHistorList, staffs);
 
             GetViableName(viabilityHistorList, Viabilities);
@@ -78,23 +84,30 @@ namespace Apha.VIR.Application.Services
             await _isolateViabilityRepository.UpdateIsolateViabilityAsync(result, userid);
         }
 
-        private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
+        public async Task AddIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userId)
         {
-            var characteristicNomenclatureList = new StringBuilder();
+            ArgumentNullException.ThrowIfNull(isolateViability);
 
-            // Build nomenclature string from characteristics
-            foreach (IsolateCharacteristicInfo item in characteristicList)
-            {
-                if ((item.CharacteristicDisplay == true) && (!string.IsNullOrEmpty(item.CharacteristicValue)))
-                {
-                    characteristicNomenclatureList.Append(item.CharacteristicPrefix + item.CharacteristicValue + " ");
-                }
-            }
+            if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("User ID cannot be empty.", nameof(userId));
 
-            var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
+            var result = _mapper.Map<IsolateViability>(isolateViability);
 
-            return characteristicNomenclature;
+            await _isolateViabilityRepository.AddIsolateViabilityAsync(result, userId);
         }
+
+        public async Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid IsolateId)
+        {
+            if (IsolateId == Guid.Empty)
+                throw new ArgumentException("ViabilityId cannot be empty.", nameof(IsolateId));
+
+            var viabilityList = await _isolateViabilityRepository.GetViabilityByIsolateIdAsync(IsolateId);
+
+            var lastViability = viabilityList
+                .OrderByDescending(v => v.DateChecked)
+                .FirstOrDefault();
+
+            return lastViability == null ? null : _mapper.Map<IsolateViabilityDTO>(lastViability);
+        }        
 
         private static void GetNomenclature(IEnumerable<IsolateViabilityInfo> viabilityHistorList, string nomenclature, string AVNumber)
         {

@@ -58,6 +58,8 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetail>().ReverseMap();
             CreateMap<SenderDTO, Sender>().ReverseMap();
             CreateMap<SubmissionDTO, Submission>().ReverseMap();
+            CreateMap<SampleDTO, Sample>().ReverseMap();
+            CreateMap<IsolateDTO, Isolate>().ReverseMap();
         }
     }
 }

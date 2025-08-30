@@ -189,43 +189,45 @@ namespace Apha.VIR.DataAccess.Repositories
                 commandName = "spHostBreedGetByParent";
             else if (Lookup == "VirusType")
                 commandName = "spVirusTypeGetByParent";
+            else if (Lookup == "Tray")
+                commandName = "spTrayGetByParent";
 
-            using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
-            {
-                if (connection.State != ConnectionState.Open)
-                    await connection.OpenAsync();
-
-                using (var command = connection.CreateCommand())
+                using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
                 {
-                    command.CommandText = commandName;
-                    command.CommandType = CommandType.StoredProcedure;
+                    if (connection.State != ConnectionState.Open)
+                        await connection.OpenAsync();
 
-                    var param = command.CreateParameter();
-                    param.ParameterName = "@Parent";
-                    param.Value = Parent;
-                    command.Parameters.Add(param);
-
-                    using (var result = await command.ExecuteReaderAsync())
+                    using (var command = connection.CreateCommand())
                     {
-                        while (await result.ReadAsync())
+                        command.CommandText = commandName;
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        var param = command.CreateParameter();
+                        param.ParameterName = "@Parent";
+                        param.Value = Parent;
+                        command.Parameters.Add(param);
+
+                        using (var result = await command.ExecuteReaderAsync())
                         {
-                            if ((bool)result["Active"])
+                            while (await result.ReadAsync())
                             {
-                                var dto = new LookupItem
+                                if ((bool)result["Active"])
                                 {
-                                    Id = (Guid)result["Id"],
-                                    Name = (string)result["Name"],
-                                    AlternateName = result["AltName"] as string,
-                                    Active = (bool)result["Active"],
-                                    Sms = (bool)result["SMS"],
-                                    Smscode = result["SMSCode"] as string
-                                };
-                                lookupItemList.Add(dto);
+                                    var dto = new LookupItem
+                                    {
+                                        Id = (Guid)result["Id"],
+                                        Name = (string)result["Name"],
+                                        AlternateName = result["AltName"] as string,
+                                        Active = (bool)result["Active"],
+                                        Sms = (bool)result["SMS"],
+                                        Smscode = result["SMSCode"] as string
+                                    };
+                                    lookupItemList.Add(dto);
+                                }
                             }
                         }
                     }
                 }
-            }
             return lookupItemList;
         }
 
@@ -283,6 +285,32 @@ namespace Apha.VIR.DataAccess.Repositories
             return (await _context.Set<LookupItem>()
             .FromSqlRaw($"EXEC spSubmissionReasonGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllIsolationMethodsAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spIsolationMethodGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllFreezerAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spFreezerGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllTraysAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spTrayGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllTraysByParentAsync(Guid? freezer)
+        {
+            return await GetLookupItemsByParentAsync("Tray", freezer);
         }
     }
 }

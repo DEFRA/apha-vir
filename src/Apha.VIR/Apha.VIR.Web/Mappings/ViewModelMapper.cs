@@ -36,6 +36,12 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<SenderDTO, SenderViewModel>().ReverseMap();
             CreateMap<SubmissionDTO, SubmissionEditViewModel>().ReverseMap();
             CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
+            CreateMap<IsolateAddEditViewModel, IsolateDTO>().ReverseMap();
+            CreateMap<IsolateAddEditViewModel, IsolateViabilityInfoDTO>()
+                .ForMember(dest => dest.IsolateViabilityIsolateId, opt => opt.MapFrom(src => src.IsolateId))
+                .ForMember(dest => dest.CheckedById, opt => opt.MapFrom(src => src.CheckedBy));
+            
+
         }
     }
 }
