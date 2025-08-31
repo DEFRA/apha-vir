@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Linq;
+using System.Xml;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.Core.Pagination;
@@ -53,6 +54,21 @@ public class SenderRepository : ISenderRepository
         return new PagedData<Sender>(senders, totalRecords);
     }
 
+    public async Task<Sender> GetSenderAsync(Guid senderId)
+    {
+        SqlParameter[] parameters = new[]
+        {
+             new SqlParameter("@ID", SqlDbType.UniqueIdentifier, 20) { Value = senderId}
+        };
+
+        var resultList = await _context.Set<Sender>()
+            .FromSqlRaw("EXEC spSenderGet @ID", parameters).ToListAsync();
+
+        var result = resultList.FirstOrDefault();
+
+        return result ?? new Sender();
+    }
+
     public async Task AddSenderAsync(Sender sender)
     {
         var parameters = new[]
@@ -68,5 +84,28 @@ public class SenderRepository : ISenderRepository
             @"EXEC spSenderInsert @SenderID, @Sender, @SenderOrganisation, @SenderAddress, @Country", parameters);
     }
 
+    public async Task UpdateSenderAsync(Sender sender)
+    {
+        var parameters = new[]
+        {
+           new SqlParameter("@SenderID", SqlDbType.UniqueIdentifier) { Value =(object?)sender.SenderId },
+           new SqlParameter("@Sender", SqlDbType.VarChar, 50) { Value = (object?)sender.SenderName ?? DBNull.Value  },
+           new SqlParameter("@SenderOrganisation", SqlDbType.VarChar, 200) { Value = (object?)sender.SenderOrganisation ?? DBNull.Value },
+           new SqlParameter("@SenderAddress", SqlDbType.VarChar, 500) { Value = (object?)sender.SenderAddress ?? DBNull.Value },
+           new SqlParameter("@Country", SqlDbType.UniqueIdentifier) { Value = sender.Country.HasValue ? sender.Country : DBNull.Value }
+        };
 
+        await _context.Database.ExecuteSqlRawAsync(
+            @"EXEC spSenderUpdate @SenderID, @Sender, @SenderOrganisation, @SenderAddress, @Country", parameters);
+    }
+
+    public async Task DeleteSenderAsync(Guid senderId)
+    {
+        var parameters = new[]
+        {
+           new SqlParameter("@SenderID", SqlDbType.UniqueIdentifier) { Value = senderId },
+        };
+
+        await _context.Database.ExecuteSqlRawAsync(@"EXEC spSenderDelete @SenderID", parameters);
+    }
 }

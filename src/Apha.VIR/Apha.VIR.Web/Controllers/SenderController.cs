@@ -7,6 +7,8 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Apha.VIR.Application.DTOs;
+using Microsoft.AspNetCore.Components.Web;
+using Apha.VIR.Core.Entities;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -91,26 +93,71 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SenderMViewModel model)
         {
-            var showerrorSummary = false;
-
-            if (ModelState.IsValid)
-            {
-                // await ValidateModel(model, ModelState, "create");
-                showerrorSummary = true;
-            }
-
             if (!ModelState.IsValid)
             {
-                // model.ShowErrorSummary = showerrorSummary;
+                model.CountryList = await GetCountryDropdownList();
                 return View("CreateSender", model);
             }
 
-            //var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
-
-            // await _lookupService.InsertLookupItemAsync(model.LookupId, dto);
+            if (ModelState.IsValid)
+            {
+                var sender = _mapper.Map<SenderDTO>(model);
+                await _senderService.AddSenderAsync(sender);
+            }
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid senderId,int currentPage = 1)
+        {
+            if (senderId == Guid.Empty || !ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
+            }
+
+            var result = await _senderService.GetSenderAsync(senderId);
+            var senderviewModel = _mapper.Map<SenderMViewModel>(result);
+
+            senderviewModel.CountryList = await GetCountryDropdownList();
+       
+            return View("EditSender", senderviewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(SenderMViewModel model)
+        {
+        
+            if (!ModelState.IsValid)
+            {
+                model.CountryList = await GetCountryDropdownList();
+
+                return View("EditSender", model);
+            }
+
+            var sender = _mapper.Map<SenderDTO>(model);
+
+            await _senderService.UpdateSenderAsync(sender);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(SenderMViewModel model, Guid senderId)
+        {
+            if (!ModelState.IsValid || senderId == Guid.Empty)
+            {
+                model.CountryList = await GetCountryDropdownList();
+
+                return View("EditSender", model);
+            }
+
+            await _senderService.DeleteSenderAsync(senderId);
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private async Task<List<SelectListItem>> GetCountryDropdownList()
         {
             var countries = await _lookupService.GetAllCountriesAsync();

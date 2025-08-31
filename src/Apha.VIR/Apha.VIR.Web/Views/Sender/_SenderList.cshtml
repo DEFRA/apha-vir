@@ -21,7 +21,7 @@
                     <td>@sender.SenderAddress</td>
                     <td>@sender.CountryName</td>
                     <td>
-                        <a asp-action="Edit" asp-route-senderid="SenderID" class="btn btn-primary">Edit</a>
+                        <a asp-action="Edit" asp-route-senderid="@sender.SenderId" class="btn btn-primary">Edit</a>
                     </td>
                 </tr>
             }

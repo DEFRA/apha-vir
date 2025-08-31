@@ -1,8 +1,11 @@
 ﻿@model SenderMViewModel
-<h2>Add New Sender</h2>
+<h2>Edit Sender</h2>
 <br/>
 
-<form asp-action="Create" method="post">
+<form asp-action="Edit" method="post">
+    <input asp-for="@Model.SenderId" type="hidden" />
+    <input type="hidden" name="senderId" value="@Model.SenderId" />
+
     <div class="form-group d-flex align-items-center mb-3">
         <label for="SenderName" class="form-control-label" style="width: 150px;">Sender</label>
         <input asp-for="SenderName" class="form-control" style="width: 300px;" />
@@ -28,9 +31,16 @@
     </div>
     <div class="form-group d-flex align-items-lg-end mb-3">
         <img src="Images\spacer.gif" width="300" height="5" alt="" />
-        <button type="submit" class="btn-as-link me-3">Insert</button>
+        <button type="submit" class="btn-as-link me-3">Update </button>
         <img src="Images\spacer.gif" width="10" height="5" alt="" />
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <img src="Images\spacer.gif" width="10" height="5" alt="" />
+        <button type="submit"
+                asp-action="Delete"
+                class="btn-as-link me-3"
+                onclick="return confirm('Please confirm that you want to delete this sender record');">
+            Delete
+        </button>
     </div>
     
 </form>
