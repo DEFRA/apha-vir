@@ -118,6 +118,11 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var result = await _senderService.GetSenderAsync(senderId);
+            if (result.SenderId == Guid.Empty)
+            {
+                return NotFound("Sender not found");
+            }
+
             var senderviewModel = _mapper.Map<SenderMViewModel>(result);
 
             senderviewModel.CountryList = await GetCountryDropdownList();
