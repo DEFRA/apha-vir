@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
@@ -26,8 +21,6 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             _mockMapper = Substitute.For<IMapper>();
             _senderService = new SenderService(_mockSenderRepository, _mockMapper);
         }
-
-
 
         [Fact]
         public async Task GetAllSenderAsync_SuccessfulRetrieval_ReturnsPaginatedResult()

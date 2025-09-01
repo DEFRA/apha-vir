@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Controllers;
-using Apha.VIR.Web.Models.Lookup;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Models.Lookup;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
-using Apha.VIR.Application.Pagination;
-using Apha.VIR.Application.Services;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 {
@@ -42,14 +36,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
                 data = new List<SenderDTO> { new SenderDTO() },
                 TotalCount = 1
             };
-            var mockMappedSenders = new List<SenderMViewModel> { new SenderMViewModel
-            {
-                SenderAddress="TestAddr",
-                SenderName="TestSender",
-                SenderOrganisation="TestCountry"
-            }
 
-                };
+            var mockMappedSenders = new List<SenderMViewModel>
+            {
+                new SenderMViewModel
+                {
+                    SenderAddress="TestAddr",
+                    SenderName="TestSender",
+                    SenderOrganisation="TestCountry"
+                }
+            };
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(mockSenders);
             _mockMapper.Map<IEnumerable<SenderMViewModel>>(mockSenders.data).Returns(mockMappedSenders);
@@ -65,11 +61,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             var model = Assert.IsAssignableFrom<SenderListViewModel>(viewResult.Model);
             Assert.Equal("Sender", viewResult.ViewName);
             Assert.Equal(mockMappedSenders, model.Senders);
-            Assert.Equal(pageNo, model.Pagination.PageNumber);
+            Assert.Equal(pageNo, model.Pagination!.PageNumber);
             Assert.Equal(pageSize, model.Pagination.PageSize);
             Assert.Equal(mockSenders.TotalCount, model.Pagination.TotalCount);
         }
-
 
         [Fact]
         public async Task BindSenderGridOnPagination_ReturnsPartialView_whenValidInput()
@@ -91,7 +86,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             Assert.Equal("_SenderList", partialViewResult.ViewName);
             var model = Assert.IsType<SenderListViewModel>(partialViewResult.Model);
             Assert.Equal(senderViewModels, model.Senders);
-            Assert.Equal(pageNo, model.Pagination.PageNumber);
+            Assert.Equal(pageNo, model.Pagination!.PageNumber);
             Assert.Equal(pageSize, model.Pagination.PageSize);
             Assert.Equal(20, model.Pagination.TotalCount);
         }
@@ -111,7 +106,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         }
 
         [Fact]
-        public async Task BindSenderGridOnPagination_EmptySenderList_ReturnsPartialViewWithEmptyList()
+        public async Task BindSenderGridOnPagination_ReturnsPartialViewWithEmptyList_WhenEmptySenderList()
         {
             // Arrange
             int pageNo = 1;
@@ -129,11 +124,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             var partialViewResult = Assert.IsType<PartialViewResult>(result);
             var model = Assert.IsType<SenderListViewModel>(partialViewResult.Model);
             Assert.Empty(model.Senders);
-            Assert.Equal(0, model.Pagination.TotalCount);
+            Assert.Equal(0, model.Pagination!.TotalCount);
         }
 
         [Fact]
-        public async Task BindSenderGridOnPagination_DifferentPageSizes_ReturnsCorrectPagination()
+        public async Task BindSenderGridOnPagination_ReturnsCorrectPagination_WhenDifferentPageSizes()
         {
             // Arrange
             int pageNo = 2;
@@ -150,28 +145,31 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Assert
             var partialViewResult = Assert.IsType<PartialViewResult>(result);
             var model = Assert.IsType<SenderListViewModel>(partialViewResult.Model);
-            Assert.Equal(pageNo, model.Pagination.PageNumber);
+            Assert.Equal(pageNo, model.Pagination!.PageNumber);
             Assert.Equal(pageSize, model.Pagination.PageSize);
             Assert.Equal(30, model.Pagination.TotalCount);
         }
 
-
         [Fact]
-        public async Task BindSenderGridOnPagination_MappingIsCorrect_ReturnsCorrectViewModels()
+        public async Task BindSenderGridOnPagination_ReturnsCorrectViewModels_WhenMappingIsCorrect()
         {
             // Arrange
             int pageNo = 1;
             int pageSize = 10;
             var senderDTOs = new List<SenderDTO> { new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" } };
             var senders = new PaginatedResult<SenderDTO> { data = senderDTOs, TotalCount = 1 };
-            var senderViewModels = new List<SenderMViewModel> { new SenderMViewModel {
-                SenderId = senderDTOs[0].SenderId,
-                SenderName = senderDTOs[0].SenderName,
-                SenderAddress="test",
-                SenderOrganisation="India"
-            }
-            };
 
+            var senderViewModels = new List<SenderMViewModel>
+            {
+                new SenderMViewModel
+                {
+                    SenderId = senderDTOs[0].SenderId,
+                    SenderName = senderDTOs[0].SenderName!,
+                    SenderAddress="test",
+                    SenderOrganisation="India"
+                }
+            };
+ 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
             _mockMapper.Map<IEnumerable<SenderMViewModel>>(senders.data).Returns(senderViewModels);
 

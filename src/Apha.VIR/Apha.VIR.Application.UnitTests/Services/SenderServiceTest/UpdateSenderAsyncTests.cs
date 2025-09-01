@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -25,9 +20,8 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             _senderService = new SenderService(_mockSenderRepository, _mockMapper);
         }
 
-
         [Fact]
-        public async Task UpdateSenderAsync_ValidSender_ShouldUpdateSuccessfully()
+        public async Task UpdateSenderAsync_ShouldUpdateSuccessfull_WhenValidSendery()
         {
             // Arrange
             var senderDto = new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" };
@@ -44,7 +38,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
         }
 
         [Fact]
-        public async Task UpdateSenderAsync_RepositoryThrowsException_ShouldPropagateException()
+        public async Task UpdateSenderAsync_ShouldPropagateException_WhenRepositoryThrowsException()
         {
             // Arrange
             var senderDto = new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" };

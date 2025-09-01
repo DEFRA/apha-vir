@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 {
@@ -60,7 +54,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             Assert.Equal("EditSender", viewResult.ViewName);
             Assert.Equal(senderId, model.SenderId);
             Assert.Equal("Test Sender", model.SenderName);
-            Assert.NotEmpty(model.CountryList);
+            Assert.NotEmpty(model.CountryList!);
             await _senderService.Received(1).GetSenderAsync(senderId);
             await _lookupService.Received(1).GetAllCountriesAsync();
         }

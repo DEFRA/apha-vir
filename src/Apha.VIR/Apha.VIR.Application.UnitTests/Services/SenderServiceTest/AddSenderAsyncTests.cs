@@ -4,7 +4,6 @@ using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 
 namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
 {

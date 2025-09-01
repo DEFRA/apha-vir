@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.Services;
+﻿using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
 using NSubstitute;

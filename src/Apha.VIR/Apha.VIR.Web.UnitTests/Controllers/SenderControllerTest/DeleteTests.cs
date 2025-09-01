@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.Interfaces;
+﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
@@ -29,7 +24,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 
 
         [Fact]
-        public async Task Delete_ValidModel_CallsDeleteSenderAsyncAndRedirects()
+        public async Task Delete_DeleteSenderAndRedirectToIndex_WhenValidModel()
         {
             // Arrange
             var model = new SenderMViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
@@ -45,7 +40,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         }
 
         [Fact]
-        public async Task Delete_InvalidModelState_ReturnsViewWithModel()
+        public async Task Delete_ReturnsViewWithError_WhenInvalidModelState()
         {
             // Arrange
             var model = new SenderMViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
@@ -63,7 +58,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         }
 
         [Fact]
-        public async Task Delete_EmptySenderId_ReturnsViewWithModel()
+        public async Task Delete_ReturnsViewWithModel_WhenEmptySenderId()
         {
             // Arrange
             var model = new SenderMViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };

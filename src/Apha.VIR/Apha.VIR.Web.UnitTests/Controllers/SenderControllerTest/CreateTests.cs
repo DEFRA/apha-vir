@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
-using Apha.VIR.Web.Models.Lookup;
-using Apha.VIR.Application.DTOs;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 {
@@ -30,13 +24,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             _controller = new SenderController(_senderService, _lookupService, _mapper);
         }
 
-
         [Fact]
         public async Task Create_Get_ReturnsViewWithModel()
         {
             // Arrange
             var countries = new List<SelectListItem> { new SelectListItem { Value = "1", Text = "Country" } };
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Country" } });
+            
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>
+            { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Country" } });
+
             _mapper.Map<IEnumerable<SelectListItem>>(Arg.Any<IEnumerable<LookupItemDTO>>()).Returns(countries);
 
             // Act
@@ -50,9 +46,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             Assert.Single(model.CountryList);
         }
 
-
         [Fact]
-        public async Task Create_Post_ValidModel_RedirectsToIndex()
+        public async Task Create_Post_RedirectsToIndex_WhenValidModel()
         {
             // Arrange
             var model = new SenderMViewModel { SenderName = "Test Sender",SenderAddress="test",SenderOrganisation="India" };
@@ -68,10 +63,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         }
 
         [Fact]
-        public async Task Create_Post_InvalidModel_ReturnsViewWithModel()
+        public async Task Create_Postl_ReturnsViewWithModelWithError_WhenInvalidMode()
         {
             // Arrange
             var model = new SenderMViewModel { SenderName = "", SenderAddress = "test", SenderOrganisation = "India" };
+            
             _controller.ModelState.AddModelError("SenderName", "Required");
             _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
 
@@ -83,8 +79,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             Assert.Equal("CreateSender", viewResult.ViewName);
             Assert.IsType<SenderMViewModel>(viewResult.Model);
         }
+
         [Fact]
-        public async Task Create_Post_EmptyModel_ReturnsViewWithModel()
+        public async Task Create_Post_RedirectToIndex_WhenEmptyModel()
         {
             // Arrange
             SenderMViewModel model = null!;
@@ -97,6 +94,5 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             var viewResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", viewResult.ActionName);
         }
-
     }
 }
