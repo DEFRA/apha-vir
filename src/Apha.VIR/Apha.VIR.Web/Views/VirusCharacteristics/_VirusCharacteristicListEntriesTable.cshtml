@@ -1,6 +1,7 @@
-﻿@model List<Apha.VIR.Web.Models.VirusCharacteristicListEntryViewModel>
+﻿@using Apha.VIR.Web.Models.VirusCharacteristic
+@model VirusCharacteristicListEntryViewModel
 
-@if (Model == null || !Model.Any())
+@if (Model == null || !Model.VirusCharacteristics.Any())
 {
     <div class="alert alert-info">No entries recorded for this virus characteristic at this time.</div>
 }
@@ -14,9 +15,9 @@ else
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < Model.Count; i++)
+            @for (int i = 0; i < Model.VirusCharacteristics.Count; i++)
             {
-                var entry = Model[i];
+                var entry = Model.VirusCharacteristics[i];
                 <tr class="@(i % 2 == 0 ? "odd" : "even")">
                     <td>@entry.Name</td>
                     <td>
@@ -26,6 +27,13 @@ else
                     </td>
                 </tr>
             }
+            <tr>
+                <td colspan="2">
+                    <div id="girdPagination" class="pagination" style="text-align:left">
+                        @await Component.InvokeAsync("Pagination", Model.Pagination)
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 }

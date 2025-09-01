@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Apha.VIR.Web.Models
+namespace Apha.VIR.Web.Models.VirusCharacteristic
 {
-    public class VirusCharacteristicListEntryEditViewModel
+    public class VirusCharacteristicListEntryModel
     {
         public Guid Id { get; set; }
 
@@ -12,7 +12,7 @@ namespace Apha.VIR.Web.Models
         [Required(ErrorMessage = "Name must be entered.")]
         [StringLength(50)]
         public string Name { get; set; } = string.Empty;
-        public byte[]? LastModified { get; set; }
-        
+
+        public byte[] LastModified { get; set; } = Array.Empty<byte>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
+using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,19 @@ public class VirusCharacteristicListEntryRepository : IVirusCharacteristicListEn
         return await _context.Set<VirusCharacteristicListEntry>()
               .FromSqlInterpolated($"EXEC spVirusCharacteristicListEntryGetById @VirusCharacteristicId = {virusCharacteristicId}").ToListAsync();
     }
+
+    public async Task<PagedData<VirusCharacteristicListEntry>> GetVirusCharacteristicListEntries(Guid virusCharacteristicId, int pageNo, int pageSize)
+    {
+        var result = await _context.Set<VirusCharacteristicListEntry>()
+          .FromSqlInterpolated($"EXEC spVirusCharacteristicListEntryGetById @VirusCharacteristicId = {virusCharacteristicId}").ToListAsync();
+
+        var totalRecords = result.Count;
+        var entries = result.Skip((pageNo - 1) * pageSize)
+            .Take(pageSize).ToList();
+
+        return new PagedData<VirusCharacteristicListEntry>(entries, totalRecords);
+    }
+
     public async Task<VirusCharacteristicListEntry?> GetByIdAsync(Guid id)
     {
         return await _context.Set<VirusCharacteristicListEntry>()

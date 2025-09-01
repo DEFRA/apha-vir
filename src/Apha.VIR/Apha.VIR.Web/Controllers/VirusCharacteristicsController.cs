@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Models.VirusCharacteristic;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ namespace Apha.VIR.Web.Controllers
             _listEntryService = listEntryService;
             _mapper = mapper;
         }
+
         public IActionResult Index()
         {
             return View("VirusCharacteristicManagement");
@@ -28,9 +30,9 @@ namespace Apha.VIR.Web.Controllers
 
         // GET /VirusCharacteristics/ListEntries?characteristic={guid}
         [HttpGet]
-        public async Task<IActionResult> ListEntries(Guid? characteristic)
+        public async Task<IActionResult> ListEntries(Guid? characteristic, int pageNo = 1, int pageSize = 10)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             if (characteristic == null || characteristic == Guid.Empty)
                 return BadRequest("Characteristic id is required");
@@ -40,17 +42,54 @@ namespace Apha.VIR.Web.Controllers
             var characteristicDto = all.FirstOrDefault(c => c.Id == characteristic.Value);
 
             var name = characteristicDto?.Name ?? string.Empty;
-            var listDtos = await _listEntryService.GetEntriesByCharacteristicIdAsync(characteristic.Value);
+            var listDtos = await _listEntryService.GetVirusCharacteristicListEntries(characteristic.Value, pageNo, pageSize);
+            var vcEntries = _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(listDtos.data);
 
             var vm = new VirusCharacteristicListEntriesViewModel
             {
                 CharacteristicId = characteristic.Value,
                 CharacteristicName = name,
-                Entries = _mapper.Map<List<VirusCharacteristicListEntryViewModel>>(listDtos)
+                Entries = new VirusCharacteristicListEntryViewModel
+                {
+                    VirusCharacteristics = vcEntries.ToList(),
+                    Pagination = new PaginationModel
+                    {
+                        PageNumber = pageNo,
+                        PageSize = pageSize,
+                        TotalCount = listDtos.TotalCount
+                    }
+                }
             };
 
             return View("VirusCharacteristicListEntries", vm);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> BindCharacteristicEntriesGridOnPagination(Guid? characteristic, int pageNo, int pageSize)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            if (characteristic == null || characteristic == Guid.Empty)
+                return BadRequest("Characteristic id is required");
+
+            var listDtos = await _listEntryService.GetVirusCharacteristicListEntries(characteristic.Value, pageNo, pageSize);
+            var vcEntries = _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(listDtos.data);
+
+
+            var model = new VirusCharacteristicListEntryViewModel
+            {
+                VirusCharacteristics = vcEntries.ToList(),
+                Pagination = new PaginationModel
+                {
+                    PageNumber = pageNo,
+                    PageSize = pageSize,
+                    TotalCount = listDtos.TotalCount
+                }
+            };
+
+            return PartialView("_VirusCharacteristicListEntriesTable", model);
+        }
+
         [HttpGet]
         public IActionResult Back()
         {
@@ -116,6 +155,5 @@ namespace Apha.VIR.Web.Controllers
             await _listEntryService.DeleteEntryAsync(id, lastModifiedBytes);
             return RedirectToAction("ListEntries", "VirusCharacteristics", new { characteristic });
         }
-
     }
 }

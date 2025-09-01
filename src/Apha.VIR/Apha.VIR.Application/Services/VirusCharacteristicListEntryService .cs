@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
@@ -27,7 +23,13 @@ namespace Apha.VIR.Application.Services
             var entities = await _repository.GetVirusCharacteristicListEntryByVirusCharacteristic(virusCharacteristicId);
             return _mapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities);
         }
-       
+
+        public async Task<PaginatedResult<VirusCharacteristicListEntryDTO>> GetVirusCharacteristicListEntries(Guid virusCharacteristicId, int pageNo, int pageSize)
+        {
+            var entities = await _repository.GetVirusCharacteristicListEntries(virusCharacteristicId, pageNo, pageSize);
+            return _mapper.Map<PaginatedResult<VirusCharacteristicListEntryDTO>>(entities);
+        }
+
         public async Task<VirusCharacteristicListEntryDTO?> GetEntryByIdAsync(Guid id)
         {
             var entity = await _repository.GetByIdAsync(id);
@@ -49,6 +51,5 @@ namespace Apha.VIR.Application.Services
         {
             await _repository.DeleteEntryAsync(id, lastModified);
         }
-
     }
 }
