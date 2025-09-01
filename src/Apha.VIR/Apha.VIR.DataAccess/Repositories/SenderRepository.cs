@@ -1,6 +1,4 @@
 ﻿using System.Data;
-using System.Linq;
-using System.Xml;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.Core.Pagination;
@@ -22,22 +20,26 @@ public class SenderRepository : ISenderRepository
     public async Task<IEnumerable<Sender>> GetAllSenderOrderBySenderAsync(Guid? countryId)
     {
         var senders = await _context.Set<Sender>()
-        .FromSqlRaw($"EXEC spSenderGetAllOrderBySender").ToListAsync();
+            .FromSqlRaw($"EXEC spSenderGetAllOrderBySender").ToListAsync();
+
         if (countryId != null && countryId != Guid.Empty)
         {
             senders = senders.Where(s => s.Country == countryId).ToList();
         }
+        
         return senders;
     }
 
     public async Task<IEnumerable<Sender>> GetAllSenderOrderByOrganisationAsync(Guid? countryId)
     {
         var senders = await _context.Set<Sender>()
-        .FromSqlRaw($"EXEC spSenderGetAllOrderByOrganisation").ToListAsync();
+            .FromSqlRaw($"EXEC spSenderGetAllOrderByOrganisation").ToListAsync();
+
         if (countryId != null && countryId != Guid.Empty)
         {
             senders = senders.Where(s => s.Country == countryId).ToList();
         }
+       
         return senders;
     }
 

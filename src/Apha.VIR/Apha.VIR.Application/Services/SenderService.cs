@@ -23,12 +23,14 @@ namespace Apha.VIR.Application.Services
         public async Task<IEnumerable<SenderDTO>> GetAllSenderOrderByOrganisationAsync(Guid? countryId)
         {
             var senders = await _senderRepository.GetAllSenderOrderByOrganisationAsync(countryId);
+           
             return _mapper.Map<IEnumerable<SenderDTO>>(senders);
         }
 
         public async Task<IEnumerable<SenderDTO>> GetAllSenderOrderBySenderAsync(Guid? countryId)
         {
             var senders = await _senderRepository.GetAllSenderOrderBySenderAsync(countryId);
+            
             return _mapper.Map<IEnumerable<SenderDTO>>(senders);
         }
 
@@ -42,18 +44,19 @@ namespace Apha.VIR.Application.Services
         {
             return _mapper.Map<SenderDTO>(
                 await _senderRepository.GetSenderAsync(senderId));
-            
         }
         
         public async Task AddSenderAsync(SenderDTO sender)
         {
             var senderData = _mapper.Map<Sender>(sender);
+            
             await _senderRepository.AddSenderAsync(senderData);
         }
      
         public async Task UpdateSenderAsync(SenderDTO sender)
         {
             var senderData = _mapper.Map<Sender>(sender);
+            
             await _senderRepository.UpdateSenderAsync(senderData);
         }
 

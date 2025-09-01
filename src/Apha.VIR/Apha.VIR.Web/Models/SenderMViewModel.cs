@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Apha.VIR.Core.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Models

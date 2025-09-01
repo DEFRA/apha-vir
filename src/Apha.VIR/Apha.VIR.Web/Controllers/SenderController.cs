@@ -1,14 +1,10 @@
-﻿using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Web.Models.Lookup;
+﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Models.Lookup;
 using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Apha.VIR.Application.DTOs;
-using Microsoft.AspNetCore.Components.Web;
-using Apha.VIR.Core.Entities;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -24,13 +20,16 @@ namespace Apha.VIR.Web.Controllers
             _lookupService = lookupService;
             _mapper = mapper;
         }
-        public async Task<IActionResult> Index()
-        {
-            int pageNo = 1;
-            int pageSize = 10;
 
-            var senders = await _senderService.GetAllSenderAsync(pageNo, pageSize);
-            var senderList = _mapper.Map<IEnumerable<SenderMViewModel>>(senders.data);
+        public async Task<IActionResult> Index(int pageNo = 1, int pageSize = 10)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid parameters.");
+            }
+
+            var pagedSenderDtos = await _senderService.GetAllSenderAsync(pageNo, pageSize);
+            var senderList = _mapper.Map<IEnumerable<SenderMViewModel>>(pagedSenderDtos.data);
 
             var viewModel = new SenderListViewModel
             {
@@ -39,7 +38,7 @@ namespace Apha.VIR.Web.Controllers
                 {
                     PageNumber = pageNo,
                     PageSize = pageSize,
-                    TotalCount = senders.TotalCount
+                    TotalCount = pagedSenderDtos.TotalCount
                 }
             };
 
@@ -53,8 +52,8 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest("Invalid parameters.");
             }
 
-            var senders = await _senderService.GetAllSenderAsync(pageNo, pageSize);
-            var senderList = _mapper.Map<IEnumerable<SenderMViewModel>>(senders.data);
+            var pagedSenderDtos = await _senderService.GetAllSenderAsync(pageNo, pageSize);
+            var senderList = _mapper.Map<IEnumerable<SenderMViewModel>>(pagedSenderDtos.data);
 
             var viewModel = new SenderListViewModel
             {
@@ -63,9 +62,9 @@ namespace Apha.VIR.Web.Controllers
                 {
                     PageNumber = pageNo,
                     PageSize = pageSize,
-                    TotalCount = senders.TotalCount
+                    TotalCount = pagedSenderDtos.TotalCount
                 }
-            }; ;
+            };
 
             return PartialView("_SenderList", viewModel);
         }
@@ -99,17 +98,15 @@ namespace Apha.VIR.Web.Controllers
                 return View("CreateSender", model);
             }
 
-            if (ModelState.IsValid)
-            {
-                var sender = _mapper.Map<SenderDTO>(model);
-                await _senderService.AddSenderAsync(sender);
-            }
+            var sender = _mapper.Map<SenderDTO>(model);
+            await _senderService.AddSenderAsync(sender);
+
 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid senderId,int currentPage = 1)
+        public async Task<IActionResult> Edit(Guid senderId, int currentPage = 1)
         {
             if (senderId == Guid.Empty || !ModelState.IsValid)
             {
@@ -126,18 +123,17 @@ namespace Apha.VIR.Web.Controllers
             var senderviewModel = _mapper.Map<SenderMViewModel>(result);
 
             senderviewModel.CountryList = await GetCountryDropdownList();
-       
+
             return View("EditSender", senderviewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(SenderMViewModel model)
         {
-        
+
             if (!ModelState.IsValid)
             {
                 model.CountryList = await GetCountryDropdownList();
-
                 return View("EditSender", model);
             }
 
@@ -154,7 +150,6 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid || senderId == Guid.Empty)
             {
                 model.CountryList = await GetCountryDropdownList();
-
                 return View("EditSender", model);
             }
 
