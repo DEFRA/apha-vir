@@ -1,6 +1,6 @@
 ﻿using Apha.VIR.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -113,6 +113,40 @@ namespace Apha.VIR.Web.Controllers
         public IActionResult Management()
         {
             return View();
+        }
+
+        public IActionResult Edit(Guid IsolateId, Guid freezerId, Guid trayId)
+        {
+            var freezer1Id = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            var freezer2Id = Guid.Parse("22222222-2222-2222-2222-222222222222");
+            var tray1Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+            var tray2Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+
+            var model = new EditIsolateRelocateViewModel
+            {
+                IsolateId = Guid.NewGuid(),
+                AVNumber = "AV123",
+                Nomenclature = "Sample Nomenclature",
+                FreezerId = freezer1Id, // Set to one of the hardcoded Freezer GUIDs
+                TrayId = tray1Id,       // Set to one of the hardcoded Tray GUIDs
+                Well = "A1",
+                FreezerName = "Freezer 1",
+                TrayName = "Tray 1",
+                Freezers = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = "Select Freezer" },
+                    new SelectListItem { Value = freezer1Id.ToString(), Text = "Freezer 1" },
+                    new SelectListItem { Value = freezer2Id.ToString(), Text = "Freezer 2" }
+                },
+                Trays = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = "Select Tray" },
+                    new SelectListItem { Value = tray1Id.ToString(), Text = "Tray 1" },
+                    new SelectListItem { Value = tray2Id.ToString(), Text = "Tray 2" }
+                }
+            };
+
+            return View(model);
         }
     }
 

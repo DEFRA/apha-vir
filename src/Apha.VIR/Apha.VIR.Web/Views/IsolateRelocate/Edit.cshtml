@@ -1,0 +1,79 @@
+﻿@model EditIsolateRelocateViewModel
+
+<div id="contentbox" class="contentbox w-600">
+    <div class="box_title">Edit Isolate Relocation</div>
+    <div class="editisolate-box_body">
+
+        <form asp-action="Edit" asp-controller="Isolate" method="post">
+            <div class="isolate-form ms-2">
+
+                <input type="hidden" asp-for="IsolateId" />
+
+                <!-- AV Number -->
+                <div class="row mt-4">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">AV Number</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <span class="form-control-plaintext">@Model.AVNumber</span>
+                    </div>
+                </div>
+
+                <!-- Nomenclature -->
+                <div class="row mt-3">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">Nomenclature</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <span class="col-form-label">@Model.Nomenclature</span>
+                    </div>
+                </div>
+
+                <!-- Freezer -->
+                <div class="row mt-3">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">Freezer</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <select asp-for="FreezerId" asp-items="Model.Freezers" class="form-control" style="width:226px"></select>
+                        <span asp-validation-for="FreezerId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Tray -->
+                <div class="row mt-3">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">Tray</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <select asp-for="TrayId" asp-items="Model.Trays" class="form-control" style="width:226px"></select>
+                        <span asp-validation-for="TrayId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Well -->
+                <div class="row mt-3">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">Well</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <input asp-for="Well" class="form-control" style="width:226px" />
+                        <span asp-validation-for="Well" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="row mt-3 mb-3">
+                    <div class="col-sm-8 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-link isolaterelocate-btn-link-custom">Update</button>
+                        <a asp-action="Index" asp-controller="Isolate" class="btn btn-link ms-2">Cancel</a>
+                    </div>
+
+                </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
