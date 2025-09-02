@@ -2,6 +2,7 @@
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.Repositories
 {
@@ -16,7 +17,8 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsAsync()
         {
-            var data = await _context.VirusCharacteristics.FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync();
+            var data = await _context.Set<VirusCharacteristic>()
+                .FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync();
 
             return data;
         }
