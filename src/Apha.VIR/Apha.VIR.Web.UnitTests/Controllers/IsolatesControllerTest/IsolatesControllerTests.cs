@@ -53,7 +53,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateDetails = new IsolateDetails(),
                 IsolateViabilityDetails = new List<IsolateViabilityCheckInfo>(),
                 IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
-                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoModel>()
             };
 
             _mockIsolatesService.GetIsolateFullDetailsAsync(isolateId).Returns(isolateDetails);

@@ -11,14 +11,16 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
     public class IsolatesServiceTests
     {
         private readonly IIsolateRepository _mockIsolateRepository;
+        private readonly ICharacteristicRepository _mockCharacteristicRepository;
         private readonly IMapper _mockMapper;
         private readonly IsolatesService _isolatesService;
 
         public IsolatesServiceTests()
         {
             _mockIsolateRepository = Substitute.For<IIsolateRepository>();
+            _mockCharacteristicRepository = Substitute.For<ICharacteristicRepository>();
             _mockMapper = Substitute.For<IMapper>();
-            _isolatesService = new IsolatesService(_mockIsolateRepository, _mockMapper);
+            _isolatesService = new IsolatesService(_mockIsolateRepository, _mockCharacteristicRepository, _mockMapper);            
         }
 
         [Fact]

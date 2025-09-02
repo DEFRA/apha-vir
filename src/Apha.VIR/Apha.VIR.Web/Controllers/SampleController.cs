@@ -112,7 +112,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var latinBreedDto = await _lookupService.GetAllHostBreedsAltNameAsync();
+            var latinBreedDto = await _lookupService.GetAllHostBreedsAsync();
             List<LatinBreed> latinBreedList = latinBreedDto.Select(p => new LatinBreed
             {
                 Id = p.Id,

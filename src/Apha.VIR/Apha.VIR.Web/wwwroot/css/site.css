@@ -1003,3 +1003,41 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     text-decoration: underline;
     cursor: pointer;
 }
+
+.isolate_characteristics-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
+    border: 1px solid gray;
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+}
+
+.isolate_characteristics-cell {
+    border: 1px solid gray;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.isolate_characteristics-grid > .isolate_characteristics-cell:nth-child(2n) {
+    border-right-width: 1px;
+}
+
+.isolate_characteristics-grid > .isolate_characteristics-cell:nth-last-child(-n+2) {
+    border-bottom-width: 1px;
+}
+
+.isolate_characteristics-label {
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.isolate_characteristics-form-actions {
+    margin-top: 20px;
+}

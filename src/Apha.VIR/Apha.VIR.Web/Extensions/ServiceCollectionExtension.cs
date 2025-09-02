@@ -30,6 +30,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddScoped<ISampleService, SampleService>();
             services.AddScoped<ISystemInfoService, SystemInfoService>();
+            services.AddScoped<IVirusCharacteristicListEntryService, VirusCharacteristicListEntryService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)
