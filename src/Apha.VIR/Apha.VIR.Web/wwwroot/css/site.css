@@ -1069,18 +1069,6 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     width: 600px !important;
 }
 
-Can be rename GetViability, GetLastViability both are using id only. No mean specify by ...
-Task<IEnumerable<IsolateViabilityInfoDTO > > GetViabilityByIsolateIdAsync(Guid isolateId);
-Task<IsolateViabilityDTO? > GetLastViabilityByIsolateAsync(Guid IsolateId);
-Can be rename GetIsolate
-Task<IsolateDTO > GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId);
-Task<IEnumerable<SampleDTO > > GetSamplesBySubmissionIdAsync(Guid submissionId);
-
-ArgumentNullException.ThrowIfNull(isolateViability): Not required as param is not null.
-
-IsolateRepository.cs : Add update have huge list of sql param, can not be common
-
-
 .sendertable {
     border-collapse: collapse;
     border: 1px solid gray;
