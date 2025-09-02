@@ -28,8 +28,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             _mockSubmissionService = Substitute.For<ISubmissionService>();
             _mockSampleService = Substitute.For<ISampleService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new IsolatesController(_mockIsolatesService, 
-                _mockLookupService, 
+            _controller = new IsolatesController(_mockIsolatesService,
+                _mockLookupService,
                 _mockIsolateViabilityService,
                 _mockSubmissionService,
                 _mockSampleService,
@@ -214,7 +214,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
 
             // Assert
             Assert.Equal(expectedNomenclature, result);
-        }        
+        }
 
         [Fact]
         public async Task GenerateNomenclature_CallsServiceWithCorrectParameters()

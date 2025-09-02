@@ -97,6 +97,6 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Empty(result);
             await _mockLookupRepository.Received(1).GetAllTraysByParentAsync(null);
-        }       
+        }
     }
 }

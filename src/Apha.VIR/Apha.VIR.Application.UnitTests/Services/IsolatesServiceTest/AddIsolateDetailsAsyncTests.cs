@@ -43,7 +43,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             // Assert
             Assert.Equal(isolateDto.IsolateId, result);
             await _mockIsolateRepository.Received(1).AddIsolateDetailsAsync(isolateEntity);
-        }        
+        }
 
         [Fact]
         public async Task Test_AddIsolateDetailsAsync_RepositoryException()

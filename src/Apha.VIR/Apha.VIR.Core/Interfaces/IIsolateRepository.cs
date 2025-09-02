@@ -8,5 +8,5 @@ public interface IIsolateRepository
     Task<IsolateFullDetail> GetIsolateFullDetailsByIdAsync(Guid isolateId);
     Task<Isolate> GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId);
     Task<Guid> AddIsolateDetailsAsync(Isolate isolate);
-    Task UpdateIsolateDetailsAsync(Isolate isolate);    
+    Task UpdateIsolateDetailsAsync(Isolate isolate);
 }

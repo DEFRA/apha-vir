@@ -63,6 +63,7 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<SampleDTO, Sample>().ReverseMap();
             CreateMap<SystemInfo, SystemInfoDTO>().ReverseMap();
             CreateMap<IsolateDTO, Isolate>().ReverseMap();
+            CreateMap<PagedData<Sender>, PaginatedResult<SenderDTO>>();
         }
     }
 }

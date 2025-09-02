@@ -42,7 +42,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
 
             // Assert
             await _mockIsolateRepository.Received(1).UpdateIsolateDetailsAsync(Arg.Is<Isolate>(i => i.IsolateId == isolateDto.IsolateId));
-        }        
+        }
 
         [Fact]
         public async Task Test_UpdateIsolateDetailsAsync_MappingFailure()
@@ -130,7 +130,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var virusType = "H5N1";
             var yearOfIsolation = "2023";
 
-            var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };            
+            var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample>());

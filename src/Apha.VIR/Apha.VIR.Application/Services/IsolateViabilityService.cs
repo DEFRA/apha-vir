@@ -107,7 +107,7 @@ namespace Apha.VIR.Application.Services
                 .FirstOrDefault();
 
             return lastViability == null ? null : _mapper.Map<IsolateViabilityDTO>(lastViability);
-        }        
+        }
 
         private static void GetNomenclature(IEnumerable<IsolateViabilityInfo> viabilityHistorList, string nomenclature, string AVNumber)
         {

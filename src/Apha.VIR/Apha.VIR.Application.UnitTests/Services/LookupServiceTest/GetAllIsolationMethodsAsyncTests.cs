@@ -65,7 +65,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             Assert.Empty(result);
         }
 
-       
+
 
         [Fact]
         public async Task GetAllIsolationMethodsAsync_ShouldCallRepositoryAndMapper()
