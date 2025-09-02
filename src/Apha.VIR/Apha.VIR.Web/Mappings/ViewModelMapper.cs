@@ -35,11 +35,17 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<AuditSubmissionLogDTO, AuditSubmissionLogModel>().ReverseMap();
             CreateMap<AuditViabilityLogDTO, AuditIsolateViabilityLogModel>().ReverseMap();
             CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetailsViewModel>().ReverseMap();
-            CreateMap<SenderDTO, SenderViewModel>().ReverseMap();
+            CreateMap<SenderDTO, SubmissionSenderViewModel>().ReverseMap();
             CreateMap<SubmissionDTO, SubmissionEditViewModel>().ReverseMap();
             CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
             CreateMap<SampleDTO, SampleViewModel>().ReverseMap();
             CreateMap<SystemInfoDTO, SystemInformationViewModel>().ReverseMap();
+            CreateMap<IsolateAddEditViewModel, IsolateDTO>().ReverseMap();
+            CreateMap<IsolateAddEditViewModel, IsolateViabilityInfoDTO>()
+                .ForMember(dest => dest.IsolateViabilityIsolateId, opt => opt.MapFrom(src => src.IsolateId))
+                .ForMember(dest => dest.CheckedById, opt => opt.MapFrom(src => src.CheckedBy));
+            
+
         }
     }
 }

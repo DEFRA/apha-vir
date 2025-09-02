@@ -19,4 +19,5 @@ public class Submission
     public string? SamplingLocationPremises { get; set; }
     public int? NumberOfSamples { get; set; }
     public byte[] LastModified { get; set; } = null!;
+    public string? CountryOfOriginName { get; set; }
 }

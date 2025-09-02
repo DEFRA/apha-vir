@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Models
 {
-    public class SenderViewModel
+    public class SubmissionSenderViewModel
     {
         public Guid? SenderId { get; set; }
         [Required(ErrorMessage = "Sender must be entered")]

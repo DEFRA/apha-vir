@@ -6,7 +6,9 @@ public class Isolate
     public Guid IsolateSampleId { get; set; }
     public int? IsolateNumber { get; set; }
     public Guid Family { get; set; }
+    public string? FamilyName { get; set; }
     public Guid Type { get; set; }
+    public string? TypeName { get; set; }
     public int? YearOfIsolation { get; set; }
     public bool IsMixedIsolate { get; set; }
     public Guid? IsolationMethod { get; set; }
@@ -24,6 +26,7 @@ public class Isolate
     public Guid? Freezer { get; set; }
     public Guid? Tray { get; set; }
     public string? Well { get; set; }
+    public string? Nomenclature { get; set; }
     public string? IsolateNomenclature { get; set; }
     public byte[] LastModified { get; set; } = null!;
     public DateTime? DateCreated { get; set; }

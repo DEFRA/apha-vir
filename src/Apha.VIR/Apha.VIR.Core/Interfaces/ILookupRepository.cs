@@ -30,5 +30,9 @@ namespace Apha.VIR.Core.Interfaces
         Task<IEnumerable<LookupItem>> GetAllViabilityAsync();
         Task<IEnumerable<LookupItem>> GetAllSubmittingLabAsync();
         Task<IEnumerable<LookupItem>> GetAllSubmissionReasonAsync();
+        Task<IEnumerable<LookupItem>> GetAllIsolationMethodsAsync();
+        Task<IEnumerable<LookupItem>> GetAllFreezerAsync();
+        Task<IEnumerable<LookupItem>> GetAllTraysAsync();
+        Task<IEnumerable<LookupItem>> GetAllTraysByParentAsync(Guid? freezer);
     }
 }
