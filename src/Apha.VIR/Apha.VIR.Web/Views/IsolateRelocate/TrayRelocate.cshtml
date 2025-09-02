@@ -1,0 +1,176 @@
+﻿@model TrayRelocateViewModel
+@{
+    ViewData["Title"] = "Tray Relocation | Virus Isolates Repository";
+}
+<p>Please specify the Tray you wish to move:</p>
+<form asp-action="SearchIsolates" method="post" id="searchForm">
+    @Html.AntiForgeryToken()
+    <div class="d-flex" style="font-size:small">
+        <div class="search-criteria flex-grow-1 me-3" style="width: 500px;">
+            <div class="form-group row mb-0" style="width:85%;">
+                <div class="col-sm-2" style="width:120px">
+                    <label class="col-form-label">Freezer & Tray</label>
+                </div>
+                <div class="col-sm-10">
+                    <div class="mb-2">
+                        <label class="col-form-label">Freezer:</label>
+                        <div id="trayDropdownContainer">
+                            <select asp-for="SelectedFreezerId" asp-items="Model.Freezers" class="form-control" style="width:250px;">
+                                <option value="">Select a freezer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-form-label" style="margin-top: 10px;">Tray:</label>
+                        <div id="trayDropdownContainer">
+                            <select asp-for="SelectedTrayId" asp-items="Model.Trays" class="form-control" style="width:250px; display:inline-block;">
+                                <option value="">Select a tray</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row mb-0" style="width:85%;">
+                <div class="col-sm-3">
+
+                </div>
+                <div class="col-sm-5">
+                    <img src="~/images/spacer.gif" width="18px" height="5" alt="" />
+                    <button type="submit" class="btn btn-link isolaterelocate-btn-link-custom ms-5 mt-3">Search</button>
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<p>Isolates currently held within this Tray</p>
+
+<div id="isolatesGrid">
+    @await Html.PartialAsync("_SearchIsolates", Model.Isolates)
+</div>
+
+<div id="validationPanel" style="display: none;">
+    <p class="text-danger">There are validation messages requiring your attention.</p>
+    <span id="validationMessage" class="text-danger"></span>
+</div>
+
+<div id="locationPanel" style="display:none">
+    <p>New location for the selected Tray</p>
+    <form asp-action="RelocateTray" method="post" id="relocateForm">
+        @Html.AntiForgeryToken()
+        <div class="d-flex flex-column" style="max-width: 500px;">
+            <div class="d-flex align-items-center mb-2">
+                <div style="min-width: 80px;">Freezer</div>
+                <div style="width: 10px;">
+                    <img src="~/images/spacer.gif" width="10" height="5" alt="" />
+                </div>
+                <div style="flex: 1;">
+                    <select asp-for="NewFreezerId" asp-items="Model.Freezers" class="form-control" style="width:250px;">
+                        <option value="">Select a freezer</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div style="flex: 1;">
+                    <img src="~/images/spacer.gif" width="305" height="5" alt="" />
+                    <button type="submit" class="btn btn-link isolaterelocate-btn-link-custom" id="saveButton">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="updateMessage" class="text-success" style="display: none;">
+    <strong>Update successful.</strong>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // When Freezer changes, load trays via JSON and rebuild the Tray dropdown
+            $(document).on('change', '#SelectedFreezerId', function () {
+                var freezerId = $(this).val();
+
+                if (!freezerId) {
+                    // reset trays
+                    var $tray = $('#SelectedTrayId');
+                    $tray.empty().append($('<option>').val('').text('Select a tray'));
+                    return;
+                }
+
+                $.get('@Url.Action("GetTrays")', { freezerId: freezerId }, function (data) {
+                    var $tray = $('#SelectedTrayId');
+                    $tray.empty().append($('<option>').val('').text('Select a tray'));
+                    $.each(data, function (i, item) {
+                        $tray.append($('<option>').val(item.value).text(item.text));
+                    });
+                });
+            });
+
+            // Search form (returns partial HTML)
+            $(document).on('submit', '#searchForm', function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (html) {
+                        $('#validationPanel').hide();
+                        $('#isolatesGrid').html(html);
+                        $('#locationPanel').show();
+                    },
+                    error: function (xhr) {
+                        $('#validationPanel').show();
+                        $('#validationMessage').text('Search failed: ' + (xhr.responseText || xhr.statusText));
+                    }
+                });
+            });
+
+            // Optional confirm on save button
+            $(document).on('click', '#saveButton', function (e) {
+                // If you want a confirm dialog before submitting the relocate form:
+                if (!confirm('Please confirm you wish to relocate the selected Tray')) {
+                    e.preventDefault();
+                }
+            });
+
+            // Relocate form (returns JSON)
+            $(document).on('submit', '#relocateForm', function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        // include antiforgery token explicitly (good practice)
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]', form).val()
+                    },
+                    success: function (result) {
+                        if (result && result.success) {
+                            $('#validationPanel').hide();
+                            $('#updateMessage').show().delay(3000).fadeOut();
+                            // If you later return updated grid HTML, you can do:
+                            // if (result.isolatesGrid) $('#isolatesGrid').html(result.isolatesGrid);
+                        } else {
+                            $('#validationPanel').show();
+                            $('#validationMessage').text((result && result.message) || 'Save failed.');
+                        }
+                    },
+                    error: function (xhr) {
+                        $('#validationPanel').show();
+                        $('#validationMessage').text('Save failed: ' + (xhr.responseText || xhr.statusText));
+                    }
+                });
+            });
+
+        });
+    </script>
+}

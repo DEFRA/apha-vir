@@ -148,9 +148,83 @@ namespace Apha.VIR.Web.Controllers
 
             return View(model);
         }
+
+
+        public IActionResult TrayRelocate()
+        {
+            var model = new TrayRelocateViewModel
+            {
+                Freezers = GetDummyFreezers(),
+                Trays = GetDummyTrays(Guid.NewGuid()), // empty until freezer is chosen
+                Isolates = Enumerable.Empty<TrayRelocateIsolate>() // empty until tray is chosen
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SearchIsolates(TrayRelocateViewModel model)
+        {
+            // Basic guard (optional)
+            if (model.SelectedTrayId == Guid.Empty)
+                return BadRequest("Tray must be selected.");
+
+            var isolates = GetDummyIsolates(model.SelectedTrayId);
+            return PartialView("_SearchIsolates", isolates); // returns HTML to inject
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RelocateTray(TrayRelocateViewModel model)
+        {
+            // TODO: perform the relocate using model.SelectedTrayId -> model.NewFreezerId
+
+            // Return JSON for the client logic
+            return Json(new { success = true, message = "Tray relocated successfully." });
+        }
+
+
+        [HttpPost] // or GET if you prefer; adjust JS accordingly
+        public IActionResult GetTrays(Guid freezerId)
+        {
+            var trays = GetDummyTrays(freezerId);
+                
+
+            return Json(trays);
+        }
+
+
+
+        private IEnumerable<SelectListItem> GetDummyFreezers()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Freezer 1" },
+                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Freezer 2" },
+                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Freezer 3" }
+            };
+        }
+
+        private IEnumerable<SelectListItem> GetDummyTrays(Guid freezerId)
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Tray 1" },
+                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Tray 2" },
+                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Tray 3" }
+            };
+        }
+
+
+        private IEnumerable<TrayRelocateIsolate> GetDummyIsolates(Guid trayId)
+        {
+            return new List<TrayRelocateIsolate>
+            {
+                new TrayRelocateIsolate { Id = Guid.NewGuid(), AVNumber = "AV001", Nomenclature = "Isolate 1", FreezerName = "Freezer 1", TrayName = "Tray 1", Well = "A1" },
+                new TrayRelocateIsolate { Id = Guid.NewGuid(), AVNumber = "AV002", Nomenclature = "Isolate 2", FreezerName = "Freezer 1", TrayName = "Tray 1", Well = "A2" },
+                new TrayRelocateIsolate { Id = Guid.NewGuid(), AVNumber = "AV003", Nomenclature = "Isolate 3", FreezerName = "Freezer 1", TrayName = "Tray 1", Well = "A3" }
+            };
+        }
     }
 
-
-
-    
 }
