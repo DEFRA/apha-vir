@@ -152,5 +152,25 @@ namespace Apha.VIR.Application.Services
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllSubmissionReasonAsync());
         }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllIsolationMethodsAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllIsolationMethodsAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllFreezerAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllFreezerAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllTraysAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllTraysAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllTraysByParentAsync(Guid? freezer)
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllTraysByParentAsync(freezer));
+        }
     }
 }

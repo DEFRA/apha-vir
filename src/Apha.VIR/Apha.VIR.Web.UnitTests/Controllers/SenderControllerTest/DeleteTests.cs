@@ -27,7 +27,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         public async Task Delete_DeleteSenderAndRedirectToIndex_WhenValidModel()
         {
             // Arrange
-            var model = new SenderMViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
+            var model = new SenderViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
             var senderId = Guid.NewGuid();
 
             // Act
@@ -43,7 +43,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         public async Task Delete_ReturnsViewWithError_WhenInvalidModelState()
         {
             // Arrange
-            var model = new SenderMViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
+            var model = new SenderViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
             var senderId = Guid.NewGuid();
             _controller.ModelState.AddModelError("error", "some error");
 
@@ -61,7 +61,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         public async Task Delete_ReturnsViewWithModel_WhenEmptySenderId()
         {
             // Arrange
-            var model = new SenderMViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
+            var model = new SenderViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
             var senderId = Guid.Empty;
 
             // Act

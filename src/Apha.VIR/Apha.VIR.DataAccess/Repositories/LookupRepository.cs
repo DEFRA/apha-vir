@@ -276,9 +276,17 @@ namespace Apha.VIR.DataAccess.Repositories
             var lookupItemList = new List<LookupItem>();
             string commandName = string.Empty;
             if (Lookup == "HostBreed")
+            {
                 commandName = "spHostBreedGetByParent";
+            }
             else if (Lookup == "VirusType")
+            {
                 commandName = "spVirusTypeGetByParent";
+            }
+            else if (Lookup == "Tray")
+            {
+                commandName = "spTrayGetByParent";
+            }
 
             using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
             {
@@ -373,6 +381,32 @@ namespace Apha.VIR.DataAccess.Repositories
             return (await _context.Set<LookupItem>()
             .FromSqlRaw($"EXEC spSubmissionReasonGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllIsolationMethodsAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spIsolationMethodGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllFreezerAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spFreezerGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllTraysAsync()
+        {
+            return (await _context.Set<LookupItem>()
+            .FromSqlRaw($"EXEC spTrayGetAll").ToListAsync())
+            .Where(vf => vf.Active).ToList();
+        }
+
+        public async Task<IEnumerable<LookupItem>> GetAllTraysByParentAsync(Guid? freezer)
+        {
+            return await GetLookupItemsByParentAsync("Tray", freezer);
         }
     }
 }

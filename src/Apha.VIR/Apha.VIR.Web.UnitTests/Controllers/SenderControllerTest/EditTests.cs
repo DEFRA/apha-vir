@@ -30,7 +30,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             var senderId = Guid.NewGuid();
             var senderDto = new SenderDTO { SenderId = senderId, SenderName = "Test Sender" };
-            var senderViewModel = new SenderMViewModel
+            var senderViewModel = new SenderViewModel
             {
                 SenderId = senderId,
                 SenderName = "Test Sender",
@@ -40,7 +40,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             var countryList = new List<SelectListItem> { new SelectListItem("Country", "1") };
 
             _senderService.GetSenderAsync(senderId).Returns(senderDto);
-            _mapper.Map<SenderMViewModel>(senderDto).Returns(senderViewModel);
+            _mapper.Map<SenderViewModel>(senderDto).Returns(senderViewModel);
 
             _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>
             { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Country" } });
@@ -50,7 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<SenderMViewModel>(viewResult.Model);
+            var model = Assert.IsType<SenderViewModel>(viewResult.Model);
             Assert.Equal("EditSender", viewResult.ViewName);
             Assert.Equal(senderId, model.SenderId);
             Assert.Equal("Test Sender", model.SenderName);
@@ -107,12 +107,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         public async Task Edit_Post_ValidModel_ReturnsRedirectToActionResult()
         {
             // Arrange
-            var model = new SenderMViewModel
+            var model = new SenderViewModel
             {
                 SenderId = Guid.NewGuid(),
                 SenderName = "Test Sender",
-                SenderAddress="India",
-                SenderOrganisation="India"
+                SenderAddress = "India",
+                SenderOrganisation = "India"
             };
             var senderDto = new SenderDTO();
             _mapper.Map<SenderDTO>(model).Returns(senderDto);
@@ -130,7 +130,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         public async Task Edit_Post_InvalidModel_ReturnsViewWithModel()
         {
             // Arrange
-            var model = new SenderMViewModel
+            var model = new SenderViewModel
             {
                 SenderId = Guid.NewGuid(),
                 SenderName = "",
@@ -149,7 +149,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("EditSender", viewResult.ViewName);
-            var returnedModel = Assert.IsType<SenderMViewModel>(viewResult.Model);
+            var returnedModel = Assert.IsType<SenderViewModel>(viewResult.Model);
             Assert.Equal(model, returnedModel);
             Assert.Equal(countryList, returnedModel.CountryList);
         }

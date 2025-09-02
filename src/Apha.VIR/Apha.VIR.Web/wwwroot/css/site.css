@@ -1045,9 +1045,41 @@ a:hover {color: #0000FF;  text-decoration: underline; }
         background-color: #f9f9f9;
     }
 
-.w-200 {
-    width: 200px;
+.w-80 {
+    width: 80px !important;
 }
+
+.w-170 {
+    width: 170px !important;
+}
+
+.w-200 {
+    width: 200px !important;
+}
+
+.w-210 {
+    width: 210px !important;
+}
+
+.w-500 {
+    width: 500px !important;
+}
+
+.w-600 {
+    width: 600px !important;
+}
+
+Can be rename GetViability, GetLastViability both are using id only. No mean specify by ...
+Task<IEnumerable<IsolateViabilityInfoDTO > > GetViabilityByIsolateIdAsync(Guid isolateId);
+Task<IsolateViabilityDTO? > GetLastViabilityByIsolateAsync(Guid IsolateId);
+Can be rename GetIsolate
+Task<IsolateDTO > GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId);
+Task<IEnumerable<SampleDTO > > GetSamplesBySubmissionIdAsync(Guid submissionId);
+
+ArgumentNullException.ThrowIfNull(isolateViability): Not required as param is not null.
+
+IsolateRepository.cs : Add update have huge list of sql param, can not be common
+
 
 .sendertable {
     border-collapse: collapse;
@@ -1055,25 +1087,25 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     margin-bottom: 20px;
 }
 
-    .sendertable th, .sendertable td {
-        border: 1px solid gray;
-        padding: 5px 5px;
-        text-align: left;
-    }
+.sendertable th, .sendertable td {
+    border: 1px solid gray;
+    padding: 5px 5px;
+    text-align: left;
+}
 
-    .sendertable th {
-        background-color: #0b2677;
-        color: #fff;
-        font-weight: bold;
-    }
+.sendertable th {
+    background-color: #0b2677;
+    color: #fff;
+    font-weight: bold;
+}
 
-    .sendertable tr:nth-child(even) {
-        background-color: #efefef;
-    }
+.sendertable tr:nth-child(even) {
+    background-color: #efefef;
+}
 
-    .sendertable tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
+.sendertable tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
 
 .w-200 {
     width: 200px;

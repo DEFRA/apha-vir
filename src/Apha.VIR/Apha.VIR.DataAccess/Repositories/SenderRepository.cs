@@ -26,7 +26,7 @@ public class SenderRepository : ISenderRepository
         {
             senders = senders.Where(s => s.Country == countryId).ToList();
         }
-        
+
         return senders;
     }
 
@@ -39,7 +39,7 @@ public class SenderRepository : ISenderRepository
         {
             senders = senders.Where(s => s.Country == countryId).ToList();
         }
-       
+
         return senders;
     }
 

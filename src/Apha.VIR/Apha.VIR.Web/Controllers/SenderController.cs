@@ -29,7 +29,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var pagedSenderDtos = await _senderService.GetAllSenderAsync(pageNo, pageSize);
-            var senderList = _mapper.Map<IEnumerable<SenderMViewModel>>(pagedSenderDtos.data);
+            var senderList = _mapper.Map<IEnumerable<SenderViewModel>>(pagedSenderDtos.data);
 
             var viewModel = new SenderListViewModel
             {
@@ -53,7 +53,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var pagedSenderDtos = await _senderService.GetAllSenderAsync(pageNo, pageSize);
-            var senderList = _mapper.Map<IEnumerable<SenderMViewModel>>(pagedSenderDtos.data);
+            var senderList = _mapper.Map<IEnumerable<SenderViewModel>>(pagedSenderDtos.data);
 
             var viewModel = new SenderListViewModel
             {
@@ -78,7 +78,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var viewModel = new SenderMViewModel
+            var viewModel = new SenderViewModel
             {
                 SenderName = string.Empty,
                 SenderOrganisation = string.Empty,
@@ -90,7 +90,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SenderMViewModel model)
+        public async Task<IActionResult> Create(SenderViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -120,7 +120,7 @@ namespace Apha.VIR.Web.Controllers
                 return NotFound("Sender not found");
             }
 
-            var senderviewModel = _mapper.Map<SenderMViewModel>(result);
+            var senderviewModel = _mapper.Map<SenderViewModel>(result);
 
             senderviewModel.CountryList = await GetCountryDropdownList();
 
@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(SenderMViewModel model)
+        public async Task<IActionResult> Edit(SenderViewModel model)
         {
 
             if (!ModelState.IsValid)
@@ -145,7 +145,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(SenderMViewModel model, Guid senderId)
+        public async Task<IActionResult> Delete(SenderViewModel model, Guid senderId)
         {
             if (!ModelState.IsValid || senderId == Guid.Empty)
             {

@@ -20,7 +20,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             _senderService = new SenderService(_mockSenderRepository, _mockMapper);
         }
 
-           [Fact]
+        [Fact]
         public async Task GetAllSenderOrderBySenderAsync_ShouldReturnMappedSenders_WhenSendersExist()
         {
             // Arrange
@@ -92,6 +92,6 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             await _mockSenderRepository.Received(1).GetAllSenderOrderBySenderAsync(countryId);
         }
 
-       
+
     }
 }

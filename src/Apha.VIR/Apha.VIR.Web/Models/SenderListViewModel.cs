@@ -2,6 +2,6 @@
 
 public class SenderListViewModel
 {
-    public List<SenderMViewModel> Senders { get; set; } = new List<SenderMViewModel>();
+    public List<SenderViewModel> Senders { get; set; } = new List<SenderViewModel>();
     public PaginationModel? Pagination { get; set; }
 }

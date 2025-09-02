@@ -37,9 +37,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
                 TotalCount = 1
             };
 
-            var mockMappedSenders = new List<SenderMViewModel>
+            var mockMappedSenders = new List<SenderViewModel>
             {
-                new SenderMViewModel
+                new SenderViewModel
                 {
                     SenderAddress="TestAddr",
                     SenderName="TestSender",
@@ -48,14 +48,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             };
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(mockSenders);
-            _mockMapper.Map<IEnumerable<SenderMViewModel>>(mockSenders.data).Returns(mockMappedSenders);
+            _mockMapper.Map<IEnumerable<SenderViewModel>>(mockSenders.data).Returns(mockMappedSenders);
 
             // Act
             var result = await _controller.Index();
 
             // Assert
             await _mockSenderService.Received(1).GetAllSenderAsync(pageNo, pageSize);
-            _mockMapper.Received(1).Map<IEnumerable<SenderMViewModel>>(mockSenders.data);
+            _mockMapper.Received(1).Map<IEnumerable<SenderViewModel>>(mockSenders.data);
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<SenderListViewModel>(viewResult.Model);
@@ -73,10 +73,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             int pageNo = 1;
             int pageSize = 10;
             var senders = new PaginatedResult<SenderDTO> { data = new List<SenderDTO>(), TotalCount = 20 };
-            var senderViewModels = new List<SenderMViewModel>();
+            var senderViewModels = new List<SenderViewModel>();
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
-            _mockMapper.Map<IEnumerable<SenderMViewModel>>(senders.data).Returns(senderViewModels);
+            _mockMapper.Map<IEnumerable<SenderViewModel>>(senders.data).Returns(senderViewModels);
 
             // Act
             var result = await _controller.BindSenderGridOnPagination(pageNo, pageSize);
@@ -112,10 +112,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             int pageNo = 1;
             int pageSize = 10;
             var senders = new PaginatedResult<SenderDTO> { data = new List<SenderDTO>(), TotalCount = 0 };
-            var senderViewModels = new List<SenderMViewModel>();
+            var senderViewModels = new List<SenderViewModel>();
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
-            _mockMapper.Map<IEnumerable<SenderMViewModel>>(senders.data).Returns(senderViewModels);
+            _mockMapper.Map<IEnumerable<SenderViewModel>>(senders.data).Returns(senderViewModels);
 
             // Act
             var result = await _controller.BindSenderGridOnPagination(pageNo, pageSize);
@@ -134,10 +134,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             int pageNo = 2;
             int pageSize = 15;
             var senders = new PaginatedResult<SenderDTO> { data = new List<SenderDTO>(), TotalCount = 30 };
-            var senderViewModels = new List<SenderMViewModel>();
+            var senderViewModels = new List<SenderViewModel>();
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
-            _mockMapper.Map<IEnumerable<SenderMViewModel>>(senders.data).Returns(senderViewModels);
+            _mockMapper.Map<IEnumerable<SenderViewModel>>(senders.data).Returns(senderViewModels);
 
             // Act
             var result = await _controller.BindSenderGridOnPagination(pageNo, pageSize);
@@ -159,9 +159,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             var senderDTOs = new List<SenderDTO> { new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" } };
             var senders = new PaginatedResult<SenderDTO> { data = senderDTOs, TotalCount = 1 };
 
-            var senderViewModels = new List<SenderMViewModel>
+            var senderViewModels = new List<SenderViewModel>
             {
-                new SenderMViewModel
+                new SenderViewModel
                 {
                     SenderId = senderDTOs[0].SenderId,
                     SenderName = senderDTOs[0].SenderName!,
@@ -169,9 +169,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
                     SenderOrganisation="India"
                 }
             };
- 
+
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
-            _mockMapper.Map<IEnumerable<SenderMViewModel>>(senders.data).Returns(senderViewModels);
+            _mockMapper.Map<IEnumerable<SenderViewModel>>(senders.data).Returns(senderViewModels);
 
             // Act
             var result = await _controller.BindSenderGridOnPagination(pageNo, pageSize);

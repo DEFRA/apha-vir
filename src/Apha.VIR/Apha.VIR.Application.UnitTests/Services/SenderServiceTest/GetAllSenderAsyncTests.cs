@@ -30,7 +30,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             int pageSize = 10;
 
             var senderId1 = Guid.NewGuid();
-                var senderId2 = Guid.NewGuid();
+            var senderId2 = Guid.NewGuid();
 
             var senders = new List<Sender>
             {
@@ -42,9 +42,9 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
 
             var expectedPaginatedResult = new PaginatedResult<SenderDTO>
             {
-                data = new List<SenderDTO> 
+                data = new List<SenderDTO>
                 { new SenderDTO{ SenderId = senderId1, SenderName = "Sender1" },
-                 new SenderDTO { SenderId = senderId2, SenderName = "Sender2" } 
+                 new SenderDTO { SenderId = senderId2, SenderName = "Sender2" }
                 },
                 TotalCount = 2
             };
@@ -70,7 +70,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             int pageSize = 10;
 
             var mockPaginatedResult = new PagedData<Sender>(new List<Sender>(), 0);
-       
+
             var expectedPaginatedResult = new PaginatedResult<SenderDTO>
             {
                 data = new List<SenderDTO>(),
