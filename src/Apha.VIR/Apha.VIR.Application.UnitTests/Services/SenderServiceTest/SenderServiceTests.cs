@@ -169,7 +169,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
         {
             // Arrange
             var senderDto = new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" };
-            var senderEntity = new Sender {SenderId = senderDto.SenderId, SenderName = senderDto.SenderName };
+            var senderEntity = new Sender { SenderId = senderDto.SenderId, SenderName = senderDto.SenderName };
             _mockMapper.Map<Sender>(senderDto).Returns(senderEntity);
 
             // Act
@@ -177,7 +177,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
 
             // Assert
             await _mockSenderRepository.Received(1).AddSenderAsync(Arg.Is<Sender>(s => s.SenderId == senderEntity.SenderId && s.SenderName == senderEntity.SenderName));
-        }        
+        }
 
         [Fact]
         public async Task Test_AddSenderAsync_RepositoryThrowsException_PropagatesException()

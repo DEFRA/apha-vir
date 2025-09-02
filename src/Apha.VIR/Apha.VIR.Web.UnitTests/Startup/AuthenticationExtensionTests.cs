@@ -28,6 +28,6 @@ namespace Apha.BST.Web.UnitTests.Startup
             var authService = serviceProvider.GetService<Microsoft.AspNetCore.Authentication.IAuthenticationService>();
             Assert.NotNull(authService); // Basic check - deeper checks can be added
         }
-     }
+    }
 
 }

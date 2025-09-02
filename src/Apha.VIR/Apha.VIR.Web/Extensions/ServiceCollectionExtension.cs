@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IAuditRepository, AuditRepository>();
             services.AddScoped<ISenderRepository, SenderRepository>();
             services.AddScoped<ISubmissionRepository, SubmissionRepository>();
-            services.AddScoped<ISampleRepository, SampleRepository>();  
+            services.AddScoped<ISampleRepository, SampleRepository>();
             services.AddScoped<ISystemInfoRepository, SystemInfoRepository>();
             return services;
         }
