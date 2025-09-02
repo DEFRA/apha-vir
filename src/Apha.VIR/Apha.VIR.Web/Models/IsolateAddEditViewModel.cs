@@ -15,10 +15,10 @@ namespace Apha.VIR.Web.Models
 
         [Display(Name = "Year Of Isolation")]        
         public int? YearOfIsolation { get; set; }
-        public bool? IsMixedIsolate { get; set; }
+        public bool IsMixedIsolate { get; set; } = false;
         public Guid? IsolationMethod { get; set; }
-        public bool? AntiserumProduced { get; set; }
-        public bool? AntigenProduced { get; set; }
+        public bool AntiserumProduced { get; set; } = false;
+        public bool AntigenProduced { get; set; } = false;
         public string? PhylogeneticAnalysis { get; set; }
         public string? MTALocation { get; set; }
         public string? Comment { get; set; }
@@ -30,8 +30,8 @@ namespace Apha.VIR.Web.Models
 
         [Range(0, 4, ErrorMessage = "No of Aliquots must be between 0 and 4")]
         public int? NoOfAliquots { get; set; }
-        public bool? MaterialTransferAgreement { get; set; }
-        public bool? OriginalSampleAvailable { get; set; }
+        public bool MaterialTransferAgreement { get; set; } = false;
+        public bool OriginalSampleAvailable { get; set; } = false;
 
         [Display(Name = "First Viable Passage Number")]
         [RegularExpression(@"^\d+$", ErrorMessage = "First Viable Passage Number must be an numeric value")]

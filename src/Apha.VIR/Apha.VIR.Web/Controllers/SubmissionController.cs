@@ -63,11 +63,11 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Edit(string AVNumber)
         {
             var isAvNumberPresent = await _submissionService.AVNumberExistsInVirAsync(AVNumber);
-            if (!isAvNumberPresent) 
+            if (!isAvNumberPresent)
             {
                 return RedirectToAction("Create", new { AVNumber = AVNumber });
             }
-            
+
             var submissionDto = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
             SubmissionEditViewModel submissionModel = _mapper.Map<SubmissionEditViewModel>(submissionDto);
             submissionModel.CountryList = await GetCountryDropdownList();
@@ -133,7 +133,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<PartialViewResult> GetOrganisationDetails(Guid? countryId)
         {
-            if (!ModelState.IsValid)            
+            if (!ModelState.IsValid)
                 countryId = null;
 
             var senderDto = await _senderService.GetAllSenderOrderByOrganisationAsync(countryId);

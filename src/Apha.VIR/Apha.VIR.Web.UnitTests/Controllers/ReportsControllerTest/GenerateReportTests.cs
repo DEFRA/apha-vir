@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
@@ -13,13 +8,13 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
 {
-    public class ReportsControllerGenerateReportTests
+    public class GenerateReportTests
     {
         private readonly IReportService _mockReportService;
         private readonly IMapper _mockMapper;
         private readonly ReportsController _controller;
 
-        public ReportsControllerGenerateReportTests()
+        public GenerateReportTests()
         {
             _mockReportService = Substitute.For<IReportService>();
             _mockMapper = Substitute.For<IMapper>();

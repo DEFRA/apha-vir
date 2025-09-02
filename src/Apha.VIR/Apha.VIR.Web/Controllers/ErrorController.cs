@@ -8,5 +8,11 @@ namespace Apha.VIR.Web.Controllers
         {
             return View("Error");
         }
+
+        public IActionResult AccessDenied()
+        {
+
+            return View("Error");
+        }
     }
 }

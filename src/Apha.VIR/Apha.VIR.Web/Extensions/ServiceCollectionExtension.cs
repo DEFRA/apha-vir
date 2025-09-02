@@ -29,6 +29,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<ISenderService, SenderService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddScoped<ISampleService, SampleService>();
+            services.AddScoped<ISystemInfoService, SystemInfoService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)
@@ -49,6 +50,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<ISenderRepository, SenderRepository>();
             services.AddScoped<ISubmissionRepository, SubmissionRepository>();
             services.AddScoped<ISampleRepository, SampleRepository>();
+            services.AddScoped<ISystemInfoRepository, SystemInfoRepository>();
             return services;
         }
     }
