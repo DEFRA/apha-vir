@@ -8,5 +8,6 @@ namespace Apha.VIR.Application.Interfaces
         Task<SampleDTO> GetSampleAsync(string avNumber, Guid? sampleId);
         Task AddSample(SampleDTO sampleDto, string avNumber, string userName);
         Task UpdateSample(SampleDTO sampleDto, string userName);
+        Task<IEnumerable<SampleDTO>> GetSamplesBySubmissionIdAsync(Guid submissionId);
     }
 }

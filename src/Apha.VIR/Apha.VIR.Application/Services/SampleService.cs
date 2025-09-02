@@ -18,6 +18,12 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<IEnumerable<SampleDTO>> GetSamplesBySubmissionIdAsync(Guid submissionId)
+        {
+            var samples = await _sampleRepository.GetSamplesBySubmissionIdAsync(submissionId);
+            return _mapper.Map<IEnumerable<SampleDTO>>(samples);
+        }
+
         public async Task<SampleDTO> GetSampleAsync(string avNumber, Guid? sampleId)
         {
             ArgumentNullException.ThrowIfNull(avNumber);

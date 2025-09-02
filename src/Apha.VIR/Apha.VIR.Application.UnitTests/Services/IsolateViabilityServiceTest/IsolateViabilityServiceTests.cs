@@ -162,7 +162,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
                 IsolateViabilityIsolateId = Guid.NewGuid(),
                 Viable = Guid.NewGuid(),
                 ViabilityStatus = "Viable",
-                DateChecked = new DateTime(2025, 8, 1),
+                DateChecked = new DateTime(2025, 8, 1, 0, 0, 0, DateTimeKind.Local),
                 CheckedById = Guid.NewGuid(),
                 LastModified = new byte[] { 1, 2, 3, 4, 5 },
                 CheckedByName = "Dr. Jane Doe",
@@ -176,7 +176,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
                 IsolateViabilityId = Guid.NewGuid(),
                 IsolateViabilityIsolateId = Guid.NewGuid(),
                 Viable = Guid.NewGuid(),
-                DateChecked = new DateTime(2025, 8, 1),
+                DateChecked = new DateTime(2025, 8, 1, 0, 0, 0, DateTimeKind.Local),
                 CheckedById = Guid.NewGuid(),
                 LastModified = new byte[] { 1, 2, 3, 4, 5 },
             };
@@ -238,6 +238,108 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _isolateViabilityService.UpdateIsolateViabilityAsync(dto, "user123"));
+        }
+
+        [Fact]
+        public async Task Test_GetViabilityByIsolateIdAsync_ReturnsCorrectData()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var isolateViabilities = new List<IsolateViability>
+            {
+                new IsolateViability { IsolateViabilityIsolateId = isolateId, DateChecked = DateTime.Now }
+            };
+            var expectedDtos = new List<IsolateViabilityInfoDTO>
+            {
+                new IsolateViabilityInfoDTO { IsolateViabilityIsolateId = isolateId, DateChecked = DateTime.Now }
+            };
+
+            _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(isolateViabilities);
+            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(isolateViabilities).Returns(expectedDtos);
+
+            // Act
+            var result = await _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId);
+
+            // Assert
+            Assert.Equal(expectedDtos, result);
+        }
+
+        [Fact]
+        public async Task Test_GetViabilityByIsolateIdAsync_EmptyResult()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var emptyList = new List<IsolateViability>();
+
+            _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(emptyList);
+            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(emptyList).Returns(new List<IsolateViabilityInfoDTO>());
+
+            // Act
+            var result = await _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId);
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task Test_GetViabilityByIsolateIdAsync_RepositoryThrowsException()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(Task.FromException<IEnumerable<IsolateViability>>(new Exception("Repository error")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId));
+        }
+
+        [Fact]
+        public async Task GetLastViabilityByIsolateAsync_ValidIsolateIdWithRecords_ReturnsLastViability()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var viabilityList = new List<IsolateViability>
+            {
+                new IsolateViability { DateChecked = DateTime.Now.AddDays(-2) },
+                new IsolateViability { DateChecked = DateTime.Now.AddDays(-1) },
+                new IsolateViability { DateChecked = DateTime.Now }
+            };
+            _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(viabilityList);
+            _mockMapper.Map<IsolateViabilityDTO>(Arg.Any<IsolateViability>()).Returns(new IsolateViabilityDTO());
+
+            // Act
+            var result = await _isolateViabilityService.GetLastViabilityByIsolateAsync(isolateId);
+
+            // Assert
+            Assert.NotNull(result);
+            await _mockIsolateViabilityRepository.Received(1).GetViabilityByIsolateIdAsync(isolateId);
+            _mockMapper.Received(1).Map<IsolateViabilityDTO>(Arg.Is<IsolateViability>(v => v.DateChecked == viabilityList.Max(x => x.DateChecked)));
+        }
+
+        [Fact]
+        public async Task GetLastViabilityByIsolateAsync_ValidIsolateIdNoRecords_ReturnsNull()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(new List<IsolateViability>());
+
+            // Act
+            var result = await _isolateViabilityService.GetLastViabilityByIsolateAsync(isolateId);
+
+            // Assert
+            Assert.Null(result);
+            await _mockIsolateViabilityRepository.Received(1).GetViabilityByIsolateIdAsync(isolateId);
+            _mockMapper.DidNotReceive().Map<IsolateViabilityDTO>(Arg.Any<IsolateViability>());
+        }
+
+        [Fact]
+        public async Task GetLastViabilityByIsolateAsync_EmptyGuid_ThrowsArgumentException()
+        {
+            // Arrange
+            var emptyGuid = Guid.Empty;
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _isolateViabilityService.GetLastViabilityByIsolateAsync(emptyGuid));
+            await _mockIsolateViabilityRepository.DidNotReceive().GetViabilityByIsolateIdAsync(Arg.Any<Guid>());
         }
     }
 }
