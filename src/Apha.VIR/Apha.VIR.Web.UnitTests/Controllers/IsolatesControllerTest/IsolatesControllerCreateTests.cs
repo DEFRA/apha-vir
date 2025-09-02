@@ -62,11 +62,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             _controller.ModelState.AddModelError("error", "some error");
 
             // Act
-            var result = await _controller.Create("AV123", Guid.NewGuid()) as ViewResult;
+            var result = await _controller.Create("AV123", Guid.NewGuid());
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.IsType<IsolateAddEditViewModel>(result.Model);
+            // Assert          
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.NotNull(badRequestResult.Value);
+
+            // Optionally verify that ModelState was passed back
+            var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
+            Assert.True(modelState.ContainsKey("error"));
         }
 
         [Fact]

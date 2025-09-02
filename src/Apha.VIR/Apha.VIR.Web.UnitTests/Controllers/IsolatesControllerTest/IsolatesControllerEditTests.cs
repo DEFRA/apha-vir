@@ -60,22 +60,19 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         [Fact]
         public async Task Edit_InvalidModelState_ReturnsViewResult()
         {
-            // Arrange
-            var avNumber = "AV123";
-            var sampleId = Guid.NewGuid();
-            var isolateId = Guid.NewGuid();
-            var isolate = new IsolateDTO { IsolateId = isolateId, IsolateSampleId = sampleId };
-            var isolateModel = new IsolateAddEditViewModel { IsolateId = isolateId, IsolateSampleId = sampleId };
-            _controller.ModelState.AddModelError("error", "some error");
-            _mockIsolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);      
-            _mockMapper.Map<IsolateAddEditViewModel>(isolate).Returns(isolateModel);
+            // Arrange         
+            _controller.ModelState.AddModelError("error", "some error");           
 
             // Act
-            var result = await _controller.Edit(avNumber, sampleId, isolateId);
+            var result = await _controller.Edit("AV00-01", Guid.NewGuid(), Guid.NewGuid());
 
             // Assert
-            Assert.IsType<ViewResult>(result);
-            Assert.False(_controller.ModelState.IsValid);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.NotNull(badRequestResult.Value);
+
+            // Optionally verify that ModelState was passed back
+            var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
+            Assert.True(modelState.ContainsKey("error"));
         }
 
         [Fact]

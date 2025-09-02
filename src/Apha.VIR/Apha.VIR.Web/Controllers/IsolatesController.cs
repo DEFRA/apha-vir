@@ -45,7 +45,13 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Create(string AVNumber, Guid SampleId)
-        {            
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
+            }
+
             var isolateCreateModel = new IsolateAddEditViewModel
             {
                 AVNumber = AVNumber,
@@ -58,12 +64,7 @@ namespace Apha.VIR.Web.Controllers
                 ViabilityList = await GetViabilityDropdownList(),
                 StaffList = await GetCheckedByDropdownList(),
                 NoOfAliquots = 4
-            };
-
-            if (!ModelState.IsValid)
-            {
-                return View(isolateCreateModel);
-            }
+            };           
 
             var submission = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
             if (submission != null)
@@ -127,9 +128,8 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ArgumentNullException.ThrowIfNull(AVNumber);
-                ArgumentNullException.ThrowIfNull(SampleId);
-                ArgumentNullException.ThrowIfNull(IsolateId);
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
             }
 
             var isolate = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(AVNumber, IsolateId);
