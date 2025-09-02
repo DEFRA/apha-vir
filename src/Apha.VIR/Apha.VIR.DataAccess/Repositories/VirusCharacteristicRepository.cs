@@ -16,8 +16,9 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsAsync()
         {
-            return await _context.Set<VirusCharacteristic>()
-                  .FromSqlRaw($"EXEC spVirusCharacteristicGetAll").ToListAsync();
+            var data = await _context.VirusCharacteristics.FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync();
+
+            return data;
         }
 
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)

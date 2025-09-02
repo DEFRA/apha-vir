@@ -68,10 +68,10 @@ namespace Apha.VIR.Web.Extensions
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //}
 
             app.UseHsts();
             app.UseHttpsRedirection();
@@ -79,7 +79,7 @@ namespace Apha.VIR.Web.Extensions
 
             app.UseRouting();
 
-            app.UseMiddleware<ExceptionMiddleware>();
+            //app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
