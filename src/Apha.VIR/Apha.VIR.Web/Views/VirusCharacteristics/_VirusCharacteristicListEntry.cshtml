@@ -7,18 +7,17 @@
 }
 else
 {
-    <table class="isolatereporttable" style="width: 180px;">
+    <table class="viruscharacteristictable" style="width: 180px;">
         <thead>
-            <tr class="isolatereport-header">
+            <tr class="viruscharacteristictable-header">
                 <th>List Entry Text</th>
                 <th style="padding:5px;"></th>
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < Model.VirusCharacteristics.Count; i++)
+            @foreach (var entry in Model.VirusCharacteristics)
             {
-                var entry = Model.VirusCharacteristics[i];
-                <tr class="@(i % 2 == 0 ? "odd" : "even")">
+                <tr>
                     <td>@entry.Name</td>
                     <td>
                         <a asp-controller="VirusCharacteristics" asp-action="Edit"

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.Interfaces;
+﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +22,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("VirusCharacteristicManagement", viewResult.ViewName);
+            Assert.Equal("VirusCharacteristic", viewResult.ViewName);
         }
     }
 }

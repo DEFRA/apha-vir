@@ -8,93 +8,87 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 {
-    public class EditGetControllerTests
+    public class CreatePostControllerTests
     {
         private readonly IVirusCharacteristicService _service;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
         private readonly IMapper _mapper;
         private readonly VirusCharacteristicsController _controller;
 
-        public EditGetControllerTests()
+        public CreatePostControllerTests()
         {
             _service = Substitute.For<IVirusCharacteristicService>();
             _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new VirusCharacteristicsController(_service, _listEntryService, _mapper);
         }
-
         [Fact]
-        public async Task EditGet_InvalidModelState_ReturnsBadRequest()
+        public void CreateGet_InvalidModelState_ReturnsBadRequest()
         {
             // Arrange
-            _controller.ModelState.AddModelError("error", "some error");
+            var service = Substitute.For<IVirusCharacteristicService>();
+            var listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
+            var mapper = Substitute.For<IMapper>();
+            var controller = new VirusCharacteristicsController(service, listEntryService, mapper);
+            controller.ModelState.AddModelError("error", "some error");
 
             // Act
-            var result = await _controller.Edit(Guid.NewGuid(), Guid.NewGuid());
+            var result = controller.Create(Guid.NewGuid());
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
-        public async Task EditGet_EntryIsNull_ReturnsNotFound()
+        public void CreateGet_Valid_ReturnsCreateView()
         {
             // Arrange
-            _listEntryService.GetEntryByIdAsync(Arg.Any<Guid>()).Returns((VirusCharacteristicListEntryDTO?)null);
+            var service = Substitute.For<IVirusCharacteristicService>();
+            var listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
+            var mapper = Substitute.For<IMapper>();
+            var controller = new VirusCharacteristicsController(service, listEntryService, mapper);
+            var characteristicId = Guid.NewGuid();
 
             // Act
-            var result = await _controller.Edit(Guid.NewGuid(), Guid.NewGuid());
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public async Task EditGet_EntryFound_ReturnsEditView()
-        {
-            // Arrange
-            var dto = new VirusCharacteristicListEntryDTO();
-            var vm = new VirusCharacteristicListEntryModel();
-            _listEntryService.GetEntryByIdAsync(Arg.Any<Guid>()).Returns(dto);
-            _mapper.Map<VirusCharacteristicListEntryModel>(dto).Returns(vm);
-
-            // Act
-            var result = await _controller.Edit(Guid.NewGuid(), Guid.NewGuid());
+            var result = controller.Create(characteristicId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("EditVirusCharacteristicEntry", viewResult.ViewName);
-            Assert.Equal(vm, viewResult.Model);
+            Assert.Equal("CreateVirusCharacteristicEntry", viewResult.ViewName);
+            var model = Assert.IsType<VirusCharacteristicListEntryModel>(viewResult.Model);
+            Assert.Equal(Guid.Empty, model.Id);
+            Assert.Equal(characteristicId, model.VirusCharacteristicId);
         }
+
         [Fact]
-        public async Task EditPost_InvalidModelState_ReturnsViewWithModel()
+        public async Task CreatePost_InvalidModelState_ReturnsViewWithModel()
         {
             // Arrange
             var model = new VirusCharacteristicListEntryModel();
             _controller.ModelState.AddModelError("Name", "Name is required");
 
             // Act
-            var result = await _controller.Edit(model);
+            var result = await _controller.Create(model);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("EditVirusCharacteristicEntry", viewResult.ViewName);
+            Assert.Equal("CreateVirusCharacteristicEntry", viewResult.ViewName);
             Assert.Equal(model, viewResult.Model);
         }
 
         [Fact]
-        public async Task EditPost_ValidModel_UpdatesEntryAndRedirects()
+        public async Task CreatePost_ValidModel_AddsEntryAndRedirects()
         {
             // Arrange
-            var model = new VirusCharacteristicListEntryModel { Id = Guid.NewGuid(), VirusCharacteristicId = Guid.NewGuid(), Name = "Test" };
+            var model = new VirusCharacteristicListEntryModel { Id = Guid.Empty, VirusCharacteristicId = Guid.NewGuid(), Name = "Test" };
             var dto = new VirusCharacteristicListEntryDTO();
             _mapper.Map<VirusCharacteristicListEntryDTO>(model).Returns(dto);
 
             // Act
-            var result = await _controller.Edit(model);
+            var result = await _controller.Create(model);
 
             // Assert
-            await _listEntryService.Received(1).UpdateEntryAsync(dto);
+            await _listEntryService.Received(1).AddEntryAsync(dto);
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("ListEntries", redirect.ActionName);
             Assert.NotNull(redirect.RouteValues);

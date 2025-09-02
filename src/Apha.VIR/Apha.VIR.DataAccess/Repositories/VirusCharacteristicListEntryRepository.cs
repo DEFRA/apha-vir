@@ -14,8 +14,8 @@ public class VirusCharacteristicListEntryRepository : IVirusCharacteristicListEn
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
-
-    public async Task<IEnumerable<VirusCharacteristicListEntry>> GetVirusCharacteristicListEntryByVirusCharacteristic(Guid virusCharacteristicId)
+    
+    public async Task<IEnumerable<VirusCharacteristicListEntry>> GetEntriesByCharacteristicIdAsync(Guid virusCharacteristicId)
     {
         return await _context.Set<VirusCharacteristicListEntry>()
               .FromSqlInterpolated($"EXEC spVirusCharacteristicListEntryGetById @VirusCharacteristicId = {virusCharacteristicId}").ToListAsync();

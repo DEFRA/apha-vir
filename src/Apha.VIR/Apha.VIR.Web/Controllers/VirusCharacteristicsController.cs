@@ -25,10 +25,9 @@ namespace Apha.VIR.Web.Controllers
 
         public IActionResult Index()
         {
-            return View("VirusCharacteristicManagement");
+            return View("VirusCharacteristic");
         }
-
-        // GET /VirusCharacteristics/ListEntries?characteristic={guid}
+       
         [HttpGet]
         public async Task<IActionResult> ListEntries(Guid? characteristic, int pageNo = 1, int pageSize = 10)
         {
@@ -87,7 +86,7 @@ namespace Apha.VIR.Web.Controllers
                 }
             };
 
-            return PartialView("_VirusCharacteristicListEntriesTable", model);
+            return PartialView("_VirusCharacteristicListEntry", model);
         }
 
         [HttpGet]
@@ -96,6 +95,33 @@ namespace Apha.VIR.Web.Controllers
             // redirect to virus characteristics list page
             return RedirectToAction("Index", "VirusCharacteristics");
         }
+       
+
+        [HttpGet]
+        public IActionResult Create(Guid? characteristic)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var vm = new VirusCharacteristicListEntryModel
+            {
+                Id = Guid.Empty,
+                VirusCharacteristicId = characteristic ?? Guid.Empty
+            };
+            return View("CreateVirusCharacteristicEntry", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(VirusCharacteristicListEntryModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("CreateVirusCharacteristicEntry", model);
+
+            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            await _listEntryService.AddEntryAsync(dto);
+
+            return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
+        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid? characteristic, Guid? entry)
@@ -103,46 +129,26 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (entry == null || entry == Guid.Empty)
-            {
-                // Add mode
-                var vm = new VirusCharacteristicListEntryEditViewModel
-                {
-                    Id = Guid.Empty,
-                    VirusCharacteristicId = characteristic ?? Guid.Empty
-                };
-                return View("VirusCharacteristicListEntryEdit", vm);
-            }
-            else
-            {
-                // Edit mode
-                var dto = await _listEntryService.GetEntryByIdAsync(entry.Value);
-                if (dto == null) return NotFound();
-                var vm = _mapper.Map<VirusCharacteristicListEntryEditViewModel>(dto);
-                return View("VirusCharacteristicListEntryEdit", vm);
-            }
+            var dto = (entry != null && entry != Guid.Empty)
+                ? await _listEntryService.GetEntryByIdAsync(entry.Value)
+                : null;
+
+            if (dto == null) return NotFound();
+
+            var vm = _mapper.Map<VirusCharacteristicListEntryModel>(dto);
+            return View("EditVirusCharacteristicEntry", vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(VirusCharacteristicListEntryEditViewModel model)
+        public async Task<IActionResult> Edit(VirusCharacteristicListEntryModel model)
         {
             if (!ModelState.IsValid)
-                return View("VirusCharacteristicListEntryEdit", model);
+                return View("EditVirusCharacteristicEntry", model);
 
-            if (model.Id == Guid.Empty)
-            {
-                // Add
-                var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
-                await _listEntryService.AddEntryAsync(dto);
-            }
-            else
-            {
-                // Edit
-                var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
-                await _listEntryService.UpdateEntryAsync(dto);
-            }
+            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            await _listEntryService.UpdateEntryAsync(dto);
 
-            return RedirectToAction("ListEntries", "VirusCharacteristics", new { characteristic = model.VirusCharacteristicId });
+            return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
         }
 
         [HttpPost]

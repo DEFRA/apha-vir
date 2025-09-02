@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.Interfaces;
+﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;

@@ -20,7 +20,7 @@
 					<td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
 					<td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
 					<td>
-						<a asp-action="Edit" asp-route-characteristic="@Model.CharacteristicId">
+						<a asp-action="Create" asp-route-characteristic="@Model.CharacteristicId">
 							Add a new list entry
 						</a>
 					</td>
@@ -40,7 +40,7 @@
 			Edit an existing list entry by clicking on the links below.
 		</span>
 		<div id="listEntries" class="mt-3">
-			<partial name="_VirusCharacteristicListEntriesTable" for="@Model.Entries" />
+			<partial name="_VirusCharacteristicListEntry" for="@Model.Entries" />
 		</div>
 	</div>
 </div>

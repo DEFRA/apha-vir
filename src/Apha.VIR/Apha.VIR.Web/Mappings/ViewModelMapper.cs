@@ -36,8 +36,8 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetailsViewModel>().ReverseMap();
             CreateMap<SenderDTO, SenderViewModel>().ReverseMap();
             CreateMap<SubmissionDTO, SubmissionEditViewModel>().ReverseMap();
-            CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
-            CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryModel>().ReverseMap();           
+            CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();            
+            CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryModel>().ReverseMap();
         }
     }
 }

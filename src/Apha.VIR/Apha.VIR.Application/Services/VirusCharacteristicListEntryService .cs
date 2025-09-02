@@ -20,7 +20,7 @@ namespace Apha.VIR.Application.Services
 
         public async Task<IEnumerable<VirusCharacteristicListEntryDTO>> GetEntriesByCharacteristicIdAsync(Guid virusCharacteristicId)
         {
-            var entities = await _repository.GetVirusCharacteristicListEntryByVirusCharacteristic(virusCharacteristicId);
+            var entities = await _repository.GetEntriesByCharacteristicIdAsync(virusCharacteristicId);
             return _mapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities);
         }
 

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
+using Apha.VIR.Core.Pagination;
 using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -24,6 +21,13 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
             _mockRepository = Substitute.For<IVirusCharacteristicListEntryRepository>();
             _mockMapper = Substitute.For<IMapper>();
             _service = new VirusCharacteristicListEntryService(_mockRepository, _mockMapper);
+        }
+
+        [Fact]
+        public void Constructor_RepositoryNull_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => new VirusCharacteristicListEntryService(null!, _mockMapper));
         }
 
         [Fact]
@@ -71,16 +75,28 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
         }
     };
 
-            _mockRepository.GetVirusCharacteristicListEntryByVirusCharacteristic(characteristicId).Returns(entities);
+            _mockRepository.GetEntriesByCharacteristicIdAsync(characteristicId).Returns(entities);
             _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities).Returns(dtos);
 
             // Act
             var result = await _service.GetEntriesByCharacteristicIdAsync(characteristicId);
 
             // Assert
-            await _mockRepository.Received(1).GetVirusCharacteristicListEntryByVirusCharacteristic(characteristicId);
+            await _mockRepository.Received(1).GetEntriesByCharacteristicIdAsync(characteristicId);
             _mockMapper.Received(1).Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities);
             Assert.Equal(dtos, result);
+        }
+
+        [Fact]
+        public async Task GetVirusCharacteristicListEntries_RepositoryThrows_PropagatesException()
+        {
+            var characteristicId = Guid.NewGuid();
+            var pageNo = 1;
+            var pageSize = 10;
+            _mockRepository.GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize).Throws(new Exception("Test exception"));
+
+            await Assert.ThrowsAsync<Exception>(() => _service.GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize));
+            await _mockRepository.Received(1).GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize);
         }
 
         [Fact]
@@ -91,14 +107,14 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
             var entities = new List<VirusCharacteristicListEntry>();
             var dtos = new List<VirusCharacteristicListEntryDTO>();
 
-            _mockRepository.GetVirusCharacteristicListEntryByVirusCharacteristic(characteristicId).Returns(entities);
+            _mockRepository.GetEntriesByCharacteristicIdAsync(characteristicId).Returns(entities);
             _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities).Returns(dtos);
 
             // Act
             var result = await _service.GetEntriesByCharacteristicIdAsync(characteristicId);
 
             // Assert
-            await _mockRepository.Received(1).GetVirusCharacteristicListEntryByVirusCharacteristic(characteristicId);
+            await _mockRepository.Received(1).GetEntriesByCharacteristicIdAsync(characteristicId);
             _mockMapper.Received(1).Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities);
             Assert.Empty(result);
         }
@@ -108,12 +124,48 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
         {
             // Arrange
             var characteristicId = Guid.NewGuid();
-            _mockRepository.GetVirusCharacteristicListEntryByVirusCharacteristic(characteristicId)
+            _mockRepository.GetEntriesByCharacteristicIdAsync(characteristicId)
                 .Throws(new Exception("Test exception"));
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _service.GetEntriesByCharacteristicIdAsync(characteristicId));
-            await _mockRepository.Received(1).GetVirusCharacteristicListEntryByVirusCharacteristic(characteristicId);
+            await _mockRepository.Received(1).GetEntriesByCharacteristicIdAsync(characteristicId);
+        }
+        [Fact]
+        public async Task GetVirusCharacteristicListEntries_ReturnsMappedPaginatedResult()
+        {
+            // Arrange
+            var characteristicId = Guid.NewGuid();
+            int pageNo = 1;
+            int pageSize = 10;
+
+            var entryId = Guid.NewGuid();
+            var entries = new List<VirusCharacteristicListEntry>
+    {
+        new VirusCharacteristicListEntry { Id = entryId, VirusCharacteristicId = characteristicId, Name = "Entry1" }
+    };
+
+            var mockPaginatedResult = new PagedData<VirusCharacteristicListEntry>(entries, 1);
+
+            var expectedPaginatedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            {
+                data = new List<VirusCharacteristicListEntryDTO>
+        {
+            new VirusCharacteristicListEntryDTO { Id = entryId, VirusCharacteristicId = characteristicId, Name = "Entry1" }
+        },
+                TotalCount = 1
+            };
+
+            _mockRepository.GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize).Returns(mockPaginatedResult);
+            _mockMapper.Map<PaginatedResult<VirusCharacteristicListEntryDTO>>(Arg.Any<PagedData<VirusCharacteristicListEntry>>()).Returns(expectedPaginatedResult);
+
+            // Act
+            var result = await _service.GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize);
+
+            // Assert
+            await _mockRepository.Received(1).GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize);
+            _mockMapper.Received(1).Map<PaginatedResult<VirusCharacteristicListEntryDTO>>(Arg.Any<PagedData<VirusCharacteristicListEntry>>());
+            Assert.Equal(expectedPaginatedResult, result);
         }
 
         [Fact]
