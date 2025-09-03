@@ -1,5 +1,26 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using Apha.VIR.Web.Models.Lookup
+@model List<LookupViewModel>
+
+<p>Please select the lookup list you wish to manage</p>
+<div id="searchResults">
+	<table id="lookupTable" class="lookuptable auto-width-table" style="border-color:gray">
+	<thead>
+		<tr class="isolatereport-header">
+			<th>Lookup List Name</th>
+			<th>&nbsp</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.Name</td>
+				<td>
+						<a asp-action="LookupList" asp-route-lookupid="@item.Id"
+					    class="btn btn-primary">Edit</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+</div>

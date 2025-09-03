@@ -1,4 +1,4 @@
-body {
+﻿body {
     background-color: #ffffff;
     color: #333333;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -597,6 +597,35 @@ body {
         color: #fff;
         font-weight: bold;
     }
+
+
+/*----- VirusCharacterstics*/
+.viruscharacteristictable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #0b2677;
+    margin-bottom: 20px;
+}
+
+    .viruscharacteristictable th, .viruscharacteristictable td {
+        border: 1px solid #0b2677;
+        padding: 6px 8px;
+        text-align: left;
+    }
+
+    .viruscharacteristictable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .viruscharacteristictable tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .viruscharacteristictable tbody tr:nth-child(even) {
+        background-color: #efefef;
+    }
 /*---- Headings ----*/
 
 h1
@@ -1003,6 +1032,102 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     text-decoration: underline;
     cursor: pointer;
 }
+
+
+.auto-width-table {
+    table-layout: auto; /* default: lets browser size based on content */
+    width: auto; /* prevent stretching */
+    border-collapse: collapse;
+}
+
+    .auto-width-table th,
+    .auto-width-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        white-space: nowrap; /* prevents wrapping → column grows to fit */
+    }
+
+
+.lookuptable {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    margin-bottom: 20px;
+}
+
+    .lookuptable th, .lookuptable td {
+        border: 1px solid gray;
+        padding: 5px 5px;
+        text-align: left;
+    }
+
+    .lookuptable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .lookuptable tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+    .lookuptable tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+.w-80 {
+    width: 80px !important;
+}
+
+.w-170 {
+    width: 170px !important;
+}
+
+.w-200 {
+    width: 200px !important;
+}
+
+.w-210 {
+    width: 210px !important;
+}
+
+.w-500 {
+    width: 500px !important;
+}
+
+.w-600 {
+    width: 600px !important;
+}
+
+.sendertable {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    margin-bottom: 20px;
+}
+
+.sendertable th, .sendertable td {
+    border: 1px solid gray;
+    padding: 5px 5px;
+    text-align: left;
+}
+
+.sendertable th {
+    background-color: #0b2677;
+    color: #fff;
+    font-weight: bold;
+}
+
+.sendertable tr:nth-child(even) {
+    background-color: #efefef;
+}
+
+.sendertable tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.w-200 {
+    width: 200px;
+}
+
 
 .isolate_characteristics-grid {
     display: grid;

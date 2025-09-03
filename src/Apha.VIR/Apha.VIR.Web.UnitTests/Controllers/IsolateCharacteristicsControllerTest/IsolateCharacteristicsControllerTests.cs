@@ -232,35 +232,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         }
 
         [Fact]
-        public async Task Edit_MixedValidAndInvalidCharacteristics_PartialUpdate()
-        {
-            // Arrange
-            var characteristics = new List<IsolateCharacteristicInfoModel>
-            {
-                 new IsolateCharacteristicInfoModel { VirusCharacteristicId = Guid.NewGuid(), CharacteristicType = "Text", CharacteristicValue = "Valid" },
-                 new IsolateCharacteristicInfoModel { VirusCharacteristicId = Guid.NewGuid(), CharacteristicType = "Numeric", CharacteristicValue = "InvalidNumber" }
-            };
-            // Updated the code to handle the nullable value type warning (CS8629) by using the null-coalescing operator.
-            var existingCharacteristics = new List<VirusCharacteristicDTO>
-            {
-                new VirusCharacteristicDTO { Id = characteristics[0].VirusCharacteristicId ?? Guid.Empty },
-                new VirusCharacteristicDTO { Id = characteristics[1].VirusCharacteristicId ?? Guid.Empty }
-            };            
-            _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(existingCharacteristics);
-            _mapper.Map<IsolateCharacteristicInfoDTO>(Arg.Any<IsolateCharacteristicInfoModel>()).Returns(new IsolateCharacteristicInfoDTO());
-
-            // Act
-            var result = await _controller.Edit(characteristics);
-
-            // Assert
-            await _isolatesService.Received(1).UpdateIsolateCharacteristicsAsync(Arg.Any<IsolateCharacteristicInfoDTO>(), Arg.Any<string>());
-            Assert.IsType<ViewResult>(result);
-            var viewResult = result as ViewResult;
-            Assert.NotNull(viewResult); // Ensure viewResult is not null
-            Assert.Equal(characteristics, viewResult!.Model); // Use null-forgiving operator to suppress warning
-        }
-
-        [Fact]
         public async Task GetDropDownList_ValidInput_ReturnsListOfSelectListItems()
         {
             // Arrange

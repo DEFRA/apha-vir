@@ -1,7 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
@@ -14,17 +12,28 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
     public class IsolateDispatchControllerTests
     {
         private readonly IIsolateDispatchService _mockIsolateDispatchService;
+        private readonly ILookupService _mockLookupService;
+        private readonly IIsolatesService _mockIsolatesService;
+        private readonly ISubmissionService _mockSubmissionService;
+        private readonly ISampleService _mockSampleService;
         private readonly IMapper _mockMapper;
         private readonly IsolateDispatchController _controller;
-        private readonly ILookupService _mockLookupService;
 
         public IsolateDispatchControllerTests()
         {
             _mockIsolateDispatchService = Substitute.For<IIsolateDispatchService>();
-            _mockMapper = Substitute.For<IMapper>();
             _mockLookupService = Substitute.For<ILookupService>();
-            _controller = new IsolateDispatchController(_mockIsolateDispatchService, _mockMapper, _mockLookupService);
+            _mockIsolatesService = Substitute.For<IIsolatesService>();
+            _mockSubmissionService = Substitute.For<ISubmissionService>();
+            _mockSampleService = Substitute.For<ISampleService>();
+            _mockMapper = Substitute.For<IMapper>();
 
+            _controller = new IsolateDispatchController(_mockIsolateDispatchService,
+                _mockLookupService,
+                _mockIsolatesService,
+                _mockSubmissionService,
+                _mockSampleService,
+                _mockMapper);
         }
 
         [Fact]
@@ -199,11 +208,19 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         [InlineData("AVN001", "11111111-1111-1111-1111-111111111111", "00000000-0000-0000-0000-000000000000")]
         public async Task Edit_InvalidInput_ReturnsBadRequest(string avNumber, string dispatchId, string dispatchIsolateId)
         {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "some error");
+
             // Act
             var result = await _controller.Edit(avNumber, Guid.Parse(dispatchId), Guid.Parse(dispatchIsolateId));
 
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
+            // Assert          
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.NotNull(badRequestResult.Value);
+
+            // Optionally verify that ModelState was passed back
+            var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
+            Assert.True(modelState.ContainsKey("error"));
         }
 
         [Fact]
@@ -286,23 +303,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             await _mockLookupService.Received(1).GetAllWorkGroupsAsync();
             await _mockLookupService.Received(1).GetAllStaffAsync();
             _mockMapper.Received(1).Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDTO);
-        }
-
-        [Fact]
-        public async Task Edit_ModelStateInvalid_ReturnsViewResult()
-        {
-            // Arrange
-            _controller.ModelState.AddModelError("Error", "Model State is invalid");
-
-            // Act
-            var result = await _controller.Edit("AVN001", Guid.NewGuid(), Guid.NewGuid());
-
-            // Assert
-            Assert.IsType<ViewResult>(result);
-        }
-
-
-
+        }       
 
         [Fact]
         public async Task Edit_ValidInput_SuccessfulUpdateAndRedirect()

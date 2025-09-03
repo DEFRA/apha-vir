@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks.Dataflow;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using AutoMapper;
-using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,14 +13,25 @@ namespace Apha.VIR.Web.Controllers
     public class IsolateDispatchController : Controller
     {
         private readonly IIsolateDispatchService _isolateDispatchService;
-        private readonly IMapper _mapper;
         private readonly ILookupService _lookupService;
+        private readonly IIsolatesService _isolatesService;
+        private readonly ISubmissionService _submissionService;
+        private readonly ISampleService _sampleService;
+        private readonly IMapper _mapper;
 
-        public IsolateDispatchController(IIsolateDispatchService isolateDispatchService, IMapper mapper, ILookupService lookupService)
+        public IsolateDispatchController(IIsolateDispatchService isolateDispatchService,
+            ILookupService lookupService,
+            IIsolatesService isolatesService,
+            ISubmissionService submissionService,
+            ISampleService sampleService,
+            IMapper mapper)
         {
             _isolateDispatchService = isolateDispatchService;
-            _mapper = mapper;
             _lookupService = lookupService;
+            _isolatesService = isolatesService;
+            _submissionService = submissionService;
+            _sampleService = sampleService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -80,6 +90,12 @@ namespace Apha.VIR.Web.Controllers
             }
             dispatchCreateModel.WarningMessages = ValidatDispatchForPageLoad(isolateInfo?.NoOfAliquots ?? 0, isolateInfo!.IsMixedIsolate, isolateInfo.ValidToIssue ?? false, ref isBtnDisabled);
             dispatchCreateModel.IsDispatchDisabled = isBtnDisabled;
+
+            if (!await CheckFieldsVisibility(AVNumber, IsolateId))
+            {
+                dispatchCreateModel.IsFieldInVisible = true;
+            }
+
             dispatchCreateModel.Source = Source;
             if (!ModelState.IsValid)
             {
@@ -117,7 +133,7 @@ namespace Apha.VIR.Web.Controllers
             return fromSource switch
             {
                 "search" => RedirectToAction("Confirmation", "IsolateDispatch", new { Isolate = dispatchRecord.DispatchIsolateId }),
-                "summary" => RedirectToAction("Index", "Summary"),
+                "summary" => RedirectToAction("Index", "SubmissionSamples"),
                 _ => RedirectToAction("Create", "IsolateDispatch")
             };
         }
@@ -125,19 +141,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string AVNumber, Guid DispatchId, Guid DispatchIsolateId)
         {
-
-            if (DispatchId == Guid.Empty)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid Dispatch ID.");
-            }
-
-            if (DispatchIsolateId == Guid.Empty)
-            {
-                return BadRequest("Invalid Dispatch Isolate ID.");
-            }
-            if (string.IsNullOrWhiteSpace(AVNumber))
-            {
-                return BadRequest("AVNumber cannot be empty.");
+                ModelState.AddModelError("", "Invalid parameters.");
+                return BadRequest(ModelState);
             }
 
             string recepientLocation;
@@ -171,6 +178,11 @@ namespace Apha.VIR.Web.Controllers
             model.DispatchId = DispatchId;
             model.RecipientLocation = recepientLocation;
 
+            if (!await CheckFieldsVisibility(AVNumber, DispatchIsolateId))
+            {
+                model.IsFieldInVisible = true;
+            }
+
             return View(model);
         }
 
@@ -178,7 +190,6 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IsolateDispatchEditViewModel model)
         {
-
             ModelState.Remove(nameof(model.DispatchedByList));
             ModelState.Remove(nameof(model.ViabilityList));
             ModelState.Remove(nameof(model.RecipientList));
@@ -334,6 +345,23 @@ namespace Apha.VIR.Web.Controllers
         {
             var dispatchedByLookup = await _lookupService.GetAllStaffAsync();
             return dispatchedByLookup.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
+        }
+
+        private async Task<bool> CheckFieldsVisibility(string AVNumber, Guid IsolateId)
+        {
+            bool isFieldVisible = true;
+            var submission = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
+            var isolate = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(AVNumber, IsolateId);
+            if (submission != null && isolate != null)
+            {
+                var samplesDto = _sampleService.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
+                var sample = samplesDto.Result.FirstOrDefault(s => s.SampleId == isolate.IsolateSampleId);
+                if (sample?.SampleTypeName == "FTA Cards" || sample?.SampleTypeName == "RNA")
+                {
+                    isFieldVisible = false;
+                }
+            }
+            return isFieldVisible;
         }
     }
 }

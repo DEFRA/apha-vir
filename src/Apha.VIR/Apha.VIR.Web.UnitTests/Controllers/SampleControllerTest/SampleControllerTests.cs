@@ -93,7 +93,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var sampleDto = new SampleDTO { SampleId = sampleId };
             var viewModel = new SampleViewModel
             {
-                SampleId = sampleId,               
+                SampleId = sampleId,
                 SampleTypeList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
                 HostSpeciesList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
                 HostBreedList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), // Initialize to avoid null
@@ -172,13 +172,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
 
             // Assert
             Assert.IsType<ViewResult>(result);
-            var viewResult = (ViewResult)result;           
+            var viewResult = (ViewResult)result;
 
             // Fix for CS8600 and CS8602: Ensure viewResult.Model is not null before casting
             Assert.NotNull(viewResult.Model);
             var viewModel = (SampleViewModel)viewResult.Model;
 
-            Assert.Equal(model, viewModel);            
+            Assert.Equal(model, viewModel);
             await _lookupService.Received(1).GetAllSampleTypesAsync();
             await _lookupService.Received(1).GetAllHostSpeciesAsync();
             await _lookupService.Received(1).GetAllHostPurposesAsync();
@@ -205,7 +205,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             Assert.NotNull(redirectResult.RouteValues); // Ensure RouteValues is not null
             Assert.Equal("TEST123", redirectResult.RouteValues["AVNumber"]);
             Assert.Equal("Index", redirectResult.ActionName);
-            Assert.Equal("SubmissionSamples", redirectResult.ControllerName);           
+            Assert.Equal("SubmissionSamples", redirectResult.ControllerName);
         }
 
         [Fact]
@@ -315,7 +315,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             {
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed", ParentName = "Test Species", AlternateName = "Test Alt", Active = true, Sms = true, Smscode = "123" }
             };
-            _lookupService.GetAllHostBreedsAsync().Returns(latinBreedDtos);
+            _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
 
             // Act
             var result = await _controller.GetLatinBreadList();
@@ -323,7 +323,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             // Assert
             var viewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_LatinBreed", viewResult.ViewName);
-            var model = Assert.IsAssignableFrom<List<LatinBreed>>(viewResult.Model);
+            var model = Assert.IsAssignableFrom<List<LatinBreedModel>>(viewResult.Model);
             Assert.Single(model);
         }
 
@@ -349,14 +349,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 1", ParentName = "Test Species 1", AlternateName = "Test Alt 1", Active = true, Sms = true, Smscode = "123" },
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 2", ParentName = "Test Species 2", AlternateName = "Test Alt 2", Active = false, Sms = false, Smscode = "456" }
             };
-            _lookupService.GetAllHostBreedsAsync().Returns(latinBreedDtos);
+            _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
 
             // Act
             var result = await _controller.GetLatinBreadList();
 
             // Assert
             var viewResult = Assert.IsType<PartialViewResult>(result);
-            var model = Assert.IsAssignableFrom<List<LatinBreed>>(viewResult.Model);
+            var model = Assert.IsAssignableFrom<List<LatinBreedModel>>(viewResult.Model);
             Assert.Equal(2, model.Count);
             Assert.Equal("Test Breed 1", model[0].Name);
             Assert.Equal("Test Breed 2", model[1].Name);

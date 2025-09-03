@@ -98,7 +98,7 @@ namespace Apha.VIR.Web.Controllers
                     errors.Add(error);
                 }
             }
-            if (errors.Any())
+            if (!errors.Any())
             {
                 foreach (var characteristic in characteristics)
                 {
@@ -191,8 +191,10 @@ namespace Apha.VIR.Web.Controllers
                 return $"- Value entered for {characteristicViewModel.CharacteristicName} is not a valid number.";
             }
 
-            return ValidateNumericRange(characteristicViewModel, virusCharacteristicDTO, itemValue)
-                ?? ValidateNumericDecimalPlaces(characteristicViewModel, virusCharacteristicDTO, itemValue);
+            var rangeReturn = ValidateNumericRange(characteristicViewModel, virusCharacteristicDTO, itemValue);
+
+            return string.IsNullOrEmpty(rangeReturn)
+                ? ValidateNumericDecimalPlaces(characteristicViewModel, virusCharacteristicDTO, itemValue): rangeReturn;
         }
 
         private static string ValidateNumericRange(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO, double itemValue)

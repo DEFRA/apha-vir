@@ -36,5 +36,6 @@ namespace Apha.VIR.Web.Models
         public List<string> WarningMessages { get; set; } = new();
         public string? Source { get; set; }
         public bool IsDispatchDisabled { get; set; } = false;
+        public bool IsFieldInVisible { get; set; } = false;
     }
 }

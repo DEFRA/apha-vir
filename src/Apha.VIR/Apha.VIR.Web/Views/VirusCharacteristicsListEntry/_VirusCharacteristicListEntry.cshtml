@@ -1,0 +1,38 @@
+﻿@using Apha.VIR.Web.Models.VirusCharacteristic
+@model VirusCharacteristicListEntryViewModel
+
+@if (Model == null || !Model.VirusCharacteristics.Any())
+{
+    <div class="alert alert-info">No entries recorded for this virus characteristic at this time.</div>
+}
+else
+{
+    <table class="viruscharacteristictable" style="width: 180px;">
+        <thead>
+            <tr class="viruscharacteristictable-header">
+                <th>List Entry Text</th>
+                <th style="padding:5px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model.VirusCharacteristics)
+            {
+                <tr>
+                    <td>@entry.Name</td>
+                    <td>
+                        <a asp-controller="VirusCharacteristicsListEntry" asp-action="Edit"
+                           asp-route-Characteristic="@entry.VirusCharacteristicId"
+                           asp-route-Entry="@entry.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="2">
+                    <div id="girdPagination" class="pagination" style="text-align:left">
+                        @await Component.InvokeAsync("Pagination", Model.Pagination)
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
