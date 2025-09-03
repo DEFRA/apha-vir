@@ -59,5 +59,6 @@ namespace Apha.VIR.Web.Models
         [Display(Name = "Last Modified")]
         public byte[]? LastModified { get; set; }
         public string? RecipientLocation { get; set; }
+        public bool IsFieldInVisible { get; set; } = false;
     }
 }
