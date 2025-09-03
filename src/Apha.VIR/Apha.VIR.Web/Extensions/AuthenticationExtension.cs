@@ -76,4 +76,4 @@ namespace Apha.VIR.Web.Extensions
             throw context.Failure ?? new Exception("Unknown authentication error.");
         }
     }
- }
+}

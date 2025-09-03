@@ -8,6 +8,7 @@
     <input asp-for="DispatchIsolateId" type="hidden" />
     <input asp-for="LastModified" type="hidden" />
     <input asp-for="DispatchId" type="hidden" />
+    <input asp-for="IsFieldInVisible" type="hidden" />
     <table cellpadding="5px">
         <thead class="sr-only"><tr><th scope="col"></th></tr></thead>
         <tr>
@@ -23,10 +24,10 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
                 <span>@Model.NoOfAliquots</span>
-                <input type="hidden" asp-for="NoOfAliquots" />
+                <input type="hidden" asp-for="NoOfAliquots" autofocus />
             </td>
         </tr>
-        <tr>
+        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
             <td>Nomenclature</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
@@ -42,7 +43,7 @@
                 <input type="hidden" asp-for="ValidToIssue" />
             </td>
         </tr>
-        <tr>
+        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
             <td>Viability</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
@@ -60,7 +61,7 @@
                 <span asp-validation-for="NoOfAliquotsToBeDispatched"  class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
             </td>
         </tr>
-        <tr>
+        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
             <td>Passage&nbsp;Number&nbsp;*</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
@@ -96,8 +97,6 @@
             <td>
                 <div id="recipientName">
                     <input asp-for="RecipientName" style="width: 200px;" maxlength="50" />
-
-
                 </div>
             </td>
         </tr>
@@ -121,13 +120,10 @@
         <tr>
             <td>Dispatched&nbsp;Date&nbsp;*</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
-            <td>
-                @*                 <input asp-for="DispatchedDate" type="date" style="width: 200px;" />
-                <span asp-validation-for="DispatchedDate" class="text-danger"></span> *@
-
-                <input asp-for="DispatchedDate" />
-         
+            <td>          
+                <input asp-for="DispatchedDate" />         
                 <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+                <span asp-validation-for="DispatchedDate" class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
             </td>
         </tr>
         <tr>

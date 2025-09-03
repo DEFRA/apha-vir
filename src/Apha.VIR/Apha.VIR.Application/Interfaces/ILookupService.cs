@@ -1,15 +1,20 @@
 ﻿using Apha.VIR.Application.DTOs;
-using Apha.VIR.Core.Entities;
+using Apha.VIR.Application.Pagination;
 
 namespace Apha.VIR.Application.Interfaces
 {
     public interface ILookupService
     {
         Task<IEnumerable<LookupDTO>> GetAllLookupsAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId);
-        Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
-        Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
-        Task DeleeLookupEntryAsync(Guid LookupId, LookupItemDTO Item);
+        Task<LookupDTO> GetLookupByIdAsync(Guid lookupId);
+        Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
+        Task<PaginatedResult<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize);
+        Task<IEnumerable<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId);
+        Task<IEnumerable<LookupItemDTO>> GetLookupItemParentListAsync(Guid lookupId);
+        Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId);
+        Task InsertLookupItemAsync(Guid LookupId, LookupItemDTO Item);
+        Task UpdateLookupItemAsync(Guid LookupId, LookupItemDTO Item);
+        Task DeleteLookupItemAsync(Guid LookupId, LookupItemDTO Item);
         Task<IEnumerable<LookupItemDTO>> GetAllVirusFamiliesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(Guid? virusFamily);
@@ -25,5 +30,9 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSubmittingLabAsync();
         Task<IEnumerable<LookupItemDTO>> GetAllSubmissionReasonAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllIsolationMethodsAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllFreezerAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllTraysAsync();
+        Task<IEnumerable<LookupItemDTO>> GetAllTraysByParentAsync(Guid? freezer);
     }
 }

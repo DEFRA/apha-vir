@@ -1,7 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
@@ -12,17 +10,29 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 {
     public class IsolateDispatchControllerCreateTests
     {
-        private readonly IIsolateDispatchService _mockIsolateDispatchService;
-        private readonly IMapper _mockMapper;
+        private readonly IIsolateDispatchService _mockIsolateDispatchService;        
         private readonly ILookupService _mockLookupService;
+        private readonly IIsolatesService _mockIsolatesService;
+        private readonly ISubmissionService _mockSubmissionService;
+        private readonly ISampleService _mockSampleService;
+        private readonly IMapper _mockMapper;
         private readonly IsolateDispatchController _controller;
 
         public IsolateDispatchControllerCreateTests()
         {
             _mockIsolateDispatchService = Substitute.For<IIsolateDispatchService>();
-            _mockMapper = Substitute.For<IMapper>();
             _mockLookupService = Substitute.For<ILookupService>();
-            _controller = new IsolateDispatchController(_mockIsolateDispatchService, _mockMapper, _mockLookupService);
+            _mockIsolatesService = Substitute.For<IIsolatesService>();
+            _mockSubmissionService = Substitute.For<ISubmissionService>();
+            _mockSampleService = Substitute.For<ISampleService>();            
+            _mockMapper = Substitute.For<IMapper>();
+            
+            _controller = new IsolateDispatchController(_mockIsolateDispatchService, 
+                _mockLookupService, 
+                _mockIsolatesService, 
+                _mockSubmissionService, 
+                _mockSampleService, 
+                _mockMapper);
         }
 
         [Fact]
@@ -125,7 +135,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
         [Theory]
         [InlineData("search", "IsolateDispatch", "Confirmation")]
-        [InlineData("summary", "Summary", "Index")]
+        [InlineData("summary", "SubmissionSamples", "Index")]
         [InlineData("other", "IsolateDispatch", "Create")]
         public async Task Create_DifferentSources_RedirectsCorrectly(string source, string expectedController, string expectedAction)
         {
@@ -273,7 +283,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
         [Theory]
         [InlineData("search", "Confirmation", "IsolateDispatch")]
-        [InlineData("summary", "Index", "Summary")]
+        [InlineData("summary", "Index", "SubmissionSamples")]
         [InlineData("other", "Create", "IsolateDispatch")]
         public async Task Create_ValidModel_ReturnsCorrectRedirectBasedOnSource(string source, string expectedAction, string expectedController)
         {

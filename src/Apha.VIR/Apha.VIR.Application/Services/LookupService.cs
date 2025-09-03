@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
@@ -22,27 +23,59 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupDTO>>(await _lookupRepository.GetAllLookupsAsync());
         }
 
-        public async Task<IEnumerable<LookupItemDTO>> GetAllLookupEntriesAsync(Guid LookupId)
+        public async Task<LookupDTO> GetLookupByIdAsync(Guid lookupId)
         {
-            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllLookupEntriesAsync(LookupId));
+            return _mapper.Map<LookupDTO>(await _lookupRepository.GetLookupByIdAsync(lookupId));
         }
 
-        public async Task InsertLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
+        public async Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId)
         {
-            var itemData = _mapper.Map<LookupItem>(Item);
-            await _lookupRepository.InsertLookupEntryAsync(LookupId, itemData);
+            return _mapper.Map<LookupItemDTO>(
+                await _lookupRepository.GetLookupItemAsync(lookupId, lookupItemId));
         }
 
-        public async Task UpdateLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
+        public async Task<PaginatedResult<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize)
         {
-            var itemData = _mapper.Map<LookupItem>(Item);
-            await _lookupRepository.UpdateLookupEntryAsync(LookupId, itemData);
+            return _mapper.Map<PaginatedResult<LookupItemDTO>>(
+                await _lookupRepository.GetAllLookupItemsAsync(lookupId, pageNo, pageSize));
         }
 
-        public async Task DeleeLookupEntryAsync(Guid LookupId, LookupItemDTO Item)
+        public async Task<IEnumerable<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId)
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(
+                await _lookupRepository.GetAllLookupItemsAsync(lookupId));
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetLookupItemParentListAsync(Guid lookupId)
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(
+                await _lookupRepository.GetLookupItemParentListAsync(lookupId));
+        }
+
+        public async Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId)
+        {
+            return await _lookupRepository.IsLookupItemInUseAsync(lookupId, lookupItemId);
+        }
+
+        public async Task InsertLookupItemAsync(Guid LookupId, LookupItemDTO Item)
         {
             var itemData = _mapper.Map<LookupItem>(Item);
-            await _lookupRepository.DeleteLookupEntryAsync(LookupId, itemData);
+
+            await _lookupRepository.InsertLookupItemAsync(LookupId, itemData);
+        }
+
+        public async Task UpdateLookupItemAsync(Guid LookupId, LookupItemDTO Item)
+        {
+            var itemData = _mapper.Map<LookupItem>(Item);
+
+            await _lookupRepository.UpdateLookupItemAsync(LookupId, itemData);
+        }
+
+        public async Task DeleteLookupItemAsync(Guid LookupId, LookupItemDTO Item)
+        {
+            var itemData = _mapper.Map<LookupItem>(Item);
+
+            await _lookupRepository.DeleteLookupItemAsync(LookupId, itemData);
         }
 
         public async Task<IEnumerable<LookupItemDTO>> GetAllVirusFamiliesAsync()
@@ -80,14 +113,14 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostBreedsAltNameAsync());
         }
 
-        public async Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync()
-        {
-            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllCountriesAsync());
-        }
-
         public async Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync()
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllHostPurposesAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllCountriesAsync());
         }
 
         public async Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync()
@@ -118,6 +151,26 @@ namespace Apha.VIR.Application.Services
         public async Task<IEnumerable<LookupItemDTO>> GetAllSubmissionReasonAsync()
         {
             return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllSubmissionReasonAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllIsolationMethodsAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllIsolationMethodsAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllFreezerAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllFreezerAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllTraysAsync()
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllTraysAsync());
+        }
+
+        public async Task<IEnumerable<LookupItemDTO>> GetAllTraysByParentAsync(Guid? freezer)
+        {
+            return _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllTraysByParentAsync(freezer));
         }
     }
 }
