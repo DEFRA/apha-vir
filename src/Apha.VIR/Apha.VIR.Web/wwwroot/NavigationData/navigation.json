@@ -86,7 +86,7 @@
                 "children": [
                     {
                         "title": "Isolate Dispatch Report Page",
-                        "url": "/IsolateDispatchReport",
+                        "url": "/Reports/IsolateDispatch",
                         "description": "",
                         "children": []
                     },
@@ -112,17 +112,23 @@
             },
             {
                 "title": "Look-up Lists",
-                "url": "/LookupLists",
+                "url": "/Lookup",
                 "description": "Manage look-up lists",
                 "children": [
                     {
                         "title": "Look-up List Entries",
-                        "url": "/LookupListEntries",
+                        "url": "/Lookup/LookupList",
                         "description": "Manage look-up list entries",
                         "children": [
                             {
                                 "title": "Modify Look-up List Entry",
-                                "url": "/LookupListEntryEdit",
+                                "url": "/Lookup/Create",
+                                "description": "Edit look-up list entry",
+                                "children": []
+                            },
+                            {
+                                "title": "Modify Look-up List Entry",
+                                "url": "/Lookup/Edit",
                                 "description": "Edit look-up list entry",
                                 "children": []
                             }
@@ -171,7 +177,7 @@
             },
             {
                 "title": "Sender Management",
-                "url": "/SenderManagement",
+                "url": "/Sender",
                 "description": "Manages list of senders",
                 "children": []
             },
@@ -217,12 +223,12 @@
             },
             {
                 "title": "Search Audit Log",
-                "url": "/SearchAuditLog",
+                "url": "/AuditLog",
                 "description": "Search Audit Log",
                 "children": [
                     {
                         "title": "Log Isolate Details",
-                        "url": "/LogIsolateDetails",
+                        "url": "/IsolateLog",
                         "description": "Log Isolate Details",
                         "children": []
                     }

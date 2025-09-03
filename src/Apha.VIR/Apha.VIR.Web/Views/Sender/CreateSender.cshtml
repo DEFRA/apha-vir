@@ -1,0 +1,36 @@
+﻿@model SenderViewModel
+
+<h2>Add New Sender</h2>
+<br/>
+
+<form asp-action="Create" method="post">
+    <div class="form-group d-flex align-items-center mb-3">
+        <label for="SenderName" class="form-control-label" style="width: 150px;">Sender</label>
+        <input asp-for="SenderName" class="form-control" style="width: 300px;" />
+        <br /><span asp-validation-for="SenderName" class="Validation" style="display: block;"></span>
+    </div>
+
+    <div class="form-group d-flex align-items-center mb-3">
+        <label for="SenderOrganisation" class="form-control-label" style="width: 150px;">Sender Organisation</label>
+        <textarea asp-for="SenderOrganisation" class="form-control" rows="3" style="width: 300px;" maxlength="200"></textarea>
+        <span asp-validation-for="SenderOrganisation" class="text-danger d-block"></span>
+    </div>
+    <div class="form-group d-flex align-items-center mb-3">
+        <label for="SenderAddress" class="form-control-label" style="width: 150px;">Sender Address</label>
+        <textarea asp-for="SenderAddress" class="form-control" rows="5" style="width: 300px;"></textarea>
+        <br /><span asp-validation-for="SenderAddress" class="Validation"></span>
+    </div>
+    <div class="form-group d-flex align-items-center mb-3">
+        <label for="Country" class="form-control-label" style="width: 150px;">Country</label>
+        <select asp-for="Country" asp-items="@Model.CountryList" class="form-control" style="width: 300px;">
+            <option value="">Select a country</option>
+        </select>
+        <span asp-validation-for="Country" class="Validation"></span>
+    </div>
+    <div class="form-group d-flex align-items-lg-end mb-3">
+        <img src="Images\spacer.gif" width="300" height="5" alt="" />
+        <button type="submit" class="btn-as-link me-3">Insert</button>
+        <img src="Images\spacer.gif" width="10" height="5" alt="" />
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

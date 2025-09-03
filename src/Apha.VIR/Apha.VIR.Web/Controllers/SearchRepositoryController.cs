@@ -204,7 +204,7 @@ namespace Apha.VIR.Web.Controllers
             }
             using (var workbook = new XLWorkbook())
             {
-                string fileName = $"VIR SearchResults {DateTime.Today.ToString("dMMMMyyyy")}";
+                string fileName = $"VIR SearchResults {DateTime.Today.ToString("dMMMyyyy")}";
                 var worksheet = workbook.Worksheets.Add(fileName);
                 var currentRow = 1;
                 // Header

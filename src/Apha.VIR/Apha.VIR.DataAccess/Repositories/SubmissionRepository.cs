@@ -77,6 +77,7 @@ public class SubmissionRepository : ISubmissionRepository
                 SamplingLocationPremises = reader["SamplingLocationPremises"] == DBNull.Value ? null : reader["SamplingLocationPremises"].ToString(),
                 NumberOfSamples = (int)reader["NumberOfSamples"],
                 LastModified = (byte[])reader["LastModified"],
+                CountryOfOriginName = reader["CountryOfOriginName"].ToString()
             };
         }
         return submission;

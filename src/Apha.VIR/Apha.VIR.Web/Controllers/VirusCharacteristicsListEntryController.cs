@@ -27,7 +27,7 @@ namespace Apha.VIR.Web.Controllers
         {
             return View("VirusCharacteristic");
         }
-       
+
         [HttpGet]
         public async Task<IActionResult> ListEntries(Guid? characteristic, int pageNo = 1, int pageSize = 10)
         {
@@ -95,7 +95,7 @@ namespace Apha.VIR.Web.Controllers
             // redirect to virus characteristics list page
             return RedirectToAction("Index", "VirusCharacteristics");
         }
-       
+
 
         [HttpGet]
         public IActionResult Create(Guid? characteristic)
