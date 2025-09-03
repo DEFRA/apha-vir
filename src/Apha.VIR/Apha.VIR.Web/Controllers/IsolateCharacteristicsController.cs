@@ -67,7 +67,7 @@ namespace Apha.VIR.Web.Controllers
 
             var validationErrors = await ProcessCharacteristics(characteristics);
 
-            if (validationErrors.Any())
+            if (validationErrors.Count > 0)
             {
                 await PrepareDropDownLists(characteristics);
                 AddModelErrors(validationErrors);
@@ -98,7 +98,7 @@ namespace Apha.VIR.Web.Controllers
                     errors.Add(error);
                 }
             }
-            if (!errors.Any())
+            if (errors.Count == 0)
             {
                 foreach (var characteristic in characteristics)
                 {
@@ -194,7 +194,7 @@ namespace Apha.VIR.Web.Controllers
             var rangeReturn = ValidateNumericRange(characteristicViewModel, virusCharacteristicDTO, itemValue);
 
             return string.IsNullOrEmpty(rangeReturn)
-                ? ValidateNumericDecimalPlaces(characteristicViewModel, virusCharacteristicDTO, itemValue): rangeReturn;
+                ? ValidateNumericDecimalPlaces(characteristicViewModel, virusCharacteristicDTO): rangeReturn;
         }
 
         private static string ValidateNumericRange(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO, double itemValue)
@@ -212,7 +212,7 @@ namespace Apha.VIR.Web.Controllers
             return "";
         }
 
-        private static string ValidateNumericDecimalPlaces(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO, double itemValue)
+        private static string ValidateNumericDecimalPlaces(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
         {
             if (!virusCharacteristicDTO.DecimalPlaces.HasValue || virusCharacteristicDTO.DecimalPlaces == 0) return "";
             if (!string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue))
