@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             await _listEntryService.Received(1).DeleteEntryAsync(id, Arg.Any<byte[]>());
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("ListEntries", redirect.ActionName);
-            Assert.Equal("VirusCharacteristics", redirect.ControllerName);
+            Assert.Equal("VirusCharacteristicsListEntry", redirect.ControllerName);
 
             Assert.NotNull(redirect.RouteValues);
             Assert.Equal(characteristic, redirect.RouteValues["characteristic"]);

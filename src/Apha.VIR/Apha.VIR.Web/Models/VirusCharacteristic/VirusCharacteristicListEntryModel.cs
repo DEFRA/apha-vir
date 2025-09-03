@@ -4,10 +4,10 @@ namespace Apha.VIR.Web.Models.VirusCharacteristic
 {
     public class VirusCharacteristicListEntryModel
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [Required]
-        public Guid VirusCharacteristicId { get; set; }
+        public Guid VirusCharacteristicId { get; set; } = Guid.Empty;
 
         [Required(ErrorMessage = "Name must be entered.")]
         [StringLength(50)]

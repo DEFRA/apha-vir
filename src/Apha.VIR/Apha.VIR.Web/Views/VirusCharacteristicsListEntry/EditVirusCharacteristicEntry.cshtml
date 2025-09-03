@@ -2,7 +2,7 @@
 @model VirusCharacteristicListEntryModel
 
 <!-- Edit form -->
-<form asp-controller="VirusCharacteristics" asp-action="Edit" method="post">
+<form asp-controller="VirusCharacteristicsListEntry" asp-action="Edit" method="post">
     @Html.HiddenFor(m => m.Id)
     @Html.HiddenFor(m => m.VirusCharacteristicId)
     @Html.HiddenFor(m => m.LastModified)
@@ -17,7 +17,7 @@
         </div>
         <div style="margin-top: 12px; margin-left: 112px; width: 200px; display: flex; justify-content: flex-end; gap: 8px;">
             <button type="submit" class="btn btn-primary btn-as-link">Save</button>
-            <a asp-action="ListEntries" asp-controller="VirusCharacteristics" asp-route-characteristic="@Model.VirusCharacteristicId" class="btn btn-secondary">Cancel</a>
+            <a asp-action="ListEntries" asp-controller="VirusCharacteristicsListEntry" asp-route-characteristic="@Model.VirusCharacteristicId" class="btn btn-secondary">Cancel</a>
             @if (Model.Id != Guid.Empty)
             {
                 <button type="button" class="btn btn-danger btn-as-link"
@@ -30,7 +30,7 @@
 </form>
 @if (Model.Id != Guid.Empty)
 {
-    <form id="deleteForm" asp-controller="VirusCharacteristics" asp-action="Delete" method="post" style="display:none;">
+    <form id="deleteForm" asp-controller="VirusCharacteristicsListEntry" asp-action="Delete" method="post" style="display:none;">
         <input type="hidden" name="id" value="@Model.Id" />
         <input type="hidden" name="characteristic" value="@Model.VirusCharacteristicId" />
         <input type="hidden" name="lastModified" value="@Convert.ToBase64String(Model.LastModified ?? new byte[0])" />

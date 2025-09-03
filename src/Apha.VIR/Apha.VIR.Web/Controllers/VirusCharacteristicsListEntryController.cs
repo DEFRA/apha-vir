@@ -93,7 +93,7 @@ namespace Apha.VIR.Web.Controllers
         public IActionResult Back()
         {
             // redirect to virus characteristics list page
-            return RedirectToAction("Index", "VirusCharacteristics");
+            return RedirectToAction("Index", "VirusCharacteristicsListEntry");
         }
 
 
@@ -159,7 +159,7 @@ namespace Apha.VIR.Web.Controllers
 
             var lastModifiedBytes = Convert.FromBase64String(lastModified);
             await _listEntryService.DeleteEntryAsync(id, lastModifiedBytes);
-            return RedirectToAction("ListEntries", "VirusCharacteristics", new { characteristic });
+            return RedirectToAction("ListEntries", "VirusCharacteristicsListEntry", new { characteristic });
         }
     }
 }
