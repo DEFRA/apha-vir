@@ -98,7 +98,7 @@ namespace Apha.VIR.Web.Controllers
                     errors.Add(error);
                 }
             }
-            if (errors.Count == 0)
+            if (errors.Any())
             {
                 foreach (var characteristic in characteristics)
                 {
@@ -220,70 +220,6 @@ namespace Apha.VIR.Web.Controllers
                     return "";
             }
             return $"- Value entered for {characteristicViewModel.CharacteristicName} does not include the required number of decimal places (Decimal Places: {virusCharacteristicDTO.DecimalPlaces}).";
-        }
-
-
-        //public static string ValidateCharacteristic(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
-        //{
-        //    if (characteristicViewModel.VirusCharacteristicId == Guid.Empty)
-        //    {
-        //        return "- Id not specified for this item.";
-        //    }
-
-        //    if (virusCharacteristicDTO == null)
-        //    {
-        //        return "- Item does not exist.";
-        //    }
-
-        //    switch (characteristicViewModel.CharacteristicType)
-        //    {
-        //        case "Text":
-        //            if (!string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue) &&
-        //                characteristicViewModel.CharacteristicValue.Length > virusCharacteristicDTO.Length)
-        //            {
-        //                return "- Value entered for " + characteristicViewModel.CharacteristicName + " exceeds maximum length requirement (Maximum Length: " + virusCharacteristicDTO.Length + "";
-        //            }
-        //            break;
-        //        case "Numeric":
-        //            if (!string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue))
-        //            {
-        //                if (double.TryParse(characteristicViewModel.CharacteristicValue, out double itemValue))
-        //                {
-        //                    if (virusCharacteristicDTO.MinValue.HasValue && itemValue < virusCharacteristicDTO.MinValue)
-        //                    {
-        //                        return $"- Value entered for {characteristicViewModel.CharacteristicName} is below the minimum value requirement (Range: {virusCharacteristicDTO.MinValue} to {virusCharacteristicDTO.MaxValue}).";
-        //                    }
-
-        //                    if (virusCharacteristicDTO.MaxValue.HasValue && itemValue > virusCharacteristicDTO.MaxValue)
-        //                    {
-        //                        return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds the maximum value requirement (Range: {virusCharacteristicDTO.MinValue} to {virusCharacteristicDTO.MaxValue}).";
-        //                    }
-
-        //                    if (virusCharacteristicDTO.DecimalPlaces.HasValue && virusCharacteristicDTO.DecimalPlaces != 0)
-        //                    {
-        //                        var parts = characteristicViewModel.CharacteristicValue.Split('.');
-        //                        if (parts.Length == 1 || parts[1].Length < virusCharacteristicDTO.DecimalPlaces.Value)
-        //                        {
-        //                            return $"- Value entered for {characteristicViewModel.CharacteristicName} does not include the required number of decimal places (Decimal Places: {virusCharacteristicDTO.DecimalPlaces}).";
-        //                        }
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    return $"- Value entered for {characteristicViewModel.CharacteristicName} is not a valid number.";
-        //                }
-        //            }
-        //            break;
-        //        case "Yes/No":
-        //            // Implement validation for Yes/No if needed
-        //            break;
-        //        case "SingleList":
-        //            // Implement validation for SingleList if needed
-        //            break;
-        //        default:
-        //            return "";
-        //    }
-        //    return "";
-        //}
+        }       
     }
 }
