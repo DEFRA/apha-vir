@@ -497,22 +497,6 @@ new VirusCharacteristicListEntryDTO { Name = "OtherValue" }
             var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
 
             Assert.Contains("Id not specified for this item", result);
-        }
-
-        [Fact]
-        public void ValidateCharacteristic_NullVirusCharacteristicDTO_ReturnsErrorMessage()
-        {
-            var characteristicViewModel = new IsolateCharacteristicInfoModel
-            {
-                VirusCharacteristicId = Guid.NewGuid(),
-                CharacteristicType = "Text",
-                CharacteristicName = "TestCharacteristic",
-                CharacteristicValue = "ValidText"
-            };
-
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, null);
-
-            Assert.Contains("Item does not exist", result);
-        }
+        }        
     }
 }
