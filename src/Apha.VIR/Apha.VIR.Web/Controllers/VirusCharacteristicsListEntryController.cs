@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
-    public class VirusCharacteristicsController : Controller
+    public class VirusCharacteristicsListEntryController : Controller
     {
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
         private readonly IMapper _mapper;
 
-        public VirusCharacteristicsController(
+        public VirusCharacteristicsListEntryController(
            IVirusCharacteristicService virusCharacteristicService,
            IVirusCharacteristicListEntryService listEntryService,
            IMapper mapper)

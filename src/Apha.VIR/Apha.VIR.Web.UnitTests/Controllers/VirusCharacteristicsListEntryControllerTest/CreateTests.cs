@@ -8,19 +8,19 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 {
-    public class CreatePostControllerTests
+    public class CreateTests
     {
         private readonly IVirusCharacteristicService _service;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
         private readonly IMapper _mapper;
-        private readonly VirusCharacteristicsController _controller;
+        private readonly VirusCharacteristicsListEntryController _controller;
 
-        public CreatePostControllerTests()
+        public CreateTests()
         {
             _service = Substitute.For<IVirusCharacteristicService>();
             _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new VirusCharacteristicsController(_service, _listEntryService, _mapper);
+            _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _mapper);
         }
         [Fact]
         public void CreateGet_InvalidModelState_ReturnsBadRequest()
@@ -29,7 +29,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var service = Substitute.For<IVirusCharacteristicService>();
             var listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             var mapper = Substitute.For<IMapper>();
-            var controller = new VirusCharacteristicsController(service, listEntryService, mapper);
+            var controller = new VirusCharacteristicsListEntryController(service, listEntryService, mapper);
             controller.ModelState.AddModelError("error", "some error");
 
             // Act
@@ -46,7 +46,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var service = Substitute.For<IVirusCharacteristicService>();
             var listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             var mapper = Substitute.For<IMapper>();
-            var controller = new VirusCharacteristicsController(service, listEntryService, mapper);
+            var controller = new VirusCharacteristicsListEntryController(service, listEntryService, mapper);
             var characteristicId = Guid.NewGuid();
 
             // Act

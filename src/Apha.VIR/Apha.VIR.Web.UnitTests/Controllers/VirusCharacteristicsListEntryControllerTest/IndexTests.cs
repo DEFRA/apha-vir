@@ -6,7 +6,7 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 {
-    public class IndexControllerTests
+    public class IndexTests
     {
         [Fact]
         public void Index_ReturnsVirusCharacteristicManagementView()
@@ -15,7 +15,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var service = Substitute.For<IVirusCharacteristicService>();
             var listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             var mapper = Substitute.For<IMapper>();
-            var controller = new VirusCharacteristicsController(service, listEntryService, mapper);
+            var controller = new VirusCharacteristicsListEntryController(service, listEntryService, mapper);
 
             // Act
             var result = controller.Index();

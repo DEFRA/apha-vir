@@ -6,19 +6,19 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 {
-    public class DeleteControllerTests
+    public class DeleteTests
     {
         private readonly IVirusCharacteristicService _service;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
         private readonly IMapper _mapper;
-        private readonly VirusCharacteristicsController _controller;
+        private readonly VirusCharacteristicsListEntryController _controller;
 
-        public DeleteControllerTests()
+        public DeleteTests()
         {
             _service = Substitute.For<IVirusCharacteristicService>();
             _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new VirusCharacteristicsController(_service, _listEntryService, _mapper);
+            _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _mapper);
         }
 
         [Fact]

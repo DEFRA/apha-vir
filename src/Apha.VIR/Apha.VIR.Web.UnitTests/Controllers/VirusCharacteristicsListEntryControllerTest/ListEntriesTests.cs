@@ -9,19 +9,19 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 {
-    public class ListEntriesControllerTests
+    public class ListEntriesTests
     {
         private readonly IVirusCharacteristicService _service;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
         private readonly IMapper _mapper;
-        private readonly VirusCharacteristicsController _controller;
+        private readonly VirusCharacteristicsListEntryController _controller;
 
-        public ListEntriesControllerTests()
+        public ListEntriesTests()
         {
             _service = Substitute.For<IVirusCharacteristicService>();
             _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new VirusCharacteristicsController(_service, _listEntryService, _mapper);
+            _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _mapper);
         }
         [Fact]
         public async Task ListEntries_Valid_ReturnsViewWithViewModel_AllPropertiesSet()
