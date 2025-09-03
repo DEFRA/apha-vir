@@ -33,13 +33,23 @@ namespace Apha.VIR.Web.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> List()
+        public IActionResult Edit()
+        {
+            try
+            {
+                return View(new VirusCharacteristicDetails());
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+        }
+        [HttpGet]
+        public IActionResult List()
         {
             VirusCharacteristicsViewModel model = new VirusCharacteristicsViewModel();
             model.list = new List<VirusCharacteristicDetails>();
-            var result = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
-            var viewModel = _mapper.Map<List<VirusCharacteristicDetails>>(result);
-            model.list = viewModel;
+            var result = _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
             return View(model);
         }
 
