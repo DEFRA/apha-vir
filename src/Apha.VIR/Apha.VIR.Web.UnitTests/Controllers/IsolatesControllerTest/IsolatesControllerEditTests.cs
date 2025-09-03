@@ -61,7 +61,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         public async Task Edit_InvalidModelState_ReturnsViewResult()
         {
             // Arrange         
-            _controller.ModelState.AddModelError("error", "some error");           
+            _controller.ModelState.AddModelError("error", "some error");
 
             // Act
             var result = await _controller.Edit("AV00-01", Guid.NewGuid(), Guid.NewGuid());

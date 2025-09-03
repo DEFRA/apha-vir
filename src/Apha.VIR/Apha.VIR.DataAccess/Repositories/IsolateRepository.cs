@@ -304,7 +304,7 @@ public class IsolateRepository : IIsolateRepository
             new SqlParameter("@Well", SqlDbType.VarChar, 10) { Value = (object ?) isolate.Well ?? DBNull.Value },
             new SqlParameter("@IsolateNomenclature", SqlDbType.VarChar, 200) { Value = (object?)isolate.IsolateNomenclature ?? DBNull.Value },
             new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)isolate.SmsreferenceNumber ?? DBNull.Value },
-            new SqlParameter("@PhylogeneticFileName", SqlDbType.VarChar, 100) { Value = (object?)isolate.PhylogeneticFileName ?? DBNull.Value }            
+            new SqlParameter("@PhylogeneticFileName", SqlDbType.VarChar, 100) { Value = (object?)isolate.PhylogeneticFileName ?? DBNull.Value }
         };
     }
 }

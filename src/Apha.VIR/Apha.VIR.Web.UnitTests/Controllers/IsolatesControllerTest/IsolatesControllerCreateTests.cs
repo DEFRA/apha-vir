@@ -115,7 +115,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 Type = Guid.NewGuid(),
                 YearOfIsolation = DateTime.Now.Year,
                 Freezer = Guid.NewGuid(),
-                Tray = Guid.NewGuid(),  
+                Tray = Guid.NewGuid(),
                 IsolateId = Guid.NewGuid()
             };
 

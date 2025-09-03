@@ -75,7 +75,7 @@ namespace Apha.VIR.Web.Controllers
             submissionModel.SubmissionReasonList = await GetSubmissionReasonDropdownList();
             submissionModel.Senders = new List<SubmissionSenderViewModel>();
             submissionModel.Organisations = new List<SubmissionSenderViewModel>();
-            
+
             return View(submissionModel);
         }
 

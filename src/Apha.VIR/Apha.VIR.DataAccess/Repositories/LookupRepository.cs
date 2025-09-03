@@ -278,15 +278,15 @@ namespace Apha.VIR.DataAccess.Repositories
             if (Lookup == "HostBreed")
             {
                 commandName = "spHostBreedGetByParent";
-            }                
+            }
             else if (Lookup == "VirusType")
             {
                 commandName = "spVirusTypeGetByParent";
-            }                
+            }
             else if (Lookup == "Tray")
             {
                 commandName = "spTrayGetByParent";
-            }                
+            }
 
             using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
             {

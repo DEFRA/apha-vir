@@ -8,12 +8,12 @@ namespace Apha.VIR.Web.Models
         public Guid? IsolateId { get; set; }
         public Guid? IsolateSampleId { get; set; }
         public int? IsolateNumber { get; set; }
-        public string? AVNumber { get; set; }               
+        public string? AVNumber { get; set; }
         public Guid? Family { get; set; }
         public string? FamilyName { get; set; }
         public Guid? Type { get; set; }
 
-        [Display(Name = "Year Of Isolation")]        
+        [Display(Name = "Year Of Isolation")]
         public int? YearOfIsolation { get; set; }
         public bool IsMixedIsolate { get; set; } = false;
         public Guid? IsolationMethod { get; set; }
@@ -25,7 +25,7 @@ namespace Apha.VIR.Web.Models
         public bool ValidToIssue { get; set; } = true;
         public string? WhyNotValidToIssue { get; set; }
         public Guid? Freezer { get; set; }
-        public Guid? Tray { get; set; }    
+        public Guid? Tray { get; set; }
         public string? Well { get; set; }
 
         [Range(0, 4, ErrorMessage = "No of Aliquots must be between 0 and 4")]
@@ -55,7 +55,7 @@ namespace Apha.VIR.Web.Models
         public List<CustomSelectListItem>? VirusTypeList { get; set; }
         public List<SelectListItem>? IsolationMethodList { get; set; }
         public List<SelectListItem>? FreezerList { get; set; }
-        public List<SelectListItem>? TrayList { get; set; }       
+        public List<SelectListItem>? TrayList { get; set; }
         public List<SelectListItem>? ViabilityList { get; set; }
         public List<SelectListItem>? StaffList { get; set; }
     }

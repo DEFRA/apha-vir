@@ -36,8 +36,8 @@ namespace Apha.VIR.Application.Services
         public async Task<IsolateDTO> GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId)
         {
             var isolate = await _iIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
-           
-            if(isolate.FamilyName == "Paramyxoviridae")
+
+            if (isolate.FamilyName == "Paramyxoviridae")
             {
                 isolate.Nomenclature = isolate.Nomenclature + " (" + isolate.TypeName + ")";
             }
@@ -48,7 +48,7 @@ namespace Apha.VIR.Application.Services
                     var characteristicList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(isolateId);
                     var charNomenclature = ServiceHelper.GetCharacteristicNomenclature(characteristicList.ToList());
                     isolate.Nomenclature = isolate.Nomenclature + " " + charNomenclature;
-                }   
+                }
             }
 
             return _mapper.Map<IsolateDTO>(isolate);

@@ -64,7 +64,7 @@ namespace Apha.VIR.Web.Controllers
                 ViabilityList = await GetViabilityDropdownList(),
                 StaffList = await GetCheckedByDropdownList(),
                 NoOfAliquots = 4
-            };           
+            };
 
             var submission = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
             if (submission != null)
@@ -87,7 +87,7 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(IsolateAddEditViewModel isolateModel)
-        {            
+        {
             await ValidateIsolateDetails(isolateModel, ModelState);
 
             if (!ModelState.IsValid)
@@ -103,7 +103,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             isolateModel.CreatedBy = "testuser";
-            
+
             var isolateDto = _mapper.Map<IsolateDTO>(isolateModel);
             isolateModel.IsolateId = await _isolatesService.AddIsolateDetailsAsync(isolateDto);
 
@@ -134,7 +134,7 @@ namespace Apha.VIR.Web.Controllers
 
             var isolate = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(AVNumber, IsolateId);
             var isolateModel = _mapper.Map<IsolateAddEditViewModel>(isolate);
-            isolateModel.AVNumber = AVNumber;            
+            isolateModel.AVNumber = AVNumber;
             isolateModel.VirusFamilyList = await GetVirusFamiliesDropdownList();
             isolateModel.VirusTypeList = await GetVirusTypesDropdownList(isolate.Family);
             isolateModel.IsolationMethodList = await GetIsolationMethodsDropdownList();
@@ -143,7 +143,7 @@ namespace Apha.VIR.Web.Controllers
             isolateModel.ViabilityList = await GetViabilityDropdownList();
             isolateModel.StaffList = await GetCheckedByDropdownList();
             var viability = await _isolateViabilityService.GetLastViabilityByIsolateAsync(IsolateId);
-            if(viability != null)
+            if (viability != null)
             {
                 isolateModel.PreviousViable = viability.Viable;
                 isolateModel.PreviousDateChecked = viability.DateChecked;
@@ -152,13 +152,13 @@ namespace Apha.VIR.Web.Controllers
 
             var submission = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
             if (submission != null)
-            {             
+            {
                 var samplesDto = _sampleService.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
                 var sample = samplesDto.Result.FirstOrDefault(s => s.SampleId == SampleId);
                 if (sample?.SampleTypeName == "FTA Cards" || sample?.SampleTypeName == "RNA")
                 {
                     isolateModel.IsDetection = true;
-                }                
+                }
             }
 
             return View(isolateModel);
@@ -191,14 +191,14 @@ namespace Apha.VIR.Web.Controllers
                 await _isolateViabilityService.AddIsolateViabilityAsync(isolateViability, isolateModel.CreatedBy);
             }
 
-            if(isolateModel.ActionType == "SaveAndContinue")
+            if (isolateModel.ActionType == "SaveAndContinue")
             {
                 return RedirectToAction(IndexActionName, "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
             }
             else
             {
                 return RedirectToAction(IndexActionName, "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
-            }               
+            }
         }
 
         [HttpGet]
@@ -304,7 +304,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.YearOfIsolation.HasValue && isolateModel.YearOfIsolation > DateTime.Now.Year)
             {
-                validationErrors.Add("- Year of Isolation cannot be in the future.");                
+                validationErrors.Add("- Year of Isolation cannot be in the future.");
             }
 
             if (Apha.VIR.Web.Models.SearchCriteria.IsNullOrEmptyGuid(isolateModel.Freezer))
@@ -352,7 +352,7 @@ namespace Apha.VIR.Web.Controllers
                 else
                 {
                     var isolateViabilities = await _isolateViabilityService.GetViabilityByIsolateIdAsync(IsolateId ?? Guid.Empty);
-                    if (isolateViabilities != null &&  isolateViabilities.Any(v => v.DateChecked == DateChecked))
+                    if (isolateViabilities != null && isolateViabilities.Any(v => v.DateChecked == DateChecked))
                     {
                         ValidationErrors.Add("- There is already a viability for this isolate on this date.  (This can be edited via the search screen).");
                         IsViabilityInsert = false;

@@ -177,7 +177,7 @@
             },
             {
                 "title": "Sender Management",
-                "url": "/SenderManagement",
+                "url": "/Sender",
                 "description": "Manages list of senders",
                 "children": []
             },

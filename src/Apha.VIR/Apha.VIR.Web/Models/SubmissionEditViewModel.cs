@@ -47,5 +47,5 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? CountryList { get; set; }
         public List<SubmissionSenderViewModel>? Senders { get; set; }
         public List<SubmissionSenderViewModel>? Organisations { get; set; }
-    }   
+    }
 }
