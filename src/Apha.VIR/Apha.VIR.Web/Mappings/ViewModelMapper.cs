@@ -2,6 +2,7 @@
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Models.Lookup;
+using Apha.VIR.Web.Models.VirusCharacteristic;
 using AutoMapper;
 
 namespace Apha.VIR.Web.Mappings
@@ -45,6 +46,7 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<IsolateAddEditViewModel, IsolateViabilityInfoDTO>()
                 .ForMember(dest => dest.IsolateViabilityIsolateId, opt => opt.MapFrom(src => src.IsolateId))
                 .ForMember(dest => dest.CheckedById, opt => opt.MapFrom(src => src.CheckedBy));
+            CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryModel>().ReverseMap();
         }
     }
 }

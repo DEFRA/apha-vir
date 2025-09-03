@@ -58,7 +58,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
             var characteristicId = Guid.NewGuid();
             SetupMockedCharacteristics(new VirusCharacteristicDTO { Id = characteristicId, DataType = "SingleList" });
             var listEntries = new List<VirusCharacteristicListEntry> { new VirusCharacteristicListEntry() };
-            _mockVirusCharacteristicListEntryRepository.GetVirusCharacteristicListEntryByVirusCharacteristic(characteristicId)
+            _mockVirusCharacteristicListEntryRepository.GetEntriesByCharacteristicIdAsync(characteristicId)
             .Returns(listEntries);
             _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(Arg.Any<IEnumerable<VirusCharacteristicListEntry>>())
             .Returns(listEntries.Select(e => new VirusCharacteristicListEntryDTO()));
