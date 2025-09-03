@@ -334,5 +334,185 @@ new VirusCharacteristicListEntryDTO { Name = "OtherValue" }
             Assert.Contains(result, item => item.Value == "SelectedValue" && item.Selected);
             Assert.Contains(result, item => item.Value == "OtherValue" && !item.Selected);
         }
+
+        [Fact]
+        public void ValidateCharacteristic_ValidTextInput_ReturnsEmptyString()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Text",
+                CharacteristicName = "TestCharacteristic",
+                CharacteristicValue = "ValidText"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            {
+                Length = 10
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_InvalidTextInput_ReturnsErrorMessage()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Text",
+                CharacteristicName = "TestCharacteristic",
+                CharacteristicValue = "ThisTextIsTooLong"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            {
+                Length = 10
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Contains("exceeds maximum length requirement", result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_ValidNumericInput_ReturnsEmptyString()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Numeric",
+                CharacteristicName = "TestNumeric",
+                CharacteristicValue = "5.00"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            {
+                MinValue = 0,
+                MaxValue = 10,
+                DecimalPlaces = 2
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_NumericInputBelowMinValue_ReturnsErrorMessage()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Numeric",
+                CharacteristicName = "TestNumeric",
+                CharacteristicValue = "-1"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            {
+                MinValue = 0,
+                MaxValue = 10
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Contains("below the minimum value requirement", result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_NumericInputAboveMaxValue_ReturnsErrorMessage()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Numeric",
+                CharacteristicName = "TestNumeric",
+                CharacteristicValue = "11"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            {
+                MinValue = 0,
+                MaxValue = 10
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Contains("exceeds the maximum value requirement", result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_NumericInputIncorrectDecimalPlaces_ReturnsErrorMessage()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Numeric",
+                CharacteristicName = "TestNumeric",
+                CharacteristicValue = "5.1"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            {
+                MinValue = 0,
+                MaxValue = 10,
+                DecimalPlaces = 2
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Contains("does not include the required number of decimal places", result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_NonNumericValue_ReturnsErrorMessage()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Numeric",
+                CharacteristicName = "TestNumeric",
+                CharacteristicValue = "NotANumber"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            {
+                MinValue = 0,
+                MaxValue = 10
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Contains("is not a valid number", result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_EmptyVirusCharacteristicId_ReturnsErrorMessage()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.Empty,
+                CharacteristicType = "Text",
+                CharacteristicName = "TestCharacteristic",
+                CharacteristicValue = "ValidText"
+            };
+            var virusCharacteristicDTO = new VirusCharacteristicDTO();
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+
+            Assert.Contains("Id not specified for this item", result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_NullVirusCharacteristicDTO_ReturnsErrorMessage()
+        {
+            var characteristicViewModel = new IsolateCharacteristicInfoModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "Text",
+                CharacteristicName = "TestCharacteristic",
+                CharacteristicValue = "ValidText"
+            };
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, null);
+
+            Assert.Contains("Item does not exist", result);
+        }
     }
 }

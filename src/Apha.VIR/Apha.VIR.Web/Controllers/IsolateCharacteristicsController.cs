@@ -73,12 +73,7 @@ namespace Apha.VIR.Web.Controllers
                         if (!string.IsNullOrEmpty(errorMessage))
                         {
                             validationErrors.Add(errorMessage);
-                        }
-                        else
-                        {
-                            var data = _mapper.Map<IsolateCharacteristicInfoDTO>(characteristic);
-                            await _isolatesService.UpdateIsolateCharacteristicsAsync(data, "Test");
-                        }
+                        }                        
                     }
                 }
             }           
@@ -99,7 +94,12 @@ namespace Apha.VIR.Web.Controllers
                 }
                 return View(characteristics);
             }
-            
+
+            foreach (var characteristic in characteristics)
+            {
+                var data = _mapper.Map<IsolateCharacteristicInfoDTO>(characteristic);
+                await _isolatesService.UpdateIsolateCharacteristicsAsync(data, "Test");
+            }
             return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = characteristics.Select(e=> e.AVNumber).Distinct() });
         }
         
@@ -120,7 +120,7 @@ namespace Apha.VIR.Web.Controllers
             return characteristicValueDropDownList;
         }
 
-        static string ValidateCharacteristic(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        public static string ValidateCharacteristic(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
         {
             if (characteristicViewModel.VirusCharacteristicId == Guid.Empty)
             {
