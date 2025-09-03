@@ -27,24 +27,28 @@
             </li>            
             <li>
                 <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Lookup" asp-action="lookup">Maintain Look-up Data</a>
+                <a asp-controller="Lookup" asp-action="Index">Maintain Look-up Data</a>
             </li>
             <li>
                 <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Characteristics" asp-action="Index">Maintain Virus Characteristics</a>
+                <a asp-controller="VirusCharacteristicsListEntry" asp-action="Index">Maintain Virus Characteristics</a>
             </li>
             <li>
                 <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Home" asp-action="Index">Maintain Sender Information</a>
+                <a asp-controller="Sender" asp-action="Index">Maintain Sender Information</a>
             </li>
             <li>
                 <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Home" asp-action="Index">View Audit Logs</a>
+                <a asp-controller="AuditLog" asp-action="Index">View Audit Logs</a>
             </li>           
             <li>
                 <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="System" asp-action="Information">System Information</a>
-            </li>           
+                <a asp-controller="SystemInformation" asp-action="Index">System Information</a>
+            </li>
+            <li>
+                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                <a href="@ViewBag.UserMgmtUrl" target="_blank">User Management</a>
+            </li>
         </ul>
     </nav>
 </div>

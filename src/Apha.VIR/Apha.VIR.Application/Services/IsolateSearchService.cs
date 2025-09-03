@@ -45,7 +45,7 @@ namespace Apha.VIR.Application.Services
                         break;
                     case "SingleList":
                         compartaors.AddRange(new List<string> { "=", "not equal to", "begins with" });
-                        listValues = _mapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(await _virusCharacteristicListEntryRepository.GetVirusCharacteristicListEntryByVirusCharacteristic(characteristic.Id)).ToList();
+                        listValues = _mapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(await _virusCharacteristicListEntryRepository.GetEntriesByCharacteristicIdAsync(characteristic.Id)).ToList();
                         break;
                     case "Yes/No":
                         compartaors.AddRange(new List<string> { "=" });

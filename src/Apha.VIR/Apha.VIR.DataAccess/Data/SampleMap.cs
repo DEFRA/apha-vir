@@ -26,9 +26,9 @@ public class SampleMap : IEntityTypeConfiguration<Sample>
             .HasMaxLength(50)
             .IsUnicode(false);
 
-        entity.Property(e => e.SmsreferenceNumber)
+        entity.Property(e => e.SMSReferenceNumber)
             .HasMaxLength(30)
-            .IsUnicode(false)
-            .HasColumnName("SMSReferenceNumber");
+            .IsUnicode(false);
+
     }
 }

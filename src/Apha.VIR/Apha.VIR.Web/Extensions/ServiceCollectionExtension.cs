@@ -25,6 +25,12 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolatesService, IsolatesService>();
             services.AddScoped<IReportService, ReportService>();
             services.AddSingleton<NavigationService, NavigationService>();
+            services.AddScoped<IAuditLogService, AuditLogService>();
+            services.AddScoped<ISenderService, SenderService>();
+            services.AddScoped<ISubmissionService, SubmissionService>();
+            services.AddScoped<ISampleService, SampleService>();
+            services.AddScoped<ISystemInfoService, SystemInfoService>();
+            services.AddScoped<IVirusCharacteristicListEntryService, VirusCharacteristicListEntryService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)
@@ -41,6 +47,12 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IIsolateSearchRepository, IsolateSearchRepository>();
             services.AddScoped<IIsolateViabilityRepository, IsolateViabilityRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IAuditRepository, AuditRepository>();
+            services.AddScoped<ISenderRepository, SenderRepository>();
+            services.AddScoped<ISubmissionRepository, SubmissionRepository>();
+            services.AddScoped<ISampleRepository, SampleRepository>();
+            services.AddScoped<ISystemInfoRepository, SystemInfoRepository>();
+            services.AddScoped<IVirusCharacteristicListEntryRepository, VirusCharacteristicListEntryRepository>();
             return services;
         }
     }

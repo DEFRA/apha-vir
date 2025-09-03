@@ -1,0 +1,24 @@
+﻿namespace Apha.VIR.Web.Models.AuditLog;
+
+public class AuditSubmissionLogModel
+{
+    public string UserId { get; set; } = null!;
+    public string UserName { get; set; } = string.Empty;
+    public DateTime DateDone { get; set; }
+    public string AVNumber { get; set; } = null!;
+    public string? SendersReferenceNumber { get; set; }
+    public string? RLReferenceNumber { get; set; }
+    public string? Sender { get; set; }
+    public string? SenderOrganisation { get; set; }
+    public string? SenderAddress { get; set; }
+    public DateTime? DateSubmissionReceived { get; set; }
+    public string? CPHNumber { get; set; }
+    public string? Owner { get; set; }
+    public string? SamplingLocationPremises { get; set; }
+    public int? NumberOfSamples { get; set; }
+    public string? UpdateType { get; set; }
+    public string? ReasonForSubmission { get; set; }
+    public string? SubmittingLab { get; set; }
+    public string? CountryOfOrigin { get; set; }
+    public string? SubmittingCountry { get; set; }
+}

@@ -1,0 +1,92 @@
+﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Models;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+
+namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
+{
+    public class SubmissionControllerCreateTests
+    {
+        private readonly ILookupService _mockLookupService;
+        private readonly ISenderService _mockSenderService;
+        private readonly ISubmissionService _mockSubmissionService;
+        private readonly IMapper _mockMapper;
+        private readonly SubmissionController _controller;
+
+        public SubmissionControllerCreateTests()
+        {
+            _mockLookupService = Substitute.For<ILookupService>();
+            _mockSenderService = Substitute.For<ISenderService>();
+            _mockSubmissionService = Substitute.For<ISubmissionService>();
+            _mockMapper = Substitute.For<IMapper>();
+            _controller = new SubmissionController(_mockLookupService, _mockSenderService, _mockSubmissionService, _mockMapper);
+        }
+
+        [Fact]
+        public async Task Create_Get_ReturnsViewWithCorrectModel()
+        {
+            // Arrange
+            const string avNumber = "TEST123";
+            var ddldata = new List<LookupItemDTO>
+            {
+                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_1" },
+                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_2" }
+            };
+
+            _mockLookupService.GetAllCountriesAsync().Returns(ddldata.AsEnumerable());
+            _mockLookupService.GetAllSubmittingLabAsync().Returns(ddldata.AsEnumerable());
+            _mockLookupService.GetAllSubmissionReasonAsync().Returns(ddldata.AsEnumerable());
+
+            // Act
+            var result = await _controller.Create(avNumber) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var model = Assert.IsType<SubmissionCreateViewModel>(result.Model);
+            Assert.Equal(avNumber, model.AVNumber);
+            Assert.NotEmpty(model.CountryList!);
+            Assert.NotEmpty(model.SubmittingLabList!);
+            Assert.NotEmpty(model.SubmissionReasonList!);
+            Assert.Empty(model.Senders!);
+            Assert.Empty(model.Organisations!);
+        }
+
+        [Fact]
+        public async Task Create_Post_WithInvalidModel_ReturnsViewWithModel()
+        {
+            // Arrange
+            var submission = new SubmissionCreateViewModel();
+            _controller.ModelState.AddModelError("Error", "Test error");
+
+            // Act
+            var result = await _controller.Create(submission) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<SubmissionCreateViewModel>(result.Model);
+            await _mockLookupService.Received(1).GetAllCountriesAsync();
+            await _mockLookupService.Received(1).GetAllSubmittingLabAsync();
+            await _mockLookupService.Received(1).GetAllSubmissionReasonAsync();
+        }
+
+        [Fact]
+        public async Task Create_Post_WithValidModel_RedirectsToIndex()
+        {
+            // Arrange
+            var submission = new SubmissionCreateViewModel();
+            var submissionDto = new SubmissionDTO();
+            _mockMapper.Map<SubmissionCreateViewModel>(submissionDto).Returns(submission);
+
+            // Act
+            var result = await _controller.Create(submission) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("SubmissionSamples", result.ControllerName);
+        }
+    }
+}
