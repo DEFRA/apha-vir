@@ -315,7 +315,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             {
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed", ParentName = "Test Species", AlternateName = "Test Alt", Active = true, Sms = true, Smscode = "123" }
             };
-            _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
+            _lookupService.GetAllHostBreedsAsync().Returns(latinBreedDtos);
 
             // Act
             var result = await _controller.GetLatinBreadList();
@@ -349,7 +349,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 1", ParentName = "Test Species 1", AlternateName = "Test Alt 1", Active = true, Sms = true, Smscode = "123" },
                 new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 2", ParentName = "Test Species 2", AlternateName = "Test Alt 2", Active = false, Sms = false, Smscode = "456" }
             };
-            _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
+            _lookupService.GetAllHostBreedsAsync().Returns(latinBreedDtos);
 
             // Act
             var result = await _controller.GetLatinBreadList();
