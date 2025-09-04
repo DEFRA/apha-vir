@@ -151,7 +151,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task UpdateIsolateCharacteristicsAsync_SuccessfulUpdate_ReturnsCompletedTask()
         {
             // Arrange
-            var isolateCharacteristicInfoDTO = new IsolateCharacteristicInfoDTO();
+            var isolateCharacteristicInfoDTO = new IsolateCharacteristicDTO();
             var isolateCharacteristicInfo = new IsolateCharacteristicInfo();
             var user = "TestUser";
 
@@ -169,7 +169,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task UpdateIsolateCharacteristicsAsync_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var isolateCharacteristicInfoDTO = new IsolateCharacteristicInfoDTO();
+            var isolateCharacteristicInfoDTO = new IsolateCharacteristicDTO();
             var isolateCharacteristicInfo = new IsolateCharacteristicInfo();
             var user = "TestUser";
             var expectedException = new Exception("Test exception");

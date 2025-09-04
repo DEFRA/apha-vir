@@ -87,13 +87,13 @@ namespace Apha.VIR.Application.Services
             return nomenclature.ToString();
         }
 
-        public async Task<IEnumerable<IsolateCharacteristicInfoDTO>> GetIsolateCharacteristicInfoAsync(Guid IsolateId)
+        public async Task<IEnumerable<IsolateCharacteristicDTO>> GetIsolateCharacteristicInfoAsync(Guid IsolateId)
         {
             var characteristicList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(IsolateId);
-            return _mapper.Map<IEnumerable<IsolateCharacteristicInfoDTO>>(characteristicList);
+            return _mapper.Map<IEnumerable<IsolateCharacteristicDTO>>(characteristicList);
         }
 
-        public Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicInfoDTO item, string User)
+        public Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicDTO item, string User)
         {
             var data = _mapper.Map<IsolateCharacteristicInfo>(item);
             return _characteristicRepository.UpdateIsolateCharacteristicsAsync(data, User);

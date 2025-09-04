@@ -2,7 +2,7 @@
 
 namespace Apha.VIR.Web.Models
 {
-    public class IsolateCharacteristicInfoModel
+    public class IsolateCharacteristicViewModel
     {
         public Guid? IsolateId { get; set; }
         public Guid? CharacteristicId { get; set; }

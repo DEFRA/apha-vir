@@ -42,7 +42,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var isolateCharacteristicInfoList = await _isolatesService.GetIsolateCharacteristicInfoAsync(Isolate);
-            var model = _mapper.Map<List<IsolateCharacteristicInfoModel>>(isolateCharacteristicInfoList);
+            var model = _mapper.Map<List<IsolateCharacteristicViewModel>>(isolateCharacteristicInfoList);
             foreach (var item in model)
             {
                 if (item.CharacteristicType == "SingleList" && item.VirusCharacteristicId.HasValue && item.CharacteristicValue != null)
@@ -57,7 +57,7 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(List<IsolateCharacteristicInfoModel> characteristics)
+        public async Task<IActionResult> Edit(List<IsolateCharacteristicViewModel> characteristics)
         {
             if (!ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace Apha.VIR.Web.Controllers
             return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = avNumbers });
         }
 
-        private async Task<List<string>> ProcessCharacteristics(List<IsolateCharacteristicInfoModel> characteristics)
+        private async Task<List<string>> ProcessCharacteristics(List<IsolateCharacteristicViewModel> characteristics)
         {
             var errors = new List<string>();
             var existingVirusCharacteristics = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
@@ -102,14 +102,14 @@ namespace Apha.VIR.Web.Controllers
             {
                 foreach (var characteristic in characteristics)
                 {
-                    var dto = _mapper.Map<IsolateCharacteristicInfoDTO>(characteristic);
+                    var dto = _mapper.Map<IsolateCharacteristicDTO>(characteristic);
                     await _isolatesService.UpdateIsolateCharacteristicsAsync(dto, "Test");
                 }
             }
             return errors;
         }
 
-        private async Task PrepareDropDownLists(List<IsolateCharacteristicInfoModel> characteristics)
+        private async Task PrepareDropDownLists(List<IsolateCharacteristicViewModel> characteristics)
         {
             foreach (var item in characteristics)
             {
@@ -148,7 +148,7 @@ namespace Apha.VIR.Web.Controllers
             return characteristicValueDropDownList;
         }
 
-        public static string ValidateCharacteristic(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        public static string ValidateCharacteristic(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
         {
             if (characteristicViewModel.VirusCharacteristicId == Guid.Empty)
                 return "- Id not specified for this item.";
@@ -170,7 +170,7 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        private static string ValidateText(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        private static string ValidateText(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
         {
             if (string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue)) return "";
 
@@ -182,7 +182,7 @@ namespace Apha.VIR.Web.Controllers
             return "";
         }
 
-        private static string ValidateNumeric(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        private static string ValidateNumeric(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
         {
             if (string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue)) return "";
 
@@ -197,7 +197,7 @@ namespace Apha.VIR.Web.Controllers
                 ? ValidateNumericDecimalPlaces(characteristicViewModel, virusCharacteristicDTO): rangeReturn;
         }
 
-        private static string ValidateNumericRange(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO, double itemValue)
+        private static string ValidateNumericRange(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO, double itemValue)
         {
             if (virusCharacteristicDTO.MinValue.HasValue && itemValue < virusCharacteristicDTO.MinValue)
             {
@@ -212,7 +212,7 @@ namespace Apha.VIR.Web.Controllers
             return "";
         }
 
-        private static string ValidateNumericDecimalPlaces(IsolateCharacteristicInfoModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        private static string ValidateNumericDecimalPlaces(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
         {
             if (!virusCharacteristicDTO.DecimalPlaces.HasValue || virusCharacteristicDTO.DecimalPlaces == 0) return "";
             if (!string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue))
