@@ -10,5 +10,7 @@ namespace Apha.VIR.Application.Interfaces
         Task<IsolateDTO> GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId);
         Task UpdateIsolateDetailsAsync(IsolateDTO isolate);
         Task<string> GenerateNomenclature(string avNumber, Guid sampleId, string virusType, string yearOfIsolation);
+        Task<IEnumerable<IsolateCharacteristicDTO>> GetIsolateCharacteristicInfoAsync(Guid IsolateId);
+        Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicDTO item, string User);
     }
 }

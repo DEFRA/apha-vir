@@ -1,0 +1,77 @@
+﻿@model IList<IsolateCharacteristicViewModel>
+
+<div id="contentbox" style="width: 95%">
+    <div class="box_title">Enter/Update the Isolate Characteristics</div>
+    <div class="box_body">
+        <br />
+        @if (Model != null && Model.Any())
+        {
+            <form method="post">
+                <div class="isolate_characteristics-grid" style="border: none;">
+                    @for (int i = 0; i < Math.Min(Model.Count(), 5); i++)
+                    {                        
+                        <input type="hidden" asp-for="@Model[i].IsolateId" />
+                        <input type="hidden" asp-for="@Model[i].CharacteristicId" />
+                        <input type="hidden" asp-for="@Model[i].CharacteristicIsolateId" />
+                        <input type="hidden" asp-for="@Model[i].VirusCharacteristicId" />
+                        <input type="hidden" asp-for="@Model[i].CharacteristicName" />
+                        <input type="hidden" asp-for="@Model[i].CharacteristicType" />
+                        <input type="hidden" asp-for="@Model[i].CharacteristicDisplay" />
+                        <input type="hidden" asp-for="@Model[i].CharacteristicPrefix" />
+                        <input type="hidden" asp-for="@Model[i].LastModified" />
+                        <input type="hidden" asp-for="@Model[i].AVNumber" />
+                        <div class="isolate_characteristics-cell isolate_characteristics-label">
+                            @Html.DisplayFor(m => m[i].CharacteristicName)
+                        </div>
+                        <div class="isolate_characteristics-cell" style="width:188px">
+                            @switch (Model[i].CharacteristicType)
+                            {
+                                case "Text":
+                                case "Numeric":
+                                    <input asp-for="@Model[i].CharacteristicValue" class="form-control" />                                  
+                                    break;
+                                case "YesNo":
+                                    <input type="checkbox"  asp-for="@Model[i].CharacteristicValue" class="form-control" />                                    
+                                    break;
+                                case "SingleList":
+                                    <select asp-for="@Model[i].CharacteristicValue" asp-items="Model[i].CharacteristicValueDropDownList" class="form-control">
+                                        <option value="">Select an option</option>                                      
+                                    </select>                                   
+                                    break;
+                            }
+                        </div>
+                    }                    
+                </div>
+
+                <div class="isolate_characteristics-form-actions">
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <button type="submit" class="btn btn-link editsubmission-btn-link-custom">Save these Characteristics</button>
+                    <br />
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <img src="~/Images/spacer.gif" width="2" height="5" alt="" />
+                    <a href="~/IsolateDetails?AVNumber=@Model[0].AVNumber&Isolate=@Model[0].CharacteristicIsolateId" class="btn btn-secondary">Discard changes and return to the previous page</a>
+                </div>
+            </form>
+        }
+        else
+        {
+            <p>There are no characteristics defined for the virus family and type of this isolate.</p>
+        }
+    </div>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert text-danger">
+        <p>There are validation messages requiring your attention.</p>
+        <ul>
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
