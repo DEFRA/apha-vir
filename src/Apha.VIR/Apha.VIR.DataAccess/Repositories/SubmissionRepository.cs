@@ -145,4 +145,10 @@ public class SubmissionRepository : ISubmissionRepository
             @DateSubmissionReceived, @CPHNumber, @Owner, @SamplingLocationPremises, @NumberOfSamples, @LastModified OUTPUT",
           parameters);
     }
+
+    public async Task<IEnumerable<string>> GetLatestSubmissionsAsync()
+    {
+        return await _context.Database
+                .SqlQuery<string>($"EXEC spLastAVNumbersModified").ToListAsync();
+    }
 }
