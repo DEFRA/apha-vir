@@ -17,7 +17,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var avNumbers = await _submissionService.GetLatestSubmissions();
+            var avNumbers = await _submissionService.GetLatestSubmissionsAsync();
             var avNumberModel = new GetAVNumberViewModel
             {
                 LastAVNumbers = avNumbers.ToList()
@@ -36,7 +36,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                var avNumbers = await _submissionService.GetLatestSubmissions();
+                var avNumbers = await _submissionService.GetLatestSubmissionsAsync();
                 var avNumberModel = new GetAVNumberViewModel
                 {
                     AVNumber = AVNumber,
@@ -53,7 +53,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "SubmissionDetails", new { AVNumber = AVNumber });
+                return RedirectToAction("Edit", "Submission", new { AVNumber = AVNumber });
             }              
         }
     }

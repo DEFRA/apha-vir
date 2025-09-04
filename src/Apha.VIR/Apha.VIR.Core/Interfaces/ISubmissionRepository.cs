@@ -8,5 +8,5 @@ public interface ISubmissionRepository
     Task<Submission> GetSubmissionDetailsByAVNumberAsync(string avNumber);
     Task AddSubmissionAsync(Submission submission, string user);
     Task UpdateSubmissionAsync(Submission submission, string user);
-    Task<IEnumerable<string>> GetLatestSubmissions();
+    Task<IEnumerable<string>> GetLatestSubmissionsAsync();
 }

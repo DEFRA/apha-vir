@@ -145,7 +145,7 @@ public class SubmissionRepository : ISubmissionRepository
           parameters);
     }
 
-    public async Task<IEnumerable<string>> GetLatestSubmissions()
+    public async Task<IEnumerable<string>> GetLatestSubmissionsAsync()
     {
         return await _context.Database
                 .SqlQuery<string>($"EXEC spLastAVNumbersModified").ToListAsync();
