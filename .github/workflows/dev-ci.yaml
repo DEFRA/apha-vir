@@ -12,7 +12,7 @@ permissions: {}   # disables all default permissions
 jobs:
   # 1️⃣ First run the dev build & sonar analysis
   build-and-sonar:
-    uses: DEFRA/apha-bst/.github/workflows/build-and-sonar-analyze-template.yaml
+    uses: DEFRA/apha-bst/.github/workflows/build-and-sonar-analyze-template.yaml@feature/sonar-properties-file
     with:
       dotnet_application_solution_name: Apha.BST
     secrets: 
@@ -48,7 +48,7 @@ jobs:
   push-image:
     needs: check-commit
     if: needs.check-commit.outputs.should_push == 'true'
-    uses: DEFRA/apha-bst/.github/workflows/push-image-template.yaml
+    uses: DEFRA/apha-bst/.github/workflows/push-image-template.yaml@feature/sonar-properties-file
     with:
       repository: apha/bst
       dev_image_version_release: false
