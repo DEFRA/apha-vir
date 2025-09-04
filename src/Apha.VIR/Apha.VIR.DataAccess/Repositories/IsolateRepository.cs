@@ -48,7 +48,9 @@ public class IsolateRepository : IIsolateRepository
                             NoOfAliquots = (int)result[NoOfAliquots],
                             ValidToIssue = (result["ValidToIssue"] != DBNull.Value ? (bool?)result["ValidToIssue"] : false),
                             IsMixedIsolate = (bool)result["IsMixedIsolate"],
-                            MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"]
+                            MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"],
+                            IsolateSampleId = (Guid)result["IsolateSampleId"],
+                            YearOfIsolation = (result["YearOfIsolation"] != DBNull.Value ? (int?)result["YearOfIsolation"] : null),
                         };
                         isolateInfoList.Add(dto);
                     }
