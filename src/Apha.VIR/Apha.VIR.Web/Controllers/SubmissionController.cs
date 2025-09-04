@@ -158,5 +158,16 @@ namespace Apha.VIR.Web.Controllers
             var submissionReasons = await _lookupService.GetAllSubmissionReasonAsync();
             return submissionReasons.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SubmissionLetter(string AVNumber)
+        {
+            var viewModel = new SubmissionLetterViewModel
+            {
+                LetterContent = await _submissionService.SubmissionLetter(AVNumber, "TestUser")
+            };
+            return View(viewModel);
+        }
+
     }
 }

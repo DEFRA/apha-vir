@@ -12,13 +12,17 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
     {
         private readonly ISubmissionRepository _mockSubmissionRepository;
         private readonly IMapper _mockMapper;
+        private readonly ISampleRepository _mockSampleRepository;
+        private readonly IIsolateRepository _mockIsolatesRepository;
         private readonly SubmissionService _submissionService;
 
         public SubmissionServiceTests()
         {
             _mockSubmissionRepository = Substitute.For<ISubmissionRepository>();
             _mockMapper = Substitute.For<IMapper>();
-            _submissionService = new SubmissionService(_mockSubmissionRepository, _mockMapper);
+            _mockSampleRepository = Substitute.For<ISampleRepository>();
+            _mockIsolatesRepository = Substitute.For<IIsolateRepository>();
+            _submissionService = new SubmissionService(_mockSubmissionRepository, _mockSampleRepository, _mockIsolatesRepository, _mockMapper);
         }
 
         [Fact]
@@ -184,6 +188,98 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _submissionService.UpdateSubmissionAsync(submissionDto, "testUser"));
+        }
+
+       [Fact]
+        public async Task SubmissionLetter_ShouldReturnExpectedResult()
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var user = "TestUser";
+            var submission = new Submission
+            {
+                SubmissionId = Guid.NewGuid(),
+                Avnumber = avNumber,
+                Sender = "John Doe",
+                SenderOrganisation = "Test Org",
+                SenderAddress = "123 Test St",
+                SubmittingCountryName = "Test Country",
+                SendersReferenceNumber = "REF123",
+                DateSubmissionReceived = DateTime.Now.AddDays(-7),
+                CountryOfOriginName = "Origin Country"
+            };
+
+            var sampleId = Guid.NewGuid();
+
+            var samples = new List<Sample>
+            {
+            new Sample { SampleId = sampleId, SenderReferenceNumber = "S1", HostSpeciesName = "Chicken" }
+            };
+
+            var isolates = new List<IsolateInfo>
+            {
+            new IsolateInfo { IsolateSampleId = sampleId, YearOfIsolation = 2023 }
+            };
+
+            _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
+            _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(samples);
+            _mockIsolatesRepository.GetIsolateInfoByAVNumberAsync(avNumber).Returns(isolates);
+
+            // Act
+            var result = await _submissionService.SubmissionLetter(avNumber, user);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Contains(avNumber, result);
+            Assert.Contains(user, result);
+            Assert.Contains(submission.Sender, result);
+            Assert.Contains(submission.SenderOrganisation, result);
+            Assert.Contains(submission.SenderAddress, result);
+            Assert.Contains(submission.SubmittingCountryName, result);
+            Assert.Contains(submission.SendersReferenceNumber, result);
+            Assert.Contains(submission.CountryOfOriginName, result);
+            Assert.Contains(samples[0].SenderReferenceNumber, result);
+            Assert.Contains(samples[0].HostSpeciesName, result);
+            Assert.Contains(isolates[0].YearOfIsolation.ToString(), result);
+        }
+
+        [Fact]
+        public async Task SubmissionLetter_WithMissingData_ShouldReturnExpectedResult()
+        {
+            // Arrange
+            var avNumber = "AV456";
+            var user = "TestUser";
+            var submission = new Submission
+            {
+                SubmissionId = Guid.NewGuid(),
+                Avnumber = avNumber,
+                Sender = "Jane Doe",
+                SenderOrganisation = "Test Org 2",
+                SenderAddress = "456 Test Ave",
+                SubmittingCountryName = "Test Country 2",
+                SendersReferenceNumber = "REF456",
+                DateSubmissionReceived = null,
+                CountryOfOriginName = null
+            };
+
+            _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
+            _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample>());
+            _mockIsolatesRepository.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfo>());
+
+            // Act
+            var result = await _submissionService.SubmissionLetter(avNumber, user);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Contains(avNumber, result);
+            Assert.Contains(user, result);
+            Assert.Contains(submission.Sender, result);
+            Assert.Contains(submission.SenderOrganisation, result);
+            Assert.Contains(submission.SenderAddress, result);
+            Assert.Contains(submission.SubmittingCountryName, result);
+            Assert.Contains(submission.SendersReferenceNumber, result);
+            Assert.Contains("[Missing]", result);
+            Assert.Contains("Date of Receipt:", result);
         }
     }
 }
