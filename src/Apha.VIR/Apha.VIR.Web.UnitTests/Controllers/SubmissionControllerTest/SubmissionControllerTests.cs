@@ -12,12 +12,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         private readonly SubmissionController _controller;
         private readonly ISubmissionService _submissionService;
         private readonly IMapper _mapper;
+        private readonly ILookupService _lookupService;
+        private readonly ISenderService _senderService;
 
         public SubmissionControllerTests()
         {
             _submissionService = Substitute.For<ISubmissionService>();
+            _lookupService = Substitute.For<ILookupService>();
+            _senderService = Substitute.For<ISenderService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new SubmissionController(null, null, _submissionService, _mapper);
+            _controller = new SubmissionController(_lookupService, _senderService, _submissionService, _mapper);
         }
 
         [Fact]

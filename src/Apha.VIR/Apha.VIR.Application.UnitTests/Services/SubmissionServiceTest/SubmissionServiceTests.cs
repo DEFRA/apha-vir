@@ -238,9 +238,9 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             Assert.Contains(submission.SubmittingCountryName, result);
             Assert.Contains(submission.SendersReferenceNumber, result);
             Assert.Contains(submission.CountryOfOriginName, result);
-            Assert.Contains(samples[0].SenderReferenceNumber, result);
-            Assert.Contains(samples[0].HostSpeciesName, result);
-            Assert.Contains(isolates[0].YearOfIsolation.ToString(), result);
+            Assert.Contains(samples[0].SenderReferenceNumber ?? string.Empty, result);
+            Assert.Contains(samples[0].HostSpeciesName ?? string.Empty, result);
+            Assert.Contains((isolates[0].YearOfIsolation?.ToString() ?? string.Empty), result);
         }
 
         [Fact]
