@@ -4,11 +4,11 @@
     <div class="box_title">Enter/Update the Isolate Characteristics</div>
     <div class="box_body">
         <br />
-        @if (Model.Any())
+        @if (Model != null && Model.Any())
         {
             <form method="post">
                 <div class="isolate_characteristics-grid" style="border: none;">
-                    @for (int i = 0; i < Model.Count(); i++)
+                    @for (int i = 0; i < Math.Min(Model.Count(), 5); i++)
                     {                        
                         <input type="hidden" asp-for="@Model[i].IsolateId" />
                         <input type="hidden" asp-for="@Model[i].CharacteristicId" />

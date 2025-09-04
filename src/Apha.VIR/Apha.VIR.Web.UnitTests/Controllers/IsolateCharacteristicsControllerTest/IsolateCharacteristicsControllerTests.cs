@@ -169,19 +169,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         }
 
         [Fact]
-        public async Task Edit_EmptyCharacteristicsList_ReturnsRedirectToActionResult()
-        {
-            // Arrange
-            var characteristics = new List<IsolateCharacteristicViewModel>();
-
-            // Act
-            var result = await _controller.Edit(characteristics);
-
-            // Assert
-            Assert.IsType<RedirectToActionResult>(result);
-        }
-
-        [Fact]
         public async Task Edit_ValidInput_SuccessfulUpdate()
         {
             // Arrange

@@ -1,15 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Validation;
-using Apha.VIR.Core.Entities;
-using Apha.VIR.Core.Interfaces;
-using Apha.VIR.DataAccess.Repositories;
 using Apha.VIR.Web.Models;
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -59,6 +51,18 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(List<IsolateCharacteristicViewModel> characteristics)
         {
+            if (characteristics == null || !characteristics.Any())
+            {  
+                ModelState.AddModelError("", "No characteristics data was provided.");
+                return View(characteristics); // return back with the error
+            }
+            const int maxAllowedItems = 5;
+            if (characteristics.Count > maxAllowedItems)
+            {
+                ModelState.AddModelError("", $"You can only submit up to {maxAllowedItems} characteristics at a time.");
+                return View(characteristics); // return back with the error
+            }
+
             if (!ModelState.IsValid)
             {
                 await PrepareDropDownLists(characteristics);
