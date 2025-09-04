@@ -62,15 +62,13 @@ namespace Apha.VIR.Application.Services
             IEnumerable<Sample> samples,
             IEnumerable<IsolateInfo> isolates,
             string user
-            )
+        )
         {
-
-            string MissingText(object? value)
+             static string MissingText(object? value)
             {
                 var text = value?.ToString();
                 return string.IsNullOrWhiteSpace(text) ? "[Missing]" : text;
             }
-
 
             var NL = Environment.NewLine;
             var str = new StringBuilder();
@@ -115,13 +113,13 @@ namespace Apha.VIR.Application.Services
             str.Append("Country of Virus Origin: ").Append(MissingText((object?)submission.CountryOfOriginName!)).Append(NL).Append(NL);
         }
 
-        private void AppendSampleDetails(StringBuilder str, IEnumerable<Sample> samples, IEnumerable<IsolateInfo> isolates, Func<object, string> MissingText, string NL)
+        private static void AppendSampleDetails(StringBuilder str, IEnumerable<Sample> samples, IEnumerable<IsolateInfo> isolates, Func<object, string> MissingText, string NL)
         {
             if (samples == null || !samples.Any())
             {
                 str.Append("Your Sample Ref: ").Append('\t').Append("[Missing]").Append(NL);
                 str.Append("Species/Group: ").Append('\t').Append(MissingText((object?)null!)).Append(NL);
-                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)null)).Append(NL).Append(NL);
+                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)string.Empty)).Append(NL).Append(NL);
 
                 return;
             }
@@ -140,7 +138,7 @@ namespace Apha.VIR.Application.Services
         {
             if (isolates == null || !isolates.Any())
             {
-                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)null)).Append(NL);
+                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)string.Empty)).Append(NL);
                 return;
             }
 
@@ -149,14 +147,14 @@ namespace Apha.VIR.Application.Services
             {
                 if (!found && iso.IsolateSampleId == samp.SampleId)
                 {
-                    str.Append("Virus Year of Isolation: ").Append(MissingText(iso.YearOfIsolation)).Append(NL);
+                    str.Append("Virus Year of Isolation: ").Append(MissingText((object?)(iso.YearOfIsolation?.ToString() ?? string.Empty))).Append(NL);
                     found = true;
                 }
             }
 
             if (!found)
             {
-                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)null!)).Append(NL);
+                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)string.Empty)).Append(NL);
             }
         }
 
