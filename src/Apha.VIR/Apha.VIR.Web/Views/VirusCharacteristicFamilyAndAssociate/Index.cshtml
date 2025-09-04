@@ -1,0 +1,73 @@
+﻿@model VirusFamilyAndTypeViewModel
+@{
+    ViewData["Title"] = "Virus Characteristic Assignment | Virus Isolates Repository";
+}
+
+<div>
+    <label for="ddlVirusFamily">Select the Virus Family</label>
+    <select id="ddlVirusFamily" asp-for="SelectedFamilyId" asp-items="@(new SelectList(Model.VirusFamilies, "Id", "Name", Model.SelectedFamilyId))" style="width: 320px;">
+    </select>
+</div>
+
+<div>
+    <label for="ddlVirusType">Select the Virus Type</label>
+    <select id="ddlVirusType" asp-for="SelectedTypeId" asp-items="@(new SelectList(Model.VirusTypes, "Id", "Name", Model.SelectedTypeId))" style="width: 320px;">
+    </select>
+</div>
+
+<div id="grids-container">
+    <p>Virus Characteristics currently assigned to this Virus Family and Type</p>
+    @await Html.PartialAsync("_VirusCharacteristicsGrid", Model.CharacteristicsPresent, new ViewDataDictionary(ViewData) { { "TypeId", Model.SelectedTypeId }, { "IsPresent", true } })
+
+    <p>Virus Characteristics not currently assigned to this Virus Family and Type</p>
+    @await Html.PartialAsync("_VirusCharacteristicsGrid", Model.CharacteristicsAbsent, new ViewDataDictionary(ViewData) { { "TypeId", Model.SelectedTypeId }, { "IsPresent", false } })
+</div>
+
+@section Scripts {
+    <script>
+       
+        $('#ddlVirusFamily').change(function () {
+            var familyId = $(this).val();
+            $.get('@Url.Action("GetVirusTypes")', { familyId: familyId }, function (data) {
+                var $type = $('#ddlVirusType');
+                $type.empty();
+                $.each(data, function (i, item) {
+                    $type.append($('<option>', { value: item.id, text: item.name }));
+                });
+                if (data.length > 0) {
+                    $type.val(data[0].id).trigger('change');
+                } else {
+                    $('#grids-container').html('');
+                }
+            });
+        });
+
+        
+        $('#ddlVirusType').change(function () {
+            var typeId = $(this).val();
+            var familyId = $('#ddlVirusFamily').val();
+            if (typeId) {
+                $.get('@Url.Action("Index")', { familyId: familyId, typeId: typeId }, function (html) {
+                    var $html = $('<div>').html(html);
+                    var $grids = $html.find('#grids-container').html();
+                    $('#grids-container').html($grids);
+                });
+            } else {
+                $('#grids-container').html('');
+            }
+        });
+
+        
+        function assignCharacteristic(typeId, charId) {
+            $.post('@Url.Action("AssignCharacteristic")', { typeId: typeId, characteristicId: charId }, function () {
+                $('#ddlVirusType').trigger('change');
+            });
+        }
+        function removeCharacteristic(typeId, charId) {
+            $.post('@Url.Action("RemoveCharacteristic")', { typeId: typeId, characteristicId: charId }, function () {
+                $('#ddlVirusType').trigger('change');
+            });
+        }
+    </script>
+}
+
