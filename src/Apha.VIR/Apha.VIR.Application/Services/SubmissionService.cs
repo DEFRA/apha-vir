@@ -85,7 +85,7 @@ namespace Apha.VIR.Application.Services
             return str.ToString();
         }
 
-        private void AppendHeader(StringBuilder str, string NL)
+        private static void AppendHeader(StringBuilder str, string NL)
         {
             str.Append("Animal Health and Veterinary Laboratories Agency - Weybridge,").Append(NL);
             str.Append("Avian Virology, New Haw, Surrey KT15 3NB United Kingdom").Append(NL);
@@ -93,7 +93,7 @@ namespace Apha.VIR.Application.Services
             str.Append("Date: ").Append(DateTime.Now.ToLongDateString()).Append(NL).Append(NL).Append(NL);
         }
 
-        private void AppendSubmissionDetails(StringBuilder str, Submission submission, string NL)
+        private static void AppendSubmissionDetails(StringBuilder str, Submission submission, string NL)
         {
             str.Append(submission.Sender).Append(NL);
             str.Append(submission.SenderOrganisation).Append(NL);
@@ -104,15 +104,15 @@ namespace Apha.VIR.Application.Services
             str.Append("Date of Receipt: ").Append(submission.DateSubmissionReceived?.ToString("dd MMMM yyyy") ?? "").Append(NL).Append(NL);
         }
 
-        private void AppendGreeting(StringBuilder str, Submission submission, string NL)
+        private static void AppendGreeting(StringBuilder str, Submission submission, string NL)
         {
             str.Append("Dear ").Append(submission.Sender).Append(NL).Append(NL);
             str.Append("With regards to your recent submission of samples the following detail(s) were omitted. ").Append(NL).Append(NL);
         }
 
-        private void AppendCountryOfOrigin(StringBuilder str, Submission submission, Func<object, string> MissingText, string NL)
+        private static void AppendCountryOfOrigin(StringBuilder str, Submission submission, Func<object, string> MissingText, string NL)
         {
-            str.Append("Country of Virus Origin: ").Append(MissingText(submission.CountryOfOriginName)).Append(NL).Append(NL);
+            str.Append("Country of Virus Origin: ").Append(MissingText((object?)submission.CountryOfOriginName!)).Append(NL).Append(NL);
         }
 
         private void AppendSampleDetails(StringBuilder str, IEnumerable<Sample> samples, IEnumerable<IsolateInfo> isolates, Func<object, string> MissingText, string NL)
@@ -121,7 +121,8 @@ namespace Apha.VIR.Application.Services
             {
                 str.Append("Your Sample Ref: ").Append('\t').Append("[Missing]").Append(NL);
                 str.Append("Species/Group: ").Append('\t').Append(MissingText((object?)null!)).Append(NL);
-                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)null!)).Append(NL).Append(NL);
+                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)null)).Append(NL).Append(NL);
+
                 return;
             }
 
@@ -135,11 +136,11 @@ namespace Apha.VIR.Application.Services
             }
         }
 
-        private void AppendIsolationYear(StringBuilder str, Sample samp, IEnumerable<IsolateInfo> isolates, Func<object, string> MissingText, string NL)
+        private static void AppendIsolationYear(StringBuilder str, Sample samp, IEnumerable<IsolateInfo> isolates, Func<object, string> MissingText, string NL)
         {
             if (isolates == null || !isolates.Any())
             {
-                str.Append("Virus Year of Isolation: ").Append(MissingText(null)).Append(NL);
+                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)null)).Append(NL);
                 return;
             }
 
@@ -155,11 +156,11 @@ namespace Apha.VIR.Application.Services
 
             if (!found)
             {
-                str.Append("Virus Year of Isolation: ").Append(MissingText(null)).Append(NL);
+                str.Append("Virus Year of Isolation: ").Append(MissingText((object?)null!)).Append(NL);
             }
         }
 
-        private void AppendFooter(StringBuilder str, string user, string NL)
+        private static void AppendFooter(StringBuilder str, string user, string NL)
         {
             str.Append(NL);
             str.Append("It is essential that we have these details and I would appreciate it if you could send the information to me as soon as possible. ");
