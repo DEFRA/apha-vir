@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SonarQubeAnalysisProperties>
+  <Property Name="sonar.exclusions">**/wwwroot/**</Property>
+  <Property Name="sonar.coverage.exclusions">**/wwwroot/**,**/*.cshtml,**/Interfaces/*.cs,**/*Map.cs,**/*Mapper.cs,**/Program.cs,**/Startup.cs,**/DTOs/*.cs,**/Entities/*.cs,**/Models/*.cs</Property>
+</SonarQubeAnalysisProperties>
