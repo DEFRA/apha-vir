@@ -146,5 +146,40 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             await Assert.ThrowsAsync<NullReferenceException>(() => _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId));
             await _mockIsolateRepository.Received(1).GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
         }
+
+        [Fact]
+        public async Task UpdateIsolateCharacteristicsAsync_SuccessfulUpdate_ReturnsCompletedTask()
+        {
+            // Arrange
+            var isolateCharacteristicInfoDTO = new IsolateCharacteristicDTO();
+            var isolateCharacteristicInfo = new IsolateCharacteristicInfo();
+            var user = "TestUser";
+
+            _mockMapper.Map<IsolateCharacteristicInfo>(isolateCharacteristicInfoDTO).Returns(isolateCharacteristicInfo);
+            _mockCharacteristicRepository.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfo, user).Returns(Task.CompletedTask);
+
+            // Act
+            await _isolatesService.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfoDTO, user);
+
+            // Assert
+            await _mockCharacteristicRepository.Received(1).UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfo, user);
+        }
+
+        [Fact]
+        public async Task UpdateIsolateCharacteristicsAsync_RepositoryThrowsException_PropagatesException()
+        {
+            // Arrange
+            var isolateCharacteristicInfoDTO = new IsolateCharacteristicDTO();
+            var isolateCharacteristicInfo = new IsolateCharacteristicInfo();
+            var user = "TestUser";
+            var expectedException = new Exception("Test exception");
+
+            _mockMapper.Map<IsolateCharacteristicInfo>(isolateCharacteristicInfoDTO).Returns(isolateCharacteristicInfo);
+            _mockCharacteristicRepository.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfo, user).Throws(expectedException);
+
+            // Act & Assert
+            var actualException = await Assert.ThrowsAsync<Exception>(() => _isolatesService.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfoDTO, user));
+            Assert.Same(expectedException, actualException);
+        }
     }
 }
