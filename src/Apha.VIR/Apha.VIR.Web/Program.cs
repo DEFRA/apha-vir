@@ -9,7 +9,7 @@ if (builder.Environment.IsEnvironment("local"))
     {
         lc.WriteTo.Console();
         string srvpath = ctx.Configuration.GetValue<string>("LogsPath") ?? string.Empty;
-        string logpath = $"{(ctx.HostingEnvironment.IsDevelopment() ? "Logs" : srvpath)}\\Logsample.log";
+        string logpath = $"{(ctx.HostingEnvironment.IsDevelopment() || ctx.HostingEnvironment.IsEnvironment("local") ? "Logs" : srvpath)}\\Logsample.log";
         lc.WriteTo.File(logpath, Serilog.Events.LogEventLevel.Verbose, rollingInterval: RollingInterval.Day);
     });
 }

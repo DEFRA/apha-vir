@@ -1,10 +1,4 @@
-﻿using Amazon.Runtime;
-using Apha.VIR.Application.Interfaces;
-using DocumentFormat.OpenXml.InkML;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Web.UI.Areas.MicrosoftIdentity.Pages.Account;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -26,14 +20,16 @@ namespace Apha.VIR.Web.Controllers
             string errorCode;
             string defaultErrorType = "VIR.GENERAL_EXCEPTION";
             string errorType = string.Empty;
-            string message = $"403 Forbidden: User {username} tried to access {returnUrl}";
+            string message = $"403 Forbidden: User {username} not authorised to access {returnUrl}";
+
+            var ex = new UnauthorizedAccessException(message);
 
             if (!ModelState.IsValid)
             { return View(); }
 
             errorCode = "403 - Forbidden";
             errorType = _configuration["ExceptionTypes:Authorization"] ?? defaultErrorType;
-            _logger.LogError(message, "[{ErrorType:l}] Error [{ErrorCode:l}]: {Message}", errorType, errorCode, message);
+            _logger.LogError(ex, "[{ErrorType:l}] Error [{ErrorCode:l}]: {Message}", errorType, errorCode, ex.Message);
 
             ViewBag.ReturnUrl = returnUrl;
             return View();
