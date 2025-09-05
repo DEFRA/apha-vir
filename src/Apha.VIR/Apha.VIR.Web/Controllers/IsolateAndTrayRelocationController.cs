@@ -2,7 +2,7 @@
 
 namespace Apha.VIR.Web.Controllers
 {
-    public class IsolateRelocationManagementController : Controller
+    public class IsolateAndTrayRelocationController : Controller
     {
         public IActionResult Index()
         {
