@@ -77,7 +77,8 @@ public class SubmissionRepository : ISubmissionRepository
                 SamplingLocationPremises = reader["SamplingLocationPremises"] == DBNull.Value ? null : reader["SamplingLocationPremises"].ToString(),
                 NumberOfSamples = (int)reader["NumberOfSamples"],
                 LastModified = (byte[])reader["LastModified"],
-                CountryOfOriginName = reader["CountryOfOriginName"].ToString()
+                CountryOfOriginName = reader["CountryOfOriginName"].ToString(),
+                SubmittingCountryName = reader["SubmittingCountryName"].ToString()
             };
         }
         return submission;
@@ -143,5 +144,11 @@ public class SubmissionRepository : ISubmissionRepository
             @Sender, @SenderOrganisation, @SenderAddress, @CountryOfOrigin, @SubmittingCountry, @ReasonForSubmission, 
             @DateSubmissionReceived, @CPHNumber, @Owner, @SamplingLocationPremises, @NumberOfSamples, @LastModified OUTPUT",
           parameters);
+    }
+
+    public async Task<IEnumerable<string>> GetLatestSubmissionsAsync()
+    {
+        return await _context.Database
+                .SqlQuery<string>($"EXEC spLastAVNumbersModified").ToListAsync();
     }
 }
