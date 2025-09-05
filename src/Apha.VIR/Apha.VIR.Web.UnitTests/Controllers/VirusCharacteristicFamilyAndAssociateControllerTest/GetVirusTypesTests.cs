@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -31,10 +26,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
             // Arrange
             var familyId = Guid.NewGuid();
             var expectedTypes = new List<LookupItemDTO>
-{
-new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
-};
+            {
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
+            };
             _mockLookupService.GetAllVirusTypesByParentAsync(familyId).Returns(expectedTypes);
 
             // Act

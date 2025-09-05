@@ -602,7 +602,7 @@
 /*----- VirusCharacterstics*/
 .viruscharacteristictable {
     border-collapse: collapse;
-    width: 100%;
+    width: auto;
     border: 1px solid #888888;
     margin-bottom: 20px;
 }

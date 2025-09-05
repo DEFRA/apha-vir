@@ -27,10 +27,10 @@
                         <input type="checkbox" disabled="disabled" @(item.DisplayOnSearch ? "checked" : "") />
                     </td>
                     <td>@item.Prefix</td>
-                    <td>@item.MinValue</td>
-                    <td>@item.MaxValue</td>
-                    <td>@item.DecimalPlaces</td>
-                    <td>@item.Length</td>
+                    <td>@(item.MinValue ?? 0)</td>
+                    <td>@(item.MaxValue ?? 0)</td>
+                    <td>@(item.DecimalPlaces ?? 0)</td>
+                    <td>@(item.Length ?? 0)</td>
                     <td>
                         @if (isPresent)
                         {

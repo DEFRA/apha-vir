@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.VirusCharacteristic;
@@ -140,6 +135,29 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
             Assert.Empty(model.CharacteristicsPresent);
             Assert.Empty(model.CharacteristicsAbsent);
         }
+
+        [Fact]
+        public async Task Index_FamiliesIsEmpty_ReturnsViewWithNullSelectedFamilyIdAndEmptyTypes()
+        {
+            // Arrange
+            var families = new List<LookupItemDTO>(); 
+            _lookupService.GetAllVirusFamiliesAsync().Returns(families);
+
+            // Act
+            var result = await _controller.Index(null, null);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<VirusFamilyAndTypeViewModel>(viewResult.Model);
+
+            Assert.Null(model.SelectedFamilyId); 
+            Assert.Null(model.SelectedTypeId);  
+            Assert.Empty(model.VirusFamilies);   
+            Assert.Empty(model.VirusTypes);      
+            Assert.Empty(model.CharacteristicsPresent); 
+            Assert.Empty(model.CharacteristicsAbsent);  
+        }
+
 
         [Fact]
         public async Task Index_InvalidModelState_ReturnsBadRequest()
