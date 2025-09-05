@@ -8,75 +8,53 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssociateControllerTest
 {
     public class AssignCharacteristicTests
     {
+        private readonly IVirusTypeCharacteristicService _mockTypeCharacteristicService;
         private readonly VirusCharacteristicFamilyAndAssociateController _controller;
-        private readonly ILookupService _mockLookupService;
-        public AssignCharacteristicTests()
+        public AssignCharacteristicTests() 
         {
-            _mockLookupService = Substitute.For<ILookupService>();
+            _mockTypeCharacteristicService = Substitute.For<IVirusTypeCharacteristicService>();
+            var mockLookupService = Substitute.For<ILookupService>();
             var mockCharacteristicService = Substitute.For<IVirusCharacteristicService>();
-            var mockTypeCharacteristicService = Substitute.For<IVirusTypeCharacteristicService>();
 
             _controller = new VirusCharacteristicFamilyAndAssociateController(
-            _mockLookupService,
+            mockLookupService,
             mockCharacteristicService,
-            mockTypeCharacteristicService);
+            _mockTypeCharacteristicService
+            );
         }
 
         [Fact]
-        public async Task GetVirusTypes_ValidFamilyId_ReturnsJsonResult()
+        public async Task AssignCharacteristic_ValidModelState_ReturnsOkResult()
         {
             // Arrange
-            var familyId = Guid.NewGuid();
-            var expectedTypes = new List<LookupItemDTO>
-            {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
-            };
-            _mockLookupService.GetAllVirusTypesByParentAsync(familyId).Returns(expectedTypes);
+            var typeId = Guid.NewGuid();
+            var characteristicId = Guid.NewGuid();
 
             // Act
-            var result = await _controller.GetVirusTypes(familyId);
+            var result = await _controller.AssignCharacteristic(typeId, characteristicId);
 
             // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var actualTypes = Assert.IsAssignableFrom<IEnumerable<LookupItemDTO>>(jsonResult.Value);
-            Assert.Equal(expectedTypes, actualTypes);
+            Assert.IsType<OkResult>(result);
+            await _mockTypeCharacteristicService.Received(1).AssignCharacteristicToTypeAsync(typeId, characteristicId);
         }
 
         [Fact]
-        public async Task GetVirusTypes_NoTypesFound_ReturnsEmptyJsonResult()
+        public async Task AssignCharacteristic_InvalidModelState_ReturnsBadRequestResult()
         {
             // Arrange
-            var familyId = Guid.NewGuid();
-            _mockLookupService.GetAllVirusTypesByParentAsync(familyId).Returns(new List<LookupItemDTO>());
+            _controller.ModelState.AddModelError("error", "some error");
 
             // Act
-            var result = await _controller.GetVirusTypes(familyId);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var actualTypes = Assert.IsAssignableFrom<IEnumerable<LookupItemDTO>>(jsonResult.Value);
-            Assert.Empty(actualTypes);
-        }
-
-        [Fact]
-        public async Task GetVirusTypes_InvalidModelState_ReturnsBadRequest()
-        {
-            // Arrange
-            _controller.ModelState.AddModelError("FamilyId", "Invalid Family ID");
-
-            // Act
-            var result = await _controller.GetVirusTypes(Guid.NewGuid());
+            var result = await _controller.AssignCharacteristic(Guid.NewGuid(), Guid.NewGuid());
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
-        }
+        }        
     }
-
-
 }
