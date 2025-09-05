@@ -4,6 +4,7 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
@@ -18,6 +19,8 @@ namespace Apha.VIR.Web.Controllers
             _iReportService = iReportService;
             _mapper = mapper;
         }
+
+        [Authorize(Roles = "Report Viewer")]
         public IActionResult Index()
         {
             return View();
@@ -41,6 +44,12 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+
+            var isAnyRole = User?.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Any()??false;
+            if (!isAnyRole)
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
             }
 
             var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);
@@ -79,6 +88,12 @@ namespace Apha.VIR.Web.Controllers
                     DateTo = dateTo
                 };
                 return View("IsolateDispatchReport", viewmodel);
+            }
+
+            var isAnyRole = User?.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Any() ?? false;
+            if (!isAnyRole)
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
             }
 
             var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
