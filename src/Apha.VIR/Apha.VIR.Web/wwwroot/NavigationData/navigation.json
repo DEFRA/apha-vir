@@ -138,12 +138,12 @@
             },
             {
                 "title": "Virus Characteristic Management",
-                "url": "/VirusCharacteristicManagement",
+                "url": "/VirusCharacteristicsListEntry",
                 "description": "Manage virus characteristics",
                 "children": [
                     {
                         "title": "Virus Characteristics",
-                        "url": "/VirusCharacteristics",
+                        "url": "/VirusCharacteristicsListEntry",
                         "description": "Manage virus characteristic",
                         "children": [
                             {
@@ -169,7 +169,7 @@
                     },
                     {
                         "title": "Virus Characteristic Associations",
-                        "url": "/VirusFamilyAndType",
+                        "url": "/VirusCharacteristicFamilyAndAssociate",
                         "description": "Manage Virus Family and Type characteristic associations",
                         "children": []
                     }
