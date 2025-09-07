@@ -2,6 +2,7 @@
 using System.Reflection;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "Report Viewer")]
+       [Authorize(Roles = "Report Viewer")]
         public IActionResult Index()
         {
             return View();
@@ -45,9 +46,8 @@ namespace Apha.VIR.Web.Controllers
             {
                 return View(model);
             }
-
-            var isAnyRole = User?.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Any()??false;
-            if (!isAnyRole)
+        
+            if (!AuthorisationUtil.IsUserInAnyRole())
             {
                 throw new UnauthorizedAccessException("User not authorised to retrieve this list");
             }
@@ -90,8 +90,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("IsolateDispatchReport", viewmodel);
             }
 
-            var isAnyRole = User?.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Any() ?? false;
-            if (!isAnyRole)
+            if (!AuthorisationUtil.IsUserInAnyRole())
             {
                 throw new UnauthorizedAccessException("User not authorised to retrieve this list");
             }

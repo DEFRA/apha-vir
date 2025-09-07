@@ -1,8 +1,11 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
@@ -13,12 +16,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
         private readonly IReportService _mockReportService;
         private readonly IMapper _mockMapper;
         private readonly ReportsController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
         public ExportToExcelTests()
         {
             _mockReportService = Substitute.For<IReportService>();
             _mockMapper = Substitute.For<IMapper>();
             _controller = new ReportsController(_mockReportService, _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
         }
 
         [Fact]
@@ -70,6 +76,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             _mockReportService.GetDispatchesReportAsync(dateFrom, dateTo).Returns(serviceData);
             _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(serviceData).Returns(mappedData);
 
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Role, "Administrator")
+            };
+            var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+            _mockHttpContextAccessor.HttpContext.User.Returns(user);
+
+            var appRoles = new List<string> { "Isolate Manager", "Isolate Viewer", "Administrator" };
+            AuthorisationUtil.AppRoles = appRoles;
             // Act
             var result = await _controller.ExportToExcel(inputModel.DateFrom, inputModel.DateTo);
 
@@ -104,6 +119,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
 
             _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(Arg.Any<IEnumerable<IsolateDispatchReportDTO>>())
             .Returns(new List<IsolateDispatchReportModel>());
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Role, "Administrator")
+            };
+            var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+            _mockHttpContextAccessor.HttpContext.User.Returns(user);
+
+            var appRoles = new List<string> { "Isolate Manager", "Isolate Viewer", "Administrator" };
+            AuthorisationUtil.AppRoles = appRoles;
 
             // Act
             var result = await _controller.ExportToExcel(model.DateFrom, model.DateTo);

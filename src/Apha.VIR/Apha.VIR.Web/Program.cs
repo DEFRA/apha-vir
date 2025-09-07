@@ -1,4 +1,5 @@
 using Apha.VIR.Web.Extensions;
+using Apha.VIR.Web.Utilities;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,11 +22,14 @@ else
         loggerConfiguration.UseAwsCloudWatch(builder.Configuration);
     });
 }
-
+builder.Services.AddHttpContextAccessor();
 // Extracted to methods for testability
 builder.ConfigureServices();
 
 var app = builder.Build();
+
+var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+AuthorisationUtil.Configure(httpContextAccessor);
 
 app.ConfigureMiddleware();
 
