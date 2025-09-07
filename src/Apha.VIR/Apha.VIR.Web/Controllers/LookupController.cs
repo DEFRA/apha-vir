@@ -3,7 +3,9 @@ using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.Lookup;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,6 +23,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> Index()
         {
             var result = await _lookupService.GetAllLookupsAsync();
@@ -30,6 +33,7 @@ namespace Apha.VIR.Web.Controllers
             return View("Lookup", lookups);
         }
 
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> LookupList(Guid lookupid, int pageNo = 1, int pageSize = 10)
         {
             if (lookupid == Guid.Empty || !ModelState.IsValid)
@@ -67,6 +71,7 @@ namespace Apha.VIR.Web.Controllers
             return View("LookupItem", viewModel);
         }
 
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> BindLookupItemGridOnPagination(Guid lookupid, int pageNo, int pageSize)
         {
             if (lookupid == Guid.Empty || !ModelState.IsValid)
@@ -99,6 +104,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> Create(Guid lookupId, int currentPage = 1)
         {
             if (lookupId == Guid.Empty || !ModelState.IsValid)
@@ -161,6 +167,13 @@ namespace Apha.VIR.Web.Controllers
                 return View("CreateLookupItem", model);
             }
 
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.LookupDataManager))
+            {
+                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
+                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                throw new UnauthorizedAccessException("Not authorised to insert entry in " + lookup?.Name + " list.");
+            }
+
             var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
 
             await _lookupService.InsertLookupItemAsync(model.LookupId, dto);
@@ -169,6 +182,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> Edit(Guid lookupId, Guid lookupItemId, int currentPage = 1)
         {
             if (lookupId == Guid.Empty || lookupItemId == Guid.Empty || !ModelState.IsValid)
@@ -232,6 +246,13 @@ namespace Apha.VIR.Web.Controllers
                 return View("EditLookupItem", model);
             }
 
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
+            {
+                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
+                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                throw new UnauthorizedAccessException("Not authorised to update entry in " + lookup?.Name + " list.");
+            }
+
             var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
 
             await _lookupService.UpdateLookupItemAsync(model.LookupId, dto);
@@ -266,6 +287,13 @@ namespace Apha.VIR.Web.Controllers
                 model.ShowErrorSummary = showerrorSummary;
 
                 return View("EditLookupItem", model);
+            }
+
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.LookupDataManager))
+            {
+                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
+                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                throw new UnauthorizedAccessException("Not authorised to delete entry in " + lookup?.Name + " list.");
             }
 
             var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);

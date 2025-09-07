@@ -6,7 +6,7 @@ namespace Apha.VIR.Web.Utilities
     {
         private static IHttpContextAccessor _httpContextAccessor;
         private static List<string> _authMessages=new List<string>();
-        //public static List<string> AppRoles => _authMessages ??= GetAppRoles();
+
         public static List<string> AppRoles
         {
             get => _authMessages ??= GetAppRoles();
@@ -19,8 +19,7 @@ namespace Apha.VIR.Web.Utilities
         }
         public static ClaimsPrincipal? CurrentUser =>  _httpContextAccessor?.HttpContext?.User;
 
-
-        public static bool CanGetObject(string role)
+        public static bool CanGetItem(string role)
         {
             return IsInRole(role);
         }
@@ -78,14 +77,27 @@ namespace Apha.VIR.Web.Utilities
 
         private static List<string> GetAppRoles()
         {
-            var roles = new List<string> { "Isolate Manager", 
-                "Isolate Viewer",
-                "Isolate Deleter",
-                "Lookup Data Manager", 
-                "Report Viewer",
-                "Administrator" };
+            var roles = new List<string> 
+            {
+                AppRoleConstant.IsolateManager,
+                AppRoleConstant.IsolateViewer,
+                AppRoleConstant.IsolateDeleter,
+                AppRoleConstant.LookupDataManager,
+                AppRoleConstant.ReportViewer,
+                AppRoleConstant.Administrator
+            };
 
             return roles;
         }
+    }
+
+    public static class AppRoleConstant
+    {
+        public const string IsolateManager = "Isolate Manager";
+        public const string IsolateViewer = "Isolate Viewer";
+        public const string IsolateDeleter = "Isolate Deleter";
+        public const string LookupDataManager = "Lookup Data Manager";
+        public const string ReportViewer = "Report Viewer";
+        public const string Administrator = "Administrator";
     }
 }

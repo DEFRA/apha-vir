@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
@@ -11,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Apha.VIR.Web.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = AppRoleConstant.Administrator)]
     [Route("AuditLog")]
     public class AuditLogController : Controller
     {

@@ -11,19 +11,23 @@ using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class GenerateReportTests
     {
+        private readonly object _lock;
         private readonly IReportService _mockReportService;
         private readonly IMapper _mockMapper;
         private readonly ReportsController _controller;
         private readonly IHttpContextAccessor _mockHttpContextAccessor;
-        public GenerateReportTests()
+
+        public GenerateReportTests(AppRolesFixture fixture)
         {
             _mockReportService = Substitute.For<IReportService>();
             _mockMapper = Substitute.For<IMapper>();
             _controller = new ReportsController(_mockReportService, _mockMapper);
             _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
 
         }
         [Fact]
@@ -46,15 +50,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
                 ReportData = mappedResult
             };
 
-            var claims = new List<Claim>
+            lock (_lock)
             {
-                new Claim(ClaimTypes.Role, "Administrator") 
-            };
-            var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
-            _mockHttpContextAccessor.HttpContext.User.Returns(user);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
 
-            var appRoles = new List<string> { "Isolate Manager", "Isolate Viewer", "Administrator" };
-            AuthorisationUtil.AppRoles = appRoles;
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
 
             _mockReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo).Returns(serviceResult);
             _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(serviceResult).Returns(mappedResult);
@@ -84,7 +91,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             // Simulate a user with no roles
             var claimsIdentity = new ClaimsIdentity();
             var user = new ClaimsPrincipal(claimsIdentity);
-            _mockHttpContextAccessor.HttpContext.User.Returns(user);
+            _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
 
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.GenerateReport(model));

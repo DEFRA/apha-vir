@@ -1,28 +1,37 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.Lookup;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class EditTests
     {
+        private readonly object _lock;
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
         private readonly LookupController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public EditTests()
+        public EditTests(AppRolesFixture fixture)
         {
             _lookupService = Substitute.For<ILookupService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new LookupController(_lookupService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
-        public async Task Edit_ValidInputs_ReturnsViewWithViewModel()
+        public async Task Edit_Get_ValidInputs_ReturnsViewWithViewModel()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
@@ -44,9 +53,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             Assert.IsType<LookupItemViewModel>(result.Model);
         }
 
-
         [Fact]
-        public async Task Edit_InvalidLookupId_ReturnsBadRequest()
+        public async Task Edit_Get_InvalidLookupId_ReturnsBadRequest()
         {
             // Act
             var result = await _controller.Edit(Guid.Empty, Guid.NewGuid()) as BadRequestObjectResult;
@@ -60,7 +68,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         }
 
         [Fact]
-        public async Task Edit_InvalidLookupItemId_ReturnsBadRequest()
+        public async Task Edit_Get_InvalidLookupItemId_ReturnsBadRequest()
         {
             // Act
             var result = await _controller.Edit(Guid.NewGuid(), Guid.Empty) as BadRequestObjectResult;
@@ -74,7 +82,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         }
 
         [Fact]
-        public async Task Edit_GetLookupsByIdAsyncThrowsException_ThrowsException()
+        public async Task Edit_Get_GetLookupsByIdAsyncThrowsException_ThrowsException()
         {
             // Arrange
             _lookupService.GetLookupByIdAsync(Arg.Any<Guid>()).Returns(Task.FromException<LookupDTO>(new Exception("Service exception")));
@@ -84,7 +92,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         }
 
         [Fact]
-        public async Task Edit_GetLookupItemAsyncThrowsException_ThrowsException()
+        public async Task Edit_Get_GetLookupItemAsyncThrowsException_ThrowsException()
         {
             // Arrange
             _lookupService.GetLookupByIdAsync(Arg.Any<Guid>()).Returns(new LookupDTO());
@@ -98,7 +106,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         [InlineData(1)]
         [InlineData(5)]
         [InlineData(10)]
-        public async Task Edit_DifferentCurrentPageValues_ReturnsViewWithCorrectViewModel(int currentPage)
+        public async Task Edit_Get_DifferentCurrentPageValues_ReturnsViewWithCorrectViewModel(int currentPage)
         {
             // Arrange
             var lookupId = Guid.NewGuid();
@@ -123,7 +131,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         }
 
         [Fact]
-        public async Task Edit_ValidModel_ReturnsRedirectToActionResult()
+        public async Task Edit_Post_ValidModel_ReturnsRedirectToActionResult()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
@@ -151,9 +159,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var dto = new LookupItemDTO();
             _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
 
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
+
             // Act
             var result = await _controller.Edit(model);
-
+            
             // Assert
             await _lookupService.Received(1).UpdateLookupItemAsync(model.LookupId, dto);
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
@@ -162,7 +183,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 
 
         [Fact]
-        public async Task Edit_InvalidModelState_ReturnsViewResult()
+        public async Task Edit_Post_InvalidModelState_ReturnsViewResult()
         {
             // Arrange
             var model = new LookupItemViewModel { LookupItem = new LookupItemModel() };
@@ -176,9 +197,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             Assert.Equal("EditLookupItem", viewResult.ViewName);
         }
 
-
         [Fact]
-        public async Task Edit_ShowParentTrue_PopulatesLookupParentList()
+        public async Task Edit_Post_ShowParentTrue_PopulatesLookupParentList()
         {
             // Arrange
             var model = new LookupItemViewModel
@@ -208,7 +228,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         }
 
         [Fact]
-        public async Task Edit_ValidateModelAddsErrors_ReturnsViewResult()
+        public async Task Edit_Post_ValidateModelAddsErrors_ReturnsViewResult()
         {
             // Arrange
             var model = new LookupItemViewModel
@@ -230,7 +250,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         }
 
         [Fact]
-        public async Task Edit_UpdateLookupItemAsyncThrowsException_ReturnsViewResult()
+        public async Task Edit_Post_UpdateLookupItemAsyncThrowsException_ReturnsViewResult()
         {
             // Arrange
             var model = new LookupItemViewModel
@@ -248,6 +268,44 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("EditLookupItem", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Edit_Post_UserNotInValidRole_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var lookupId = Guid.NewGuid();
+            var lookupItemId = Guid.NewGuid();
+            var model = new LookupItemViewModel
+            {
+                LookupId = lookupId,
+                LookupItem = new LookupItemModel
+                {
+                    Id = lookupItemId,
+                    Name = "Test",
+
+                }
+            };
+            var lookupListdto = new List<LookupItemDTO> { new LookupItemDTO { Id = lookupItemId } };
+            var lookuitemList = new List<LookupItemModel> { new LookupItemModel { Id = lookupItemId } };
+
+            var lookup = new LookupViewModel { Id = lookupId, Parent = Guid.NewGuid() };
+            var lookupItem = new LookupItemModel { Id = lookupItemId };
+
+            _lookupService.GetAllLookupItemsAsync(lookupId).Returns(lookupListdto);
+            _mapper.Map<IEnumerable<LookupItemModel>>(lookupListdto).Returns(lookuitemList);
+
+
+            var dto = new LookupItemDTO();
+            _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
+
+            // Simulate a user with no roles
+            var claimsIdentity = new ClaimsIdentity();
+            var user = new ClaimsPrincipal(claimsIdentity);
+            _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(model));
         }
     }
 }

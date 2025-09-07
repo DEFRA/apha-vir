@@ -21,7 +21,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
-       [Authorize(Roles = "Report Viewer")]
+       [Authorize(Roles = AppRoleConstant.ReportViewer)]
         public IActionResult Index()
         {
             return View();
