@@ -24,6 +24,16 @@
 .width-25 {
     width: 25%;
 }
+
+
+.width-600 {
+    width: 600px;
+}
+
+.margin70 {
+    margin-left: -70px;
+}
+
 /*Layout*/
 .master_header_top {
     background-color: #99cc00;
@@ -596,6 +606,43 @@
         background-color: #0b2677;
         color: #fff;
         font-weight: bold;
+    }
+
+
+/*---- Common Table CSS ----*/
+.VIRtable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #0b2677;
+    margin-bottom: 20px;
+}
+
+    .VIRtable td {
+        border: 1px solid black;
+        padding: 6px 8px;
+        text-align: left;
+    }
+
+    .VIRtable th {
+        padding-bottom: 10px;
+        background-color: Navy;
+        border: 1px solid white;
+        padding: 6px 8px;
+        text-align: left;
+    }
+
+    .VIRtable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .VIRtable tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+    .VIRtable tr:nth-child(odd) {
+        background-color: #f9f9f9;
     }
 
 
