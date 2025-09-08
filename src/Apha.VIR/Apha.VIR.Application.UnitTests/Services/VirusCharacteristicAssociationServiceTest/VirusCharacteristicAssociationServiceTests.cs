@@ -3,14 +3,14 @@ using Apha.VIR.Core.Interfaces;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Apha.VIR.Application.UnitTests.Services.VirusTypeCharacteristicServiceTest
+namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicAssociationServiceTest
 {
-    public class VirusTypeCharacteristicServiceTests
+    public class VirusCharacteristicAssociationServiceTests
     {
         private readonly IVirusCharacteristicAssociationRepository _mockRepo;
         private readonly VirusCharacteristicAssociationService _service;
 
-        public VirusTypeCharacteristicServiceTests()
+        public VirusCharacteristicAssociationServiceTests()
         {
             _mockRepo = Substitute.For<IVirusCharacteristicAssociationRepository>();
             _service = new VirusCharacteristicAssociationService(_mockRepo);
