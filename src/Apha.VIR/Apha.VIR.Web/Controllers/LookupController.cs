@@ -140,6 +140,13 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(LookupItemViewModel model)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.LookupDataManager))
+            {
+                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
+                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                throw new UnauthorizedAccessException("Not authorised to insert entry in " + lookup?.Name + " list.");
+            }
+
             ModelState.Remove("LookkupItem.LastModified");
 
             var showerrorSummary = false;
@@ -165,13 +172,6 @@ namespace Apha.VIR.Web.Controllers
                 model.ShowErrorSummary = showerrorSummary;
 
                 return View("CreateLookupItem", model);
-            }
-
-            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.LookupDataManager))
-            {
-                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
-                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
-                throw new UnauthorizedAccessException("Not authorised to insert entry in " + lookup?.Name + " list.");
             }
 
             var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
@@ -223,6 +223,13 @@ namespace Apha.VIR.Web.Controllers
         {
             var showerrorSummary = false;
 
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
+            {
+                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
+                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                throw new UnauthorizedAccessException("Not authorised to update entry in " + lookup?.Name + " list.");
+            }
+
             if (ModelState.IsValid)
             {
                 await ValidateModel(model, ModelState, "edit");
@@ -246,13 +253,6 @@ namespace Apha.VIR.Web.Controllers
                 return View("EditLookupItem", model);
             }
 
-            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
-            {
-                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
-                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
-                throw new UnauthorizedAccessException("Not authorised to update entry in " + lookup?.Name + " list.");
-            }
-
             var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
 
             await _lookupService.UpdateLookupItemAsync(model.LookupId, dto);
@@ -264,6 +264,13 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Delete(LookupItemViewModel model)
         {
             var showerrorSummary = false;
+
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.LookupDataManager))
+            {
+                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
+                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
+                throw new UnauthorizedAccessException("Not authorised to delete entry in " + lookup?.Name + " list.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -287,13 +294,6 @@ namespace Apha.VIR.Web.Controllers
                 model.ShowErrorSummary = showerrorSummary;
 
                 return View("EditLookupItem", model);
-            }
-
-            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.LookupDataManager))
-            {
-                var lookupResult = await _lookupService.GetLookupByIdAsync(model.LookupId);
-                var lookup = _mapper.Map<LookupViewModel>(lookupResult);
-                throw new UnauthorizedAccessException("Not authorised to delete entry in " + lookup?.Name + " list.");
             }
 
             var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);

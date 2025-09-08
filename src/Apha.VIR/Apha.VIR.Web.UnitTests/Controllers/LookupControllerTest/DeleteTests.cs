@@ -85,6 +85,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel { LookupItem = new LookupItemModel() };
             _controller.ModelState.AddModelError("error", "some error");
 
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
             // Act
             var result = await _controller.Delete(model);
 
@@ -103,6 +115,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             };
             _mockLookupService.IsLookupItemInUseAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(true);
 
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
             // Act
             var result = await _controller.Delete(model);
 
@@ -125,6 +149,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             _mockLookupService.DeleteLookupItemAsync(Arg.Any<Guid>(), Arg.Any<LookupItemDTO>())
             .Returns(Task.FromException(new Exception("Test exception")));
 
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
             // Act
             var result = await _controller.Delete(model);
 

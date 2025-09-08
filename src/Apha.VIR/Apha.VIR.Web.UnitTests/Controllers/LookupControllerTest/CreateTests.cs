@@ -115,6 +115,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var model = new LookupItemViewModel { LookupId = lookupId, LookupItem = new LookupItemModel() };
             _controller.ModelState.AddModelError("", "Test error");
 
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
             // Act
             var result = await _controller.Create(model) as ViewResult;
 
@@ -172,6 +184,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 
             _controller.ModelState.AddModelError("LookkupItem.Name", "Name is required");
 
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
             // Act
             var result = await _controller.Create(model);
 
@@ -237,6 +261,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             _mockLookupService.GetLookupByIdAsync(model.LookupId).Returns(lookupdto);
             _mockMapper.Map<LookupViewModel>(Arg.Any<object>()).Returns(lookup);
 
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
             // Act
             var result = await _controller.Create(model);
 
