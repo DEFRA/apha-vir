@@ -10,7 +10,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 {
     public class IsolateDispatchControllerCreateTests
     {
-        private readonly IIsolateDispatchService _mockIsolateDispatchService;        
+        private readonly IIsolateDispatchService _mockIsolateDispatchService;
         private readonly ILookupService _mockLookupService;
         private readonly IIsolatesService _mockIsolatesService;
         private readonly ISubmissionService _mockSubmissionService;
@@ -24,14 +24,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService = Substitute.For<ILookupService>();
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockSubmissionService = Substitute.For<ISubmissionService>();
-            _mockSampleService = Substitute.For<ISampleService>();            
+            _mockSampleService = Substitute.For<ISampleService>();
             _mockMapper = Substitute.For<IMapper>();
-            
-            _controller = new IsolateDispatchController(_mockIsolateDispatchService, 
-                _mockLookupService, 
-                _mockIsolatesService, 
-                _mockSubmissionService, 
-                _mockSampleService, 
+
+            _controller = new IsolateDispatchController(_mockIsolateDispatchService,
+                _mockLookupService,
+                _mockIsolatesService,
+                _mockSubmissionService,
+                _mockSampleService,
                 _mockMapper);
         }
 
