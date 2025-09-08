@@ -5,7 +5,7 @@ namespace Apha.VIR.Web.Utilities
     public static class AuthorisationUtil
     {
         private static IHttpContextAccessor _httpContextAccessor;
-        private static List<string> _authMessages=new List<string>();
+        private static List<string> _authMessages = new List<string>();
 
         public static List<string> AppRoles
         {
@@ -17,7 +17,7 @@ namespace Apha.VIR.Web.Utilities
         {
             _httpContextAccessor = httpContextAccessor;
         }
-        public static ClaimsPrincipal? CurrentUser =>  _httpContextAccessor?.HttpContext?.User;
+        public static ClaimsPrincipal? CurrentUser => _httpContextAccessor?.HttpContext?.User;
 
         public static bool CanGetItem(string role)
         {
@@ -38,7 +38,7 @@ namespace Apha.VIR.Web.Utilities
         {
             return IsInRole(role);
         }
-           
+
         public static bool IsUserInAnyRole()
         {
             var userroles = GetUserRoles();
@@ -56,13 +56,13 @@ namespace Apha.VIR.Web.Utilities
 
         public static string GetUserId()
         {
-            return CurrentUser?.Identity?.Name!??string.Empty;
+            return CurrentUser?.Identity?.Name! ?? string.Empty;
         }
 
         public static string GetUserCurrentRole()
         {
             var roleClaim = CurrentUser?.FindFirst(ClaimTypes.Role)?.Value;
-            return roleClaim??string.Empty;
+            return roleClaim ?? string.Empty;
         }
 
         public static List<string> GetUserRoles()
@@ -77,7 +77,7 @@ namespace Apha.VIR.Web.Utilities
 
         private static List<string> GetAppRoles()
         {
-            var roles = new List<string> 
+            var roles = new List<string>
             {
                 AppRoleConstant.IsolateManager,
                 AppRoleConstant.IsolateViewer,

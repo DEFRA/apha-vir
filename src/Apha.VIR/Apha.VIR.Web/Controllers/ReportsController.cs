@@ -21,7 +21,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
-       [Authorize(Roles = AppRoleConstant.ReportViewer)]
+        [Authorize(Roles = AppRoleConstant.ReportViewer)]
         public IActionResult Index()
         {
             return View();
@@ -46,7 +46,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 return View(model);
             }
-        
+
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
                 throw new UnauthorizedAccessException("User not authorised to retrieve this list");

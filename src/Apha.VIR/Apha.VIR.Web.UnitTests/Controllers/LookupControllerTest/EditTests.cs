@@ -174,7 +174,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 
             // Act
             var result = await _controller.Edit(model);
-            
+
             // Assert
             await _lookupService.Received(1).UpdateLookupItemAsync(model.LookupId, dto);
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);

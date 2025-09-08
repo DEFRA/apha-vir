@@ -2,12 +2,15 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.Lookup;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Controllers
 {
+    [Authorize(Roles = AppRoleConstant.LookupDataManager)]
     public class SenderController : Controller
     {
         private readonly ISenderService _senderService;

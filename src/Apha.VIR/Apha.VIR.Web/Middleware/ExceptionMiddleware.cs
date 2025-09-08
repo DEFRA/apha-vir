@@ -59,15 +59,15 @@ namespace Apha.VIR.Web.Middleware
 
                 if (ex is UnauthorizedAccessException)
                 {
-                    var userid = context.User.Identity?.Name ==null ? string.Empty: context.User.Identity?.Name;
-                    _logger.LogError(ex, "[{ErrorType:l}] Error [{ErrorCode:l}]: {Message}", errorType, errorCode, userid+ " ," + ex.Message);
+                    var userid = context.User.Identity?.Name == null ? string.Empty : context.User.Identity?.Name;
+                    _logger.LogError(ex, "[{ErrorType:l}] Error [{ErrorCode:l}]: {Message}", errorType, errorCode, userid + " ," + ex.Message);
                 }
-                else 
+                else
                 {
                     _logger.LogError(ex, "[{ErrorType:l}] Error [{ErrorCode:l}]: {Message}", errorType, errorCode, ex.Message);
                 }
 
-                    context.Response.Redirect("/Error");
+                context.Response.Redirect("/Error");
             }
         }
     }
