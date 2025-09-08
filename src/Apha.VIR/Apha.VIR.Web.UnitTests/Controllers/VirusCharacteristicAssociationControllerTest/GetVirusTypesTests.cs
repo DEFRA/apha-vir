@@ -4,18 +4,18 @@ using Apha.VIR.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssociateControllerTest
+namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationControllerTest
 {
     public class GetVirusTypesTests
     {
-        private readonly VirusCharacteristicFamilyAndAssociateController _controller;
+        private readonly VirusCharacteristicAssociationController _controller;
         private readonly ILookupService _mockLookupService;
         public GetVirusTypesTests()
         {
             _mockLookupService = Substitute.For<ILookupService>();
             var mockCharacteristicService = Substitute.For<IVirusCharacteristicService>();
-            var mockTypeCharacteristicService = Substitute.For<IVirusTypeCharacteristicService>();
-            _controller = new VirusCharacteristicFamilyAndAssociateController(
+            var mockTypeCharacteristicService = Substitute.For<IVirusCharacteristicAssociationService>();
+            _controller = new VirusCharacteristicAssociationController(
             _mockLookupService,
             mockCharacteristicService,
             mockTypeCharacteristicService);

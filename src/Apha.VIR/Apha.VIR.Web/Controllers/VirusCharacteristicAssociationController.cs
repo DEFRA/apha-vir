@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
-    public class VirusCharacteristicFamilyAndAssociateController : Controller
+    public class VirusCharacteristicAssociationController : Controller
     {
         private readonly ILookupService _lookupService;
         private readonly IVirusCharacteristicService _characteristicService;
-        private readonly IVirusTypeCharacteristicService _typeCharacteristicService;
+        private readonly IVirusCharacteristicAssociationService _typeCharacteristicService;
 
-        public VirusCharacteristicFamilyAndAssociateController(
+        public VirusCharacteristicAssociationController(
              ILookupService lookupService,
              IVirusCharacteristicService characteristicService,
-             IVirusTypeCharacteristicService typeCharacteristicService)
+             IVirusCharacteristicAssociationService typeCharacteristicService)
         {
             _lookupService = lookupService;
             _characteristicService = characteristicService;
@@ -34,28 +34,28 @@ namespace Apha.VIR.Web.Controllers
             var families = await _lookupService.GetAllVirusFamiliesAsync();
             var selectedFamilyId = familyId ?? families.FirstOrDefault()?.Id;
 
-            var types = selectedFamilyId.HasValue
+            var virusTypes = selectedFamilyId.HasValue
                 ? await _lookupService.GetAllVirusTypesByParentAsync(selectedFamilyId)
                 : Enumerable.Empty<LookupItemDTO>();
 
-            var selectedTypeId = typeId
-                ?? types.FirstOrDefault()?.Id;
+            var selectedVirusTypeId = typeId
+                ?? virusTypes.FirstOrDefault()?.Id;
 
-            var present = selectedTypeId.HasValue
-                ? await _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(selectedTypeId, false)
+            var presentVirusCharacteristics = selectedVirusTypeId.HasValue
+                ? await _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(selectedVirusTypeId, false)
                 : Enumerable.Empty<VirusCharacteristicDTO>();
-            var absent = selectedTypeId.HasValue
-                ? await _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(selectedTypeId, true)
+            var absentVirusCharacteristics = selectedVirusTypeId.HasValue
+                ? await _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(selectedVirusTypeId, true)
                 : Enumerable.Empty<VirusCharacteristicDTO>();
 
-            var vm = new VirusFamilyAndTypeViewModel
+            var vm = new VirusCharacteristicAssociationViewModel
             {
                 SelectedFamilyId = selectedFamilyId,
-                SelectedTypeId = selectedTypeId,
+                SelectedVirusTypeId = selectedVirusTypeId,
                 VirusFamilies = families,
-                VirusTypes = types,
-                CharacteristicsPresent = present,
-                CharacteristicsAbsent = absent
+                VirusTypes = virusTypes,
+                CharacteristicsPresent = presentVirusCharacteristics,
+                CharacteristicsAbsent = absentVirusCharacteristics
             };
             return View(vm);
         }

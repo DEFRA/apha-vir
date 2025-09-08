@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class VirusTypeCharacteristicRepository : IVirusTypeCharacteristicRepository
+public class VirusCharacteristicAssociationRepository : IVirusCharacteristicAssociationRepository
 {
     private readonly VIRDbContext _context;
-    public VirusTypeCharacteristicRepository(VIRDbContext context)
+    public VirusCharacteristicAssociationRepository(VIRDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }

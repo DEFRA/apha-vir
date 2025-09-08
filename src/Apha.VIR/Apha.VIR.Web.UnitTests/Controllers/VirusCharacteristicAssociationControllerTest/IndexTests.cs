@@ -5,20 +5,20 @@ using Apha.VIR.Web.Models.VirusCharacteristic;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssociateControllerTest
+namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationControllerTest
 {
     public class IndexTests
     {
-        private readonly VirusCharacteristicFamilyAndAssociateController _controller;
+        private readonly VirusCharacteristicAssociationController _controller;
         private readonly ILookupService _lookupService;
         private readonly IVirusCharacteristicService _characteristicService;
-        private readonly IVirusTypeCharacteristicService _typeCharacteristicService;
+        private readonly IVirusCharacteristicAssociationService _typeCharacteristicService;
         public IndexTests()
         {
             _lookupService = Substitute.For<ILookupService>();
             _characteristicService = Substitute.For<IVirusCharacteristicService>();
-            _typeCharacteristicService = Substitute.For<IVirusTypeCharacteristicService>();
-            _controller = new VirusCharacteristicFamilyAndAssociateController(_lookupService, _characteristicService, _typeCharacteristicService);
+            _typeCharacteristicService = Substitute.For<IVirusCharacteristicAssociationService>();
+            _controller = new VirusCharacteristicAssociationController(_lookupService, _characteristicService, _typeCharacteristicService);
         }
 
         [Fact]
@@ -28,11 +28,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
             var familyId = Guid.NewGuid();
             var typeId = Guid.NewGuid();
             var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var types = new List<LookupItemDTO> { new LookupItemDTO { Id = typeId, Name = "Type1" } };
+            var virusTypes = new List<LookupItemDTO> { new LookupItemDTO { Id = typeId, Name = "Type1" } };
             var characteristics = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic1" } };
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
-            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(types);
+            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, false).Returns(characteristics);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDTO>());
 
@@ -41,11 +41,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<VirusFamilyAndTypeViewModel>(viewResult.Model);
+            var model = Assert.IsType<VirusCharacteristicAssociationViewModel>(viewResult.Model);
             Assert.Equal(familyId, model.SelectedFamilyId);
-            Assert.Equal(typeId, model.SelectedTypeId);
+            Assert.Equal(typeId, model.SelectedVirusTypeId);
             Assert.Equal(families, model.VirusFamilies);
-            Assert.Equal(types, model.VirusTypes);
+            Assert.Equal(virusTypes, model.VirusTypes);
             Assert.Equal(characteristics, model.CharacteristicsPresent);
             Assert.Empty(model.CharacteristicsAbsent);
         }
@@ -57,11 +57,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
             var familyId = Guid.NewGuid();
             var typeId = Guid.NewGuid();
             var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var types = new List<LookupItemDTO> { new LookupItemDTO { Id = typeId, Name = "Type1" } };
+            var virusTypes = new List<LookupItemDTO> { new LookupItemDTO { Id = typeId, Name = "Type1" } };
             var characteristics = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic1" } };
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
-            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(types);
+            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, false).Returns(characteristics);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDTO>());
 
@@ -70,11 +70,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<VirusFamilyAndTypeViewModel>(viewResult.Model);
+            var model = Assert.IsType<VirusCharacteristicAssociationViewModel>(viewResult.Model);
             Assert.Equal(familyId, model.SelectedFamilyId);
-            Assert.Equal(typeId, model.SelectedTypeId);
+            Assert.Equal(typeId, model.SelectedVirusTypeId);
             Assert.Equal(families, model.VirusFamilies);
-            Assert.Equal(types, model.VirusTypes);
+            Assert.Equal(virusTypes, model.VirusTypes);
             Assert.Equal(characteristics, model.CharacteristicsPresent);
             Assert.Empty(model.CharacteristicsAbsent);
         }
@@ -86,11 +86,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
             var familyId = Guid.NewGuid();
             var typeId = Guid.NewGuid();
             var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var types = new List<LookupItemDTO>();
+            var virusTypes = new List<LookupItemDTO>();
             var characteristics = new List<VirusCharacteristicDTO>();
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
-            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(types);
+            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, false).Returns(characteristics);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDTO>());
 
@@ -99,9 +99,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<VirusFamilyAndTypeViewModel>(viewResult.Model);
+            var model = Assert.IsType<VirusCharacteristicAssociationViewModel>(viewResult.Model);
             Assert.Equal(familyId, model.SelectedFamilyId);
-            Assert.Equal(typeId, model.SelectedTypeId);
+            Assert.Equal(typeId, model.SelectedVirusTypeId);
             Assert.Equal(families, model.VirusFamilies);
             Assert.Empty(model.VirusTypes);
             Assert.Empty(model.CharacteristicsPresent);
@@ -114,11 +114,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
             // Arrange
             var familyId = Guid.NewGuid();
             var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var types = new List<LookupItemDTO>();
+            var virusTypes = new List<LookupItemDTO>();
             var characteristics = new List<VirusCharacteristicDTO>();
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
-            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(types);
+            _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(Arg.Any<Guid?>(), false).Returns(characteristics);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(Arg.Any<Guid?>(), true).Returns(new List<VirusCharacteristicDTO>());
 
@@ -127,9 +127,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<VirusFamilyAndTypeViewModel>(viewResult.Model);
+            var model = Assert.IsType<VirusCharacteristicAssociationViewModel>(viewResult.Model);
             Assert.Equal(familyId, model.SelectedFamilyId);
-            Assert.Null(model.SelectedTypeId);
+            Assert.Null(model.SelectedVirusTypeId);
             Assert.Equal(families, model.VirusFamilies);
             Assert.Empty(model.VirusTypes);
             Assert.Empty(model.CharacteristicsPresent);
@@ -140,7 +140,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
         public async Task Index_FamiliesIsEmpty_ReturnsViewWithNullSelectedFamilyIdAndEmptyTypes()
         {
             // Arrange
-            var families = new List<LookupItemDTO>(); 
+            var families = new List<LookupItemDTO>();
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
 
             // Act
@@ -148,14 +148,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<VirusFamilyAndTypeViewModel>(viewResult.Model);
+            var model = Assert.IsType<VirusCharacteristicAssociationViewModel>(viewResult.Model);
 
-            Assert.Null(model.SelectedFamilyId); 
-            Assert.Null(model.SelectedTypeId);  
-            Assert.Empty(model.VirusFamilies);   
-            Assert.Empty(model.VirusTypes);      
-            Assert.Empty(model.CharacteristicsPresent); 
-            Assert.Empty(model.CharacteristicsAbsent);  
+            Assert.Null(model.SelectedFamilyId);
+            Assert.Null(model.SelectedVirusTypeId);
+            Assert.Empty(model.VirusFamilies);
+            Assert.Empty(model.VirusTypes);
+            Assert.Empty(model.CharacteristicsPresent);
+            Assert.Empty(model.CharacteristicsAbsent);
         }
 
 

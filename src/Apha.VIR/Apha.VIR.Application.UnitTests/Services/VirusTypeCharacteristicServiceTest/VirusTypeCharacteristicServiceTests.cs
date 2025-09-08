@@ -7,20 +7,20 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusTypeCharacteristicService
 {
     public class VirusTypeCharacteristicServiceTests
     {
-        private readonly IVirusTypeCharacteristicRepository _mockRepo;
-        private readonly VirusTypeCharacteristicService _service;
+        private readonly IVirusCharacteristicAssociationRepository _mockRepo;
+        private readonly VirusCharacteristicAssociationService _service;
 
         public VirusTypeCharacteristicServiceTests()
         {
-            _mockRepo = Substitute.For<IVirusTypeCharacteristicRepository>();
-            _service = new VirusTypeCharacteristicService(_mockRepo);
+            _mockRepo = Substitute.For<IVirusCharacteristicAssociationRepository>();
+            _service = new VirusCharacteristicAssociationService(_mockRepo);
         }
 
         [Fact]
         public void Constructor_NullRepository_ThrowsArgumentNullException()
         {
-            IVirusTypeCharacteristicRepository? nullRepository = null;
-            Assert.Throws<ArgumentNullException>(() => new VirusTypeCharacteristicService(nullRepository!));
+            IVirusCharacteristicAssociationRepository? nullRepository = null;
+            Assert.Throws<ArgumentNullException>(() => new VirusCharacteristicAssociationService(nullRepository!));
         }
 
         [Fact]

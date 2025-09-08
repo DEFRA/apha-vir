@@ -3,19 +3,19 @@ using Apha.VIR.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssociateControllerTest
+namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationControllerTest
 {
     public class AssignCharacteristicTests
     {
-        private readonly IVirusTypeCharacteristicService _mockTypeCharacteristicService;
-        private readonly VirusCharacteristicFamilyAndAssociateController _controller;
-        public AssignCharacteristicTests() 
+        private readonly IVirusCharacteristicAssociationService _mockTypeCharacteristicService;
+        private readonly VirusCharacteristicAssociationController _controller;
+        public AssignCharacteristicTests()
         {
-            _mockTypeCharacteristicService = Substitute.For<IVirusTypeCharacteristicService>();
+            _mockTypeCharacteristicService = Substitute.For<IVirusCharacteristicAssociationService>();
             var mockLookupService = Substitute.For<ILookupService>();
             var mockCharacteristicService = Substitute.For<IVirusCharacteristicService>();
 
-            _controller = new VirusCharacteristicFamilyAndAssociateController(
+            _controller = new VirusCharacteristicAssociationController(
             mockLookupService,
             mockCharacteristicService,
             _mockTypeCharacteristicService
@@ -48,6 +48,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicFamilyAndAssocia
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
-        }        
+        }
     }
 }

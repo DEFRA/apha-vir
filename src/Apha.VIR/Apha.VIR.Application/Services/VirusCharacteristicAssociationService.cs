@@ -8,18 +8,18 @@ using Apha.VIR.Core.Interfaces;
 
 namespace Apha.VIR.Application.Services
 {
-    public class VirusTypeCharacteristicService : IVirusTypeCharacteristicService
+    public class VirusCharacteristicAssociationService : IVirusCharacteristicAssociationService
     {
-        private readonly IVirusTypeCharacteristicRepository _repo;
-        public VirusTypeCharacteristicService(IVirusTypeCharacteristicRepository repo)
+        private readonly IVirusCharacteristicAssociationRepository _repo;
+        public VirusCharacteristicAssociationService(IVirusCharacteristicAssociationRepository repo)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        }        
+        }
 
         public async Task AssignCharacteristicToTypeAsync(Guid virusTypeId, Guid characteristicId)
         {
             await _repo.AssignCharacteristicToTypeAsync(virusTypeId, characteristicId);
-        }           
+        }
 
         public async Task RemoveCharacteristicFromTypeAsync(Guid virusTypeId, Guid characteristicId)
         {

@@ -169,7 +169,7 @@
                     },
                     {
                         "title": "Virus Characteristic Associations",
-                        "url": "/VirusCharacteristicFamilyAndAssociate",
+                        "url": "/VirusCharacteristicAssociation",
                         "description": "Manage Virus Family and Type characteristic associations",
                         "children": []
                     }
