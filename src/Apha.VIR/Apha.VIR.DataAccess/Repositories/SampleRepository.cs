@@ -90,4 +90,14 @@ public class SampleRepository : ISampleRepository
            );
     }
 
+    public async Task DeleteSampleAsync(Guid sampleId, string userId, byte[] lastModified)
+    {
+        await _context.Database.ExecuteSqlRawAsync(
+           "EXEC spSampleDelete @UserID, @SampleId, @LastModified",
+           new SqlParameter("@UserID", SqlDbType.UniqueIdentifier) { Value = userId },
+           new SqlParameter("@SampleId", SqlDbType.VarChar, 20) { Value = sampleId },           
+           new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified }
+        );
+    }
+
 }

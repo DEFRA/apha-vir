@@ -29,6 +29,9 @@ public class SampleMap : IEntityTypeConfiguration<Sample>
         entity.Property(e => e.SMSReferenceNumber)
             .HasMaxLength(30)
             .IsUnicode(false);
-
+        entity.Ignore(e => e.HostBreedName);
+        entity.Ignore(e => e.HostSpeciesName);
+        entity.Ignore(e => e.SampleTypeName);
+        entity.Ignore(e => e.HostPurposeName);
     }
 }

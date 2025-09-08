@@ -47,6 +47,11 @@ namespace Apha.VIR.Application.Services
             var sample = _mapper.Map<Sample>(sampleDto);
             await _sampleRepository.UpdateSampleAsync(sample, userName);
         }
+
+        public async Task DeleteSampleAsync(Guid sampleId, string userId, byte[] lastModified)
+        {
+            await _sampleRepository.DeleteSampleAsync(sampleId, userId, lastModified);
+        }
     }
 }
 

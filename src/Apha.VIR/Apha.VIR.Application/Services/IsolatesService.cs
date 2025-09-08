@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Xml;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
@@ -8,19 +9,19 @@ namespace Apha.VIR.Application.Services
 {
     public class IsolatesService : IIsolatesService
     {
-        private readonly IIsolateRepository _iIsolateRepository;
+        private readonly IIsolateRepository _isolateRepository;
         private readonly ISubmissionRepository _submissionRepository;
         private readonly ISampleRepository _sampleRepository;
         private readonly ICharacteristicRepository _characteristicRepository;
         private readonly IMapper _mapper;
 
-        public IsolatesService(IIsolateRepository iIsolateRepository,
+        public IsolatesService(IIsolateRepository isolateRepository,
             ISubmissionRepository submissionRepository,
             ISampleRepository sampleRepository,
             ICharacteristicRepository characteristicRepository,
             IMapper mapper)
         {
-            _iIsolateRepository = iIsolateRepository ?? throw new ArgumentNullException(nameof(iIsolateRepository));
+            _isolateRepository = isolateRepository ?? throw new ArgumentNullException(nameof(isolateRepository));
             _submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
             _sampleRepository = sampleRepository ?? throw new ArgumentNullException(nameof(sampleRepository));
             _characteristicRepository = characteristicRepository ?? throw new ArgumentNullException(nameof(characteristicRepository));
@@ -29,13 +30,13 @@ namespace Apha.VIR.Application.Services
 
         public async Task<IsolateFullDetailDTO> GetIsolateFullDetailsAsync(Guid IsolateId)
         {
-            var isolateFullDetail = await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(IsolateId);
+            var isolateFullDetail = await _isolateRepository.GetIsolateFullDetailsByIdAsync(IsolateId);
             return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
         }
 
         public async Task<IsolateDTO> GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId)
         {
-            var isolate = await _iIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
+            var isolate = await _isolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
 
             if (isolate.FamilyName == "Paramyxoviridae")
             {
@@ -57,13 +58,18 @@ namespace Apha.VIR.Application.Services
         public async Task<Guid> AddIsolateDetailsAsync(IsolateDTO isolate)
         {
             var isolateData = _mapper.Map<Isolate>(isolate);
-            return await _iIsolateRepository.AddIsolateDetailsAsync(isolateData);
+            return await _isolateRepository.AddIsolateDetailsAsync(isolateData);
         }
 
         public async Task UpdateIsolateDetailsAsync(IsolateDTO isolate)
         {
             var isolateData = _mapper.Map<Isolate>(isolate);
-            await _iIsolateRepository.UpdateIsolateDetailsAsync(isolateData);
+            await _isolateRepository.UpdateIsolateDetailsAsync(isolateData);
+        }
+
+        public async Task DeleteIsolateAsync(Guid isolateId, string userId, byte[] lastModified)
+        {
+            await _isolateRepository.DeleteIsolateAsync(isolateId, userId, lastModified);
         }
 
         public async Task<string> GenerateNomenclature(string avNumber, Guid sampleId, string virusType, string yearOfIsolation)
@@ -93,10 +99,65 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<IEnumerable<IsolateCharacteristicDTO>>(characteristicList);
         }
 
-        public Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicDTO item, string User)
+        public async Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicDTO item, string User)
         {
             var data = _mapper.Map<IsolateCharacteristicInfo>(item);
-            return _characteristicRepository.UpdateIsolateCharacteristicsAsync(data, User);
+            await _characteristicRepository.UpdateIsolateCharacteristicsAsync(data, User);
+        }
+
+        public async Task<IEnumerable<IsolateInfoDTO>> GetIsolateInfoByAVNumberAsync(string AVNumber)
+        {
+            var isolates = await _isolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);            
+            var isolatesDto = _mapper.Map<IEnumerable<IsolateInfoDTO>>(isolates);
+            foreach (var isolate in isolatesDto)
+            {
+                var isolatecharList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(isolate.IsolateId);
+                var isolateCharNomenclature = ServiceHelper.GetCharacteristicNomenclature(isolatecharList.ToList());
+                isolate.Characteristics = string.IsNullOrEmpty(isolateCharNomenclature) ? "" : "(" + isolateCharNomenclature + ")";
+            }
+            return isolatesDto;
+        }
+
+        public async Task<bool> UniqueNomenclatureAsync(Guid isolateId, string? familyName, Guid type)
+        {
+            var isolates = await _isolateRepository.GetIsolateForNomenclatureAsync(isolateId);
+            if(isolates != null && isolates.Any())
+            {
+                return await UniquenessCheckingForIsolates(isolateId, isolates, familyName, type);
+            }
+            else
+            {
+                return true;
+            }                
+        }
+
+        private async Task<bool> UniquenessCheckingForIsolates(Guid isolateId, IEnumerable<IsolateNomenclature> isolates, string? familyName, Guid type)
+        {
+            bool unique = true;
+            foreach (var nmIsolate in isolates)
+            {
+                //HACK:Temporary hardcoded method to handle uniqueness checking for viruses in the Paramyxoviridae family
+                if (familyName == "Paramyxoviridae")
+                {
+                    if (type == nmIsolate.VirusType)
+                    {
+                        unique = false;
+                    }                    
+                }
+                else
+                {
+                    var nmIsolatecharList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(nmIsolate.IsolateId);
+                    var nmIsolateCharNomenclature = ServiceHelper.GetCharacteristicNomenclature(nmIsolatecharList.ToList());
+
+                    var isolatecharList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(isolateId);
+                    var isolateCharNomenclature = ServiceHelper.GetCharacteristicNomenclature(isolatecharList.ToList());
+                    if (isolateCharNomenclature == nmIsolateCharNomenclature)
+                    {
+                        unique = false;
+                    }
+                }
+            }
+            return unique;
         }
     }
 }

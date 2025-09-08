@@ -49,6 +49,11 @@ namespace Apha.VIR.Application.Services
             await _submissionRepository.UpdateSubmissionAsync(submissionData, user);
         }
 
+        public async Task DeleteSubmissionAsync(Guid submissionId, string userId, byte[] lastModified)
+        {
+            await _submissionRepository.DeleteSubmissionAsync(submissionId, userId, lastModified);
+        }
+
         public async Task<IEnumerable<string>> GetLatestSubmissionsAsync()
         {
             var avNumbers = await _submissionRepository.GetLatestSubmissionsAsync();

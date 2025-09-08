@@ -234,5 +234,10 @@ namespace Apha.VIR.Application.Services
 
             return lastViability == null ? null : _mapper.Map<IsolateViabilityDTO>(lastViability);
         }
+
+        public async Task<int> GetIsolateDispatchRecordCountAsync(Guid isolateId)
+        {
+            return await _isolateDispatchRepository.GetIsolateDispatchRecordCountAsync(isolateId);            
+        }
     }
 }
