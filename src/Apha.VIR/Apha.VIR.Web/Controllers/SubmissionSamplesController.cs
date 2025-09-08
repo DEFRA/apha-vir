@@ -131,7 +131,7 @@ namespace Apha.VIR.Web.Controllers
             return Json(new { success = true, message = "Isolate deleted successfully." });
         }
 
-        private void CheckDetectionForSampleGrid(List<SubmissionSamplesModel> sampleList, bool hasIsolates, bool hasDetections, ref string isolateGridHeader)
+        private static void CheckDetectionForSampleGrid(List<SubmissionSamplesModel> sampleList, bool hasIsolates, bool hasDetections, ref string isolateGridHeader)
         {
             foreach(var sample in sampleList)
             {
