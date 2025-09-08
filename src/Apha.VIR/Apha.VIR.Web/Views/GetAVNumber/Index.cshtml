@@ -1,0 +1,61 @@
+﻿@model GetAVNumberViewModel
+@{
+    ViewData["Title"] = "Virus Isolates Repository";
+}
+
+<div class="contentbox" style="width: 95%">
+    <div class="box_title">Enter the AV Number of the submission</div>
+    <div class="av-number-box_body">
+        <br />
+        <form method="post">
+            <div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; align-items: center;">
+                        <div style="min-width: 90px;">AV Number</div>
+                        <div><img src="~/images/spacer.gif" width="10" height="5" alt="" /></div>
+                        <div>
+                            <input asp-for="AVNumber" type="text" title="Format is AV000000-00, PD0000-00, SI000000-00 or BN000000-00" style="width: 180px;" />
+                            <br />
+                            <span asp-validation-for="AVNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div><img src="~/images/spacer.gif" width="200" height="5" alt="" /></div>
+                        <div>
+                            <button type="submit" class="btn btn-link" style="padding:0; border:none; background:none; color:#0b2677; text-decoration:underline; font-size:1em;">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<div class="isolate-grid-table mt-1">
+    @if (Model.LastAVNumbers != null && Model.LastAVNumbers.Any())
+    {
+        <table class="table table-striped" style="width: 180px;">
+            <thead class=".av-number-thead">
+                <tr>
+                    <th class=".av-number-th"> Select a recently used AV Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.LastAVNumbers)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="SubmissionSamples" asp-action="Index" asp-route-AVNumber="@item" class="link-list;">@item</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    </div>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }

@@ -3,6 +3,7 @@
 public class IsolateInfo
 {
     public Guid IsolateId { get; set; }
+    public Guid IsolateSampleId { get; set; }
     public string? AvNumber { get; set; } = null!;
     public string? FamilyName { get; set; }
     public string? TypeName { get; set; }

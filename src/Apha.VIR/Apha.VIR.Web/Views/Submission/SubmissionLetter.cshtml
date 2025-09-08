@@ -1,0 +1,17 @@
+﻿@using Apha.VIR.Web.Models
+@model SubmissionLetterViewModel
+@{
+    ViewData["Title"] = "Submission Letter | Virus Isolates Repository";
+}
+<div class="submission-letter-container" style="display: flex; flex-direction: row; align-items: flex-end;">
+    <textarea id="txtLetter" class="submission-letter-text" rows="40" cols="80" style="border: none; background-color: #fff; color: #222; font-family: verdana, arial, helvetica, sans-serif; height: 24cm; width: 18cm;">@Model.LetterContent</textarea>
+    <div class="back-link-container" style="margin-left: 16px; align-self: flex-end;">
+        <a href="@Url.Action("Index", "Home")" class="back-link">Back</a>
+    </div>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/submission-letter.css" />
+}
+@section Scripts {
+    <script src="~/js/submission-letter.js"></script>
+}
