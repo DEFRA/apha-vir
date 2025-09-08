@@ -1,7 +1,9 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -22,6 +24,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = AppRoleConstant.Administrator)]
         public IActionResult History(string AVNumber, Guid Isolate)
         {
             if (string.IsNullOrWhiteSpace(AVNumber) || Isolate == Guid.Empty || !ModelState.IsValid)
@@ -45,6 +48,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.Administrator)]
         public async Task<IActionResult> Edit(string AVNumber, Guid Isolate, Guid IsolateViabilityId)
         {
             if (string.IsNullOrWhiteSpace(AVNumber) || Isolate == Guid.Empty || !ModelState.IsValid)
@@ -75,6 +79,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(IsolateViabilityViewModel model)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.Administrator))
+            {
+                throw new UnauthorizedAccessException("Not authorised to modify.");
+            }
             string userid = "TestUser";
 
             if (!ModelState.IsValid)
@@ -97,6 +105,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid isolateViabilityId, string lastModified, string avNUmber, Guid isolateId)
         {
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete.");
+            }
             string userid = "TestUser";
 
             if (!ModelState.IsValid)
