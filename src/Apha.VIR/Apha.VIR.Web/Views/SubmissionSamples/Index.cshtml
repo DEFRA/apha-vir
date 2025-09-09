@@ -18,17 +18,17 @@
 		<li>
 			<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
 			<img src="~/Images/spacer.gif" width="3" height="9" alt="">
-			<a asp-controller="Submission" asp-action="Edit" asp-route-AVNumber="@Model.AVNumber">Edit this Submission</a>
+			<a asp-controller="Submission" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)">Edit this Submission</a>
 		</li>
 		<li>
 			<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
 			<img src="~/Images/spacer.gif" width="3" height="9" alt="">
-			<a asp-controller="Sample" asp-action="Create" asp-route-AVNumber="@Model.AVNumber">Add a new Sample</a>
+			<a asp-controller="Sample" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)">Add a new Sample</a>
 		</li>
 		<li>
 			<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
 			<img src="~/Images/spacer.gif" width="3" height="9" alt="">
-			<a asp-controller="Submission" asp-action="SubmissionLetter" asp-route-AVNumber="@Model.AVNumber">Missing Details Letter</a>
+			<a asp-controller="Submission" asp-action="SubmissionLetter" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)">Missing Details Letter</a>
 			@if (Model.IsLetterRequired)
 			{
 				<span style="display: inline-block; color: red;">Required</span>
@@ -95,15 +95,15 @@
 						<td>@sample.SenderReferenceNumber</td>
 						<td>@sample.HostSpeciesName</td>
 						<td>@sample.HostBreedName</td>
-						<td><a asp-controller="Sample" asp-action="Edit" asp-route-AVNumber="@Model.AVNumber" asp-route-Sample="@sample.SampleId">Edit</a></td>
+						<td><a asp-controller="Sample" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-Sample="@sample.SampleId">Edit</a></td>
 						<td><a class="delete-sample-link" data-sampleid="@sample.SampleId" data-lastmodified="@Convert.ToBase64String(@sample.LastModified)">Delete</a></td>
 						@if (@sample.IsDetection)
 						{
-							<td><a asp-controller="Isolates" asp-action="Create" asp-route-AVNumber="@Model.AVNumber" asp-route-SampleId="@sample.SampleId">Add Detection</a></td>
+							<td><a asp-controller="Isolates" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-SampleId="@sample.SampleId">Add Detection</a></td>
 						}
 						else
 						{
-							<td><a asp-controller="Isolates" asp-action="Create" asp-route-AVNumber="@Model.AVNumber" asp-route-SampleId="@sample.SampleId">Add Isolate</a></td>
+							<td><a asp-controller="Isolates" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-SampleId="@sample.SampleId">Add Isolate</a></td>
 						}
 					</tr>
 				}
@@ -156,11 +156,11 @@
 								<span style="font-weight:bold; color:red;">Not Unique</span>
 							}
 						</td>
-						<td><a asp-controller="Isolates" asp-action="Edit" asp-route-AVNumber="@Model.AVNumber"
+						<td><a asp-controller="Isolates" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
 							   asp-route-SampleId="@isolate.IsolateSampleId" asp-route-IsolateId="@isolate.IsolateId">Edit</a>
 						</td>
 						<td><a class="delete-isolate-link" data-isolateid="@isolate.IsolateId" data-lastmodified="@Convert.ToBase64String(@isolate.LastModified)">Delete</a></td>
-						<td><a asp-controller="IsolateDispatch" asp-action="Create" asp-route-AVNumber="@Model.AVNumber"
+						<td><a asp-controller="IsolateDispatch" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
 							   asp-route-IsolateId="@isolate.IsolateId" asp-route-Source="Summary">Dispatch</a>
 						</td>
 					</tr>
