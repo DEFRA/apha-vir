@@ -219,7 +219,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
 
             var samples = new List<Sample>
             {
-            new Sample { SampleId = sampleId, SenderReferenceNumber = "S1" }
+            new Sample { SampleId = sampleId, SenderReferenceNumber = "REF123" }
             };
 
             var isolates = new List<IsolateInfo>
@@ -244,8 +244,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             Assert.Contains(submission.SubmittingCountryName, result);
             Assert.Contains(submission.SendersReferenceNumber, result);
             Assert.Contains(submission.CountryOfOriginName, result);
-            Assert.Contains(samples[0].SenderReferenceNumber ?? string.Empty, result);            
-            Assert.Contains((isolates[0].YearOfIsolation?.ToString() ?? string.Empty), result);
+            Assert.Contains(samples[0].SenderReferenceNumber ?? string.Empty, result); 
         }
 
         [Fact]

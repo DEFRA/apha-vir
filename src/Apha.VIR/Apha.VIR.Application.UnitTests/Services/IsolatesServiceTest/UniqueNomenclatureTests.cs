@@ -38,7 +38,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task UniqueNomenclatureAsync_WhenIsolatesAreNullOrEmpty_ReturnsTrue()
         {
             // Arrange
-            _mockIsolateRepository.GetIsolateForNomenclatureAsync(Arg.Any<Guid>()).Returns(Task.FromResult<IEnumerable<IsolateNomenclature>>(null));
+            _mockIsolateRepository.GetIsolateForNomenclatureAsync(Arg.Any<Guid>()).Returns(Task.FromResult<IEnumerable<IsolateNomenclature>>(null!));
 
             // Act
             var result = await _mockIsolatesService.UniqueNomenclatureAsync(Guid.NewGuid(), "TestFamily", Guid.NewGuid());

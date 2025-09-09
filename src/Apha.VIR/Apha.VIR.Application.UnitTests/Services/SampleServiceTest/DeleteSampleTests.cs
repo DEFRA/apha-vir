@@ -40,12 +40,12 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
         {
             // Arrange
             var sampleId = Guid.NewGuid();
-            string userId = null;
+            string? userId = null;
             var lastModified = new byte[] { 1, 2, 3 };
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            _sampleService.DeleteSampleAsync(sampleId, userId, lastModified));
+            _sampleService.DeleteSampleAsync(sampleId, userId!, lastModified));
         }
 
         [Fact]
@@ -54,11 +54,11 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             // Arrange
             var sampleId = Guid.NewGuid();
             var userId = "testUser";
-            byte[] lastModified = null;
+            byte[]? lastModified = null;
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            _sampleService.DeleteSampleAsync(sampleId, userId, lastModified));
+            _sampleService.DeleteSampleAsync(sampleId, userId, lastModified!));
         }
 
         [Fact]

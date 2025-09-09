@@ -34,7 +34,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             _controller.ModelState.AddModelError("error", "some error");
 
             // Act
-            var result = await _controller.SampleDelete("AV123", Guid.NewGuid(), new byte[0]);
+            var result = await _controller.SampleDelete("AV123", Guid.NewGuid(), Array.Empty<byte>());
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -51,7 +51,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(isolates);
 
             // Act
-            var result = await _controller.SampleDelete(avNumber, sampleId, new byte[0]);
+            var result = await _controller.SampleDelete(avNumber, sampleId, Array.Empty<byte>());
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
@@ -70,7 +70,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            var lastModified = new byte[0];
+            var lastModified = Array.Empty<byte>();
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
             _mockSampleService.DeleteSampleAsync(sampleId, "testUser", lastModified).Returns(Task.CompletedTask);
 
@@ -95,7 +95,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            var lastModified = new byte[0];
+            var lastModified = Array.Empty<byte>();
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
             _mockSampleService.DeleteSampleAsync(sampleId, "testUser", lastModified).Returns(Task.CompletedTask);
 

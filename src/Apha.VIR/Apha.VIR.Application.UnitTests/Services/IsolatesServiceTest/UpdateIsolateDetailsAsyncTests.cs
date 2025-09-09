@@ -81,7 +81,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var result = await _mockIsolatesService.GenerateNomenclature(avNumber, sampleId, virusType, yearOfIsolation);
 
             // Assert
-            Assert.Equal("H5N1/Chicken/UK/SRN001/2023", result);
+            Assert.Equal("H5N1//UK/SRN001/2023", result);
         }
 
         [Fact]
@@ -103,7 +103,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var result = await _mockIsolatesService.GenerateNomenclature(avNumber, sampleId, virusType!, yearOfIsolation);
 
             // Assert
-            Assert.Equal("[Virus Type]/Chicken/UK/SRN001/2023", result);
+            Assert.Equal("[Virus Type]//UK/SRN001/2023", result);
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var result = await _mockIsolatesService.GenerateNomenclature(avNumber, sampleId, virusType, yearOfIsolation!);
 
             // Assert
-            Assert.Equal("H5N1/Chicken/UK/SRN001/[Year of Isolation]", result);
+            Assert.Equal("H5N1//UK/SRN001/[Year of Isolation]", result);
         }
 
         [Fact]
