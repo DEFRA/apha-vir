@@ -79,7 +79,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(IsolateViabilityViewModel model)
         {
-            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.Administrator))
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.Administrator))
             {
                 throw new UnauthorizedAccessException("Not authorised to modify.");
             }

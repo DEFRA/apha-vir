@@ -1,15 +1,20 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolateDispatchControllerCreateTests
     {
+        private readonly object _lock;
         private readonly IIsolateDispatchService _mockIsolateDispatchService;        
         private readonly ILookupService _mockLookupService;
         private readonly IIsolatesService _mockIsolatesService;
@@ -17,8 +22,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         private readonly ISampleService _mockSampleService;
         private readonly IMapper _mockMapper;
         private readonly IsolateDispatchController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolateDispatchControllerCreateTests()
+        public IsolateDispatchControllerCreateTests(AppRolesFixture fixture)
         {
             _mockIsolateDispatchService = Substitute.For<IIsolateDispatchService>();
             _mockLookupService = Substitute.For<ILookupService>();
@@ -26,7 +32,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockSubmissionService = Substitute.For<ISubmissionService>();
             _mockSampleService = Substitute.For<ISampleService>();            
             _mockMapper = Substitute.For<IMapper>();
-            
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
+
             _controller = new IsolateDispatchController(_mockIsolateDispatchService, 
                 _mockLookupService, 
                 _mockIsolatesService, 
@@ -163,7 +172,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockIsolateDispatchService.GetIsolateInfoByAVNumberAndIsolateIdAsync(Arg.Any<string>(), Arg.Any<Guid>()).Returns(new IsolateInfoDTO());
             _mockIsolateDispatchService.AddDispatchAsync(Arg.Any<IsolateDispatchInfoDTO>(), Arg.Any<string>()).Returns(Task.CompletedTask);
             _mockMapper.Map<IsolateDispatchInfoDTO>(dispatchModel).Returns(dispatchRecordDto);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(dispatchModel) as RedirectToActionResult;
 
@@ -209,7 +218,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             _mockMapper.Map<IsolateDispatchInfoDTO>(Arg.Any<IsolateDispatchCreateViewModel>())
             .Returns(new IsolateDispatchInfoDTO());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(dispatchModel);
 
@@ -234,7 +243,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             };
 
             _controller.ModelState.AddModelError("NoOfAliquotsToBeDispatched", "Invalid number of aliquots");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(dispatchModel);
 
@@ -273,7 +282,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var mappedDispatchInfo = new IsolateDispatchInfoDTO();
             _mockMapper.Map<IsolateDispatchInfoDTO>(Arg.Any<IsolateDispatchCreateViewModel>())
             .Returns(mappedDispatchInfo);
-
+            SetupMockUserAndRoles();
             // Act
             await _controller.Create(dispatchModel);
 
@@ -313,7 +322,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             _mockMapper.Map<IsolateDispatchInfoDTO>(Arg.Any<IsolateDispatchCreateViewModel>())
             .Returns(new IsolateDispatchInfoDTO());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(dispatchModel);
 
@@ -340,6 +349,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockIsolateDispatchService.GetIsolateInfoByAVNumberAndIsolateIdAsync(Arg.Any<string>(), Arg.Any<Guid>())
             .Returns((IsolateInfoDTO?)null!);
 
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(dispatchModel);
 
@@ -349,6 +359,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             Assert.Equal(0, model.NoOfAliquots);
             Assert.False(model.ValidToIssue);
             Assert.Null(model.ViabilityId);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }
