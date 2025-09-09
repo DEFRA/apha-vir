@@ -31,7 +31,7 @@ namespace Apha.VIR.Web.Controllers
             var isExistInVir = await _submissionService.AVNumberExistsInVirAsync(AVNumber);
             if (!isExistInVir)
             {
-                RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             bool hasIsolates = false;

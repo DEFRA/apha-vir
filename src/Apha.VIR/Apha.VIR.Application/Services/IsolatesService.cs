@@ -13,18 +13,21 @@ namespace Apha.VIR.Application.Services
         private readonly ISubmissionRepository _submissionRepository;
         private readonly ISampleRepository _sampleRepository;
         private readonly ICharacteristicRepository _characteristicRepository;
+        private readonly ILookupRepository _lookupRepository;
         private readonly IMapper _mapper;
 
         public IsolatesService(IIsolateRepository isolateRepository,
             ISubmissionRepository submissionRepository,
             ISampleRepository sampleRepository,
             ICharacteristicRepository characteristicRepository,
+            ILookupRepository lookupRepository,
             IMapper mapper)
         {
             _isolateRepository = isolateRepository ?? throw new ArgumentNullException(nameof(isolateRepository));
             _submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
             _sampleRepository = sampleRepository ?? throw new ArgumentNullException(nameof(sampleRepository));
             _characteristicRepository = characteristicRepository ?? throw new ArgumentNullException(nameof(characteristicRepository));
+            _lookupRepository = lookupRepository ?? throw new ArgumentNullException(nameof(lookupRepository));
             _mapper = mapper;
         }
 
@@ -69,6 +72,9 @@ namespace Apha.VIR.Application.Services
 
         public async Task DeleteIsolateAsync(Guid isolateId, string userId, byte[] lastModified)
         {
+            ArgumentNullException.ThrowIfNull(isolateId);
+            ArgumentNullException.ThrowIfNull(userId);
+            ArgumentNullException.ThrowIfNull(lastModified);
             await _isolateRepository.DeleteIsolateAsync(isolateId, userId, lastModified);
         }
 
@@ -79,10 +85,22 @@ namespace Apha.VIR.Application.Services
 
             var samples = await _sampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
             var sample = samples.FirstOrDefault(s => s.SampleId == sampleId);
+            var hostBreeds = await _lookupRepository.GetAllHostBreedsAsync();           
+            var hostBreedName = hostBreeds?.FirstOrDefault(wg => wg.Id == sample?.HostBreed!.Value)?.Name;           
 
             nomenclature.Append(!string.IsNullOrEmpty(virusType) ? virusType : "[Virus Type]");
             nomenclature.Append('/');
-            nomenclature.Append(string.IsNullOrEmpty(sample?.HostBreedName) ? sample?.HostSpeciesName : sample.HostBreedName);
+            if (!string.IsNullOrEmpty(hostBreedName))
+            {
+                 nomenclature.Append(hostBreedName);
+            }
+            else
+            {
+                var hostSpecies = await _lookupRepository.GetAllHostSpeciesAsync();
+                var hostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies!.Value)?.Name;
+                nomenclature.Append(hostSpeciesName);
+            }
+               
             nomenclature.Append('/');
             nomenclature.Append(submission.CountryOfOriginName);
             nomenclature.Append('/');

@@ -28,14 +28,14 @@ public class SampleRepository : ISampleRepository
         if (string.IsNullOrEmpty(avNumber) || !sampleId.HasValue)
             return null;
 
-        var submission = await _context.Submissions
-            .FirstOrDefaultAsync(s => s.Avnumber == avNumber);
+        var submissionId = await _context.Submissions
+            .Where(s => s.Avnumber == avNumber).Select(s => s.SubmissionId).FirstOrDefaultAsync();
 
-        if (submission == null)
+        if (submissionId == Guid.Empty)
             return null;
 
         return await _context.Samples
-            .FirstOrDefaultAsync(s => s.SampleSubmissionId == submission.SubmissionId && s.SampleId == sampleId.Value);
+            .FirstOrDefaultAsync(s => s.SampleSubmissionId == submissionId && s.SampleId == sampleId.Value);
     }
 
     public async Task AddSampleAsync(Sample sample, string avNumber, string User)

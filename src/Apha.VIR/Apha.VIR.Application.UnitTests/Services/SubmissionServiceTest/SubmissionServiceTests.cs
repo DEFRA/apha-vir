@@ -14,6 +14,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
         private readonly IMapper _mockMapper;
         private readonly ISampleRepository _mockSampleRepository;
         private readonly IIsolateRepository _mockIsolatesRepository;
+        private readonly ILookupRepository _mockLookupRepository;
         private readonly SubmissionService _submissionService;
 
         public SubmissionServiceTests()
@@ -22,7 +23,12 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             _mockMapper = Substitute.For<IMapper>();
             _mockSampleRepository = Substitute.For<ISampleRepository>();
             _mockIsolatesRepository = Substitute.For<IIsolateRepository>();
-            _submissionService = new SubmissionService(_mockSubmissionRepository, _mockSampleRepository, _mockIsolatesRepository, _mockMapper);
+            _mockLookupRepository = Substitute.For<ILookupRepository>();
+            _submissionService = new SubmissionService(_mockSubmissionRepository, 
+                _mockSampleRepository, 
+                _mockIsolatesRepository,
+                _mockLookupRepository,
+                _mockMapper);
         }
 
         [Fact]
@@ -213,7 +219,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
 
             var samples = new List<Sample>
             {
-            new Sample { SampleId = sampleId, SenderReferenceNumber = "S1", HostSpeciesName = "Chicken" }
+            new Sample { SampleId = sampleId, SenderReferenceNumber = "S1" }
             };
 
             var isolates = new List<IsolateInfo>
@@ -238,8 +244,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             Assert.Contains(submission.SubmittingCountryName, result);
             Assert.Contains(submission.SendersReferenceNumber, result);
             Assert.Contains(submission.CountryOfOriginName, result);
-            Assert.Contains(samples[0].SenderReferenceNumber ?? string.Empty, result);
-            Assert.Contains(samples[0].HostSpeciesName ?? string.Empty, result);
+            Assert.Contains(samples[0].SenderReferenceNumber ?? string.Empty, result);            
             Assert.Contains((isolates[0].YearOfIsolation?.ToString() ?? string.Empty), result);
         }
 

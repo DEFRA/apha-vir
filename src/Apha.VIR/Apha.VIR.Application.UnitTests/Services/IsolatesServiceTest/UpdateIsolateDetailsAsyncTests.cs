@@ -15,6 +15,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         private readonly ISubmissionRepository _mockSubmissionRepository;
         private readonly ISampleRepository _mockSampleRepository;
         private readonly ICharacteristicRepository _mockCharacteristicRepository;
+        private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
         private readonly IsolatesService _mockIsolatesService;
 
@@ -24,8 +25,14 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             _mockSubmissionRepository = Substitute.For<ISubmissionRepository>();
             _mockSampleRepository = Substitute.For<ISampleRepository>();
             _mockCharacteristicRepository = Substitute.For<ICharacteristicRepository>();
+            _mockLookupRepository = Substitute.For<ILookupRepository>();
             _mockMapper = Substitute.For<IMapper>();
-            _mockIsolatesService = new IsolatesService(_mockIsolateRepository, _mockSubmissionRepository, _mockSampleRepository, _mockCharacteristicRepository, _mockMapper);
+            _mockIsolatesService = new IsolatesService(_mockIsolateRepository, 
+                _mockSubmissionRepository, 
+                _mockSampleRepository, 
+                _mockCharacteristicRepository,
+                _mockLookupRepository,
+                _mockMapper);
         }
 
         [Fact]
@@ -65,7 +72,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var yearOfIsolation = "2023";
 
             var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };
-            var sample = new Sample { SampleId = sampleId, HostBreedName = "Chicken", SenderReferenceNumber = "SRN001" };
+            var sample = new Sample { SampleId = sampleId, SenderReferenceNumber = "SRN001" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample> { sample });
@@ -87,7 +94,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var yearOfIsolation = "2023";
 
             var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };
-            var sample = new Sample { SampleId = sampleId, HostBreedName = "Chicken", SenderReferenceNumber = "SRN001" };
+            var sample = new Sample { SampleId = sampleId, SenderReferenceNumber = "SRN001" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample> { sample });
@@ -109,7 +116,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             string? yearOfIsolation = null;
 
             var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };
-            var sample = new Sample { SampleId = sampleId, HostBreedName = "Chicken", SenderReferenceNumber = "SRN001" };
+            var sample = new Sample { SampleId = sampleId, SenderReferenceNumber = "SRN001" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample> { sample });

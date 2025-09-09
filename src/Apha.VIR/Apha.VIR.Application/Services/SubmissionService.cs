@@ -12,17 +12,20 @@ namespace Apha.VIR.Application.Services
         private readonly ISubmissionRepository _submissionRepository;
         private readonly ISampleRepository _sampleRepository;
         private readonly IIsolateRepository _isolatesRepository;
+        private readonly ILookupRepository _lookupRepository;
         private readonly IMapper _mapper;
         private const string VirusYearOfIsolationLabel = "Virus Year of Isolation: ";
 
         public SubmissionService(ISubmissionRepository submissionRepository,
             ISampleRepository sampleRepository,
             IIsolateRepository isolatesRepository,
+            ILookupRepository lookupRepository,
             IMapper mapper)
         {
             _submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
             _sampleRepository = sampleRepository ?? throw new ArgumentNullException(nameof(sampleRepository));
             _isolatesRepository = isolatesRepository ?? throw new ArgumentNullException(nameof(isolatesRepository));
+            _lookupRepository = lookupRepository ?? throw new ArgumentNullException(nameof(lookupRepository));
             _mapper = mapper;
         }
 
@@ -65,13 +68,18 @@ namespace Apha.VIR.Application.Services
             var submission = await _submissionRepository.GetSubmissionDetailsByAVNumberAsync(AVNumber);
             var samples = await _sampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
             var isolates = await _isolatesRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
-
-            return GenerateSubmissionLetter(submission, samples, isolates, user);
+            var samplesDto = _mapper.Map<IEnumerable<SampleDTO>>(samples);
+            var hostSpecies = await _lookupRepository.GetAllHostSpeciesAsync();
+            foreach (var sample in samplesDto) 
+            {
+                sample.HostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies!.Value)?.Name;
+            }
+            return GenerateSubmissionLetter(submission, samplesDto, isolates, user);
         }
 
         private static string GenerateSubmissionLetter(
             Submission submission,
-            IEnumerable<Sample> samples,
+            IEnumerable<SampleDTO> samples,
             IEnumerable<IsolateInfo> isolates,
             string user
         )
@@ -122,7 +130,7 @@ namespace Apha.VIR.Application.Services
             str.Append("Country of Virus Origin: ").Append(MissingText(submission.CountryOfOriginName)).Append(NL).Append(NL);
         }
 
-        private static void AppendSampleDetails(StringBuilder str, IEnumerable<Sample> samples, IEnumerable<IsolateInfo> isolates, Func<object?, string> MissingText, string NL)
+        private static void AppendSampleDetails(StringBuilder str, IEnumerable<SampleDTO> samples, IEnumerable<IsolateInfo> isolates, Func<object?, string> MissingText, string NL)
         {
             if (samples == null || !samples.Any())
             {
@@ -142,7 +150,7 @@ namespace Apha.VIR.Application.Services
             }
         }
 
-        private static void AppendIsolationYear(StringBuilder str, Sample samp, IEnumerable<IsolateInfo> isolates, Func<object?, string> MissingText, string NL)
+        private static void AppendIsolationYear(StringBuilder str, SampleDTO samp, IEnumerable<IsolateInfo> isolates, Func<object?, string> MissingText, string NL)
         {
             if (isolates == null || !isolates.Any())
             {
