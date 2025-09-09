@@ -48,6 +48,7 @@ namespace Apha.VIR.Web.Mappings
                 .ForMember(dest => dest.IsolateViabilityIsolateId, opt => opt.MapFrom(src => src.IsolateId))
                 .ForMember(dest => dest.CheckedById, opt => opt.MapFrom(src => src.CheckedBy));
             CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryModel>().ReverseMap();
+            CreateMap<IsolateRelocateDTO, IsolateRelocateViewModel>().ReverseMap();
         }
     }
 }
