@@ -10,4 +10,5 @@ public interface ISampleRepository
     Task AddSampleAsync(Sample sample, string avNumber, string User);
 
     Task UpdateSampleAsync(Sample sample, string User);
+    Task DeleteSampleAsync(Guid sampleId, string userId, byte[] lastModified);
 }

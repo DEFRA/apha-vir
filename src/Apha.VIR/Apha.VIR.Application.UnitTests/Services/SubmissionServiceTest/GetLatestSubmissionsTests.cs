@@ -12,6 +12,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
         private readonly IMapper _mockMapper;
         private readonly ISampleRepository _mockSampleRepository;
         private readonly IIsolateRepository _mockIsolatesRepository;
+        private readonly ILookupRepository _mockLookupRepository;
         private readonly SubmissionService _submissionService;
 
         public GetLatestSubmissionsTests()
@@ -20,7 +21,12 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             _mockMapper = Substitute.For<IMapper>();
             _mockSampleRepository = Substitute.For<ISampleRepository>();
             _mockIsolatesRepository = Substitute.For<IIsolateRepository>();
-            _submissionService = new SubmissionService(_mockSubmissionRepository,_mockSampleRepository, _mockIsolatesRepository, _mockMapper);
+            _mockLookupRepository = Substitute.For<ILookupRepository>();
+            _submissionService = new SubmissionService(_mockSubmissionRepository,
+                _mockSampleRepository, 
+                _mockIsolatesRepository,
+                _mockLookupRepository,
+                _mockMapper);
         }
 
         [Fact]
