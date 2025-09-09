@@ -54,10 +54,13 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
     }
     public class SubmissionRepositoryTests
     {
+        private static readonly int[] CountGreaterThanZero = { 1 };
+        private static readonly int[] CountZero = { 0 };
+        private static readonly string[] LatestSubmissionStrings = { "AV001", "AV002" };
         [Fact]
         public async Task AVNumberExistsInVirAsync_ReturnsTrue_WhenCountGreaterThanZero()
         {
-            var fakeCounts = new TestAsyncEnumerable<int>(new[] { 1 });
+            var fakeCounts = new TestAsyncEnumerable<int>(CountGreaterThanZero);
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, fakeCounts, new TestAsyncEnumerable<string>(Array.Empty<string>()));
 
             var result = await repo.AVNumberExistsInVirAsync("AV123");
@@ -68,7 +71,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         [Fact]
         public async Task AVNumberExistsInVirAsync_ReturnsFalse_WhenCountZero()
         {
-            var fakeCounts = new TestAsyncEnumerable<int>(new[] { 0 });
+            var fakeCounts = new TestAsyncEnumerable<int>(CountZero);
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, fakeCounts, new TestAsyncEnumerable<string>(Array.Empty<string>()));
 
             var result = await repo.AVNumberExistsInVirAsync("AV123");
@@ -79,7 +82,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         [Fact]
         public async Task GetLatestSubmissionsAsync_ReturnsStrings()
         {
-            var fakeStrings = new TestAsyncEnumerable<string>(new[] { "AV001", "AV002" });
+            var fakeStrings = new TestAsyncEnumerable<string>(LatestSubmissionStrings);
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, new TestAsyncEnumerable<int>(Array.Empty<int>()), fakeStrings);
 
             var result = await repo.GetLatestSubmissionsAsync();
