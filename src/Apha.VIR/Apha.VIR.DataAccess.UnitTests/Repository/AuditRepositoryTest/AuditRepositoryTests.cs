@@ -142,7 +142,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.AuditRepositoryTest
 
             Assert.NotNull(methodInfo);
 
-            var parametersObj = methodInfo.Invoke(null, new object[] { avNumber, dateFrom, dateTo, userid });
+            var parametersObj = methodInfo.Invoke(null, new object?[] { avNumber, dateFrom, dateTo, userid });
             Assert.NotNull(parametersObj);
 
             var parameters = parametersObj as SqlParameter[];
