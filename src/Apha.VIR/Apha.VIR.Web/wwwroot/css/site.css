@@ -607,16 +607,26 @@
 /*----- VirusCharacterstics*/
 .viruscharacteristictable {
     border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #0b2677;
+    width: auto;
+    border: 1px solid #888888;
     margin-bottom: 20px;
 }
+.viruscharacteristics-empty-box {
+    border: 1px solid #888888;
+    background-color: #fff;
+    color: #333333;
+    padding: 4px 8px;
+    border-radius: 0;
+    margin: 6px 0;
+    font-size: 0.95em;
+    display: inline-block;
+}
 
-    .viruscharacteristictable th, .viruscharacteristictable td {
-        border: 1px solid #0b2677;
-        padding: 6px 8px;
-        text-align: left;
-    }
+.viruscharacteristictable th, .viruscharacteristictable td {
+    border: 1px solid #888888;
+    padding: 6px 8px;
+    text-align: left;
+}
 
     .viruscharacteristictable th {
         background-color: #0b2677;

@@ -303,7 +303,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             await _mockLookupService.Received(1).GetAllWorkGroupsAsync();
             await _mockLookupService.Received(1).GetAllStaffAsync();
             _mockMapper.Received(1).Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDTO);
-        }       
+        }
 
         [Fact]
         public async Task Edit_ValidInput_SuccessfulUpdateAndRedirect()
