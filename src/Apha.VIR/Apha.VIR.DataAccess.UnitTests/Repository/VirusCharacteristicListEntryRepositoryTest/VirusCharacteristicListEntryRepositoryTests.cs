@@ -219,7 +219,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.VirusCharacteristicListEntryR
 
             Assert.True(repo.DeleteCalled);
         }
-        private async Task<PagedData<VirusCharacteristicListEntry>> GetPagedTestData(
+        private static async Task<PagedData<VirusCharacteristicListEntry>> GetPagedTestData(
              TestVirusCharacteristicListEntryRepository repo,
              Guid virusCharacteristicId,
              int pageNo,
