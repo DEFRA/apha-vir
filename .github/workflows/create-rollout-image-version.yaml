@@ -36,7 +36,6 @@ jobs:
       repository: apha/vir
       dev_image_version_release: true
       tag_short_description: ${{ github.event.inputs.tag_short_description }}
-      environment: rollout
     secrets:  
       AWS_ENV_REGION: ${{ secrets.AWS_ENV_REGION }}
       AWS_ENV_ACCOUNT: ${{ secrets.AWS_ENV_ACCOUNT }}
