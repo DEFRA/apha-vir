@@ -7,18 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class SubmissionRepository : ISubmissionRepository
+public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepository
 {
-    private readonly VIRDbContext _context;
-    public SubmissionRepository(VIRDbContext context)
+    public SubmissionRepository(VIRDbContext context) : base(context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
-
     public async Task<bool> AVNumberExistsInVirAsync(string avNumber)
     {
-        var countResult = await _context.Database
-                .SqlQuery<int>($"EXEC spSubmissionCountByAVNumber @AVNumber = {avNumber}")
+        var countResult = await SqlQueryInterpolatedFor<int>($"EXEC spSubmissionCountByAVNumber @AVNumber = {avNumber}")
                 .ToListAsync();
 
         var count = countResult.FirstOrDefault();
@@ -108,7 +104,7 @@ public class SubmissionRepository : ISubmissionRepository
             new SqlParameter("@LastModified", SqlDbType.Timestamp) { Direction = ParameterDirection.Output }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spSubmissionInsert @UserID, @SubmissionId, @AVNumber, @SendersReferenceNumber, @RLReferenceNumber, @SubmittingLab,  
             @Sender, @SenderOrganisation, @SenderAddress, @CountryOfOrigin, @SubmittingCountry, @ReasonForSubmission, 
             @DateSubmissionReceived, @CPHNumber, @Owner, @SamplingLocationPremises, @NumberOfSamples, @LastModified OUTPUT",
@@ -139,7 +135,7 @@ public class SubmissionRepository : ISubmissionRepository
             new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = submission.LastModified }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spSubmissionUpdate @UserID, @SubmissionId, @AVNumber, @SendersReferenceNumber, @RLReferenceNumber, @SubmittingLab, 
             @Sender, @SenderOrganisation, @SenderAddress, @CountryOfOrigin, @SubmittingCountry, @ReasonForSubmission, 
             @DateSubmissionReceived, @CPHNumber, @Owner, @SamplingLocationPremises, @NumberOfSamples, @LastModified OUTPUT",
@@ -148,7 +144,6 @@ public class SubmissionRepository : ISubmissionRepository
 
     public async Task<IEnumerable<string>> GetLatestSubmissionsAsync()
     {
-        return await _context.Database
-                .SqlQuery<string>($"EXEC spLastAVNumbersModified").ToListAsync();
+        return await SqlQueryInterpolatedFor<string>($"EXEC spLastAVNumbersModified").ToListAsync();
     }
 }

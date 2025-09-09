@@ -36,6 +36,12 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             return _context.Database.ExecuteSqlInterpolatedAsync(sql);
         }
-
+        protected virtual Task<int> ExecuteSqlAsync(string sql, params object[] parameters)
+        {
+            return _context.Database.ExecuteSqlRawAsync(sql, parameters);
+        }
+        // NEW: For stored procs returning scalar values
+        protected virtual IQueryable<T> SqlQueryInterpolatedFor<T>(FormattableString sql) =>
+            _context.Database.SqlQuery<T>(sql);  
     }
 }
