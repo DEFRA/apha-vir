@@ -1,4 +1,27 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+
+@{
+	var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+	string userroles = string.Empty;
+	string userId = string.Empty;
+	string username = string.Empty;
+	if (isAuthenticated)
+	{
+		// Retrieve all role claims
+		var roles = User?.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+						.Select(r => r.Value)
+						.ToList();
+
+		roles = roles ?? new List<string>();
+
+		userroles = string.Join(", ", roles);
+		userId = User?.Identity?.Name!;
+		username = User?.FindFirst("name")?.Value!;
+	}
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
@@ -22,15 +45,15 @@
 						<a asp-controller="ContactUs" asp-action="Index">Contact Us</a>
 					</div>
 					<div>
-						<span id="lblEnvironment" class="Version">test System Environment</span>
+						<span id="lblEnvironment" class="Version">@ViewBag.EnvironmentName</span>
 					</div>
 				</div>
 			</div>
 			<div class="master_header_middle">
 				<div class="UserRole">
-					<span id="lblUser">@ViewBag.User</span><br />
-					<span id="lblName">@ViewBag.Name</span><br />
-					<span id="lblRole">@ViewBag.Role</span>
+					<span id="lblUser">@userId</span><br />
+					<span id="lblName">@username</span><br />
+					<span id="lblRole">@userroles</span>
 				</div>
 				<div class="Title">Virus Isolates Repository</div>
 			</div>

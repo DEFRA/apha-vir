@@ -1,4 +1,4 @@
-body {
+﻿body {
     background-color: #ffffff;
     color: #333333;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -597,6 +597,45 @@ body {
         color: #fff;
         font-weight: bold;
     }
+
+
+/*----- VirusCharacterstics*/
+.viruscharacteristictable {
+    border-collapse: collapse;
+    width: auto;
+    border: 1px solid #888888;
+    margin-bottom: 20px;
+}
+.viruscharacteristics-empty-box {
+    border: 1px solid #888888;
+    background-color: #fff;
+    color: #333333;
+    padding: 4px 8px;
+    border-radius: 0;
+    margin: 6px 0;
+    font-size: 0.95em;
+    display: inline-block;
+}
+
+.viruscharacteristictable th, .viruscharacteristictable td {
+    border: 1px solid #888888;
+    padding: 6px 8px;
+    text-align: left;
+}
+
+    .viruscharacteristictable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .viruscharacteristictable tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .viruscharacteristictable tbody tr:nth-child(even) {
+        background-color: #efefef;
+    }
 /*---- Headings ----*/
 
 h1
@@ -1002,4 +1041,163 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     color: #0000FF;
     text-decoration: underline;
     cursor: pointer;
+}
+
+
+.auto-width-table {
+    table-layout: auto; /* default: lets browser size based on content */
+    width: auto; /* prevent stretching */
+    border-collapse: collapse;
+}
+
+    .auto-width-table th,
+    .auto-width-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        white-space: nowrap; /* prevents wrapping → column grows to fit */
+    }
+
+
+.lookuptable {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    margin-bottom: 20px;
+}
+
+    .lookuptable th, .lookuptable td {
+        border: 1px solid gray;
+        padding: 5px 5px;
+        text-align: left;
+    }
+
+    .lookuptable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .lookuptable tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+    .lookuptable tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+.w-80 {
+    width: 80px !important;
+}
+
+.w-170 {
+    width: 170px !important;
+}
+
+.w-200 {
+    width: 200px !important;
+}
+
+.w-210 {
+    width: 210px !important;
+}
+
+.w-500 {
+    width: 500px !important;
+}
+
+.w-600 {
+    width: 600px !important;
+}
+
+.sendertable {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    margin-bottom: 20px;
+}
+
+.sendertable th, .sendertable td {
+    border: 1px solid gray;
+    padding: 5px 5px;
+    text-align: left;
+}
+
+.sendertable th {
+    background-color: #0b2677;
+    color: #fff;
+    font-weight: bold;
+}
+
+.sendertable tr:nth-child(even) {
+    background-color: #efefef;
+}
+
+.sendertable tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.w-200 {
+    width: 200px;
+}
+
+
+.isolate_characteristics-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
+    border: 1px solid gray;
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+}
+
+.isolate_characteristics-cell {
+    border: 1px solid gray;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.isolate_characteristics-grid > .isolate_characteristics-cell:nth-child(2n) {
+    border-right-width: 1px;
+}
+
+.isolate_characteristics-grid > .isolate_characteristics-cell:nth-last-child(-n+2) {
+    border-bottom-width: 1px;
+}
+
+.isolate_characteristics-label {
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.isolate_characteristics-form-actions {
+    margin-top: 20px;
+}
+
+.contentbox {
+    border-top: #0b2677 1px solid;
+    border-right: #0b2677 1px solid;
+    border-bottom: #0b2677 1px solid;
+    border-left: #0b2677 1px solid;
+    margin: 0px 0px 15px 0px;
+}
+
+    .contentbox .box_title {
+        padding-top: 3px;
+        padding-right: 10px;
+        padding-bottom: 3px;
+        padding-left: 10px;
+        background-color: #0b2677;
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+.av-number-box_body {
+    padding-top: 0px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
 }

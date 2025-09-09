@@ -12,6 +12,7 @@ namespace Apha.VIR.Application.Mappings
         {
             CreateMap<Lookup, LookupDTO>().ReverseMap();
             CreateMap<LookupItem, LookupItemDTO>().ReverseMap();
+            CreateMap<PagedData<LookupItem>, PaginatedResult<LookupItemDTO>>();
             CreateMap<VirusCharacteristic, VirusCharacteristicDTO>().ReverseMap();
             CreateMap<VirusCharacteristicListEntry, VirusCharacteristicListEntryDTO>().ReverseMap();
             CreateMap<SearchCriteriaDTO, SearchCriteria>();
@@ -43,6 +44,7 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>()
              .ForMember(dest => dest.NoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquotsToBeDispatched))
              .ForMember(dest => dest.IsolateNoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquots)).ReverseMap();
+            CreateMap<IsolateCharacteristicDTO, IsolateCharacteristicInfo>().ReverseMap();
             CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfo, IsolateViability>().ReverseMap();
@@ -61,6 +63,9 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<Sample, SampleDTO>().ReverseMap();
             CreateMap<SampleDTO, Sample>().ReverseMap();
             CreateMap<SystemInfo, SystemInfoDTO>().ReverseMap();
+            CreateMap<IsolateDTO, Isolate>().ReverseMap();
+            CreateMap<PagedData<Sender>, PaginatedResult<SenderDTO>>();
+            CreateMap<PagedData<VirusCharacteristicListEntry>, PaginatedResult<VirusCharacteristicListEntryDTO>>();
         }
     }
 }

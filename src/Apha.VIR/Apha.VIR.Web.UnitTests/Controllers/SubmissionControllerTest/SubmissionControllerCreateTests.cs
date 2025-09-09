@@ -13,6 +13,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         private readonly ILookupService _mockLookupService;
         private readonly ISenderService _mockSenderService;
         private readonly ISubmissionService _mockSubmissionService;
+        private readonly ISampleService _mockSampleService;
+        private readonly IIsolatesService _mockIsolatedService;
         private readonly IMapper _mockMapper;
         private readonly SubmissionController _controller;
 
@@ -21,6 +23,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             _mockLookupService = Substitute.For<ILookupService>();
             _mockSenderService = Substitute.For<ISenderService>();
             _mockSubmissionService = Substitute.For<ISubmissionService>();
+            _mockSampleService = Substitute.For<ISampleService>();
+            _mockIsolatedService = Substitute.For<IIsolatesService>();
             _mockMapper = Substitute.For<IMapper>();
             _controller = new SubmissionController(_mockLookupService, _mockSenderService, _mockSubmissionService, _mockMapper);
         }
@@ -78,7 +82,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             // Arrange
             var submission = new SubmissionCreateViewModel();
             var submissionDto = new SubmissionDTO();
-            _mockMapper.Map<SubmissionCreateViewModel>(submissionDto).Returns(submission);            
+            _mockMapper.Map<SubmissionCreateViewModel>(submissionDto).Returns(submission);
 
             // Act
             var result = await _controller.Create(submission) as RedirectToActionResult;
@@ -86,7 +90,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Index", result.ActionName);
-            Assert.Equal("SubmissionSamples", result.ControllerName);            
-        }       
+            Assert.Equal("SubmissionSamples", result.ControllerName);
+        }
     }
 }

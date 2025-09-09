@@ -1,22 +1,28 @@
 using System.Diagnostics;
+using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
+    [Authorize()]
     public class HomeController : Controller
     {
         private readonly IConfiguration _configuration;
+        private readonly ISystemInfoService _sysInfoService;
 
-        public HomeController(IConfiguration configuration)
+        public HomeController(IConfiguration configuration, ISystemInfoService sysInfoService)
         {
             _configuration = configuration;
+            _sysInfoService = sysInfoService ?? throw new ArgumentNullException(nameof(sysInfoService));
         }
 
         public IActionResult Index()
         {
             // Set URL for Error log button
             ViewBag.UserMgmtUrl = $"{UserMgmtUrl()}";
+            ViewBag.EnvironmentName = _sysInfoService.GetEnvironmentName().Result;
 
             return View();
         }

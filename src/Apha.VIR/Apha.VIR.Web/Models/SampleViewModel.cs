@@ -6,9 +6,9 @@ namespace Apha.VIR.Web.Models
     public class SampleViewModel
     {
         public Guid? SampleId { get; set; }
-        public Guid? SampleSubmissionID { get; set; }        
-        public string? AVNumber { get; set; }       
-        public string? SampleNumber { get; set; }        
+        public Guid? SampleSubmissionID { get; set; }
+        public string? AVNumber { get; set; }
+        public string? SampleNumber { get; set; }
         public string? SMSReferenceNumber { get; set; }
 
         [RegularExpression(@"[\da-zA-Z'.,\x2D\x5C\x20\x2F\x28\x29\x23]*", ErrorMessage = "Letters, numbers -#/\\() allowed")]
@@ -23,15 +23,15 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? HostSpeciesList { get; set; }
         public List<SelectListItem>? HostBreedList { get; set; }
         public List<SelectListItem>? HostPurposeList { get; set; }
-        public List<LatinBreed>? LatinBreedList { get; set; }        
+        public List<LatinBreedModel>? LatinBreedList { get; set; }
     }
 
-    public class LatinBreed
+    public class LatinBreedModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
-        public string ParentName { get; set; } = null!;
-        public string AlternateName { get; set; } = null!;
+        public string? ParentName { get; set; } = null!;
+        public string? AlternateName { get; set; } = null!;
         public bool Active { get; set; }
         public bool Sms { get; set; }
         public string? Smscode { get; set; }

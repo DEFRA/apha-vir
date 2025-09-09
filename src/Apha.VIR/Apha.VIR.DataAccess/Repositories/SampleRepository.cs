@@ -4,7 +4,6 @@ using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
@@ -15,6 +14,13 @@ public class SampleRepository : ISampleRepository
     public SampleRepository(VIRDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public async Task<IEnumerable<Sample>> GetSamplesBySubmissionIdAsync(Guid submissionId)
+    {
+        return await _context.Set<Sample>()
+                   .FromSqlInterpolated($"EXEC spSampleGetBySubmission @SubmissionId = {submissionId}")
+                   .ToListAsync();
     }
 
     public async Task<Sample?> GetSampleAsync(string avNumber, Guid? sampleId)
@@ -49,7 +55,7 @@ public class SampleRepository : ISampleRepository
            new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid() },
            new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = sample.SampleSubmissionId },
            new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
-           new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SmsreferenceNumber ?? DBNull.Value },
+           new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SMSReferenceNumber ?? DBNull.Value },
            new SqlParameter("@SenderReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)sample.SenderReferenceNumber  ?? DBNull.Value },
            new SqlParameter("@SampleType", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleType ?? DBNull.Value },
            new SqlParameter("@HostSpecies", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostSpecies ?? DBNull.Value },
@@ -73,7 +79,7 @@ public class SampleRepository : ISampleRepository
                 new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = sample.SampleId },
                 new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = sample.SampleSubmissionId },
                 new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
-                new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SmsreferenceNumber ?? DBNull.Value },
+                new SqlParameter("@SMSReferenceNumber", SqlDbType.VarChar, 30) { Value = (object?)sample.SMSReferenceNumber ?? DBNull.Value },
                 new SqlParameter("@SenderReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)sample.SenderReferenceNumber ?? DBNull.Value },
                 new SqlParameter("@SampleType", SqlDbType.UniqueIdentifier) { Value = (object?)sample.SampleType ?? DBNull.Value },
                 new SqlParameter("@HostSpecies", SqlDbType.UniqueIdentifier) { Value = (object?)sample.HostSpecies ?? DBNull.Value },

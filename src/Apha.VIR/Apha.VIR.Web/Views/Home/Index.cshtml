@@ -1,4 +1,14 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@{
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+    var isIsolateManager = isAuthenticated && (User?.IsInRole("Isolate Manager") ?? false);
+    var isIsolateViewer = isAuthenticated && (User?.IsInRole("Isolate Viewer") ?? false);
+    var isLookupDataManager = isAuthenticated && (User?.IsInRole("Lookup Data Manager") ?? false);
+    var isReportViewer = isAuthenticated && (User?.IsInRole("Report Viewer") ?? false);
+    var isAdministrator = isAuthenticated && (User?.IsInRole("Administrator") ?? false);
+}
+@{
     ViewData["Title"] = "Home | Virus Isolates Repository";
 }
 <div class="text-start">
@@ -9,46 +19,66 @@
     </p>
     <nav>
         <ul class="link-list">
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Home" asp-action="Index">Register or Update Submission, Samples and Isolates</a>
-            </li>
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="SearchRepository" asp-action="Index">Search Repository</a>
-            </li>
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Home" asp-action="Index">Relocate Virus Isolates</a>
-            </li>
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Reports" asp-action="Index">Produce Reports</a>
-            </li>            
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Lookup" asp-action="lookup">Maintain Look-up Data</a>
-            </li>
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Characteristics" asp-action="Index">Maintain Virus Characteristics</a>
-            </li>
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="Home" asp-action="Index">Maintain Sender Information</a>
-            </li>
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="AuditLog" asp-action="Index">View Audit Logs</a>
-            </li>           
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a asp-controller="SystemInformation" asp-action="Index">System Information</a>
-            </li>
-            <li>
-                <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                <a href="@ViewBag.UserMgmtUrl" target="_blank">User Management</a>
-            </li>
-        </ul>
+            @if (isIsolateManager)
+            {
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="Home" asp-action="Index">Register or Update Submission, Samples and Isolates</a>
+                </li>
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="SearchRepository" asp-action="Index">Search Repository</a>
+                </li>
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="IsolateAndTrayRelocation" asp-action="Index">Relocate Virus Isolates</a>
+                </li>
+            }
+            @if (isIsolateViewer)
+            {
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="SearchRepository" asp-action="Index">Search Repository</a>
+                </li>
+            }
+            @if (isLookupDataManager)
+            {
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="Lookup" asp-action="Index">Maintain Look-up Data</a>
+                </li>
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="VirusCharacteristicsListEntry" asp-action="Index">Maintain Virus Characteristics</a>
+                </li>
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="Sender" asp-action="Index">Maintain Sender Information</a>
+                </li>
+            }
+            @if (isReportViewer)
+            {
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="Reports" asp-action="Index">Produce Reports</a>
+                </li>
+
+            }
+            @if (isAdministrator)
+            {
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="AuditLog" asp-action="Index">View Audit Logs</a>
+                </li>
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a asp-controller="SystemInformation" asp-action="Index">System Information</a>
+                </li>
+                <li>
+                    <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
+                    <a href="@ViewBag.UserMgmtUrl" target="_blank">User Management</a>
+                </li>
+            }
+          </ul>
     </nav>
 </div>

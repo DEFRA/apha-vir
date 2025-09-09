@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Virus Characteristic Management | Virus Isolates Repository";
+}
+
+<p>
+    This page allows you to manage the virus characteristic information held within the system. Please select one of the options below to begin:
+</p>
+
+<table>
+    <thead class="sr-only"><tr><th scope="col"></th></tr></thead>
+    <tbody>
+        <tr>
+            <td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
+            <td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td><a asp-controller="VirusCharacteristicsListEntry" asp-action="Index">Manage the list of available Virus Characteristics</a></td>
+        </tr>
+        <tr>
+            <td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
+            <td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
+            <td><a asp-controller="VirusCharacteristicAssociation" asp-action="Index">Associate Virus Characteristic to a Virus Family and Type</a></td>
+        </tr>
+    </tbody>
+</table>

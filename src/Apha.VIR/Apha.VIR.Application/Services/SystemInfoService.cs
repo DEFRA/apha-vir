@@ -16,6 +16,13 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<string> GetEnvironmentName()
+        {
+            var result = _mapper.Map<SystemInfoDTO>(await _sysInfoRepository.GetLatestSysInfoAsync());
+
+            return result.Environment;
+        }
+
         public async Task<SystemInfoDTO> GetLatestSysInfo()
         {
             return _mapper.Map<SystemInfoDTO>(await _sysInfoRepository.GetLatestSysInfoAsync());

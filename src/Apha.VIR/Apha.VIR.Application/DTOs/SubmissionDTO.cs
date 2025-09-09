@@ -19,4 +19,7 @@ public class SubmissionDTO
     public string? SamplingLocationPremises { get; set; }
     public int? NumberOfSamples { get; set; }
     public byte[] LastModified { get; set; } = null!;
+    public string? CountryOfOriginName { get; set; }
+    public string? SubmittingCountryName { get; set; }
+
 }
