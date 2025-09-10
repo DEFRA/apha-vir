@@ -2,10 +2,10 @@
 @using System.Security.Claims
 @{
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
-    var isIsolateManager = isAuthenticated && (User?.IsInRole("Isolate Manager") ?? false);
-    var isIsolateViewer = isAuthenticated && (User?.IsInRole("Isolate Viewer") ?? false);
-    var isLookupDataManager = isAuthenticated && (User?.IsInRole("Lookup Data Manager") ?? false);
-    var isReportViewer = isAuthenticated && (User?.IsInRole("Report Viewer") ?? false);
+    var isIsolateManager = isAuthenticated && (User?.IsInRole("IsolateManager") ?? false);
+    var isIsolateViewer = isAuthenticated && (User?.IsInRole("IsolateViewer") ?? false);
+    var isLookupDataManager = isAuthenticated && (User?.IsInRole("LookupManager") ?? false);
+    var isReportViewer = isAuthenticated && (User?.IsInRole("ReportViewer") ?? false);
     var isAdministrator = isAuthenticated && (User?.IsInRole("Administrator") ?? false);
 }
 @{
@@ -34,7 +34,7 @@
                     <a asp-controller="IsolateAndTrayRelocation" asp-action="Index">Relocate Virus Isolates</a>
                 </li>
             }
-            @if (isIsolateViewer)
+            @if (isIsolateViewer && !isIsolateManager)
             {
                 <li>
                     <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
