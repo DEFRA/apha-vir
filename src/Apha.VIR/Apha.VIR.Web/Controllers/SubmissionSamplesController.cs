@@ -1,6 +1,8 @@
 ﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
@@ -26,6 +28,8 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Index(string AVNumber)
         {
             var isExistInVir = await _submissionService.AVNumberExistsInVirAsync(AVNumber);
@@ -51,6 +55,12 @@ namespace Apha.VIR.Web.Controllers
 
             CheckDetectionForSampleGrid(sampleList, hasIsolates, hasDetections, ref isolateGridHeader);
 
+            if (AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateDeleter))
+            {
+                sampleList.ForEach(s => s.IsDeleteEnabled = true);
+                submissionIsolates.ForEach(i => i.IsDeleteEnabled = true);
+            }
+
             var viewModel = new SubmissionSamplesViewModel
             {
                 SubmissionId = submission.SubmissionId,
@@ -61,6 +71,7 @@ namespace Apha.VIR.Web.Controllers
                 IsolatesGridHeader = isolateGridHeader,
                 LastModified = submission.LastModified,
                 IsLetterRequired = !isolates.Any() || !samples.Any(),
+                ShowDeleteLink = AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateDeleter) ? true : false,
                 Samples = sampleList,
                 Isolates = submissionIsolates,
             };
@@ -70,6 +81,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmissionDelete(string AVNumber, Guid SubmissionId, byte[] LastModified)
         {
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateDeleter))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete submission.");
+            }
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Invalid parameters.");
@@ -90,6 +106,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SampleDelete(string AVNumber, Guid SampleId, byte[] LastModified)
         {
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateDeleter))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete sample.");
+            }
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Invalid parameters.");
@@ -110,6 +131,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> IsolateDelete(string AVNumber, Guid IsolateId, byte[] LastModified)
         {
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateDeleter))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete isolate.");
+            }
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Invalid parameters.");

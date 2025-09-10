@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Web.UnitTests.Controllers;
 
-[CollectionDefinition("UserAppRolesValidationTests")]
+[CollectionDefinition("UserAppRolesValidationTests", DisableParallelization = true)]
 public class AppRolesTestCollection : ICollectionFixture<AppRolesFixture>
 {
 }

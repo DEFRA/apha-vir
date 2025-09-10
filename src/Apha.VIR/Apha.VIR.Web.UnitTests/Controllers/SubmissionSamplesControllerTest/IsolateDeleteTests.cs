@@ -1,31 +1,44 @@
-﻿using System.Text.Json;
+﻿using System.Security.Claims;
+using System.Text.Json;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolateDeleteTests
     {
+        private readonly object _lock;
         private readonly ISubmissionService _mockSubmissionService;
         private readonly ISampleService _mockSampleService;
         private readonly IIsolatesService _mockIsolatesService;
         private readonly IIsolateDispatchService _mockIsolatesDispatchService;
         private readonly IMapper _mockMapper;
         private readonly SubmissionSamplesController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolateDeleteTests()
+        public IsolateDeleteTests(AppRolesFixture fixture)
         {
             _mockSubmissionService = Substitute.For<ISubmissionService>();
             _mockSampleService = Substitute.For<ISampleService>();
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockIsolatesDispatchService = Substitute.For<IIsolateDispatchService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SubmissionSamplesController(_mockSubmissionService, _mockSampleService, _mockIsolatesService, _mockIsolatesDispatchService, _mockMapper);
+            _controller = new SubmissionSamplesController(_mockSubmissionService, 
+                _mockSampleService, 
+                _mockIsolatesService, 
+                _mockIsolatesDispatchService, 
+                _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -41,6 +54,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 
             _mockIsolatesDispatchService.GetIsolateDispatchRecordCountAsync(isolateId)
             .Returns(0);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.IsolateDelete(avNumber, isolateId, lastModified);
@@ -71,6 +85,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 
             _mockIsolatesDispatchService.GetIsolateDispatchRecordCountAsync(isolateId)
             .Returns(1);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.IsolateDelete(avNumber, isolateId, lastModified);
@@ -93,6 +108,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.IsolateDelete("AV123", Guid.NewGuid(), new byte[] { 0x00 });
@@ -111,6 +127,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber)
             .Returns(Array.Empty<IsolateInfoDTO>());
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.IsolateDelete(avNumber, isolateId, lastModified);
@@ -126,6 +143,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             Assert.Equal("Isolate deleted successfully.", message);
            
             await _mockIsolatesService.Received(1).DeleteIsolateAsync(isolateId, "testUser", lastModified);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateDeleter)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.IsolateDeleter };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

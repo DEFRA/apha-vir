@@ -1,7 +1,9 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,6 +34,9 @@ namespace Apha.VIR.Web.Controllers
             _sampleService = sampleService;
             _mapper = mapper;
         }
+
+        [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager + "," + AppRoleConstant.IsolateViewer)]
         public async Task<IActionResult> ViewIsolateDetails(Guid IsolateId)
         {
             if (!ModelState.IsValid)
@@ -44,6 +49,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Create(string AVNumber, Guid SampleId)
         {
             if (!ModelState.IsValid)
@@ -88,6 +94,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(IsolateAddEditViewModel isolateModel)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to create isolate.");
+            }
+
             await ValidateIsolateDetails(isolateModel, ModelState);
 
             if (!ModelState.IsValid)
@@ -124,6 +135,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Edit(string AVNumber, Guid SampleId, Guid IsolateId)
         {
             if (!ModelState.IsValid)
@@ -167,6 +179,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(IsolateAddEditViewModel isolateModel)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to modify isolate.");
+            }
+
             await ValidateIsolateDetails(isolateModel, ModelState);
 
             if (!ModelState.IsValid)
@@ -204,6 +221,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> GetVirusTypesByVirusFamily(Guid? virusFamilyId)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
             if (!ModelState.IsValid)
                 return Json(new List<CustomSelectListItem>());
 
@@ -213,6 +234,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> GetTraysByFeezer(Guid? freezer)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
             if (!ModelState.IsValid)
                 return Json(new List<SelectListItem>());
 
@@ -220,6 +245,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<string> GenerateNomenclature(string avNumber, Guid sampleId, string virusType, string yearOfIsolation)
         {
             if (!ModelState.IsValid)

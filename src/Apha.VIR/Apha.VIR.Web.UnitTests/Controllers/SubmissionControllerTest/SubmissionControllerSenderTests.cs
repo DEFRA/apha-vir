@@ -1,18 +1,22 @@
-﻿using System.Text.Json;
+﻿using System.Security.Claims;
+using System.Text.Json;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class SubmissionControllerSenderTests
     {
+        private readonly object _lock;
         private readonly ILookupService _mockLookupService;
         private readonly ISenderService _mockSenderService;
         private readonly ISubmissionService _mockSubmissionService;
@@ -20,8 +24,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         private readonly IIsolatesService _mockIsolatedService;
         private readonly IMapper _mockMapper;
         private readonly SubmissionController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public SubmissionControllerSenderTests()
+        public SubmissionControllerSenderTests(AppRolesFixture fixture)
         {
             _mockLookupService = Substitute.For<ILookupService>();
             _mockSenderService = Substitute.For<ISenderService>();
@@ -29,7 +34,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             _mockSampleService = Substitute.For<ISampleService>();
             _mockIsolatedService = Substitute.For<IIsolatesService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SubmissionController(_mockLookupService, _mockSenderService, _mockSubmissionService, _mockMapper);
+            _controller = new SubmissionController(_mockLookupService, 
+                _mockSenderService, 
+                _mockSubmissionService, 
+                _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -42,6 +53,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 
             _mockSenderService.GetAllSenderOrderBySenderAsync(countryId).Returns(senderDtos);
             _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetSenderDetails(countryId);
@@ -62,6 +74,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 
             _mockSenderService.GetAllSenderOrderBySenderAsync(countryId).Returns(senderDtos);
             _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetSenderDetails(countryId);
@@ -82,6 +95,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 
             _mockSenderService.GetAllSenderOrderBySenderAsync(null).Returns(senderDtos);
             _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetSenderDetails(Guid.NewGuid());
@@ -175,6 +189,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             var senderDto = new SenderDTO();
             _mockMapper.Map<SenderDTO>(senderModel).Returns(senderDto);
             _mockSenderService.AddSenderAsync(senderDto).Returns(Task.CompletedTask);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.AddSender(senderModel);
@@ -197,6 +212,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             // Arrange
             var senderModel = new SubmissionSenderViewModel();
             _controller.ModelState.AddModelError("Name", "Name is required");
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.AddSender(senderModel);
@@ -223,6 +239,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 
             _mockSenderService.GetAllSenderOrderByOrganisationAsync(countryId).Returns(senderDtos);
             _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetOrganisationDetails(countryId);
@@ -244,6 +261,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 
             _mockSenderService.GetAllSenderOrderByOrganisationAsync(countryId).Returns(senderDtos);
             _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetOrganisationDetails(countryId);
@@ -267,6 +285,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 
             _mockSenderService.GetAllSenderOrderByOrganisationAsync(null).Returns(senderDtos);
             _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetOrganisationDetails(countryId);
@@ -277,6 +296,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             Assert.Equal("_MainOrganisations", partialViewResult.ViewName);
             Assert.Equal(senderViewModels, partialViewResult.Model);
             await _mockSenderService.Received(1).GetAllSenderOrderByOrganisationAsync(null);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

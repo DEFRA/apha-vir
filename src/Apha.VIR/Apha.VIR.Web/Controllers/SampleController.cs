@@ -48,7 +48,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
             {
-                throw new UnauthorizedAccessException("Not authorised to create sample.");
+                throw new UnauthorizedAccessException("Not authorised to create submission.");
             }
 
             if (!ModelState.IsValid)
