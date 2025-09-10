@@ -7,7 +7,7 @@ namespace Apha.VIR.Core.Interfaces
     {
         Task AddEntryAsync(VirusCharacteristic virusCharacteristic);
         Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsAsync();
-        Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo = 0, int pageSize = 0);
+        Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo, int pageSize);
         Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent);
         Task<IEnumerable<VirusCharacteristicDataType>> GetAllVirusCharactersticsTypeNamesAsync();
 
