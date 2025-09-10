@@ -5,129 +5,116 @@
 <form asp-action="Edit" method="post">
 	<input asp-for="Id" type="hidden" />
 	<input asp-for="LastModified" type="hidden" />
+	<div class="form-group">
+		<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="Name" style="min-width: 100px; margin: 0; margin-right: 12px;">Name *</label>
+			<input asp-for="Name" class="form-control" style="width: 200px;" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+		<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="CharacteristicType" style="min-width: 100px; margin: 0; margin-right: 12px;">CharacteristicType *</label>
+			<select asp-for="CharacteristicType" asp-items="Model.CharacteristicTypeNameList" class="form-control"></select>
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+			<span asp-validation-for="CharacteristicType" class="text-danger"></span>
+		</div>
+		<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="NumericSort" style="min-width: 100px; margin: 0; margin-right: 12px;">NumericSort *</label>
+					<input asp-for="NumericSort" type="checkbox" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+		<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="DisplayOnSearch" style="min-width: 100px; margin: 0; margin-right: 12px;">DisplayOnSearch *</label>
+					<input asp-for="DisplayOnSearch" type="checkbox" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+			<span asp-validation-for="DisplayOnSearch" class="text-danger"></span>
+		</div>
+			<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="Prefix" style="min-width: 100px; margin: 0; margin-right: 12px;">Prefix *</label>
+					<input asp-for="Prefix" maxlength="50" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+			<span asp-validation-for="Prefix" class="text-danger"></span>
+		</div>
+		<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="MinValue" style="min-width: 100px; margin: 0; margin-right: 12px;">MinValue *</label>
+					<input asp-for="MinValue" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+					<span asp-validation-for="MinValue" class="text-danger"></span>
+		</div>
+		<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="MaxValue" style="min-width: 100px; margin: 0; margin-right: 12px;">MaxValue *</label>
+					<input asp-for="MaxValue" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+					<span asp-validation-for="MaxValue" class="text-danger"></span>
+		</div>
+		<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="DecimalPlaces" style="min-width: 100px; margin: 0; margin-right: 12px;">DecimalPlaces *</label>
+					<input asp-for="DecimalPlaces" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+					<span asp-validation-for="DecimalPlaces" class="text-danger"></span>
+		</div>
+			<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="Length" style="min-width: 100px; margin: 0; margin-right: 12px;">Length *</label>
+					<input asp-for="Length" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+					<span asp-validation-for="Length" class="text-danger"></span>
+		</div>
+			<div style="display: flex; align-items: center; margin-bottom: 4px;">
+			<label for="CharacteristicIndex" style="min-width: 100px; margin: 0; margin-right: 12px;">CharacteristicIndex *</label>
+					<input asp-for="CharacteristicIndex" />
+		</div>
+		<div style="margin-left: 112px; width: 200px;">
+					<span asp-validation-for="CharacteristicIndex" class="text-danger"></span>
+		</div>
+		<div style="margin-top: 12px; margin-left: 112px; width: 200px; display: flex; justify-content: flex-end; gap: 8px;">
+		<button type="submit" class="btn btn-primary">Save</button>
+					<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+		</div>
 
-	<table>
-		<tr>
-			<th></th>
-			<th></th>
-			<th></th>
-		</tr>
-		<tr>
-			<td><label asp-for="Name"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="Name" />
-				<span asp-validation-for="Name" class="text-danger"></span>
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="CharacteristicType"></label></td>
-			<td></td>
-			<td>
-				<select asp-for="CharacteristicType" asp-items="Model.CharacteristicTypeNameList" class="form-control"></select>
-				<span asp-validation-for="CharacteristicType" class="text-danger"></span>
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="NumericSort" for="NumericSort"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="NumericSort" type="checkbox" />
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="DisplayOnSearch" for="DisplayOnSearch"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="DisplayOnSearch" type="checkbox" />
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="Prefix" for="Prefix"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="Prefix" maxlength="50" />
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="MinValue" for="MinValue"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="MinValue" />
-				<span asp-validation-for="MinValue" class="text-danger"></span>
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="MaxValue" for="MaxValue"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="MaxValue" />
-				<span asp-validation-for="MaxValue" class="text-danger"></span>
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="DecimalPlaces"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="DecimalPlaces" />
-				<span asp-validation-for="DecimalPlaces" class="text-danger"></span>
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="Length" for="Length"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="Length" />
-				<span asp-validation-for="Length" class="text-danger"></span>
-			</td>
-		</tr>
-		<tr>
-			<td><label asp-for="CharacteristicIndex" for="CharacteristicIndex"></label></td>
-			<td></td>
-			<td>
-				<input asp-for="CharacteristicIndex" />
-				<span asp-validation-for="CharacteristicIndex" class="text-danger"></span>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3" class="text-right">
-				<button type="submit" class="btn btn-primary">Save</button>
-				<a asp-action="Index" class="btn btn-secondary">Cancel</a>
-			</td>
-		</tr>
-	</table>
+	</div>
+
 </form>
 
 @if (!ViewData.ModelState.IsValid)
 {
-	<div class="alert alert-danger">
-		<p>There are validation messages requiring your attention.</p>
-		<div asp-validation-summary="All" class="text-danger"></div>
-	</div>
+				<div class="alert alert-danger">
+					<p>There are validation messages requiring your attention.</p>
+					<div asp-validation-summary="All" class="text-danger"></div>
+				</div>
 }
 
 @if (Model.Id.ToString() != "")
 {
-	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
+				<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								Please confirm that you wish to delete this Virus Characteristic from the database. This cannot be undone.
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								<form asp-action="Delete" method="post">
+									<input type="hidden" asp-for="Id" />
+									<button type="submit" class="btn btn-danger">Delete</button>
+								</form>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="modal-body">
-					Please confirm that you wish to delete this Virus Characteristic from the database. This cannot be undone.
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<form asp-action="Delete" method="post">
-						<input type="hidden" asp-for="Id" />
-						<button type="submit" class="btn btn-danger">Delete</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
 }

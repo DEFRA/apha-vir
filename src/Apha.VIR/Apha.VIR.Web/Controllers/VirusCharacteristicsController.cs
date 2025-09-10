@@ -43,7 +43,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
         {
             if (!ModelState.IsValid)
-                return View("CreateVirusCharacteristicEntry", model);
+                return View("Edit", model);
 
             var dto = _mapper.Map<VirusCharacteristicDTO>(model);
             await _virusCharacteristicService.AddEntryAsync(dto);
