@@ -81,7 +81,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.CanEditItem(AppRoleConstant.Administrator))
             {
-                throw new UnauthorizedAccessException("Not authorised to modify.");
+                throw new UnauthorizedAccessException("Not authorised to modify viability.");
             }
             string userid = "TestUser";
 
@@ -107,7 +107,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
             {
-                throw new UnauthorizedAccessException("Not authorised to delete.");
+                throw new UnauthorizedAccessException("Not authorised to delete viability.");
             }
             string userid = "TestUser";
 

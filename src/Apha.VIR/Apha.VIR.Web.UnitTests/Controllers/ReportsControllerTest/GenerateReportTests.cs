@@ -102,7 +102,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             // Arrange
             var model = new IsolateDispatchReportViewModel();
             _controller.ModelState.AddModelError("DateFrom", "Required");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GenerateReport(model) as ViewResult;
 
@@ -124,15 +124,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             var serviceResult = new List<IsolateDispatchReportDTO>();
             var mappedResult = new List<IsolateDispatchReportModel>();
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
-            };
-            var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
-            _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
-
-            var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
-            AuthorisationUtil.AppRoles = appRoles;
+            SetupMockUserAndRoles();
 
             _mockReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo).Returns(serviceResult);
             _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(serviceResult).Returns(mappedResult);
@@ -147,6 +139,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             Assert.Equal(model.DateFrom, viewModel.DateFrom);
             Assert.Equal(model.DateTo, viewModel.DateTo);
             Assert.Empty(viewModel.ReportData);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

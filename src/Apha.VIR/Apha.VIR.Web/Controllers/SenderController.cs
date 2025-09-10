@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Controllers
 {
-    [Authorize(Roles = AppRoleConstant.LookupDataManager)]
     public class SenderController : Controller
     {
         private readonly ISenderService _senderService;
@@ -24,6 +23,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> Index(int pageNo = 1, int pageSize = 10)
         {
             if (!ModelState.IsValid)
@@ -48,6 +48,7 @@ namespace Apha.VIR.Web.Controllers
             return View("Sender", viewModel);
         }
 
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> BindSenderGridOnPagination(int pageNo, int pageSize)
         {
             if (!ModelState.IsValid)
@@ -73,6 +74,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> Create()
         {
             if (!ModelState.IsValid)
@@ -95,6 +97,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SenderViewModel model)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Insert not supported for Sender.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model.CountryList = await GetCountryDropdownList();
@@ -109,6 +116,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.LookupDataManager)]
         public async Task<IActionResult> Edit(Guid senderId, int currentPage = 1)
         {
             if (senderId == Guid.Empty || !ModelState.IsValid)
@@ -133,6 +141,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(SenderViewModel model)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Update not supported for Sender.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -150,6 +162,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(SenderViewModel model, Guid senderId)
         {
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Delete not supported for Sender.");
+            }
             if (!ModelState.IsValid || senderId == Guid.Empty)
             {
                 model.CountryList = await GetCountryDropdownList();

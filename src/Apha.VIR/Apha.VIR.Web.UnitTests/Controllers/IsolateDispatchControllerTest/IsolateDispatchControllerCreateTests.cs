@@ -367,7 +367,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator),
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 _mockHttpContextAccessor?.HttpContext?.User.Returns(user);

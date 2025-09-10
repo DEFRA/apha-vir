@@ -40,16 +40,16 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> GenerateReport(IsolateDispatchReportViewModel model)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
+
             ModelState.Remove(nameof(model.ReportData));
 
             if (!ModelState.IsValid)
             {
                 return View(model);
-            }
-
-            if (!AuthorisationUtil.IsUserInAnyRole())
-            {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
             }
 
             var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);
@@ -71,6 +71,11 @@ namespace Apha.VIR.Web.Controllers
         {
             ModelState.Clear();
 
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
+
             if (dateFrom == null)
             {
                 ModelState.AddModelError(nameof(dateFrom), "Date From must be entered");
@@ -89,12 +94,7 @@ namespace Apha.VIR.Web.Controllers
                 };
                 return View("IsolateDispatchReport", viewmodel);
             }
-
-            if (!AuthorisationUtil.IsUserInAnyRole())
-            {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
-            }
-
+    
             var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
 
             var reportData = _mapper.Map<IEnumerable<IsolateDispatchReportModel>>(result);

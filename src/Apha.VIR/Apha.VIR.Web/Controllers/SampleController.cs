@@ -85,7 +85,7 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SampleViewModel model)
         {
-            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.IsolateManager))
             {
                 throw new UnauthorizedAccessException("Not authorised to modify sample.");
             }
@@ -106,7 +106,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+                throw new UnauthorizedAccessException("User not authorised to retrieve this BreedsBySpecie list");
             }
             if (!ModelState.IsValid)
             {
@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+                throw new UnauthorizedAccessException("User not authorised to retrieve this LatinBread list");
             }
             if (!ModelState.IsValid)
             {

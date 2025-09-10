@@ -111,9 +111,9 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(IsolateDispatchCreateViewModel dispatchModel)
         {
-            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.Administrator))
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
             {
-                throw new UnauthorizedAccessException("Not authorised to create.");
+                throw new UnauthorizedAccessException("Not authorised to create dispatch.");
             }
             ValidateIsolateDispatch(dispatchModel, ModelState);
             dispatchModel.ViabilityList = await GetViabilityDropdownList();
@@ -201,7 +201,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.CanEditItem(AppRoleConstant.Administrator))
             {
-                throw new UnauthorizedAccessException("Not authorised to modify.");
+                throw new UnauthorizedAccessException("Not authorised to modify dispatch.");
             }
             ModelState.Remove(nameof(model.DispatchedByList));
             ModelState.Remove(nameof(model.ViabilityList));
@@ -236,7 +236,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
             {
-                throw new UnauthorizedAccessException("Not authorised to delete.");
+                throw new UnauthorizedAccessException("Not authorised to delete dispatch.");
             }
 
             if (!ModelState.IsValid)
