@@ -82,7 +82,7 @@
         margin: 10px 0px;
     }
 
-.isolatedetailsblock_Left label {
+.isolatedetailsblock_Left .isolatelabel_title {
     display:inline-block;
     width: 40%;
 }
