@@ -126,12 +126,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role, "Administrator")
+                new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
             };
             var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
-            _mockHttpContextAccessor.HttpContext.User.Returns(user);
+            _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
 
-            var appRoles = new List<string> { "Isolate Manager", "Isolate Viewer", "Administrator" };
+            var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
             AuthorisationUtil.AppRoles = appRoles;
 
             _mockReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo).Returns(serviceResult);
