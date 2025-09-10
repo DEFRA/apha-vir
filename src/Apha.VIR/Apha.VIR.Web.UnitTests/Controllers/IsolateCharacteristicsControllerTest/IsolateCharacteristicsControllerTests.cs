@@ -1,35 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolateCharacteristicsControllerTests
     {
+        private readonly object _lock;
         private readonly IIsolatesService _isolatesService;
         private readonly IVirusCharacteristicListEntryService _virusCharacteristicListEntryService;
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IMapper _mapper;
         private readonly IsolateCharacteristicsController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolateCharacteristicsControllerTests()
+        public IsolateCharacteristicsControllerTests(AppRolesFixture fixture)
         {
             _isolatesService = Substitute.For<IIsolatesService>();
             _virusCharacteristicListEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             _virusCharacteristicService = Substitute.For<IVirusCharacteristicService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new IsolateCharacteristicsController(_isolatesService, _virusCharacteristicListEntryService, _virusCharacteristicService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -110,7 +112,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             };
             _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
             _mapper.Map<IsolateCharacteristicDTO>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDTO());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(characteristics);
 
@@ -128,7 +130,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             // Arrange
             _controller.ModelState.AddModelError("error", "test error");
             var characteristics = new List<IsolateCharacteristicViewModel>();
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(characteristics);
 
@@ -159,7 +161,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 }
             };
             _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(virusCharacteristics);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(characteristics);
 
@@ -183,7 +185,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             };
             _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(existingCharacteristics);
             _mapper.Map<IsolateCharacteristicDTO>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDTO());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(characteristics);
 
@@ -207,7 +209,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             };
             _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(existingCharacteristics);
             _controller.ModelState.AddModelError("Error", "Invalid input");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(characteristics);
 
@@ -277,10 +279,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             var virusCharacteristicId = Guid.NewGuid();
             var characteristicValue = "SelectedValue";
             var options = new List<VirusCharacteristicListEntryDTO>
-{
-new VirusCharacteristicListEntryDTO { Name = "SelectedValue" },
-new VirusCharacteristicListEntryDTO { Name = "OtherValue" }
-};
+                 {
+                 new VirusCharacteristicListEntryDTO { Name = "SelectedValue" },
+                 new VirusCharacteristicListEntryDTO { Name = "OtherValue" }
+                 };
             _virusCharacteristicListEntryService.GetEntriesByCharacteristicIdAsync(virusCharacteristicId).Returns(options);
 
             // Act
@@ -455,6 +457,22 @@ new VirusCharacteristicListEntryDTO { Name = "OtherValue" }
             var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
 
             Assert.Contains("Id not specified for this item", result);
-        }        
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
+        }
     }
 }
