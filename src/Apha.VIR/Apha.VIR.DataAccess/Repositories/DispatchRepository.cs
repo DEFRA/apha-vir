@@ -130,4 +130,29 @@ public class DispatchRepository : IIsolateDispatchRepository
 
         );
     }
+
+    public async Task<int> GetIsolateDispatchRecordCountAsync(Guid isolateId)
+    {
+        await using var command = _context.Database.GetDbConnection().CreateCommand();
+        command.CommandText = "EXEC spIsolateDispatchGetByIsolateID @IsolateId";
+        command.Parameters.Add(new SqlParameter("@IsolateId", isolateId));
+
+        await _context.Database.OpenConnectionAsync();
+        try
+        {
+            await using var reader = await command.ExecuteReaderAsync();
+
+            int rowCount = 0;
+            while (await reader.ReadAsync())
+            {
+                rowCount++;
+            }
+
+            return rowCount;
+        }
+        finally
+        {
+            await _context.Database.CloseConnectionAsync();
+        }
+    }
 }

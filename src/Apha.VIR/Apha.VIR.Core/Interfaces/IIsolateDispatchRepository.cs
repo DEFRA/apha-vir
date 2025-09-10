@@ -8,4 +8,5 @@ public interface IIsolateDispatchRepository
     Task AddDispatchAsync(IsolateDispatchInfo DispatchInfo, string User);
     Task DeleteDispatchAsync(Guid DispatchId, Byte[] LastModified, string User);
     Task UpdateDispatchAsync(IsolateDispatchInfo DispatchInfo, string User);
+    Task<int> GetIsolateDispatchRecordCountAsync(Guid isolateId);
 }

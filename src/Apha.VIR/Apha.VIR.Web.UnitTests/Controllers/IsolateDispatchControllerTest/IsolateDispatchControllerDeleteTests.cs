@@ -142,13 +142,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Theory]
-        [InlineData("search")]
-        [InlineData("SEARCH")]
-        [InlineData("SeArCh")]
-        public void CancelAction_WhenSourceIsSearch_ReturnsRedirectToSearchRepository(string source)
+        [InlineData("search", "AV000000-01")]
+        [InlineData("SEARCH", "AV000000-01")]
+        [InlineData("SeArCh", "AV000000-01")]
+        public void CancelAction_WhenSourceIsSearch_ReturnsRedirectToSearchRepository(string source, string avnumber)
         {
             // Act
-            var result = _controller.CancelAction(source);
+            var result = _controller.CancelAction(source, avnumber);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
@@ -157,28 +157,28 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Theory]
-        [InlineData("summary")]
-        [InlineData("SUMMARY")]
-        [InlineData("SuMmArY")]
-        public void CancelAction_WhenSourceIsSummary_ReturnsRedirectToSummaryIndex(string source)
+        [InlineData("summary", "AV000000-01")]
+        [InlineData("SUMMARY", "AV000000-01")]
+        [InlineData("SuMmArY", "AV000000-01")]
+        public void CancelAction_WhenSourceIsSummary_ReturnsRedirectToSummaryIndex(string source, string avnumbr)
         {
             // Act
-            var result = _controller.CancelAction(source);
+            var result = _controller.CancelAction(source, avnumbr);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectResult.ActionName);
-            Assert.Equal("Summary", redirectResult.ControllerName);
+            Assert.Equal("SubmissionSamples", redirectResult.ControllerName);
         }
 
         [Theory]
-        [InlineData("other")]
-        [InlineData("")]
-        [InlineData(null)]
-        public void CancelAction_WhenSourceIsOther_ReturnsRedirectToIsolateDispatchCreate(string source)
+        [InlineData("other", "AV000000-00")]
+        [InlineData("", "")]
+        [InlineData(null, null)]
+        public void CancelAction_WhenSourceIsOther_ReturnsRedirectToIsolateDispatchCreate(string source, string avnumber)
         {
             // Act
-            var result = _controller.CancelAction(source);
+            var result = _controller.CancelAction(source, avnumber);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);

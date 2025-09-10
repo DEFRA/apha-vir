@@ -141,7 +141,7 @@ namespace Apha.VIR.Web.Controllers
             return fromSource switch
             {
                 "search" => RedirectToAction("Confirmation", "IsolateDispatch", new { Isolate = dispatchRecord.DispatchIsolateId }),
-                "summary" => RedirectToAction("Index", "SubmissionSamples"),
+                "summary" => RedirectToAction("Index", "SubmissionSamples", new { AVNumber = dispatchModel.Avnumber }),
                 _ => RedirectToAction("Create", "IsolateDispatch")
             };
         }
@@ -285,13 +285,13 @@ namespace Apha.VIR.Web.Controllers
             return View(model);
         }
 
-        public IActionResult CancelAction(string Source)
+        public IActionResult CancelAction(string Source, string Avnumber)
         {
             string fromSource = Source == null ? "" : Source.ToLower();
             return fromSource switch
             {
                 "search" => RedirectToAction("Search", "SearchRepository"),
-                "summary" => RedirectToAction("Index", "Summary"),
+                "summary" => RedirectToAction("Index", "SubmissionSamples", new { AVNumber = Avnumber }),
                 _ => RedirectToAction("Create", "IsolateDispatch")
             };
         }

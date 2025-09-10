@@ -30,7 +30,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService = Substitute.For<ILookupService>();
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockSubmissionService = Substitute.For<ISubmissionService>();
-            _mockSampleService = Substitute.For<ISampleService>();            
+            _mockSampleService = Substitute.For<ISampleService>();
             _mockMapper = Substitute.For<IMapper>();
             _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             AuthorisationUtil.Configure(_mockHttpContextAccessor);

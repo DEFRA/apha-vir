@@ -2,6 +2,7 @@
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -144,6 +145,16 @@ public class SubmissionRepository : ISubmissionRepository
             @Sender, @SenderOrganisation, @SenderAddress, @CountryOfOrigin, @SubmittingCountry, @ReasonForSubmission, 
             @DateSubmissionReceived, @CPHNumber, @Owner, @SamplingLocationPremises, @NumberOfSamples, @LastModified OUTPUT",
           parameters);
+    }
+
+    public async Task DeleteSubmissionAsync(Guid submissionId, string userId, byte[] lastModified)
+    {
+        await _context.Database.ExecuteSqlRawAsync(
+           "EXEC spSubmissionDelete @UserID, @SubmissionId, @LastModified",
+           new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+           new SqlParameter("@SubmissionId", SqlDbType.UniqueIdentifier) { Value = submissionId },
+           new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified }
+        );
     }
 
     public async Task<IEnumerable<string>> GetLatestSubmissionsAsync()

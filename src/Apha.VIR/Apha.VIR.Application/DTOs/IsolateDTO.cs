@@ -32,5 +32,6 @@ public class IsolateDTO
     public DateTime? DateCreated { get; set; }
     public string? CreatedBy { get; set; }
     public string? SmsreferenceNumber { get; set; }
+    public string? IsoSMSReferenceNumber { get; set; }
     public string? PhylogeneticFileName { get; set; }
 }
