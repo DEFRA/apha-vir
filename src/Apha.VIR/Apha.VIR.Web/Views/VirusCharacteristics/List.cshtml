@@ -1,63 +1,35 @@
 ﻿@model VirusCharacteristicsViewModel
 @{
-    ViewData["Title"] = "View Virus Characterstics";
+	ViewData["Title"] = "View Virus Characterstics";
 }
-
-<nav aria-label="Add new characteristic">
-    <ul class="linklist">
-        <li>
-            <a asp-controller="VirusCharacteristics" asp-action="Edit">
-                <img src="~/images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
-                Add a new Virus Characteristic
-            </a>
-        </li>
-    </ul>
-</nav>
+<table>
+	<thead class="sr-only"><tr><th scope="col"></th></tr></thead>
+	<tbody>
+		<tr>
+			<td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
+			<td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
+			<td>
+				<a asp-controller="VirusCharacteristics" asp-action="Edit">
+					Add a new Virus Characteristic
+				</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 <p>Edit an existing Virus Characteristic by clicking on the links below.</p>
 
-<div id="characteristicsContainer">
-    @if (Model.list.Any())
-    {
-        <table class="characteristics-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Display In Nomenclature</th>
-                    <th>Prefix</th>
-                    <th>Min Value</th>
-                    <th>Max Value</th>
-                    <th>Decimal Places</th>
-                    <th>Length</th>
-                    <th>Display Order</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var characteristic in Model.list)
-                {
-                    <tr>
-                        <td>@characteristic.Name</td>
-                        <td>
-                            <input type="checkbox" disabled @(characteristic.DisplayOnSearch ? "checked" : "")>
-                        </td>
-                        <td>@characteristic.Prefix</td>
-                        <td>@characteristic.MinValue</td>
-                        <td>@characteristic.MaxValue</td>
-                        <td>@characteristic.DecimalPlaces</td>
-                        <td>@characteristic.Length</td>
-                        <td>@characteristic.CharacteristicIndex</td>
-                        <td>
-                            <a asp-controller="VirusCharacteristic" asp-action="Edit" asp-route-id="@characteristic.Id" class="btn btn-primary">Edit</a>
-                            <a asp-controller="VirusCharacteristic" asp-action="EditListEntries" asp-route-id="@characteristic.Id" class="btn btn-secondary">Edit List Entries</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>No virus characteristics recorded at this time.</p>
-    }
+<div id="listEntries" class="mt-3">
+	<partial name="_VirusCharatersticsList" for="@Model" />
 </div>
+@section Scripts {
+	<script>
+		$(document).on('click','.pagination a', function (e) {
+			e.preventDefault();
+			var pageNo=$(this).data('pageno');
+			$.get('BindCharacteristicEntriesGridOnPagination', {pageNo: pageNo, pageSize:10}, function (htmlData) {
+			$('#listEntries').html(htmlData);
+			});
+			});
+	</script>
+}

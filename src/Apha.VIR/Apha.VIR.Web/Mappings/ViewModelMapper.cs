@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Net.Http.Headers;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Models.Lookup;
@@ -48,6 +49,8 @@ namespace Apha.VIR.Web.Mappings
                 .ForMember(dest => dest.CheckedById, opt => opt.MapFrom(src => src.CheckedBy));
             CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryModel>().ReverseMap();
             CreateMap<VirusCharacteristicDTO, VirusCharacteristicDetails>().ReverseMap();
+            CreateMap<VirusCharacteristicDataTypeDTO, VirusCharacteristicDataType>().ReverseMap();
+
         }
     }
 }

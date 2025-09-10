@@ -403,6 +403,7 @@ namespace Apha.VIR.DataAccess.Repositories
             .FromSqlRaw($"EXEC spTrayGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
+       
 
         public async Task<IEnumerable<LookupItem>> GetAllTraysByParentAsync(Guid? freezer)
         {
