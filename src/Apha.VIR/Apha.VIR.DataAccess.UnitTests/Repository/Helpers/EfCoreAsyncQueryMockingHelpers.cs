@@ -29,7 +29,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.Helpers
                 types: [typeof(Expression)]) ?? throw new InvalidOperationException("Failed to find IQueryProvider.Execute<T> method.");
             var genericExecuteMethod = executeMethod.MakeGenericMethod(expectedResultType);
 
-            var executionResult = genericExecuteMethod.Invoke(inner, [expression]) ?? throw new InvalidOperationException("Execution returned null.");
+            var executionResult = genericExecuteMethod.Invoke(inner, [expression]);
             var fromResultMethod = typeof(Task).GetMethod(nameof(Task.FromResult)) ?? throw new InvalidOperationException("Failed to find Task.FromResult method.");
             var genericFromResultMethod = fromResultMethod.MakeGenericMethod(expectedResultType);
 
