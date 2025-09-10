@@ -94,6 +94,9 @@
     .isolatedetailsblock_Left p {
         width: 60%;
     }
+    .isolatedetailsblock_Left h3 {
+        color: navy;
+    }
 .isolatedetailsblock_Right {
 
     width:50%;
