@@ -4,8 +4,9 @@ namespace Apha.VIR.Web.Utilities
 {
     public static class AuthorisationUtil
     {
-        private static IHttpContextAccessor _httpContextAccessor;
+        private static IHttpContextAccessor? _httpContextAccessor;
         private static List<string> _authMessages = new List<string>();
+
 
         public static List<string> AppRoles
         {
@@ -15,7 +16,8 @@ namespace Apha.VIR.Web.Utilities
 
         public static void Configure(IHttpContextAccessor httpContextAccessor)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor
+            ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
         public static ClaimsPrincipal? CurrentUser => _httpContextAccessor?.HttpContext?.User;
 

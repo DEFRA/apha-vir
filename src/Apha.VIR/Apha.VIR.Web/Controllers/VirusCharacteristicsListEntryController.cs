@@ -28,7 +28,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction("AccessDenied", "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
             }
             return View("VirusCharacteristic");
         }
@@ -38,7 +38,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction("AccessDenied", "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
             }
 
             if (!ModelState.IsValid)
@@ -78,7 +78,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction("AccessDenied", "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
             }
 
             if (!ModelState.IsValid)
@@ -117,7 +117,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction("AccessDenied", " Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), " Account");
             }
 
             if (!ModelState.IsValid)
@@ -153,7 +153,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction("AccessDenied", " Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), " Account");
             }
 
             if (!ModelState.IsValid)

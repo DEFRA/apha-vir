@@ -71,7 +71,7 @@ namespace Apha.VIR.Web.Controllers
                 IsolatesGridHeader = isolateGridHeader,
                 LastModified = submission.LastModified,
                 IsLetterRequired = !isolates.Any() || !samples.Any(),
-                ShowDeleteLink = AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateDeleter) ? true : false,
+                ShowDeleteLink = AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateDeleter),
                 Samples = sampleList,
                 Isolates = submissionIsolates,
             };

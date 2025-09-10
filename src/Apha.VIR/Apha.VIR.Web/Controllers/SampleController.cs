@@ -1,9 +1,5 @@
-﻿using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Core.Entities;
-using Apha.VIR.Web.Mappings;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
