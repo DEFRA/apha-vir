@@ -461,7 +461,7 @@
     }
 
         .isolate-grid-table table thead tr th {
-            text-wrap-mode: nowrap;
+/*            text-wrap-mode: nowrap;*/
             padding-bottom: 1px;
             background-color: Navy;
             border: 1px solid black;
