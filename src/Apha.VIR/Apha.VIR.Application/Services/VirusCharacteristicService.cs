@@ -22,7 +22,7 @@ namespace Apha.VIR.Application.Services
             var result = await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync();
             return _mapper.Map<IEnumerable<VirusCharacteristicDTO>>(result);
         }
-        public async Task<PaginatedResult<VirusCharacteristicDTO>> GetAllVirusCharacteristicsAsync(int pageNo = 0, int pageSize = 0)
+        public async Task<PaginatedResult<VirusCharacteristicDTO>> GetAllVirusCharacteristicsAsync(int pageNo, int pageSize)
         {
             var result = await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
             return _mapper.Map<PaginatedResult<VirusCharacteristicDTO>>(result);

@@ -17,42 +17,27 @@ namespace Apha.VIR.Web.Controllers
     public class VirusCharacteristicsController : Controller
     {
         private readonly IVirusCharacteristicService _virusCharacteristicService;
-        private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
 
-        public VirusCharacteristicsController(IVirusCharacteristicService virusCharacteristicService, IMapper mapper, ILookupService lookupService)
+        public VirusCharacteristicsController(IVirusCharacteristicService virusCharacteristicService, IMapper mapper)
         {
             _virusCharacteristicService = virusCharacteristicService;
             _mapper = mapper;
-            _lookupService = lookupService;
         }
         [HttpGet]
         public IActionResult Index()
         {
-            try
-            {
-                return View(new VirusCharacteristicsViewModel());
-            }
-            catch (Exception ex)
-            {
-                return View("Error");
-            }
+            return View(new VirusCharacteristicsViewModel());
         }
         [HttpGet]
         public async Task<IActionResult> EditAsync()
         {
-            try
-            {
-                VirusCharacteristicDetails model = new VirusCharacteristicDetails();
-                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
-                model.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
-                return View(model);
 
-            }
-            catch (Exception ex)
-            {
-                return View("Error");
-            }
+            VirusCharacteristicDetails model = new VirusCharacteristicDetails();
+            var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+            model.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
+            return View(model);
+
         }
         [HttpPost]
         public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
