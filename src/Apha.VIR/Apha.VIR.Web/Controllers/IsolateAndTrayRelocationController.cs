@@ -21,24 +21,24 @@ namespace Apha.VIR.Web.Controllers
         private readonly IIsolateRelocateService _isolateRelocateService;
         private readonly IMapper _mapper;
 
-        public IsolateAndTrayRelocationController(IIsolateRelocateService isolateRelocateService, 
+        public IsolateAndTrayRelocationController(IIsolateRelocateService isolateRelocateService,
             ILookupService lookupService,
             IMapper mapper)
         {
             _isolateRelocateService = isolateRelocateService;
-            _lookupService = lookupService;           
+            _lookupService = lookupService;
             _mapper = mapper;
         }
 
         [HttpGet]
-        [Route("")]       
+        [Route("")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        [Route("Isolate")]        
+        [Route("Isolate")]
         public async Task<IActionResult> IsolateRelocation()
         {
             var model = new IsolateRelocationViewModel();
@@ -46,7 +46,7 @@ namespace Apha.VIR.Web.Controllers
             model.SearchResults = [];
             return View(model);
         }
-               
+
         [HttpPost("Search")]
         public async Task<IActionResult> Search([FromBody] IsolateRelocationViewModel model)
         {
@@ -64,7 +64,7 @@ namespace Apha.VIR.Web.Controllers
 
             return PartialView("_SearchResults", results);
         }
-        
+
         [HttpPost]
         [Route("Save")]
         public async Task<IActionResult> Save(IsolateRelocationViewModel model)
@@ -91,6 +91,49 @@ namespace Apha.VIR.Web.Controllers
             return Json(new { success = true });
         }
 
+        [Route("Edit")]
+        public async Task<IActionResult> Edit(IsolateRelocateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var data = new IsolateRelocationViewModel();
+            await LoadIsolateAndTrayData(data);
+            ViewBag.FreezersList = data.FreezersList;
+            ViewBag.TrayList = data.TraysList;
+            return View(model);
+        }
+
+        [Route("Update")]
+        public async Task<IActionResult> Update(IsolateRelocateViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Well))
+            {
+                ModelState.AddModelError(nameof(model.Well), "Well is required.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                {
+                    IsolateId = model.IsolateId,
+                    Freezer = model.Freezer,
+                    Tray = model.Tray,
+                    Well = model.Well,
+                    UserID = "Test",
+                    LastModified = model.LastModified
+                });
+                return RedirectToAction("Isolate", "Relocation");
+            }
+
+            var data = new IsolateRelocationViewModel();
+            await LoadIsolateAndTrayData(data);
+            ViewBag.FreezersList = data.FreezersList;
+            ViewBag.TrayList = data.TraysList;
+            return View("Edit", model);
+        }
+
         private async Task LoadIsolateAndTrayData(IsolateRelocationViewModel model)
         {
             var freezeDto = await _lookupService.GetAllFreezerAsync();
@@ -99,6 +142,7 @@ namespace Apha.VIR.Web.Controllers
             model.FreezersList = [.. freezeDto.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name })];
             model.TraysList = [.. trayDto.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name })];
         }
+
         private static void ValidateIsolatedFields(IsolateRelocationViewModel model, ModelStateDictionary modelState)
         {
             if (string.IsNullOrEmpty(model.MinAVNumber) && model.SelectedFreezer == null)

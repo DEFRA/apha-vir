@@ -117,7 +117,14 @@
                 <tbody>
                 </tbody>
             </table>
-        </div>       
+        </div>      
+        <form id="editForm" method="post" action="/Relocation/Edit">
+            <input type="hidden" name="IsolateId" />
+            <input type="hidden" name="Well" />
+            <input type="hidden" name="Freezer" />
+            <input type="hidden" name="Tray" />
+            <input type="hidden" name="LastModified" />
+       </form>
     </div>
 </div>
 
@@ -151,8 +158,15 @@
             });
 
             $(document).on('click', '.edit-isolate', function () {
-                var isolateId = $(this).data('id');
-                editIsolate(isolateId);
+                debugger;
+                var button = $(this);
+                $('#editForm input[name="IsolateId"]').val(button.data('id'));
+                $('#editForm input[name="Well"]').val(button.data('well'));
+                $('#editForm input[name="Freezer"]').val(button.data('freezer'));
+                $('#editForm input[name="Tray"]').val(button.data('tray'));
+                $('#editForm input[name="LastModified"]').val(button.data('lastmodified'));
+
+                $('#editForm').submit();
             });
         });
 
@@ -280,11 +294,6 @@
                   }
                 }
             });
-        }
-
-        function editIsolate(isolateId) {
-
-            console.log('Edit isolate with ID: ' + isolateId);
-        }
+        }        
     </script>
 }
