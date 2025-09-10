@@ -147,7 +147,7 @@ namespace Apha.VIR.Web.Controllers
                 throw new UnauthorizedAccessException("Not authorised to insert entry in " + lookup?.Name + " list.");
             }
 
-            ModelState.Remove("LookkupItem.LastModified");
+            ModelState.Remove("LookupItem.LastModified");
 
             var showerrorSummary = false;
 
