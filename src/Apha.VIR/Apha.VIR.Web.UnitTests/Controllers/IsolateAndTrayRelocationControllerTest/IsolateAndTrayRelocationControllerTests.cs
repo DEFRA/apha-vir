@@ -9,6 +9,7 @@ using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NSubstitute;
 
@@ -242,5 +243,67 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
+
+        [Fact]
+        public async Task Edit_InvalidModelState_ReturnsBadRequest()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "some error");
+            var model = new IsolateRelocateViewModel();
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public async Task Edit_ValidModelState_ReturnsViewWithCorrectModel()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();           
+
+            _lookupService.GetAllFreezerAsync().Returns(new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Freezer1" } });
+            _lookupService.GetAllTraysAsync().Returns(new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray1" } });
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+            Assert.NotNull(_controller.ViewBag.FreezersList);
+            Assert.NotNull(_controller.ViewBag.TrayList);
+        }
+                
+
+        [Fact]
+        public async Task Update_ValidModelState_ReturnsRedirectToActionResult()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel
+            {
+                IsolateId = Guid.NewGuid(),
+                Freezer = Guid.NewGuid(),
+                Tray = Guid.NewGuid(),
+                Well = "A1",
+                LastModified = BitConverter.GetBytes(DateTime.UtcNow.Ticks)
+            };
+
+            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>())
+            .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.Update(model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Isolate", redirectResult.ActionName);
+            Assert.Equal("Relocation", redirectResult.ControllerName);
+
+            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>());
+        }
+                
     }
 }
