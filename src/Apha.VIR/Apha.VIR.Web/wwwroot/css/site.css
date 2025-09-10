@@ -26,13 +26,7 @@
 }
 
 
-.width-600 {
-    width: 600px;
-}
 
-.margin70 {
-    margin-left: -70px;
-}
 
 /*Layout*/
 .master_header_top {
@@ -151,6 +145,7 @@
     margin: 10px 10px 10px 10px;
     padding: 0px 0px 0px 0px;
     width: 95%;
+    min-width: 1200px;
 }
 
 .master_footer {
@@ -286,12 +281,7 @@
     max-width: 25%;
 }
 
-.textInput {
-    font-family: Verdana;
-    width: 100%;
-    background-color: white;
-    height: fit-content;
-}
+
 
 .small-select-dropdown {
     appearance: none;
@@ -541,12 +531,12 @@
     white-space: nowrap;
     border: 0;
 }
-.isolate-chid-tbl {
+/*.isolate-chid-tbl {
     width: 90%;
 }
 .isolate-chid-tbl thead tr th {
     text-wrap-mode: wrap!important;
-}
+}*/
 /* end view isolate details */
 
 .isolatereport-box_title {
@@ -608,42 +598,6 @@
         font-weight: bold;
     }
 
-
-/*---- Common Table CSS ----*/
-.VIRtable {
-    border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #0b2677;
-    margin-bottom: 20px;
-}
-
-    .VIRtable td {
-        border: 1px solid black;
-        padding: 6px 8px;
-        text-align: left;
-    }
-
-    .VIRtable th {
-        padding-bottom: 10px;
-        background-color: Navy;
-        border: 1px solid white;
-        padding: 6px 8px;
-        text-align: left;
-    }
-
-    .VIRtable th {
-        background-color: #0b2677;
-        color: #fff;
-        font-weight: bold;
-    }
-
-    .VIRtable tr:nth-child(even) {
-        background-color: #efefef;
-    }
-
-    .VIRtable tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
 
 
 /*----- VirusCharacterstics*/

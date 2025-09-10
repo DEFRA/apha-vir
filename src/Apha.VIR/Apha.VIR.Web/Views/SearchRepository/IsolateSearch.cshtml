@@ -69,7 +69,7 @@
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="HostPurpose" class="ms-5 label-style"> HostPurpose</label>
+							<label asp-for="HostPurpose" class="ms-5 label-style"> Host Purpose</label>
 
 							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" tabindex="8" class="select-dropdown">
 								<option value=""></option>
@@ -106,7 +106,7 @@
 							<span class=" ms-5  word-break"><label asp-for="YearOfIsolation">Year of Isolation / FTA Absorption &nbsp;&nbsp;</label></span>
 
 							<span>
-								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" tabindex="11" class=" select-dropdown">
+								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" tabindex="11" class="width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -121,7 +121,7 @@
 							<span class="ms-5 word-break"><label asp-for="YearOfSubmissionRecieved">Year Submission Received &nbsp;&nbsp;</label></span>
 
 							<span>
-								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList" tabindex="13" class="select-dropdown">
+								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList" tabindex="13"  class=" width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -138,29 +138,31 @@
 										<div>
 											<div class="label-style"><label>Created Date</label></div>
 											<div>
-												From
+												<label class="me-1">From</label>
 												<input type="date" asp-for="CreatedFromDate" tabindex="14" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 											<div>
-												To
+												<label class="me-1  ms-2">To</label>
+												
 												<input type="date" asp-for="CreatedToDate" tabindex="15" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 										</div>
 									</td>
 									<td>
 										<div>
-											<div class="ms-5 label-style"><label>Recieved Date</label></div>
+											<div class="ms-5 label-style"><label>Received Date</label></div>
 											<div>
-												From
+												<label class="me-1">From</label>
+												
 												<input type="date" asp-for="ReceivedFromDate" tabindex="16" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 											<div>
-												To
+												<label class="me-1  ms-2">To</label>
 												<input type="date" asp-for="ReceivedToDate" tabindex="17" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 										</div>
 									</td>
