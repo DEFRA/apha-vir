@@ -15,6 +15,13 @@
     height:166px;
 }
 
+.master_content {
+    margin: 10px 10px 10px 10px;
+    padding: 0px 0px 0px 0px;
+    width: 95%;
+    min-width:1200px;
+}
+
 /*---- Common Table CSS ----*/
 .VIRtable {
     border-collapse: collapse;
@@ -58,12 +65,7 @@
 
 
 
-.textInput {
-    font-family: Verdana;
-    width: 100%;
-    /*    background-color: white;*/
-    height: fit-content;
-}
+
 
 
 /*----------Form label alignment*/
@@ -121,4 +123,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+}
+.isolate-grid-table table thead tr th {
+    text-wrap-mode: wrap;
 }
