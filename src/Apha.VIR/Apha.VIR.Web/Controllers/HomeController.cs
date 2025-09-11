@@ -24,6 +24,10 @@ namespace Apha.VIR.Web.Controllers
             ViewBag.UserMgmtUrl = $"{UserMgmtUrl()}";
             ViewBag.EnvironmentName = _sysInfoService.GetEnvironmentName().Result;
 
+            HttpContext.Session.SetString("UserName", "JohnDoe");
+
+            // Get session value
+            var userName = HttpContext.Session.GetString("UserName");
             return View();
         }
 

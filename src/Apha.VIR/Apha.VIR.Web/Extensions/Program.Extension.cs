@@ -24,17 +24,19 @@ namespace Apha.VIR.Web.Extensions
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
-                options.InstanceName = "VIRRedisInstance_";
+                options.InstanceName = "VIRRedisInstance";
             });
 
             services.AddSession(options =>
             {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
-               //options.Cookie.HttpOnly = true;
+                options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
-                options.Cookie.Name = ".VIR.Session";
+                options.Cookie.Name = "VIR.Session";
+                options.Cookie.SameSite = SameSiteMode.Lax;
             });
- 
+
             // AutoMapper
             services.AddAutoMapper(typeof(EntityMapper).Assembly);
             services.AddAutoMapper(typeof(ViewModelMapper));
@@ -90,16 +92,13 @@ namespace Apha.VIR.Web.Extensions
             app.UseHsts();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
+            app.UseSession();
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseSession();
-
 
             // Default route
             app.MapControllerRoute(
