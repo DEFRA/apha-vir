@@ -1,16 +1,21 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolateDispatchControllerTests
     {
+        private readonly object _lock;
         private readonly IIsolateDispatchService _mockIsolateDispatchService;
         private readonly ILookupService _mockLookupService;
         private readonly IIsolatesService _mockIsolatesService;
@@ -18,8 +23,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         private readonly ISampleService _mockSampleService;
         private readonly IMapper _mockMapper;
         private readonly IsolateDispatchController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolateDispatchControllerTests()
+        public IsolateDispatchControllerTests(AppRolesFixture fixture)
         {
             _mockIsolateDispatchService = Substitute.For<IIsolateDispatchService>();
             _mockLookupService = Substitute.For<ILookupService>();
@@ -27,6 +33,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockSubmissionService = Substitute.For<ISubmissionService>();
             _mockSampleService = Substitute.For<ISampleService>();
             _mockMapper = Substitute.For<IMapper>();
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
 
             _controller = new IsolateDispatchController(_mockIsolateDispatchService,
                 _mockLookupService,
@@ -206,7 +215,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         [InlineData("", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")]
         [InlineData("AVN001", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")]
         [InlineData("AVN001", "11111111-1111-1111-1111-111111111111", "00000000-0000-0000-0000-000000000000")]
-        public async Task Edit_InvalidInput_ReturnsBadRequest(string avNumber, string dispatchId, string dispatchIsolateId)
+        public async Task Edit_Get_InvalidInput_ReturnsBadRequest(string avNumber, string dispatchId, string dispatchIsolateId)
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
@@ -224,7 +233,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Fact]
-        public async Task Edit_ValidInput_InternalRecipient_ReturnsViewWithCorrectModel()
+        public async Task Edit_Get_ValidInput_InternalRecipient_ReturnsViewWithCorrectModel()
         {
             // Arrange
             var avNumber = "AVN001";
@@ -265,7 +274,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Fact]
-        public async Task Edit_ValidInput_ExternalRecipient_ReturnsViewWithCorrectModel()
+        public async Task Edit_Get_ValidInput_ExternalRecipient_ReturnsViewWithCorrectModel()
         {
             // Arrange
             var avNumber = "AVN001";
@@ -303,10 +312,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             await _mockLookupService.Received(1).GetAllWorkGroupsAsync();
             await _mockLookupService.Received(1).GetAllStaffAsync();
             _mockMapper.Received(1).Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDTO);
-        }       
+        }
 
         [Fact]
-        public async Task Edit_ValidInput_SuccessfulUpdateAndRedirect()
+        public async Task Edit_Post_ValidInput_SuccessfulUpdateAndRedirect()
         {
             // Arrange
             var model = new IsolateDispatchEditViewModel
@@ -324,7 +333,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService.GetAllStaffAsync().Returns(new List<LookupItemDTO>());
 
             _mockMapper.Map<IsolateDispatchInfoDTO>(model).Returns(new IsolateDispatchInfoDTO());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model) as RedirectToActionResult;
 
@@ -337,7 +346,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Fact]
-        public async Task Edit_InvalidModelState_ReturnsViewWithModel()
+        public async Task Edit_Post_InvalidModelState_ReturnsViewWithModel()
         {
             // Arrange
             var model = new IsolateDispatchEditViewModel();
@@ -346,7 +355,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService.GetAllViabilityAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllWorkGroupsAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllStaffAsync().Returns(new List<LookupItemDTO>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model) as ViewResult;
 
@@ -356,7 +365,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Fact]
-        public async Task Edit_ExceptionThrownByUpdateDispatchAsync_HandlesErrorAppropriately()
+        public async Task Edit_Post_ExceptionThrownByUpdateDispatchAsync_HandlesErrorAppropriately()
         {
             // Arrange
             var model = new IsolateDispatchEditViewModel
@@ -377,11 +386,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             _mockIsolateDispatchService.UpdateDispatchAsync(Arg.Any<IsolateDispatchInfoDTO>(), Arg.Any<string>())
             .Returns(Task.FromException(new Exception("Update failed")));
-
+            SetupMockUserAndRoles();
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Edit(model));
         }
 
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
 
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
+        }
     }
 }

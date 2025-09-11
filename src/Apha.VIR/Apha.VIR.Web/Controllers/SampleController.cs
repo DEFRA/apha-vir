@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Core.Entities;
-using Apha.VIR.Web.Mappings;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -26,6 +24,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Create(string AVNumber)
         {
             if (!ModelState.IsValid)
@@ -43,6 +42,11 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SampleViewModel model)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to create submission.");
+            }
+
             if (!ModelState.IsValid)
             {
                 await LoadSampleDetailsData(model);
@@ -56,8 +60,10 @@ namespace Apha.VIR.Web.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Edit(string AVNumber, Guid Sample)
         {
+         
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -75,6 +81,11 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SampleViewModel model)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to modify sample.");
+            }
+
             if (!ModelState.IsValid)
             {
                 await LoadSampleDetailsData(model);
@@ -89,6 +100,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBreedsBySpecies(Guid? speciesId)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this BreedsBySpecie list");
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -107,6 +122,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetLatinBreadList()
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this LatinBread list");
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

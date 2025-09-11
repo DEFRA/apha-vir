@@ -3,12 +3,15 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
 namespace Apha.VIR.Web.Controllers
 {
+    [Authorize(Roles = AppRoleConstant.Administrator)]
+    [Route("AuditLog")]
     public class AuditLogController : Controller
     {
         private readonly IAuditLogService _auditLogService;
@@ -20,6 +23,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             var viewModel = new AuditLogViewModel

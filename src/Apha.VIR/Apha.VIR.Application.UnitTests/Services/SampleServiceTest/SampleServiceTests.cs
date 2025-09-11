@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
-using Apha.VIR.DataAccess.Repositories;
 using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -16,15 +10,17 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
 {
     public class SampleServiceTests
     {
-        private readonly ISampleRepository _mockRepository;
+        private readonly ISampleRepository _mockSampleRepository;
+        private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
         private readonly SampleService _sampleService;
 
         public SampleServiceTests()
         {
-            _mockRepository = Substitute.For<ISampleRepository>();
+            _mockSampleRepository = Substitute.For<ISampleRepository>();
+            _mockLookupRepository = Substitute.For<ILookupRepository>();
             _mockMapper = Substitute.For<IMapper>();
-            _sampleService = new SampleService(_mockRepository, _mockMapper);
+            _sampleService = new SampleService(_mockSampleRepository, _mockLookupRepository, _mockMapper);
         }
 
         [Fact]
@@ -36,14 +32,14 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             var sample = new Sample { SampleId = sampleId };
             var sampleDto = new SampleDTO { SampleId = sampleId };
 
-            _mockRepository.GetSampleAsync(avNumber, sampleId).Returns(sample);
+            _mockSampleRepository.GetSampleAsync(avNumber, sampleId).Returns(sample);
             _mockMapper.Map<SampleDTO>(sample).Returns(sampleDto);
 
             // Act
             var result = await _sampleService.GetSampleAsync(avNumber, sampleId);
 
             // Assert
-            await _mockRepository.Received(1).GetSampleAsync(avNumber, sampleId);
+            await _mockSampleRepository.Received(1).GetSampleAsync(avNumber, sampleId);
             _mockMapper.Received(1).Map<SampleDTO>(sample);
             Assert.Equal(sampleDto, result);
         }
@@ -55,14 +51,14 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             var avNumber = "AV456";
             var sampleId = Guid.NewGuid();
 
-            _mockRepository.GetSampleAsync(avNumber, sampleId).Returns((Sample?)null);
+            _mockSampleRepository.GetSampleAsync(avNumber, sampleId).Returns((Sample?)null);
             _mockMapper.Map<SampleDTO>(null).Returns((SampleDTO?)null);
 
             // Act
             var result = await _sampleService.GetSampleAsync(avNumber, sampleId);
 
             // Assert
-            await _mockRepository.Received(1).GetSampleAsync(avNumber, sampleId);
+            await _mockSampleRepository.Received(1).GetSampleAsync(avNumber, sampleId);
             _mockMapper.Received(1).Map<SampleDTO>(null);
             Assert.Null(result);
         }
@@ -93,7 +89,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             await _sampleService.AddSample(sampleDto, avNumber, userName);
 
             // Assert
-            await _mockRepository.Received(1).AddSampleAsync(sample, avNumber, userName);
+            await _mockSampleRepository.Received(1).AddSampleAsync(sample, avNumber, userName);
         }
 
         [Fact]
@@ -119,7 +115,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             var userName = "TestUser";
 
             _mockMapper.Map<Sample>(sampleDto).Returns(sample);
-            _mockRepository.AddSampleAsync(sample, avNumber, userName)
+            _mockSampleRepository.AddSampleAsync(sample, avNumber, userName)
             .Returns(Task.FromException(new Exception("Repository error"))); // Fix: Replace ThrowsAsync with Returns(Task.FromException(...))
 
             // Act & Assert
@@ -141,7 +137,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             await _sampleService.UpdateSample(sampleDto, userName);
 
             // Assert
-            await _mockRepository.Received(1).UpdateSampleAsync(sample, userName);
+            await _mockSampleRepository.Received(1).UpdateSampleAsync(sample, userName);
         }
 
         [Fact]
@@ -164,7 +160,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             var userName = "testUser";
 
             _mockMapper.Map<Sample>(sampleDto).Returns(sample);
-            _mockRepository.UpdateSampleAsync(sample, userName).ThrowsAsync(new Exception("Repository error"));
+            _mockSampleRepository.UpdateSampleAsync(sample, userName).ThrowsAsync(new Exception("Repository error"));
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _sampleService.UpdateSample(sampleDto, userName));
