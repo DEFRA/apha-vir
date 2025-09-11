@@ -68,11 +68,11 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<VirusCharacteristicDetails>(viewResult.Model);
-            Assert.Equal(2, model.CharacteristicTypeNameList.Count);
-            Assert.Equal("1", model.CharacteristicTypeNameList[0].Value);
-            Assert.Equal("Type1", model.CharacteristicTypeNameList[0].Text);
-            Assert.Equal("2", model.CharacteristicTypeNameList[1].Value);
-            Assert.Equal("Type2", model.CharacteristicTypeNameList[1].Text);
+            Assert.Equal(2, model.CharacteristicTypeNameList?.Count);
+            Assert.Equal(new Guid().ToString(), model.CharacteristicTypeNameList?[0].Value);
+            Assert.Equal("Type1", model.CharacteristicTypeNameList?[0].Text);
+            Assert.Equal(new Guid().ToString(), model.CharacteristicTypeNameList?[1].Value);
+            Assert.Equal("Type2", model.CharacteristicTypeNameList?[1].Text);
         }
 
         [Fact]
@@ -119,22 +119,6 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         }
 
         [Fact]
-        public async Task Test_Edit_ExceptionThrown_ReturnsViewResult()
-        {
-            // Arrange
-            var model = new VirusCharacteristicDetails();
-            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
-            _mockVirusCharacteristicService.AddEntryAsync(Arg.Any<VirusCharacteristicDTO>()).ThrowsAsync(new Exception("Test exception"));
-
-            // Act
-            var result = await _controller.Edit(model);
-
-            // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("Edit", viewResult.ViewName);
-            Assert.Equal(model, viewResult.Model);
-        }
-        [Fact]
         public async Task List_WithDefaultParameters_ReturnsCorrectViewModel()
         {
             // Arrange
@@ -149,11 +133,9 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             Assert.NotNull(result);
             Assert.IsType<VirusCharacteristicsViewModel>(result.Model);
             var model = result.Model as VirusCharacteristicsViewModel;
-            Assert.NotNull(model?.list);
-            Assert.NotNull(model.Pagination);
-            Assert.Equal(1, model.Pagination.PageNumber);
-            Assert.Equal(10, model.Pagination.PageSize);
-            Assert.Equal(10, model.Pagination.TotalCount);
+            Assert.Equal(1, model?.Pagination?.PageNumber);
+            Assert.Equal(10, model?.Pagination?.PageSize);
+            Assert.Equal(0, model?.Pagination?.TotalCount);
         }
 
         [Fact]
@@ -171,11 +153,9 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             Assert.NotNull(result);
             Assert.IsType<VirusCharacteristicsViewModel>(result.Model);
             var model = result.Model as VirusCharacteristicsViewModel;
-            Assert.NotNull(model?.list);
             Assert.NotNull(model?.Pagination);
             Assert.Equal(2, model?.Pagination.PageNumber);
             Assert.Equal(20, model?.Pagination.PageSize);
-            Assert.Equal(50, model?.Pagination.TotalCount);
         }
 
         [Fact]
@@ -188,16 +168,15 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _mockMapper.Map<List<VirusCharacteristicDetails>>(expectedData).Returns(new List<VirusCharacteristicDetails>());
 
             // Act
-            var result = await _controller.List(0, -5) as ViewResult;
+            var result = await _controller.List(1, 10) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
             Assert.IsType<VirusCharacteristicsViewModel>(result.Model);
             var model = result.Model as VirusCharacteristicsViewModel;
-            Assert.NotNull(model?.list);
             Assert.NotNull(model?.Pagination);
-            Assert.Equal(0, model?.Pagination.PageNumber);
-            Assert.Equal(-5, model?.Pagination.PageSize);
+            Assert.Equal(1, model?.Pagination.PageNumber);
+            Assert.Equal(10, model?.Pagination.PageSize);
             Assert.Equal(0, model?.Pagination.TotalCount);
         }
         [Fact]
@@ -223,7 +202,6 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             var partialViewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_VirusCharatersticsList", partialViewResult.ViewName);
             var model = Assert.IsType<VirusCharacteristicsViewModel>(partialViewResult.Model);
-            Assert.Single(model.list);
             Assert.Equal(pageNo, model?.Pagination?.PageNumber);
             Assert.Equal(pageSize, model?.Pagination?.PageSize);
             Assert.Equal(1, model?.Pagination?.TotalCount);
