@@ -31,8 +31,8 @@ namespace Apha.VIR.Web.Controllers
         {
             var model = new IsolateDispatchReportViewModel
             {
-                DateFrom = DateTime.Today,
-                DateTo = DateTime.Today
+                //DateFrom = DateTime.Today,
+                //DateTo = DateTime.Today
             };
             return View("IsolateDispatchReport", model);
         }
@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("IsolateDispatchReport", model);
             }
 
             var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);

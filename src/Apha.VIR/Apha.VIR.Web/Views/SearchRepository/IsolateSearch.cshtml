@@ -11,14 +11,14 @@
 				<tr>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="AVNumber" class="label-style">AV Number</label>
-							<input id="txtAVNumber" asp-for="AVNumber" class="textInput" tabindex="1" />
+							<label for="AVNumber" class="label-style">AV Number</label>
+							<input id="txtAVNumber" asp-for="AVNumber" class="textInput" />
 						</div>
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="Group" class="ms-5 label-style">Group</label>
-							<select id="ddlGroup" asp-for="Group" asp-items="Model.HostSpecyList" tabindex="2" class="select-dropdown">
+							<label for="Group" class="ms-5 label-style">Group</label>
+							<select id="ddlGroup" asp-for="Group" asp-items="Model.HostSpecyList" class="select-dropdown">
 								<option value=""></option>
 							</select>
 						</div>
@@ -27,16 +27,16 @@
 				<tr>
 					<td class="">
 						<div class="d-flex justify-content-between">
-							<label asp-for="VirusFamily" class="label-style">Virus Family</label>
-							<select id="ddlVirusFamily" asp-for="VirusFamily" asp-items="Model.VirusFamilyList" tabindex="3" class="select-dropdown">
+							<label for="VirusFamily" class="label-style">Virus Family</label>
+							<select id="ddlVirusFamily" asp-for="VirusFamily" asp-items="Model.VirusFamilyList" class="select-dropdown">
 								<option value=""></option>
 							</select>
 						</div>
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="Species" class="ms-5 label-style">Species</label>
-							<select id="ddlSpecies" asp-for="Species" asp-items="Model.HostBreedList" tabindex="4" class="select-dropdown">
+							<label for="Species" class="ms-5 label-style">Species</label>
+							<select id="ddlSpecies" asp-for="Species" asp-items="Model.HostBreedList" class="select-dropdown">
 								<option value=""></option>
 							</select>
 						</div>
@@ -45,16 +45,16 @@
 				<tr>
 					<td class="">
 						<div class="d-flex justify-content-between">
-							<label asp-for="VirusType" class="label-style">Virus Type</label>
-							<select id="ddlVirusType" asp-for="VirusType" asp-items="Model.VirusTypeList" tabindex="5" class="select-dropdown">
+							<label for="VirusType" class="label-style">Virus Type</label>
+							<select id="ddlVirusType" asp-for="VirusType" asp-items="Model.VirusTypeList" class="select-dropdown">
 								<option value=""></option>
 							</select>
 						</div>
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="CountryOfOrigin" class="ms-5 label-style">Country Of Origin</label>
-							<select id="ddlCountry" asp-for="CountryOfOrigin" asp-items="Model.CountryList" tabindex="6" class="select-dropdown">
+							<label for="CountryOfOrigin" class="ms-5 label-style">Country Of Origin</label>
+							<select id="ddlCountry" asp-for="CountryOfOrigin" asp-items="Model.CountryList" class="select-dropdown">
 								<option value=""></option>
 							</select>
 						</div>
@@ -64,14 +64,14 @@
 					<td>
 						<div class="d-flex justify-content-between">
 							<label class="label-style">Virus Characteristics (you can specify up to three)</label>
-							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[0]" />
+							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch![0]" />
 						</div>
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="HostPurpose" class="ms-5 label-style"> HostPurpose</label>
+							<label for="HostPurpose" class="ms-5 label-style"> HostPurpose</label>
 
-							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" tabindex="8" class="select-dropdown">
+							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" class="select-dropdown">
 								<option value=""></option>
 							</select>
 						</div>
@@ -81,14 +81,14 @@
 					<td>
 						<div class="d-flex justify-content-between">
 							<span class="label-style"></span>
-							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[1]" />
+							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch![1]" />
 						</div>
 					</td>
 					<td class="">
 						<div class="d-flex justify-content-between">
-							<label asp-for="SampleType" class=" ms-5 label-style">Sample Type</label>
+							<label for="SampleType" class=" ms-5 label-style">Sample Type</label>
 
-							<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" tabindex="9" class="select-dropdown">
+							<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" class="select-dropdown">
 								<option value=""></option>
 							</select>
 						</div>
@@ -98,15 +98,15 @@
 					<td>
 						<div class="d-flex justify-content-between">
 							<span class="label-style"></span>
-							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[2]" />
+							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch![2]" />
 						</div>
 					</td>
 					<td>
 						<div class="d-flex justify-content-start">
-							<span class=" ms-5  word-break"><label asp-for="YearOfIsolation">Year of Isolation / FTA Absorption &nbsp;&nbsp;</label></span>
+							<span class=" ms-5  word-break"><label for="YearOfIsolation">Year of Isolation / FTA Absorption &nbsp;&nbsp;</label></span>
 
 							<span>
-								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" tabindex="11" class=" select-dropdown">
+								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" class=" select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -118,10 +118,10 @@
 					</td>
 					<td>
 						<div class="d-flex flex-row justify-content-start ">
-							<span class="ms-5 word-break"><label asp-for="YearOfSubmissionRecieved">Year Submission Received &nbsp;&nbsp;</label></span>
+							<span class="ms-5 word-break"><label for="YearOfSubmissionRecieved">Year Submission Received &nbsp;&nbsp;</label></span>
 
 							<span>
-								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList" tabindex="13" class="select-dropdown">
+								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList" class="select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -139,12 +139,12 @@
 											<div class="label-style"><label>Created Date</label></div>
 											<div>
 												From
-												<input type="date" asp-for="CreatedFromDate" tabindex="14" />
+												<input type="date" asp-for="CreatedFromDate" />
 												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
 											</div>
 											<div>
 												To
-												<input type="date" asp-for="CreatedToDate" tabindex="15" />
+												<input type="date" asp-for="CreatedToDate" />
 												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
 											</div>
 										</div>
@@ -154,12 +154,12 @@
 											<div class="ms-5 label-style"><label>Recieved Date</label></div>
 											<div>
 												From
-												<input type="date" asp-for="ReceivedFromDate" tabindex="16" />
+												<input type="date" asp-for="ReceivedFromDate" />
 												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
 											</div>
 											<div>
 												To
-												<input type="date" asp-for="ReceivedToDate" tabindex="17" />
+												<input type="date" asp-for="ReceivedToDate" />
 												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
 											</div>
 										</div>
@@ -171,15 +171,20 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class=" d-flex justify-content-end mt-5">
-			@* <a id="searchRepoLinkSearch" class="sp-button">Search</a> *@
+		<div class=" d-flex justify-content-end mt-5">			
 			<button type="submit" class="btn-as-link">Search</button>
-			&nbsp;&nbsp;|&nbsp;&nbsp;
-			@* <a id="searchRepoClearSearch" class="sp-button" href="@Url.Action(null, null)">Clear Search</a> *@
+			&nbsp;&nbsp;|&nbsp;&nbsp;			
 			<button id="searchRepoClearSearch" type="button" class="btn-as-link" onclick="ClearSearchFilter()">Clear Search</button>
 		</div>
 		<div>
-			<a id="searchRepolinkExport" href="@Url.Action("ExportToExcel", "SearchRepository")">Export to Excel</a>
+			@if (Model.IsFilterApplied && Model.IsolateSearchGird!.IsolateSearchResults!.Any())
+			{				
+				<a id="searchRepolinkExport" href="@Url.Action("ExportToExcel", "SearchRepository")">Export to Excel</a>
+			}
+			else
+			{
+				<a id="searchRepolinkExport">Export to Excel</a>
+			}			
 			&nbsp;
 		</div>
 		<div id="pnlValidation" asp-validation-summary="All" class="spvalidation">
@@ -189,6 +194,12 @@
 </form>
 <div id="gridIsolateResult" class="searchRepo-grid-table ">
 	<partial name="_IsolateSearchResults" for="@Model.IsolateSearchGird" />
+	@if (Model.IsFilterApplied && !Model.IsolateSearchGird!.IsolateSearchResults!.Any())
+	{
+		<div style="border: 1px solid gray; padding: 1px; display: inline-block;">
+			No Results to Display.
+		</div>
+	}
 </div>
 @section Scripts {
 	<script src="~/js/searchRepository.js"></script>
