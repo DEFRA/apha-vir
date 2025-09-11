@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
+using Apha.VIR.Web.Models;
 using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -183,6 +184,55 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicServiceTest
             await _mockVirusCharacteristicRepository.Received(1).GetAllVirusCharacteristicsByVirusTypeAsync(virusType, isAbscent);
             _mockMapper.Received(1).Map<IEnumerable<VirusCharacteristicDTO>>(characteristics);
             Assert.Empty(result);
+        }
+        [Fact]
+        public async Task AddEntryAsync_ShouldAddNewVirusCharacteristic()
+        {
+            // Arrange
+            var dto = new VirusCharacteristicDTO();
+            var entity = new VirusCharacteristicDetails();
+            _mockMapper.Map<VirusCharacteristicDetails>(dto).Returns(entity);
+
+            // Act
+            await _mockVirusCharacteristicService.AddEntryAsync(dto);
+
+            // Assert
+            Assert.NotEqual(Guid.Empty, dto.Id);
+            await _mockVirusCharacteristicService.Received(1).AddEntryAsync(Arg.Is<VirusCharacteristicDTO>(v => v == dto));
+        }
+        [Fact]
+        public async Task AddEntryAsync_WithNullDto_ShouldThrowArgumentNullException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _mockVirusCharacteristicService.AddEntryAsync(null));
+        }
+
+        [Fact]
+        public async Task AddEntryAsync_ShouldAssignNewGuid()
+        {
+            // Arrange
+            var dto = new VirusCharacteristicDTO();
+
+            // Act
+            await _mockVirusCharacteristicService.AddEntryAsync(dto);
+
+            // Assert
+            Assert.NotEqual(Guid.Empty, dto.Id);
+        }
+
+        [Fact]
+        public async Task AddEntryAsync_ShouldCallRepositoryWithMappedEntity()
+        {
+            // Arrange
+            var dto = new VirusCharacteristicDTO();
+            var entity = new VirusCharacteristic();
+            _mockMapper.Map<VirusCharacteristic>(dto).Returns(entity);
+
+            // Act
+            await _mockVirusCharacteristicService.AddEntryAsync(dto);
+
+            // Assert
+            await _mockVirusCharacteristicRepository.Received(1).AddEntryAsync(Arg.Is<VirusCharacteristic>(v => v == entity));
         }
     }
 }

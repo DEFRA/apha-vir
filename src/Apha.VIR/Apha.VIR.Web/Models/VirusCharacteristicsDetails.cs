@@ -18,6 +18,7 @@ namespace Apha.VIR.Web.Models
         public string? Prefix { get; set; }
         public double? MinValue { get; set; }
         public double? MaxValue { get; set; }
+        [RegularExpression(@"^\d+$", ErrorMessage = "Decimalmust be a numeric value")]
         public int? DecimalPlaces { get; set; }
         public int? Length { get; set; }
         public int? CharacteristicIndex { get; set; }
@@ -29,6 +30,7 @@ namespace Apha.VIR.Web.Models
         public VirusCharacteristicDetails()
         {
             Id = Guid.NewGuid();
+            Name=string.Empty;
             CharacteristicTypeNameList = new List<SelectListItem>();
         }
 
