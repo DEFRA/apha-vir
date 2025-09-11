@@ -16,7 +16,7 @@ public class IsolateRelocateRepository : IIsolateRelocateRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<IEnumerable<IsolateRelocate>> GetIsolatesByCriteria(string min, string max, Guid? freezer, Guid? tray)
+    public async Task<IEnumerable<IsolateRelocate>> GetIsolatesByCriteria(string? min, string? max, Guid? freezer, Guid? tray)
     {
         var parameters = new[]
         {
@@ -32,8 +32,10 @@ public class IsolateRelocateRepository : IIsolateRelocateRepository
     }
     public async Task UpdateIsolateFreezeAndTrayAsync(IsolateRelocate item)
     {
-        await _context.Database.ExecuteSqlRawAsync(
-          "EXEC spIsolateRelocateByIsolate @UserID, @IsolateId, @Freezer, @Tray, @Well, @LastModified OUTPUT, @FreezerName OUTPUT, @TrayName OUTPUT",
+        if (item.UpdateType == "Isolate")
+        {
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC spIsolateRelocateByIsolate @UserID, @IsolateId, @Freezer, @Tray, @Well, @LastModified OUTPUT, @FreezerName OUTPUT, @TrayName OUTPUT",
                        new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = item.UserID },
                        new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = item.IsolateId },
                        new SqlParameter("@Freezer", SqlDbType.UniqueIdentifier) { Value = item.Freezer },
@@ -42,6 +44,13 @@ public class IsolateRelocateRepository : IIsolateRelocateRepository
                        new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)item.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput },
                        new SqlParameter("@FreezerName", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output },
                        new SqlParameter("@TrayName", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
-
+        }
+        else if (item.UpdateType == "Tray")
+        {
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC spIsolateRelocateByTray @Freezer, @Tray",
+                       new SqlParameter("@Freezer", SqlDbType.UniqueIdentifier) { Value = item.Freezer },
+                       new SqlParameter("@Tray", SqlDbType.UniqueIdentifier) { Value = item.Tray });
+        }
     }
 }

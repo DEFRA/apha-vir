@@ -7,9 +7,9 @@ namespace Apha.VIR.Web.Models
 
     public class IsolateRelocateViewModel
     {
-        public Guid IsolateId { get; set; }        
-        public Guid Freezer { get; set; }
-        public Guid Tray { get; set; }
+        public Guid? IsolateId { get; set; }        
+        public Guid? Freezer { get; set; }
+        public Guid? Tray { get; set; }
         public string? Well { get; set; }
         public string? FreezerName { get; set; }
         public string? TrayName { get; set; }
@@ -17,7 +17,6 @@ namespace Apha.VIR.Web.Models
         public string? Nomenclature { get; set; }
         public byte[]? LastModified { get; set; }
         public string UserID { get; set; } = string.Empty;
-        public bool IsSelected { get; set; }
     }
 
     public class IsolateRelocationViewModel

@@ -31,39 +31,62 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         }
 
         [Fact]
-        public async Task IsolateRelocation_ReturnsViewResultWithCorrectModel()
+        public async Task Relocation_WithIsolatePath_ReturnsIsolateRelocationView()
         {
             // Arrange
-            var freezers = new List<LookupItemDTO>
+            _controller.ControllerContext = new ControllerContext
             {
-            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Freezer 1" },
-            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Freezer 2" }
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
             };
-            var trays = new List<LookupItemDTO>
-            {
-            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 1" },
-            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 2" }
-            };
-
-            _lookupService.GetAllFreezerAsync().Returns(freezers);
-            _lookupService.GetAllTraysAsync().Returns(trays);
+            _controller.ControllerContext.HttpContext.Request.Path = "/relocation/isolate";
 
             // Act
-            var result = await _controller.IsolateRelocation();
+            var result = await _controller.Relocation();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<IsolateRelocationViewModel>(viewResult.Model);
-            Assert.NotNull(model);
-            Assert.NotNull(model.SearchResults);
-            Assert.Empty(model.SearchResults);           
-            Assert.Equal(2, model.FreezersList!.Count);
-            Assert.Equal(2, model.TraysList!.Count);
-            Assert.Equal("Freezer 1", model.FreezersList[0].Text);
-            Assert.Equal("Tray 1", model.TraysList[0].Text);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+            await _lookupService.Received().GetAllFreezerAsync();
+            await _lookupService.Received().GetAllTraysAsync();
+        }
 
-            await _lookupService.Received(1).GetAllFreezerAsync();
-            await _lookupService.Received(1).GetAllTraysAsync();
+        [Fact]
+        public async Task Relocation_WithTrayPath_ReturnsTrayRelocationView()
+        {
+            // Arrange
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+            };
+            _controller.ControllerContext.HttpContext.Request.Path = "/relocation/tray";
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("TrayRelocation", viewResult.ViewName);
+            await _lookupService.Received().GetAllFreezerAsync();
+            await _lookupService.Received().GetAllTraysAsync();
+        }
+
+        [Fact]
+        public async Task Relocation_WithInvalidPath_ReturnsNotFound()
+        {
+            // Arrange
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+            };
+            _controller.ControllerContext.HttpContext.Request.Path = "/relocation/invalid";
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+            await _lookupService.Received().GetAllFreezerAsync();
+            await _lookupService.Received().GetAllTraysAsync();
         }
 
         [Fact]

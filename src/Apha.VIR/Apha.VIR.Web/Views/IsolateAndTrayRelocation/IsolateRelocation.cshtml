@@ -130,15 +130,7 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $('#FreezerSearch').change(function () {
-                updateTrayList('TraySearch', $(this).val());
-            });
-
-            $('#NewFreezer').change(function () {
-                updateTrayList('NewTray', $(this).val());
-            });
-
+        $(document).ready(function () { 
             $('#searchButton').click(function () {
                 performSearch();
             });
@@ -189,35 +181,16 @@
                 });
             });
 
-
-            $(document).on('click', '.edit-isolate', function () {
-                debugger;
+            $(document).on('click', '.edit-isolate', function () {               
                 var button = $(this);
                 $('#editForm input[name="IsolateId"]').val(button.data('id'));
                 $('#editForm input[name="Well"]').val(button.data('well'));
                 $('#editForm input[name="Freezer"]').val(button.data('freezer'));
                 $('#editForm input[name="Tray"]').val(button.data('tray'));
                 $('#editForm input[name="LastModified"]').val(button.data('lastmodified'));
-
                 $('#editForm').submit();
             });
         });
-
-        function updateTrayList(traySelectId, freezerId) {
-            $.ajax({
-                url: '/IsolateRelocate/GetTrayList',
-                type: 'GET',
-                data: { freezerId: freezerId },
-                success: function (data) {
-                    var traySelect = $('#' + traySelectId);
-                    traySelect.empty();
-                    traySelect.append($('<option></option>').val('').text('Select Tray'));
-                    $.each(data, function (i, item) {
-                        traySelect.append($('<option></option>').val(item.value).text(item.text));
-                    });
-                }
-            });
-        }
 
         function performSearch() {            
                 $.ajax({

@@ -39,13 +39,26 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpGet]
         [Route("Isolate")]
-        public async Task<IActionResult> IsolateRelocation()
+        [Route("Tray")]
+        public async Task<IActionResult> Relocation()
         {
             var model = new IsolateRelocationViewModel();
             await LoadIsolateAndTrayData(model);
             model.TraysList = new List<SelectListItem>();
             model.SearchResults = [];
-            return View(model);
+
+            var path = HttpContext.Request.Path.Value?.ToLower();
+
+            if (path!.Contains("/isolate"))
+            {
+                return View("IsolateRelocation", model);
+            }
+            else if (path!.Contains("/tray"))
+            {
+                return View("TrayRelocation", model);
+            }
+
+            return NotFound();
         }
 
         [HttpPost("Search")]
@@ -85,7 +98,8 @@ namespace Apha.VIR.Web.Controllers
                     Tray = model.SelectedNewTray!.Value,
                     Well = isolate.Well!,
                     UserID = "Test",
-                    LastModified = isolate.LastModified
+                    LastModified = isolate.LastModified,
+                    UpdateType = "Isolate"
                 });
             }
 
@@ -123,7 +137,8 @@ namespace Apha.VIR.Web.Controllers
                     Tray = model.Tray,
                     Well = model.Well,
                     UserID = "Test",
-                    LastModified = model.LastModified
+                    LastModified = model.LastModified,
+                    UpdateType = "Isolate"
                 });
                 return RedirectToAction("Isolate", "Relocation");
             }
@@ -152,6 +167,70 @@ namespace Apha.VIR.Web.Controllers
 
             return Json(trayList);
         }
+
+        [HttpPost]
+        [Route("SearchIsolates")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SearchIsolates(IsolateRelocationViewModel model)
+        {
+            if (model.SelectedFreezer == null || model.SelectedTray == null)
+            {
+                ModelState.AddModelError(string.Empty, "You must select both a freezer and tray.");                
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            List<IsolateRelocateViewModel>? results;
+            var data = await _isolateRelocateService.GetIsolatesByCriteria(model.MinAVNumber!,
+                model.MaxAVNumber!, model.SelectedFreezer ?? Guid.Empty, model.SelectedTray ?? Guid.Empty);
+            results = _mapper.Map<List<IsolateRelocateViewModel>>(data);
+
+            return PartialView("_SearchIsolates", results);             
+        }
+
+        [HttpPost]
+        [Route("RelocateTray")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RelocateTray(IsolateRelocationViewModel model)
+        {
+            if (model.SelectedNewFreezer == null)
+            {
+                ModelState.AddModelError(string.Empty, "You must select a Freezer for the Tray to be relocated into.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+            {
+                Freezer = model.SelectedNewFreezer!.Value,
+                Tray = model.SelectedTray!.Value,
+                UpdateType = "Tray"
+            });
+
+            var data = await _isolateRelocateService.GetIsolatesByCriteria(model.MinAVNumber!,
+                model.MaxAVNumber!, model.SelectedFreezer ?? Guid.Empty, model.SelectedTray ?? Guid.Empty);
+
+            foreach (var isolate in data!)
+            {
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                {
+                    IsolateId = isolate.IsolateId,
+                    Freezer = model.SelectedNewFreezer!.Value,
+                    Tray = isolate.Tray,
+                    Well = isolate.Well,
+                    UserID = "Test",
+                    LastModified = isolate.LastModified,
+                    UpdateType = "Isolate"
+                });
+            }
+
+            return Json(new { success = true });
+        }
+
 
         private async Task LoadIsolateAndTrayData(IsolateRelocationViewModel model)
         {
