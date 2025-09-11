@@ -22,7 +22,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
             return data;
         }
-        public async Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo = 0, int pageSize = 0)
+        public async Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo, int pageSize)
         {
             var result = await _context.Set<VirusCharacteristic>()
                 .FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync();
