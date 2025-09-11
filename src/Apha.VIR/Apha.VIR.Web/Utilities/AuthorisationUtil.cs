@@ -5,18 +5,11 @@ namespace Apha.VIR.Web.Utilities
     public static class AuthorisationUtil
     {
         private static IHttpContextAccessor? _httpContextAccessor;
-        private static List<string>? _authMessages = new List<string>();
+        private static List<string>? _authMessages;
 
         public static List<string> AppRoles
         {
-            get
-            {
-                if (_authMessages == null || !_authMessages.Any())
-                {
-                    _authMessages = GetAppRoles();
-                }
-                return _authMessages;
-            }
+            get => _authMessages ??= GetAppRoles();
             set => _authMessages = value;
         }
 
