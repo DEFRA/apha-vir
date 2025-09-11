@@ -43,6 +43,7 @@ namespace Apha.VIR.Web.Controllers
         {
             var model = new IsolateRelocationViewModel();
             await LoadIsolateAndTrayData(model);
+            model.TraysList = new List<SelectListItem>();
             model.SearchResults = [];
             return View(model);
         }
@@ -132,6 +133,24 @@ namespace Apha.VIR.Web.Controllers
             ViewBag.FreezersList = data.FreezersList;
             ViewBag.TrayList = data.TraysList;
             return View("Edit", model);
+        }
+
+        [Route("GetTray")]
+        public async Task<IActionResult> GetTraysByFreezerId(Guid? freezerId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var trays = await _lookupService.GetAllTraysByParentAsync(freezerId);
+            var trayList = trays.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Name
+            }).ToList();
+
+            return Json(trayList);
         }
 
         private async Task LoadIsolateAndTrayData(IsolateRelocationViewModel model)

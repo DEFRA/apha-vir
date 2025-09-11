@@ -157,6 +157,39 @@
                 $('.select-isolate').prop('checked', false);
             });
 
+            $('#FreezerSearch').change(function () {
+                var selectedFreezer = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetTray", "Relocation")',
+                    type: 'GET',
+                    data: { freezerId: selectedFreezer },
+                    success: function (data) {
+                        $('#TraySearch').empty();
+                        $('#TraySearch').append($('<option></option>').val('').text(''));
+                        $.each(data, function (i, item) {
+                            $('#TraySearch').append($('<option></option>').val(item.value).text(item.text));
+                        });
+                    }
+                });
+            });
+
+            $('#NewFreezer').change(function () {
+                var selectedFreezer = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetTray", "Relocation")',
+                    type: 'GET',
+                    data: { freezerId: selectedFreezer },
+                    success: function (data) {
+                        $('#NewTray').empty();
+                        $('#NewTray').append($('<option></option>').val('').text(''));
+                        $.each(data, function (i, item) {
+                            $('#NewTray').append($('<option></option>').val(item.value).text(item.text));
+                        });
+                    }
+                });
+            });
+
+
             $(document).on('click', '.edit-isolate', function () {
                 debugger;
                 var button = $(this);

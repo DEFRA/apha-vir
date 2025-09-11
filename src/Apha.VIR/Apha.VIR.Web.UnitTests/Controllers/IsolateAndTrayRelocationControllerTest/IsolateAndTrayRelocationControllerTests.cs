@@ -276,7 +276,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             Assert.NotNull(_controller.ViewBag.FreezersList);
             Assert.NotNull(_controller.ViewBag.TrayList);
         }
-                
+               
 
         [Fact]
         public async Task Update_ValidModelState_ReturnsRedirectToActionResult()
@@ -304,6 +304,57 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>());
         }
-                
+
+        [Fact]
+        public async Task GetTraysByFreezerId_ValidFreezerId_ReturnsJsonResult()
+        {
+            // Arrange
+            var freezerId = Guid.NewGuid();
+            var trays = new List<LookupItemDTO>
+            {
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 1" },
+                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 2" }
+            };
+            _lookupService.GetAllTraysByParentAsync(freezerId).Returns(trays);
+
+            // Act
+            var result = await _controller.GetTraysByFreezerId(freezerId);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var trayList = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Equal(2, trayList.Count);
+            Assert.Equal("Tray 1", trayList[0].Text);
+            Assert.Equal("Tray 2", trayList[1].Text);
+        }
+
+        [Fact]
+        public async Task GetTraysByFreezerId_NullFreezerId_ExecutesWithoutException()
+        {
+            // Arrange
+            Guid? freezerId = null;
+            _lookupService.GetAllTraysByParentAsync(freezerId).Returns(new List<LookupItemDTO>());
+
+            // Act
+            var result = await _controller.GetTraysByFreezerId(freezerId);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var trayList = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Empty(trayList);
+        }
+
+        [Fact]
+        public async Task GetTraysByFreezerId_InvalidModelState_ReturnsBadRequest()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "Some error");
+
+            // Act
+            var result = await _controller.GetTraysByFreezerId(Guid.NewGuid());
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
     }
 }
