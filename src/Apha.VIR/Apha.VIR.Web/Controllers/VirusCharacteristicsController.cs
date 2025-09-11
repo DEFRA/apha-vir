@@ -53,17 +53,20 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> List(int pageNo = 1, int pageSize = 10)
         {
-            VirusCharacteristicsViewModel model = new VirusCharacteristicsViewModel();
-            model.list = new List<VirusCharacteristicDetails>();
             var result = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
             var viewModel = _mapper.Map<List<VirusCharacteristicDetails>>(result.data);
-            model.list = viewModel;
-            model.Pagination = new PaginationModel
+
+            VirusCharacteristicsViewModel model = new VirusCharacteristicsViewModel
             {
-                PageNumber = pageNo,
-                PageSize = pageSize,
-                TotalCount = result.TotalCount
+                list = viewModel,
+                Pagination = new PaginationModel
+                {
+                    PageNumber = pageNo,
+                    PageSize = pageSize,
+                    TotalCount = result.TotalCount
+                }
             };
+
             return View(model);
         }
 
