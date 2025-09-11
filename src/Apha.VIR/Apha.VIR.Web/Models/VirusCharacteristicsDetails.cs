@@ -12,9 +12,9 @@ namespace Apha.VIR.Web.Models
         public string Name { get; set; }
 
         [Required]
-        public Guid CharacteristicType { get; set; }
-        public bool NumericSort { get; set; }
-        public bool DisplayOnSearch { get; set; }
+        public Guid? CharacteristicType { get; set; }
+        public bool? NumericSort { get; set; }
+        public bool? DisplayOnSearch { get; set; }
         public string? Prefix { get; set; }
         public double? MinValue { get; set; }
         public double? MaxValue { get; set; }

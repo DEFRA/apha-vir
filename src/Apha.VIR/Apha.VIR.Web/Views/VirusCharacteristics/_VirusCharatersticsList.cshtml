@@ -24,7 +24,7 @@
 					<tr>
 						<td>@characteristic.Name</td>
 						<td>
-							<input type="checkbox" disabled @(characteristic.DisplayOnSearch ? "checked" : "")>
+							<input type="checkbox" disabled @(characteristic.DisplayOnSearch.HasValue ? "checked" : "")>
 						</td>
 						<td>@characteristic.Prefix</td>
 						<td>@characteristic.MinValue</td>

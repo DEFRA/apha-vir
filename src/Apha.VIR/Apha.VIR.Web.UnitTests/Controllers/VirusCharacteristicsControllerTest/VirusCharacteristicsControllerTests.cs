@@ -149,7 +149,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             Assert.NotNull(result);
             Assert.IsType<VirusCharacteristicsViewModel>(result.Model);
             var model = result.Model as VirusCharacteristicsViewModel;
-            Assert.NotNull(model.list);
+            Assert.NotNull(model?.list);
             Assert.NotNull(model.Pagination);
             Assert.Equal(1, model.Pagination.PageNumber);
             Assert.Equal(10, model.Pagination.PageSize);
@@ -171,11 +171,11 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             Assert.NotNull(result);
             Assert.IsType<VirusCharacteristicsViewModel>(result.Model);
             var model = result.Model as VirusCharacteristicsViewModel;
-            Assert.NotNull(model.list);
-            Assert.NotNull(model.Pagination);
-            Assert.Equal(2, model.Pagination.PageNumber);
-            Assert.Equal(20, model.Pagination.PageSize);
-            Assert.Equal(50, model.Pagination.TotalCount);
+            Assert.NotNull(model?.list);
+            Assert.NotNull(model?.Pagination);
+            Assert.Equal(2, model?.Pagination.PageNumber);
+            Assert.Equal(20, model?.Pagination.PageSize);
+            Assert.Equal(50, model?.Pagination.TotalCount);
         }
 
         [Fact]
@@ -194,11 +194,11 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             Assert.NotNull(result);
             Assert.IsType<VirusCharacteristicsViewModel>(result.Model);
             var model = result.Model as VirusCharacteristicsViewModel;
-            Assert.NotNull(model.list);
-            Assert.NotNull(model.Pagination);
-            Assert.Equal(0, model.Pagination.PageNumber);
-            Assert.Equal(-5, model.Pagination.PageSize);
-            Assert.Equal(0, model.Pagination.TotalCount);
+            Assert.NotNull(model?.list);
+            Assert.NotNull(model?.Pagination);
+            Assert.Equal(0, model?.Pagination.PageNumber);
+            Assert.Equal(-5, model?.Pagination.PageSize);
+            Assert.Equal(0, model?.Pagination.TotalCount);
         }
         [Fact]
         public async Task BindCharacteristicEntriesGridOnPagination_ValidInput_ReturnsPartialView()
@@ -224,9 +224,9 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             Assert.Equal("_VirusCharatersticsList", partialViewResult.ViewName);
             var model = Assert.IsType<VirusCharacteristicsViewModel>(partialViewResult.Model);
             Assert.Single(model.list);
-            Assert.Equal(pageNo, model.Pagination.PageNumber);
-            Assert.Equal(pageSize, model.Pagination.PageSize);
-            Assert.Equal(1, model.Pagination.TotalCount);
+            Assert.Equal(pageNo, model?.Pagination?.PageNumber);
+            Assert.Equal(pageSize, model?.Pagination?.PageSize);
+            Assert.Equal(1, model?.Pagination?.TotalCount);
         }
 
         [Fact]
