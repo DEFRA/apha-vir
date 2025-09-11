@@ -65,7 +65,12 @@
 
 
 
-
+.textInput {
+    font-family: Verdana;
+    width: 100%;
+    /*    background-color: white;*/
+    height: fit-content;
+}
 
 
 /*----------Form label alignment*/
