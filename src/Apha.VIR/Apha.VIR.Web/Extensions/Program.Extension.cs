@@ -21,6 +21,20 @@ namespace Apha.VIR.Web.Extensions
                 options.UseSqlServer(builder.Configuration.GetConnectionString("VIRConnectionString")
                 ?? throw new InvalidOperationException("Database Connection string 'VIRConnectionString' not found.")));
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
+                options.InstanceName = "VIRRedisInstance_";
+            });
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+               //options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.Name = ".VIR.Session";
+            });
+ 
             // AutoMapper
             services.AddAutoMapper(typeof(EntityMapper).Assembly);
             services.AddAutoMapper(typeof(ViewModelMapper));
@@ -84,6 +98,7 @@ namespace Apha.VIR.Web.Extensions
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSession();
 
 
             // Default route
