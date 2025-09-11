@@ -1,26 +1,36 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class EditTests
     {
+        private readonly object _lock;
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
         private readonly IsolateViabilityController _controller;
         private readonly ILookupService _lookupService;
-        public EditTests()
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
+
+        public EditTests(AppRolesFixture fixture)
         {
             _lookupService = Substitute.For<ILookupService>();
             _isolateViabilityService = Substitute.For<IIsolateViabilityService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new IsolateViabilityController(_isolateViabilityService, _lookupService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -148,6 +158,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
 
             var dto = new IsolateViabilityInfoDTO();
             _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability).Returns(dto);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Edit(model);
@@ -162,6 +173,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             Assert.Equal(model.IsolateViability.IsolateViabilityIsolateId, redirectResult.RouteValues["Isolate"]);
 
             await _isolateViabilityService.Received(1).UpdateIsolateViabilityAsync(dto, "TestUser");
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

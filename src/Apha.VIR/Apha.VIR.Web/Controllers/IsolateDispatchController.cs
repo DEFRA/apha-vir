@@ -3,7 +3,9 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -35,6 +37,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.Administrator)]
         public async Task<IActionResult> History(string AVNumber, Guid IsolateId)
         {
             if (!ModelState.IsValid)
@@ -69,6 +72,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.Administrator)]
         public async Task<ActionResult> Create(string AVNumber, Guid IsolateId, string Source)
         {
             bool isBtnDisabled = false;
@@ -107,6 +111,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(IsolateDispatchCreateViewModel dispatchModel)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to create dispatch.");
+            }
             ValidateIsolateDispatch(dispatchModel, ModelState);
             dispatchModel.ViabilityList = await GetViabilityDropdownList();
             dispatchModel.RecipientList = await GetWorkGroupsDropdownList();
@@ -139,6 +147,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.Administrator)]
         public async Task<IActionResult> Edit(string AVNumber, Guid DispatchId, Guid DispatchIsolateId)
         {
             if (!ModelState.IsValid)
@@ -190,6 +199,10 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IsolateDispatchEditViewModel model)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.Administrator))
+            {
+                throw new UnauthorizedAccessException("Not authorised to modify dispatch.");
+            }
             ModelState.Remove(nameof(model.DispatchedByList));
             ModelState.Remove(nameof(model.ViabilityList));
             ModelState.Remove(nameof(model.RecipientList));
@@ -221,6 +234,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid DispatchId, string LastModified, Guid IsolateId, string AVNumber)
         {
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete dispatch.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

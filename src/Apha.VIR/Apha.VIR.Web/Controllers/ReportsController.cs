@@ -2,8 +2,10 @@
 using System.Reflection;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
@@ -18,6 +20,8 @@ namespace Apha.VIR.Web.Controllers
             _iReportService = iReportService;
             _mapper = mapper;
         }
+
+        [Authorize(Roles = AppRoleConstant.ReportViewer)]
         public IActionResult Index()
         {
             return View();
@@ -36,6 +40,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> GenerateReport(IsolateDispatchReportViewModel model)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
+
             ModelState.Remove(nameof(model.ReportData));
 
             if (!ModelState.IsValid)
@@ -62,6 +71,11 @@ namespace Apha.VIR.Web.Controllers
         {
             ModelState.Clear();
 
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
+
             if (dateFrom == null)
             {
                 ModelState.AddModelError(nameof(dateFrom), "Date From must be entered");
@@ -80,7 +94,7 @@ namespace Apha.VIR.Web.Controllers
                 };
                 return View("IsolateDispatchReport", viewmodel);
             }
-
+    
             var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
 
             var reportData = _mapper.Map<IEnumerable<IsolateDispatchReportModel>>(result);

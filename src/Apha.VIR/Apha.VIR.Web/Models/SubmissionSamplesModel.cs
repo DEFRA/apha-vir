@@ -13,5 +13,6 @@
         public string? SampleTypeName { get; set; }
         public byte[] LastModified { get; set; } = null!;
         public bool IsDetection { get; set; }
+        public bool IsDeleteEnabled { get; set; } = false;
     }
 }

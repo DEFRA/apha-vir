@@ -1,9 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Core.Entities;
-using Apha.VIR.Core.Interfaces;
 using Apha.VIR.Web.Models.VirusCharacteristic;
-using AutoMapper;
+using Apha.VIR.Web.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
@@ -26,6 +24,11 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> Index(Guid? familyId, Guid? typeId)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -63,6 +66,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AssignCharacteristic(Guid typeId, Guid characteristicId)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to assign a VirusCharacteristic to a VirusType.");
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -75,6 +82,10 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveCharacteristic(Guid typeId, Guid characteristicId)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to remove VirusCharacteristic from VirusType.");
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
