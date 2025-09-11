@@ -14,6 +14,7 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IReportService _iReportService;
         private readonly IMapper _mapper;
+        private const string IsolateDispatchReport = "IsolateDispatchReport";
 
         public ReportsController(IReportService iReportService, IMapper mapper)
         {
@@ -34,7 +35,7 @@ namespace Apha.VIR.Web.Controllers
                 //DateFrom = DateTime.Today,
                 //DateTo = DateTime.Today
             };
-            return View("IsolateDispatchReport", model);
+            return View(IsolateDispatchReport, model);
         }
 
         [HttpPost]
@@ -49,7 +50,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View("IsolateDispatchReport", model);
+                return View(IsolateDispatchReport, model);
             }
 
             var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);
@@ -63,7 +64,7 @@ namespace Apha.VIR.Web.Controllers
                 ReportData = reportData.ToList()
             };
 
-            return View("IsolateDispatchReport", viewModel);
+            return View(IsolateDispatchReport, viewModel);
         }
 
         [HttpGet]
@@ -92,7 +93,7 @@ namespace Apha.VIR.Web.Controllers
                     DateFrom = dateFrom,
                     DateTo = dateTo
                 };
-                return View("IsolateDispatchReport", viewmodel);
+                return View(IsolateDispatchReport, viewmodel);
             }
     
             var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
