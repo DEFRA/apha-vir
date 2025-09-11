@@ -9,7 +9,7 @@ namespace Apha.VIR.Web.Models
         public Guid Id { get; set; }
         [Required]
         [StringLength(255)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required]
         public Guid? CharacteristicType { get; set; }

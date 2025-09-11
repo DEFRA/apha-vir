@@ -53,6 +53,8 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> List(int pageNo = 1, int pageSize = 10)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
             var viewModel = _mapper.Map<List<VirusCharacteristicDetails>>(result.data);
 
