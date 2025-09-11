@@ -1,84 +1,38 @@
 name: Dev Build and Sonar Analysis
 on:
-  workflow_dispatch:
   push:
     branches:
       - 'feature/*'
       - 'fix/*'
       - 'docs/*'
       - main
-env:
-  REPOSITORY: apha/vir
+
+permissions: {}   # disables all default permissions           
+
 jobs:
-  build-and-analyze:
-    name: Build + Test + Sonar
-    runs-on: windows-latest
+  # 1️⃣ First run the dev build & sonar analysis
+  build-and-sonar:
+    uses: DEFRA/apha-bst/.github/workflows/build-and-sonar-analyze-template.yaml@main
+    with:
+      dotnet_application_solution_name: Apha.VIR
+    secrets: 
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
     permissions:
       id-token: write
-      contents: read
+      contents: read  
+
+  # 2️⃣ Check commit message for 'ecrpush'
+  check-commit:
+    needs: build-and-sonar
+    runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.imgtag.outputs.image_tag }}
       should_push: ${{ steps.check_commit.outputs.should_push }}
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: zulu
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.ref_name }}
-          
-      - name: Cache SonarQube Cloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarQube Cloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v4
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Install SonarQube Cloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: pwsh
-        run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      - name: Bump version from commit
-        id: versioning
-        shell: pwsh
-        run: |
-          $CommitMsg = "${{ github.event.head_commit.message }}"
-          ./gh-actions-scripts/bump-version.ps1 -CommitMsg $CommitMsg
-      - name: Extract short SHA
-        id: shortsha
-        shell: pwsh
-        run: |
-          "shortsha=$($env:GITHUB_SHA.Substring(0, 8))" >> $env:GITHUB_OUTPUT
-
-      - name: Compose image tag
-        id: imgtag
-        shell: pwsh
-        run: >
-          $imageTag = "${{ steps.versioning.outputs.version }}-dev-g${{
-          steps.shortsha.outputs.shortsha }}"
-
-          "image_tag=$imageTag" >> $env:GITHUB_OUTPUT
-
-      - name: Print Docker image tag
-        shell: pwsh
-        run: |
-          echo "Image Tag: ${{ steps.imgtag.outputs.image_tag }}"
 
       - name: Check last commit message for 'ecrpush'
         id: check_commit
-        shell: bash
         run: |
           COMMIT_MSG="$(git log -1 --pretty=%B)"
           echo "Last commit message: $COMMIT_MSG"
@@ -89,172 +43,20 @@ jobs:
             echo "should_push=false"
             echo "should_push=false" >> $GITHUB_OUTPUT
           fi
-      - name: Start Sonar Analysis
-        shell: pwsh
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin `
-            /k:"DEFRA_apha-vir" `
-            /o:"defra" `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-            /d:sonar.host.url="https://sonarcloud.io" `
-            /v:"${{ steps.imgtag.outputs.image_tag }}" `
-            /d:sonar.cs.opencover.reportsPaths="src/TestResults/*.coverage.opencover.xml" `
-            /d:sonar.cs.vstest.reportsPaths="src/TestResults/*.test_results.trx" `
-            /d:sonar.branch.name="${{ github.ref_name }}" `
-            /d:sonar.verbose=true `
-            /d:sonar.exclusions="**/wwwroot/**" `
-            /d:sonar.coverage.exclusions="**/wwwroot/**,**/*.cshtml"
-      - name: Restore NuGet packages
-        shell: pwsh
-        run: dotnet restore src/Apha.VIR.sln
-      - name: Build Solution
-        shell: pwsh
-        run: dotnet build src/Apha.VIR.sln --configuration Release
-      - name: Run Unit Tests with Coverage
-        shell: pwsh
-        run: |
-          dotnet test src/Apha.VIR/Apha.VIR.Application.UnitTests/Apha.VIR.Application.UnitTests.csproj `
-            --no-build --configuration Release /p:CollectCoverage=true `
-            /p:CoverletOutput="$($PWD.Path)/src/TestResults/Apha.VIR.Application.coverage.opencover.xml" `
-            /p:CoverletOutputFormat=opencover `
-            /p:Deterministic=true `
-            /p:DebugType=full /p:DebugSymbols=true `
-            --logger "trx;LogFileName=$($PWD.Path)/src/TestResults/Apha.VIR.Application.test_results.trx"
 
-          dotnet test src/Apha.VIR/Apha.VIR.Web.UnitTests/Apha.VIR.Web.UnitTests.csproj `
-            --no-build --configuration Release /p:CollectCoverage=true `
-            /p:CoverletOutput="$($PWD.Path)/src/TestResults/Apha.VIR.Web.coverage.opencover.xml" `
-            /p:CoverletOutputFormat=opencover `
-            /p:Deterministic=true `
-            /p:DebugType=full /p:DebugSymbols=true `
-            --logger "trx;LogFileName=$($PWD.Path)/src/TestResults/Apha.VIR.Web.test_results.trx"
-
-          dotnet test src/Apha.VIR/Apha.VIR.DataAccess.UnitTests/Apha.VIR.DataAccess.UnitTests.csproj `
-            --no-build --configuration Release /p:CollectCoverage=true `
-            /p:CoverletOutput="$($PWD.Path)/src/TestResults/Apha.VIR.DataAccess.coverage.opencover.xml" `
-            /p:CoverletOutputFormat=opencover `
-            /p:Deterministic=true `
-            /p:DebugType=full /p:DebugSymbols=true `
-            --logger "trx;LogFileName=$($PWD.Path)/src/TestResults/Apha.VIR.DataAccess.test_results.trx"
-      - name: List coverage files
-        shell: pwsh
-        run: Get-ChildItem -Recurse -Filter "*.coverage.opencover.xml"; Get-ChildItem -Recurse -Filter "*.test_results.trx"
-      - name: End Sonar Analysis
-        shell: pwsh
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{
-          secrets.SONAR_TOKEN }}"
+  # 3️⃣ Push image (only if commit contains 'ecrpush')
   push-image:
-    name: Push Docker Image
-    needs: build-and-analyze
-    runs-on: ubuntu-latest
-    if: ${{ needs.build-and-analyze.outputs.should_push == 'true' }}
+    needs: check-commit
+    if: needs.check-commit.outputs.should_push == 'true'
+    uses: DEFRA/apha-bst/.github/workflows/push-image-template.yaml@main
+    with:
+      repository: apha/vir
+      dev_image_version_release: false
+      tag_short_description: ""
+    secrets:  
+      AWS_ENV_REGION: ${{ secrets.AWS_ENV_REGION }}
+      AWS_ENV_ACCOUNT: ${{ secrets.AWS_ENV_ACCOUNT }}
+      AWS_ENV_ROLE: ${{ secrets.AWS_ENV_ROLE }}
     permissions:
       id-token: write
-      contents: read
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.ref_name }}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ secrets.AWS_ENV_REGION }}
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ENV_ACCOUNT }}:role/${{
-            secrets.AWS_ENV_ROLE }}
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          flavor: |
-            latest=false
-          images: ${{ steps.login-ecr.outputs.registry }}/${{ env.REPOSITORY }}
-          tags: |
-            type=semver,priority=900,pattern={{raw}}
-            type=raw,priority=800,value=${{ needs.build-and-analyze.outputs.image_tag }}
-          labels: |
-            org.opencontainers.image.licenses=OGL-UK-3.0
-
-      - name: Build and push Docker image manually
-        run: |
-          IMAGE_TAG="${{ needs.build-and-analyze.outputs.image_tag }}"
-          IMAGE_NAME="${{ steps.login-ecr.outputs.registry }}/${{ env.REPOSITORY }}"
-          
-          GIT_COMMIT="${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}"
-          GIT_URL="${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.source'] }}"
-          GIT_TITLE="${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.title'] }}"
-          GIT_VERSION="${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}"
-          GIT_CREATED="${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}"
-          GIT_DESCRIPTION="${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.description'] }}"
-          GIT_LICENSE="${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.licenses'] }}"
-
-          echo "Building Docker image $IMAGE_NAME:$IMAGE_TAG"
-          docker build \
-            --file ./Dockerfile \
-            --build-arg GIT_COMMIT="$GIT_COMMIT" \
-            --label org.opencontainers.image.source="$GIT_URL" \
-            --label org.opencontainers.image.revision="$GIT_COMMIT" \
-            --label org.opencontainers.image.title="$GIT_TITLE" \
-            --label org.opencontainers.image.version="$GIT_VERSION" \
-            --label org.opencontainers.image.created="$GIT_CREATED" \
-            --label org.opencontainers.image.description="$GIT_DESCRIPTION" \
-            --label org.opencontainers.image.licenses="$GIT_LICENSE" \
-            --tag "$IMAGE_NAME:$IMAGE_TAG" \
-            .
-
-          echo "Pushing Docker image..."
-          docker push "$IMAGE_NAME:$IMAGE_TAG"
-      - name: Generate job summary
-        id: summary
-        run: >
-          {
-            echo "### Docker Image details"
-            echo "The tag is **${{ needs.build-and-analyze.outputs.image_tag }}**"
-            echo "| Label      | Value |"
-            echo "| ---------- | ----- |"
-            echo "| created    | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }} |"
-            echo "| description| ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.description'] }} |"
-            echo "| licenses   | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.licenses'] }} |"
-            echo "| revision   | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }} |"
-            echo "| source     | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.source'] }} |"
-            echo "| title      | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.title'] }} |"
-            echo "| url        | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.url'] }} |"
-            echo "| version    | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }} |"
-          } >> $GITHUB_STEP_SUMMARY
-      - name: Run container locally
-        run: |
-          image_tag=${{ needs.build-and-analyze.outputs.image_tag }}
-          docker build -t vir:$image_tag .
-          echo "Running local image: $image_tag"
-          docker run -d --name test-container -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=local vir:$image_tag
-      - name: Wait for service to start
-        run: >
-          echo "Waiting for the service to start..."
-
-          for i in {1..10}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health || echo "000")
-            echo "HTTP Status: $STATUS"
-            if [ "$STATUS" -eq 200 ]; then
-              break
-            fi
-            sleep 3
-          done
-      - name: Test application response
-        run: |
-          curl -i http://localhost:8080/health
-      - name: Cleanup container
-        if: always()
-        run: |
-          docker rm -f test-container
+      contents: write

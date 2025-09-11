@@ -1,27 +1,36 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class CreateTests
     {
+        private readonly object _lock;
         private readonly ISenderService _senderService;
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
         private readonly SenderController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public CreateTests()
+        public CreateTests(AppRolesFixture fixture)
         {
             _senderService = Substitute.For<ISenderService>();
             _lookupService = Substitute.For<ILookupService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new SenderController(_senderService, _lookupService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -52,7 +61,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             var model = new SenderViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
             _mapper.Map<SenderDTO>(model).Returns(new SenderDTO());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);
 
@@ -70,7 +79,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 
             _controller.ModelState.AddModelError("SenderName", "Required");
             _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);
 
@@ -86,13 +95,29 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             SenderViewModel model = null!;
             _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);
 
             // Assert
             var viewResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", viewResult.ActionName);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿using Apha.VIR.Application.Validation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Data.SqlClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace Apha.VIR.Web.Middleware
 {
@@ -6,11 +9,13 @@ namespace Apha.VIR.Web.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
+        private readonly IConfiguration _configuration;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IConfiguration configuration)
         {
             _next = next;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -21,22 +26,48 @@ namespace Apha.VIR.Web.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred");
+                string errorCode;
+                string defaultErrorType = "VIR.GENERAL_EXCEPTION";
+                string errorType = _configuration["ExceptionTypes:General"] ?? defaultErrorType;
 
-                context.Response.ContentType = "application/json";
-
-                switch (ex)
+                if (ex is UnauthorizedAccessException)
                 {
-                    case BusinessValidationErrorException validationEx:
-                        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                        await context.Response.WriteAsJsonAsync(validationEx.Errors);
-                        break;
-
-                    // Handle more custom exception types here as needed
-                    default:
-                        context.Response.Redirect("/Error");
-                        break;
+                    errorCode = "403 - Forbidden";
+                    errorType = _configuration["ExceptionTypes:Authorization"] ?? defaultErrorType;
                 }
+                else if (ex is AuthenticationFailureException)
+                {
+                    errorType = _configuration["ExceptionTypes:Authorization"] ?? defaultErrorType;
+                    errorCode = "403 - Forbidden";
+                }
+                else if (ex is SqlException)
+                {
+                    errorType = _configuration["ExceptionTypes:Sql"] ?? defaultErrorType;
+                    errorCode = "500 - SQL Server Error";
+                }
+                else if (ex is BusinessValidationErrorException validationEx)
+                {
+                    context.Response.ContentType = "application/json";
+                    errorCode = "400 -Bad Request Error";
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsJsonAsync(validationEx.Errors);
+                }
+                else
+                {
+                    errorCode = "500 - Internal Server Error";
+                }
+
+                if (ex is UnauthorizedAccessException)
+                {
+                    var userid = context.User.Identity?.Name == null ? string.Empty : context.User.Identity?.Name;
+                    _logger.LogError(ex, "[{ErrorType:l}] Error [{ErrorCode:l}]: {Message}", errorType, errorCode, userid + " ," + ex.Message);
+                }
+                else
+                {
+                    _logger.LogError(ex, "[{ErrorType:l}] Error [{ErrorCode:l}]: {Message}", errorType, errorCode, ex.Message);
+                }
+
+                context.Response.Redirect("/Error");
             }
         }
     }

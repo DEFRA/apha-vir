@@ -11,14 +11,18 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
     public class GetSamplesBySubmissionTests
     {
         private readonly ISampleRepository _mockSampleRepository;
+        private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
         private readonly SampleService _mockSampleService;
 
         public GetSamplesBySubmissionTests()
         {
             _mockSampleRepository = Substitute.For<ISampleRepository>();
+            _mockLookupRepository = Substitute.For<ILookupRepository>();
             _mockMapper = Substitute.For<IMapper>();
-            _mockSampleService = new SampleService(_mockSampleRepository, _mockMapper);
+            _mockSampleService = new SampleService(_mockSampleRepository, 
+                _mockLookupRepository,
+                _mockMapper);
         }
 
         [Fact]

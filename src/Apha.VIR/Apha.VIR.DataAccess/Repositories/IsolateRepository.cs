@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Numerics;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
@@ -51,6 +52,13 @@ public class IsolateRepository : IIsolateRepository
                             MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"],
                             IsolateSampleId = (Guid)result["IsolateSampleId"],
                             YearOfIsolation = (result["YearOfIsolation"] != DBNull.Value ? (int?)result["YearOfIsolation"] : null),
+                            SampleNumber = (int?)result["SampleNumber"],
+                            IsoSMSReferenceNumber = result["IsoSMSReferenceNumber"] as string,
+                            SenderReferenceNumber = result["SenderReferenceNumber"] as string,
+                            FamilyName = result["FamilyName"] as string,
+                            Type = (Guid)result["Type"],
+                            TypeName = result["TypeName"] as string,
+                            LastModified = (byte[])result["LastModified"]
                         };
                         isolateInfoList.Add(dto);
                     }
@@ -158,6 +166,30 @@ public class IsolateRepository : IIsolateRepository
             @MTALocation, @Comment, @ValidToIssue, @WhyNotValidToIssue, @OriginalSampleAvailable, @FirstViablePassageNumber,
             @NoOfAliquots, @Freezer, @Tray, @Well, @IsolateNomenclature, @SMSReferenceNumber, @PhylogeneticFileName, @LastModified OUTPUT",
           parameters);
+    }
+
+    public async Task DeleteIsolateAsync(Guid isolateId, string userId, byte[] lastModified)
+    {
+        await _context.Database.ExecuteSqlRawAsync(
+          "EXEC spIsolateDelete @UserID, @IsolateId, @LastModified OUTPUT",
+          new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+          new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolateId },
+          new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified, Direction = ParameterDirection.InputOutput }
+       );
+    }
+
+    public async Task<IEnumerable<IsolateNomenclature>> GetIsolateForNomenclatureAsync(Guid isolateId)
+    {
+        var parameters = new[]
+        {
+            new SqlParameter("@Id", isolateId),
+        };       
+
+        List<IsolateNomenclature> isolateNomenclature = await _context.Database
+               .SqlQueryRaw<IsolateNomenclature>($"EXEC spNomenclatureGetByCriteria  @Id ", parameters)
+               .ToListAsync();
+
+        return isolateNomenclature;
     }
 
     private async Task AddIsolateCharacteristicsAsync(Guid isolateId, Guid type, string User)

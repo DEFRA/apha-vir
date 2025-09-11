@@ -1,7 +1,7 @@
 # Configuration using jenkins environment variables - updated sql folderfile names
 DB_SERVER ?= localhost
-DB_NAME ?= bstdb
-DB_USER ?= bstdev
+DB_NAME ?= virdb
+DB_USER ?= virdev
 DB_PASSWORD ?= $(if $(DB_PASSWORD),$(DB_PASSWORD),$(error DB_PASSWORD is not set))
 SQLCMD=sqlcmd -S $(DB_SERVER) -U $(DB_USER) -P $(DB_PASSWORD) -C -b -r1
 
