@@ -1,13 +1,10 @@
 ﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
-using Apha.VIR.Web.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
-using System.Diagnostics;
 
-namespace Apha.VIR.Web.UnitTests.Controllers
+namespace Apha.VIR.Web.UnitTests.Controllers.HomeControllerTest
 {
     public class HomeControllerTests
     {

@@ -36,6 +36,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var searchModel = await LoadIsolateSearchFilterControlsData(null);
+            
             return View("IsolateSearch", searchModel);
         }
 
@@ -58,6 +59,7 @@ namespace Apha.VIR.Web.Controllers
                         IsolateSearchResults = new List<IsolateSearchResult>(),
                         Pagination = new PaginationModel()
                     };
+                    searchModel.IsFilterApplied = false;
                     return View("IsolateSearch", searchModel);
                 }
 
@@ -93,6 +95,7 @@ namespace Apha.VIR.Web.Controllers
             };
             criteria!.Pagination!.TotalCount = searchResults.TotalCount;
             searchModel.IsolateSearchGird.Pagination = criteria.Pagination;
+            searchModel.IsFilterApplied = true;
 
             TempData["SearchCriteria"] = JsonConvert.SerializeObject(criteriaPaginationDto);
             return View("IsolateSearch", searchModel);

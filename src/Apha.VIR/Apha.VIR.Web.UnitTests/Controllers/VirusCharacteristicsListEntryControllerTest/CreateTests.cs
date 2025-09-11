@@ -1,27 +1,37 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.VirusCharacteristic;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class CreateTests
     {
+        private readonly object _lock;
         private readonly IVirusCharacteristicService _service;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
         private readonly IMapper _mapper;
         private readonly VirusCharacteristicsListEntryController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public CreateTests()
+        public CreateTests(AppRolesFixture fixture)
         {
             _service = Substitute.For<IVirusCharacteristicService>();
             _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
+
         [Fact]
         public void CreateGet_InvalidModelState_ReturnsBadRequest()
         {
@@ -32,6 +42,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var controller = new VirusCharacteristicsListEntryController(service, listEntryService, mapper);
             controller.ModelState.AddModelError("error", "some error");
 
+            SetupMockUserAndRoles();
             // Act
             var result = controller.Create(Guid.NewGuid());
 
@@ -48,6 +59,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var mapper = Substitute.For<IMapper>();
             var controller = new VirusCharacteristicsListEntryController(service, listEntryService, mapper);
             var characteristicId = Guid.NewGuid();
+
+            SetupMockUserAndRoles();
 
             // Act
             var result = controller.Create(characteristicId);
@@ -67,6 +80,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var model = new VirusCharacteristicListEntryModel();
             _controller.ModelState.AddModelError("Name", "Name is required");
 
+            SetupMockUserAndRoles();
+
             // Act
             var result = await _controller.Create(model);
 
@@ -84,6 +99,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var dto = new VirusCharacteristicListEntryDTO();
             _mapper.Map<VirusCharacteristicListEntryDTO>(model).Returns(dto);
 
+            SetupMockUserAndRoles();
+
             // Act
             var result = await _controller.Create(model);
 
@@ -93,6 +110,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             Assert.Equal("ListEntries", redirect.ActionName);
             Assert.NotNull(redirect.RouteValues);
             Assert.Equal(model.VirusCharacteristicId, redirect.RouteValues["characteristic"]);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

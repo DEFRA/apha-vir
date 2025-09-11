@@ -9,4 +9,6 @@ public interface IIsolateRepository
     Task<Isolate> GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId);
     Task<Guid> AddIsolateDetailsAsync(Isolate isolate);
     Task UpdateIsolateDetailsAsync(Isolate isolate);
+    Task DeleteIsolateAsync(Guid isolateId, string userId, byte[] lastModified);
+    Task<IEnumerable<IsolateNomenclature>> GetIsolateForNomenclatureAsync(Guid isolateId);
 }

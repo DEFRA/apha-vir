@@ -1,10 +1,12 @@
 ﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
+    [Authorize(Roles = AppRoleConstant.IsolateManager)]
     public class GetAVNumberController : Controller
     {
         private readonly ISubmissionService _submissionService;        

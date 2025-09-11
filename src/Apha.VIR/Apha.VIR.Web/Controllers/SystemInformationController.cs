@@ -1,12 +1,13 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
 {
-    [Authorize]  //Kept for testing, can be removed if System info page can be displayed without authentication
+    [Authorize(Roles = AppRoleConstant.Administrator)]
     public class SystemInformationController : Controller
     {
         private readonly ISystemInfoService _sysInfoService;

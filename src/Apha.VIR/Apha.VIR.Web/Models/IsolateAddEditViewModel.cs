@@ -37,6 +37,7 @@ namespace Apha.VIR.Web.Models
         [RegularExpression(@"^\d+$", ErrorMessage = "First Viable Passage Number must be an numeric value")]
         public int? FirstViablePassageNumber { get; set; }
         public string? SmsreferenceNumber { get; set; }
+        public string? IsoSMSReferenceNumber { get; set; }
         public string? PhylogeneticFileName { get; set; }
         public string? Nomenclature { get; set; }
         public string? IsolateNomenclature { get; set; }
