@@ -23,6 +23,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
             throw new NotImplementedException($"No test data for type {typeof(T).Name}");
         }
     }
+
     public class LookupRepositoryTests
     {
         private static TestLookupRepository CreateRepo(IEnumerable<LookupItem> lookupItems)

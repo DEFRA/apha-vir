@@ -42,6 +42,10 @@ namespace Apha.VIR.DataAccess.Repositories
         }
         // NEW: For stored procs returning scalar values
         protected virtual IQueryable<T> SqlQueryInterpolatedFor<T>(FormattableString sql) =>
-            _context.Database.SqlQuery<T>(sql);  
+            _context.Database.SqlQuery<T>(sql);
+        protected virtual IQueryable<T> SqlQueryRawFor<T>(string sql, params object[] parameters) where T : class
+        {
+            return _context.Database.SqlQueryRaw<T>(sql, parameters);
+        }
     }
 }

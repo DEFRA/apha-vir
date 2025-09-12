@@ -17,8 +17,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
 
     public async Task<IEnumerable<Sample>> GetSamplesBySubmissionIdAsync(Guid submissionId)
     {
-        return await _context.Set<Sample>()
-                   .FromSqlInterpolated($"EXEC spSampleGetBySubmission @SubmissionId = {submissionId}")
+        return await GetQueryableInterpolatedFor<Sample>($"EXEC spSampleGetBySubmission @SubmissionId = {submissionId}")
                    .ToListAsync();
     }
 
@@ -33,7 +32,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
         if (submissionId == Guid.Empty)
             return null;
 
-        return await _context.Samples
+        return await GetDbSetFor<Sample>()
             .FirstOrDefaultAsync(s => s.SampleSubmissionId == submissionId && s.SampleId == sampleId.Value);
     }
 
@@ -41,12 +40,12 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
     {
         if (!string.IsNullOrEmpty(avNumber))
         {
-            var submission = await _context.Submissions.FirstOrDefaultAsync(s => s.Avnumber == avNumber);
+            var submission = await GetDbSetFor<Submission>().FirstOrDefaultAsync(s => s.Avnumber == avNumber);
             if (submission != null)
                 sample.SampleSubmissionId = submission.SubmissionId;
         }
 
-        sample.SampleNumber = await _context.Samples.Select(e => e.SampleNumber).OrderByDescending(n => n).FirstOrDefaultAsync() + 1;
+        sample.SampleNumber = await GetDbSetFor<Sample>().Select(e => e.SampleNumber).OrderByDescending(n => n).FirstOrDefaultAsync() + 1;
 
         var parameters = new[]
         {
@@ -64,7 +63,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)sample.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
            @"EXEC spSampleInsert @UserID, @sampleID, @SampleSubmissionId, @SampleNumber, @SMSReferenceNumber, 
                 @SenderReferenceNumber, @SampleType, @HostSpecies, @HostBreed, @HostPurpose, @SamplingLocationHouse, @LastModified OUTPUT",
            parameters);
@@ -72,7 +71,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
 
     public async Task UpdateSampleAsync(Sample sample, string User)
     {
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
            "EXEC spSampleUpdate @UserID, @sampleID, @SampleSubmissionId, @SampleNumber, @SMSReferenceNumber, @SenderReferenceNumber, @SampleType, @HostSpecies, @HostBreed, @HostPurpose, @SamplingLocationHouse, @LastModified OUTPUT",
                 new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
                 new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = sample.SampleId },
@@ -91,7 +90,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
 
     public async Task DeleteSampleAsync(Guid sampleId, string userId, byte[] lastModified)
     {
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
            "EXEC spSampleDelete @UserID, @SampleId, @LastModified",
            new SqlParameter("@UserID", SqlDbType.UniqueIdentifier) { Value = userId },
            new SqlParameter("@SampleId", SqlDbType.VarChar, 20) { Value = sampleId },           
