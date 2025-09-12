@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
+using Apha.VIR.Application.Services;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.VirusCharacteristic;
@@ -219,6 +220,51 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
+        [Fact]
+        public async Task Delete_InvalidModelState_ReturnsViewResult()
+        {
+            // Arrange
+            var model = new VirusCharacteristicDetails();
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.Delete(model, Guid.NewGuid());
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Delete_EmptyGuid_ReturnsViewResult()
+        {
+            // Arrange
+            var model = new VirusCharacteristicDetails();
+
+            // Act
+            var result = await _controller.Delete(model, Guid.Empty);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Delete_ValidModelAndId_ReturnsRedirectToActionResult()
+        {
+            // Arrange
+            var model = new VirusCharacteristicDetails { LastModified = new byte[8] };
+            var id = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.Delete(model, id);
+
+            // Assert
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("List", redirectToActionResult.ActionName);
+            await _mockVirusCharacteristicService.Received(1).DeleteVirusCharactersticsAsync(id, model.LastModified);
+        }
     }
+
 
 }

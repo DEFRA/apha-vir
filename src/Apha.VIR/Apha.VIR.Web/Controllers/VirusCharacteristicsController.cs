@@ -57,6 +57,15 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
         {
+            var validationErrors = await ValidateVirusCharacteristicAsync(model);
+
+            if (validationErrors.Count > 0)
+            {
+                foreach (var error in validationErrors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+            }
             if (!ModelState.IsValid)
             {
                 // Repopulate the dropdown list
@@ -128,7 +137,15 @@ namespace Apha.VIR.Web.Controllers
             {
                 errors.Add("- Item already exists.<br />");
             }
-
+            else
+            {
+                errors.Add("- Item does not exist.<br />");
+            }
+            //Ensure that the id is entered
+            if (!string.IsNullOrEmpty(model.Id.ToString()))
+            {
+                errors.Add("- Id not specified for this item.<br />");
+            }
             // Ensure that the name is entered
             if (string.IsNullOrWhiteSpace(model.Name))
             {
@@ -152,15 +169,22 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> Delete(VirusCharacteristicDetails model, Guid id)
         {
+            var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+            model.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
+
             if (!ModelState.IsValid || id == Guid.Empty)
             {
-                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
-                model.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
+                ModelState.AddModelError("", "Id not specified for this item.");
                 return View("Edit", model);
             }
             else if (CheckEntries(id).Result)
             {
                 ModelState.AddModelError("", "Virus Characteristic cannot be deleted as it is already assigned to one or more Virus Isolates.");
+                return View("Edit", model);
+            }
+            else if (!CheckEntryExists(id))
+            {
+                ModelState.AddModelError("", "Item does not exist.");
                 return View("Edit", model);
             }
             else
@@ -174,6 +198,12 @@ namespace Apha.VIR.Web.Controllers
         private async Task<bool> CheckEntries(Guid id)
         {
             return await _virusCharacteristicService.CheckVirusCharactersticsUsageByIdAsync(id);
+        }
+        private bool CheckEntryExists(Guid id)
+        {
+            var VirusEntry = _virusCharacteristicService.GetVirusCharacteristicsByIdAsync(id);
+            var viewModel = _mapper.Map<VirusCharacteristicDetails>(VirusEntry);
+            return viewModel.Id == id ? true : false;
         }
 
         public async Task<IActionResult> BindCharacteristicEntriesGridOnPagination(int pageNo, int pageSize)
