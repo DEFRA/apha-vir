@@ -12,9 +12,5 @@ public class Sample
     public Guid? HostBreed { get; set; }
     public Guid? HostPurpose { get; set; }
     public string? SamplingLocationHouse { get; set; }
-    public byte[] LastModified { get; set; } = null!;
-    public string? HostBreedName { get; set; }
-    public string? HostSpeciesName { get; set; }
-    public string? SampleTypeName { get; set; }
-    public string? HostPurposeName { get; set; }
+    public byte[] LastModified { get; set; } = null!;    
 }

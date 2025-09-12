@@ -3,12 +3,15 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
 namespace Apha.VIR.Web.Controllers
 {
+    [Authorize(Roles = AppRoleConstant.Administrator)]
+    [Route("AuditLog")]
     public class AuditLogController : Controller
     {
         private readonly IAuditLogService _auditLogService;
@@ -20,6 +23,7 @@ namespace Apha.VIR.Web.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             var viewModel = new AuditLogViewModel
@@ -30,7 +34,7 @@ namespace Apha.VIR.Web.Controllers
             return View("AuditLog", viewModel);
         }
 
-        [HttpPost]
+        [HttpPost("SearchAudit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
         {
@@ -139,7 +143,7 @@ namespace Apha.VIR.Web.Controllers
             return View("IsolateAuditLogDetail", viewModel);
         }
 
-        [HttpPost]
+        [HttpPost("GetAuditLogs")]
         public async Task<IActionResult> GetAuditLogs(string requesttype)
         {
             switch (requesttype.ToLower())

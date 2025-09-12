@@ -22,8 +22,8 @@
                         SMS Ref <span class="text-danger" style="display:contents;">*</span>
                     </div>
                     <div class="col-sm-9">
-                        <span>@Model.SmsreferenceNumber</span>
-                        <input type="hidden" asp-for="SmsreferenceNumber"/>
+                        <span>@Model.IsoSMSReferenceNumber</span>
+                        <input type="hidden" asp-for="IsoSMSReferenceNumber"/>
                     </div>
                 </div>
 
@@ -108,7 +108,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Phylogenetic Analysis</div>
                     <div class="col-sm-9">
-                        <textarea asp-for="PhylogeneticAnalysis" rows="5" class="form-control w-500" style="height:166px"></textarea>
+                        <textarea asp-for="PhylogeneticAnalysis" rows="5" class="form-control w-500 height-166" ></textarea>
                         <span asp-validation-for="PhylogeneticAnalysis" class="text-danger"></span>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Comment</div>
                     <div class="col-sm-9">
-                        <textarea asp-for="Comment" rows="5" class="form-control w-500" style="height:166px"></textarea>
+                        <textarea asp-for="Comment" rows="5" class="form-control w-500 height-166"></textarea>
                         <span asp-validation-for="Comment" class="text-danger"></span>
                     </div>
                 </div>

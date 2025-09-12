@@ -1,7 +1,9 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -26,6 +28,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Edit(string AVNumber, Guid Isolate)
         {
             if (!ModelState.IsValid)
@@ -51,6 +54,10 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(List<IsolateCharacteristicViewModel> characteristics)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("User not authorised to update isolate characteristics.");
+            }
             if (characteristics == null || !characteristics.Any())
             {  
                 ModelState.AddModelError("", "No characteristics data was provided.");
