@@ -30,5 +30,6 @@ namespace Apha.VIR.Web.Models
         public DateTime? ReceivedToDate { get; set; }
         public List<CharacteristicSearchViewModel>? CharacteristicSearch { get; set; }
         public IsolateSearchGirdViewModel? IsolateSearchGird { get; set; }
+        public bool IsFilterApplied { get; set; } = false;
     }
 }

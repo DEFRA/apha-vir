@@ -7,18 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class CharacteristicRepository : ICharacteristicRepository
+public class CharacteristicRepository : RepositoryBase<IsolateCharacteristicInfo>, ICharacteristicRepository
 {
-    private readonly VIRDbContext _context;
+    public CharacteristicRepository(VIRDbContext context) : base(context) { }
 
-    public CharacteristicRepository(VIRDbContext context)
+    public async Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristicInfoAsync(Guid isolateId)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
-
-    public Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristicInfoAsync(Guid isolateId)
-    {
-        return GetIsolateCharacteristics(isolateId);
+        return await GetIsolateCharacteristics(isolateId);
     }
 
     private async Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristics(Guid isolateId)
@@ -51,8 +46,11 @@ public class CharacteristicRepository : ICharacteristicRepository
                             CharacteristicValue = result["CharacteristicValue"] as string,
                             CharacteristicIsolateId = (Guid)result["CharacteristicIsolateId"],
                             CharacteristicPrefix = result["CharacteristicPrefix"] as string,
-                            CharacteristicDisplay = result["CharacteristicDisplay"] as bool?
-
+                            CharacteristicDisplay = result["CharacteristicDisplay"] as bool?,
+                            CharacteristicName = result["CharacteristicName"] as string,
+                            CharacteristicType  = result["CharacteristicType"] as string,
+                            VirusCharacteristicId = (Guid)result["VirusCharacteristicId"],
+                            LastModified = (Byte[])result["LastModified"]
                         };
                         isolateCharacteristicList.Add(dto);
 
@@ -62,5 +60,18 @@ public class CharacteristicRepository : ICharacteristicRepository
         }
 
         return isolateCharacteristicList;
+    }
+
+    public async Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicInfo item, string User)
+    {
+        await ExecuteSqlAsync(
+           "EXEC spCharacteristicUpdate @UserID, @CharacteristicId, @CharacteristicIsolateId, @VirusCharacteristicId, @CharacteristicValue, @LastModified OUTPUT",
+                new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
+                new SqlParameter("@CharacteristicId", SqlDbType.UniqueIdentifier) { Value = item.CharacteristicId },
+                new SqlParameter("@CharacteristicIsolateId", SqlDbType.UniqueIdentifier) { Value = item.CharacteristicIsolateId },
+                new SqlParameter("@VirusCharacteristicId", SqlDbType.UniqueIdentifier) { Value = item.VirusCharacteristicId },
+                new SqlParameter("@CharacteristicValue", SqlDbType.VarChar, 30) { Value = (object?)item.CharacteristicValue ?? DBNull.Value },
+                new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)item.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
+           );
     }
 }

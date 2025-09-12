@@ -3,24 +3,18 @@ using Apha.VIR.Core.Interfaces;
 using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.Repositories
 {
-    public class VirusCharacteristicRepository : IVirusCharacteristicRepository
-    {
-        private readonly VIRDbContext _context;
-
-        public VirusCharacteristicRepository(VIRDbContext context)
+    public class VirusCharacteristicRepository : RepositoryBase<VirusCharacteristic>, IVirusCharacteristicRepository
+    {        
+        public VirusCharacteristicRepository(VIRDbContext context): base(context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
+
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsAsync()
         {
-            var data = await _context.Set<VirusCharacteristic>()
-                .FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync();
-
-            return data;
+            return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
         }
         public async Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo, int pageSize)
         {
@@ -45,13 +39,11 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             if (isAbscent)
             {
-                return await _context.Set<VirusCharacteristic>()
-               .FromSqlInterpolated($"EXEC spVirusCharacteristicGetByVirusTypeWhereAbscent @VirusType = {virusType}").ToListAsync();
+                return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetByVirusTypeWhereAbscent @VirusType = {virusType}").ToListAsync();
             }
             else
             {
-                return await _context.Set<VirusCharacteristic>()
-               .FromSqlInterpolated($"EXEC spVirusCharacteristicGetByVirusTypeWherePresent @VirusType = {virusType}").ToListAsync();
+                return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetByVirusTypeWherePresent @VirusType = {virusType}").ToListAsync();
             }
         }
         public async Task<IEnumerable<VirusCharacteristicDataType>> GetAllVirusCharactersticsTypeNamesAsync()

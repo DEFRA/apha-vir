@@ -1,28 +1,44 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]    
     public class SubmissionControllerCreateTests
     {
+        private readonly object _lock;
         private readonly ILookupService _mockLookupService;
         private readonly ISenderService _mockSenderService;
         private readonly ISubmissionService _mockSubmissionService;
+        private readonly ISampleService _mockSampleService;
+        private readonly IIsolatesService _mockIsolatedService;
         private readonly IMapper _mockMapper;
         private readonly SubmissionController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public SubmissionControllerCreateTests()
+        public SubmissionControllerCreateTests(AppRolesFixture fixture)
         {
             _mockLookupService = Substitute.For<ILookupService>();
             _mockSenderService = Substitute.For<ISenderService>();
             _mockSubmissionService = Substitute.For<ISubmissionService>();
+            _mockSampleService = Substitute.For<ISampleService>();
+            _mockIsolatedService = Substitute.For<IIsolatesService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SubmissionController(_mockLookupService, _mockSenderService, _mockSubmissionService, _mockMapper);
+            _controller = new SubmissionController(_mockLookupService, 
+                _mockSenderService, 
+                _mockSubmissionService, 
+                _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -60,6 +76,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             // Arrange
             var submission = new SubmissionCreateViewModel();
             _controller.ModelState.AddModelError("Error", "Test error");
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Create(submission) as ViewResult;
@@ -79,6 +96,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             var submission = new SubmissionCreateViewModel();
             var submissionDto = new SubmissionDTO();
             _mockMapper.Map<SubmissionCreateViewModel>(submissionDto).Returns(submission);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Create(submission) as RedirectToActionResult;
@@ -87,6 +105,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             Assert.NotNull(result);
             Assert.Equal("Index", result.ActionName);
             Assert.Equal("SubmissionSamples", result.ControllerName);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

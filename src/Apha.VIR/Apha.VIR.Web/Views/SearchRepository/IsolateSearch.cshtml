@@ -11,13 +11,13 @@
 				<tr>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="AVNumber" class="label-style">AV Number</label>
+							<span asp-for="AVNumber" class="label-style">AV Number</span>
 							<input id="txtAVNumber" asp-for="AVNumber" class="textInput" tabindex="1" />
 						</div>
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="Group" class="ms-5 label-style">Group</label>
+							<span asp-for="Group" class="ms-5 label-style">Group</span>
 							<select id="ddlGroup" asp-for="Group" asp-items="Model.HostSpecyList" tabindex="2" class="select-dropdown">
 								<option value=""></option>
 							</select>
@@ -27,7 +27,7 @@
 				<tr>
 					<td class="">
 						<div class="d-flex justify-content-between">
-							<label asp-for="VirusFamily" class="label-style">Virus Family</label>
+							<span asp-for="VirusFamily" class="label-style">Virus Family</span>
 							<select id="ddlVirusFamily" asp-for="VirusFamily" asp-items="Model.VirusFamilyList" tabindex="3" class="select-dropdown">
 								<option value=""></option>
 							</select>
@@ -35,7 +35,7 @@
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="Species" class="ms-5 label-style">Species</label>
+							<span asp-for="Species" class="ms-5 label-style">Species</span>
 							<select id="ddlSpecies" asp-for="Species" asp-items="Model.HostBreedList" tabindex="4" class="select-dropdown">
 								<option value=""></option>
 							</select>
@@ -45,7 +45,7 @@
 				<tr>
 					<td class="">
 						<div class="d-flex justify-content-between">
-							<label asp-for="VirusType" class="label-style">Virus Type</label>
+							<span asp-for="VirusType" class="label-style">Virus Type</span>
 							<select id="ddlVirusType" asp-for="VirusType" asp-items="Model.VirusTypeList" tabindex="5" class="select-dropdown">
 								<option value=""></option>
 							</select>
@@ -53,7 +53,7 @@
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="CountryOfOrigin" class="ms-5 label-style">Country Of Origin</label>
+							<span asp-for="CountryOfOrigin" class="ms-5 label-style">Country Of Origin</span>
 							<select id="ddlCountry" asp-for="CountryOfOrigin" asp-items="Model.CountryList" tabindex="6" class="select-dropdown">
 								<option value=""></option>
 							</select>
@@ -63,13 +63,13 @@
 				<tr>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label class="label-style">Virus Characteristics (you can specify up to three)</label>
+							<span class="label-style">Virus Characteristics (you can specify up to three)</span>
 							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[0]" />
 						</div>
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
-							<label asp-for="HostPurpose" class="ms-5 label-style"> HostPurpose</label>
+							<span asp-for="HostPurpose" class="ms-5 label-style"> Host Purpose</span>
 
 							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" tabindex="8" class="select-dropdown">
 								<option value=""></option>
@@ -86,7 +86,7 @@
 					</td>
 					<td class="">
 						<div class="d-flex justify-content-between">
-							<label asp-for="SampleType" class=" ms-5 label-style">Sample Type</label>
+							<span asp-for="SampleType" class=" ms-5 label-style">Sample Type</span>
 
 							<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" tabindex="9" class="select-dropdown">
 								<option value=""></option>
@@ -103,10 +103,10 @@
 					</td>
 					<td>
 						<div class="d-flex justify-content-start">
-							<span class=" ms-5  word-break"><label asp-for="YearOfIsolation">Year of Isolation / FTA Absorption &nbsp;&nbsp;</label></span>
+							<span class=" ms-5  word-break"><span asp-for="YearOfIsolation">Year of Isolation / FTA Absorption &nbsp;&nbsp;</span></span>
 
 							<span>
-								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" tabindex="11" class=" select-dropdown">
+								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" tabindex="11" class="width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -118,10 +118,10 @@
 					</td>
 					<td>
 						<div class="d-flex flex-row justify-content-start ">
-							<span class="ms-5 word-break"><label asp-for="YearOfSubmissionRecieved">Year Submission Received &nbsp;&nbsp;</label></span>
+							<span class="ms-5 word-break"><span asp-for="YearOfSubmissionRecieved">Year Submission Received &nbsp;&nbsp;</span></span>
 
 							<span>
-								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList" tabindex="13" class="select-dropdown">
+								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList" tabindex="13"  class=" width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -136,31 +136,33 @@
 								<tr>
 									<td>
 										<div>
-											<div class="label-style"><label>Created Date</label></div>
+											<div class="label-style"><span>Created Date</span></div>
 											<div>
-												From
+												<span class="me-1">From</span>
 												<input type="date" asp-for="CreatedFromDate" tabindex="14" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 											<div>
-												To
+												<span class="me-1  ms-2">To</span>
+												
 												<input type="date" asp-for="CreatedToDate" tabindex="15" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 										</div>
 									</td>
 									<td>
 										<div>
-											<div class="ms-5 label-style"><label>Recieved Date</label></div>
+											<div class="ms-5 label-style"><span>Received Date</span></div>
 											<div>
-												From
+												<span class="me-1">From</span>
+												
 												<input type="date" asp-for="ReceivedFromDate" tabindex="16" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 											<div>
-												To
+												<span class="me-1  ms-2">To</span>
 												<input type="date" asp-for="ReceivedToDate" tabindex="17" />
-												<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+												
 											</div>
 										</div>
 									</td>

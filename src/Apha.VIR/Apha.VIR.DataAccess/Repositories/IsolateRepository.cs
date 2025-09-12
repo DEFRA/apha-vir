@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Numerics;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
@@ -8,13 +9,11 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class IsolateRepository : IIsolateRepository
+public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
 {
-    private readonly VIRDbContext _context;
     private const string NoOfAliquots = "NoOfAliquots";
-    public IsolateRepository(VIRDbContext context)
+    public IsolateRepository(VIRDbContext context) : base(context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<IEnumerable<IsolateInfo>> GetIsolateInfoByAVNumberAsync(string AVNumber)
@@ -48,7 +47,16 @@ public class IsolateRepository : IIsolateRepository
                             NoOfAliquots = (int)result[NoOfAliquots],
                             ValidToIssue = (result["ValidToIssue"] != DBNull.Value ? (bool?)result["ValidToIssue"] : false),
                             IsMixedIsolate = (bool)result["IsMixedIsolate"],
-                            MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"]
+                            MaterialTransferAgreement = (bool)result["MaterialTransferAgreement"],
+                            IsolateSampleId = (Guid)result["IsolateSampleId"],
+                            YearOfIsolation = (result["YearOfIsolation"] != DBNull.Value ? (int?)result["YearOfIsolation"] : null),
+                            SampleNumber = (int?)result["SampleNumber"],
+                            IsoSMSReferenceNumber = result["IsoSMSReferenceNumber"] as string,
+                            SenderReferenceNumber = result["SenderReferenceNumber"] as string,
+                            FamilyName = result["FamilyName"] as string,
+                            Type = (Guid)result["Type"],
+                            TypeName = result["TypeName"] as string,
+                            LastModified = (byte[])result["LastModified"]
                         };
                         isolateInfoList.Add(dto);
                     }
@@ -113,8 +121,7 @@ public class IsolateRepository : IIsolateRepository
             new SqlParameter("@AVNumber", avNumber),
         };
 
-        List<Isolate> isolateList = await _context.Set<Isolate>()
-           .FromSqlRaw($"EXEC spIsolateGetByAVNumber  @AVNumber ", parameters).ToListAsync();
+        List<Isolate> isolateList = await GetQueryableResultFor<Isolate>($"EXEC spIsolateGetByAVNumber  @AVNumber ", parameters).ToListAsync();
 
         Isolate isolate = isolateList.First(i => i.IsolateId == isolateId);
         return isolate;
@@ -132,7 +139,7 @@ public class IsolateRepository : IIsolateRepository
         parameters = parameters.Concat(new[] { new SqlParameter("@LastModified", SqlDbType.Timestamp) { Direction = ParameterDirection.Output } })
         .ToArray();
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spIsolateInsert @UserID, @IsolateId, @IsolateSampleId, @IsolateNumber, @Family, @Type, @YearOfIsolation,
             @IsMixedIsolate, @IsolationMethod, @AntiserumProduced, @AntigenProduced, @PhylogeneticAnalysis, @MaterialTransferAgreement,  
             @MTALocation, @Comment, @ValidToIssue, @WhyNotValidToIssue, @OriginalSampleAvailable, @FirstViablePassageNumber,
@@ -150,12 +157,35 @@ public class IsolateRepository : IIsolateRepository
         parameters = parameters.Concat(new[] { new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = isolate.LastModified } })
         .ToArray();
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spIsolateUpdate @UserID, @IsolateId, @IsolateSampleId, @IsolateNumber, @Family, @Type, @YearOfIsolation,
             @IsMixedIsolate, @IsolationMethod, @AntiserumProduced, @AntigenProduced, @PhylogeneticAnalysis, @MaterialTransferAgreement,  
             @MTALocation, @Comment, @ValidToIssue, @WhyNotValidToIssue, @OriginalSampleAvailable, @FirstViablePassageNumber,
             @NoOfAliquots, @Freezer, @Tray, @Well, @IsolateNomenclature, @SMSReferenceNumber, @PhylogeneticFileName, @LastModified OUTPUT",
           parameters);
+    }
+
+    public async Task DeleteIsolateAsync(Guid isolateId, string userId, byte[] lastModified)
+    {
+        await ExecuteSqlAsync(
+          "EXEC spIsolateDelete @UserID, @IsolateId, @LastModified OUTPUT",
+          new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+          new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolateId },
+          new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified, Direction = ParameterDirection.InputOutput }
+       );
+    }
+
+    public async Task<IEnumerable<IsolateNomenclature>> GetIsolateForNomenclatureAsync(Guid isolateId)
+    {
+        var parameters = new[]
+        {
+            new SqlParameter("@Id", isolateId),
+        };       
+
+        List<IsolateNomenclature> isolateNomenclature = await SqlQueryRawFor<IsolateNomenclature>($"EXEC spNomenclatureGetByCriteria  @Id ", parameters)
+               .ToListAsync();
+
+        return isolateNomenclature;
     }
 
     private async Task AddIsolateCharacteristicsAsync(Guid isolateId, Guid type, string User)
@@ -167,7 +197,7 @@ public class IsolateRepository : IIsolateRepository
             new SqlParameter("@Type", SqlDbType.UniqueIdentifier) { Value = type }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spIsolateCharacteristicsInsert @IsolateId, @Type, @UserID",
           parameters);
     }

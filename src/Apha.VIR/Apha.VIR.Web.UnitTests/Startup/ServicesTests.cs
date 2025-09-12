@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Apha.BST.Web.UnitTests.Startup
+namespace Apha.VIR.Web.UnitTests.Controllers.Startup
 {
     public class ServiceRegistrationTests
     {

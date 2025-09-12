@@ -12,4 +12,5 @@ public class IsolateCharacteristicInfo
     public bool? CharacteristicDisplay { get; set; }
     public string? SMSColumnId { get; set; }
     public string? CharacteristicPrefix { get; set; }
+    public byte[] LastModified { get; set; } = null!;
 }

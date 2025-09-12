@@ -1,22 +1,21 @@
-﻿using Apha.VIR.Web.Controllers;
-using Apha.VIR.Web.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
-using System.Diagnostics;
 
-namespace Apha.VIR.Web.UnitTests.Controllers
+namespace Apha.VIR.Web.UnitTests.Controllers.HomeControllerTest
 {
     public class HomeControllerTests
     {
         private readonly HomeController _controller;
         private readonly IConfiguration _mockConfiguration;
-
+        private readonly ISystemInfoService _mockSysInfoService;
         public HomeControllerTests()
         {
             _mockConfiguration = Substitute.For<IConfiguration>();
-            _controller = new HomeController(_mockConfiguration);
+            _mockSysInfoService = Substitute.For<ISystemInfoService>();
+            _controller = new HomeController(_mockConfiguration, _mockSysInfoService);
         }
 
         [Fact]

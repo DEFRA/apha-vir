@@ -25,7 +25,8 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<IsolateInfoDTO, IsolateDetails>();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityCheckInfo>();
             CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>();
-            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>();
+            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
+            CreateMap<IsolateCharacteristicDTO, IsolateCharacteristicViewModel>().ReverseMap();
             CreateMap<IsolateDispatchInfoDTO, IsolateDispatchEditViewModel>().ReverseMap();
             CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>().ReverseMap();
             CreateMap<IsolateDispatchCreateViewModel, IsolateDispatchInfoDTO>();
@@ -48,6 +49,8 @@ namespace Apha.VIR.Web.Mappings
                 .ForMember(dest => dest.IsolateViabilityIsolateId, opt => opt.MapFrom(src => src.IsolateId))
                 .ForMember(dest => dest.CheckedById, opt => opt.MapFrom(src => src.CheckedBy));
             CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryModel>().ReverseMap();
+            CreateMap<SampleDTO, SubmissionSamplesModel>();
+            CreateMap<IsolateInfoDTO, SubmissionIsolatesModel>();
             CreateMap<VirusCharacteristicDTO, VirusCharacteristicDetails>().ReverseMap();
             CreateMap<VirusCharacteristicDataTypeDTO, VirusCharacteristicDataType>().ReverseMap();
 

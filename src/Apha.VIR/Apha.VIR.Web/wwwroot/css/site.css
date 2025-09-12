@@ -165,9 +165,11 @@
     font-weight: bold;
     margin-right: 25%;
 }
+
 .searchRepo-grid-table tbody {
     vertical-align: top;
 }
+
 .searchRepo-grid-table {
     width: 100%;
 }
@@ -482,9 +484,9 @@
         background-color: #efefef;
     }
 
-.isolate-grid-table tr form button:hover {
-    text-decoration-line: underline
-}
+    .isolate-grid-table tr form button:hover {
+        text-decoration-line: underline
+    }
 
 .custom-underline-hover {
     text-decoration: none;
@@ -520,6 +522,7 @@
     font-family: Verdana, Arial, Helvetica, sans-serif;
     clear: both;
 }
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -531,12 +534,14 @@
     white-space: nowrap;
     border: 0;
 }
+
 .isolate-chid-tbl {
     width: 90%;
 }
-.isolate-chid-tbl thead tr th {
-    text-wrap-mode: wrap!important;
-}
+
+    .isolate-chid-tbl thead tr th {
+        text-wrap-mode: wrap !important;
+    }
 /* end view isolate details */
 
 .isolatereport-box_title {
@@ -602,16 +607,26 @@
 /*----- VirusCharacterstics*/
 .viruscharacteristictable {
     border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #0b2677;
+    width: auto;
+    border: 1px solid #888888;
     margin-bottom: 20px;
 }
+.viruscharacteristics-empty-box {
+    border: 1px solid #888888;
+    background-color: #fff;
+    color: #333333;
+    padding: 4px 8px;
+    border-radius: 0;
+    margin: 6px 0;
+    font-size: 0.95em;
+    display: inline-block;
+}
 
-    .viruscharacteristictable th, .viruscharacteristictable td {
-        border: 1px solid #0b2677;
-        padding: 6px 8px;
-        text-align: left;
-    }
+.viruscharacteristictable th, .viruscharacteristictable td {
+    border: 1px solid #888888;
+    padding: 6px 8px;
+    text-align: left;
+}
 
     .viruscharacteristictable th {
         background-color: #0b2677;
@@ -628,44 +643,55 @@
     }
 /*---- Headings ----*/
 
-h1
-{
-	font-weight: bold;
-	color: #0b2677;
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
-	font-size:1.7em;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	clear: both;
+h1 {
+    font-weight: bold;
+    color: #0b2677;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    font-size: 1.7em;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    clear: both;
 }
 
-h2
-{
-	font-weight: bold;
-	color: #0b2677;
-	margin: 1.5em 0 0 0;
-	padding: 0 0 0 0;
-	font-size: 1.2em;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	clear: both;
+h2 {
+    font-weight: bold;
+    color: #0b2677;
+    margin: 1.5em 0 0 0;
+    padding: 0 0 0 0;
+    font-size: 1.2em;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    clear: both;
 }
 
-h3
-{
-	font-weight: bold;
-	color: #0b2677;
-	margin: 4px 0 0 0;
-	padding: 0 0 0 0;
-	font-size: 1em;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	clear: both;
+h3 {
+    font-weight: bold;
+    color: #0b2677;
+    margin: 4px 0 0 0;
+    padding: 0 0 0 0;
+    font-size: 1em;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    clear: both;
 }
 
 /*---- General Links ----*/
-a {color: #0000FF; }
-a:link {color: #0000FF; text-decoration: none; }
-a:visited {color: #0000FF;  text-decoration: none; }
-a:hover {color: #0000FF;  text-decoration: underline; }
+a {
+    color: #0000FF;
+}
+
+    a:link {
+        color: #0000FF;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: #0000FF;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #0000FF;
+        text-decoration: underline;
+    }
 
 .Validation {
     color: Red;
@@ -1104,26 +1130,144 @@ a:hover {color: #0000FF;  text-decoration: underline; }
     margin-bottom: 20px;
 }
 
-.sendertable th, .sendertable td {
-    border: 1px solid gray;
-    padding: 5px 5px;
-    text-align: left;
-}
+    .sendertable th, .sendertable td {
+        border: 1px solid gray;
+        padding: 5px 5px;
+        text-align: left;
+    }
 
-.sendertable th {
-    background-color: #0b2677;
-    color: #fff;
-    font-weight: bold;
-}
+    .sendertable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
 
-.sendertable tr:nth-child(even) {
-    background-color: #efefef;
-}
+    .sendertable tr:nth-child(even) {
+        background-color: #efefef;
+    }
 
-.sendertable tr:nth-child(odd) {
-    background-color: #f9f9f9;
-}
+    .sendertable tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
 
 .w-200 {
     width: 200px;
 }
+
+
+.isolate_characteristics-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
+    border: 1px solid gray;
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+}
+
+.isolate_characteristics-cell {
+    border: 1px solid gray;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.isolate_characteristics-grid > .isolate_characteristics-cell:nth-child(2n) {
+    border-right-width: 1px;
+}
+
+.isolate_characteristics-grid > .isolate_characteristics-cell:nth-last-child(-n+2) {
+    border-bottom-width: 1px;
+}
+
+.isolate_characteristics-label {
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.isolate_characteristics-form-actions {
+    margin-top: 20px;
+}
+
+.contentbox {
+    border-top: #0b2677 1px solid;
+    border-right: #0b2677 1px solid;
+    border-bottom: #0b2677 1px solid;
+    border-left: #0b2677 1px solid;
+    margin: 0px 0px 15px 0px;
+}
+
+    .contentbox .box_title {
+        padding-top: 3px;
+        padding-right: 10px;
+        padding-bottom: 3px;
+        padding-left: 10px;
+        background-color: #0b2677;
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+.av-number-box_body {
+    padding-top: 0px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
+/*Submission samples*/
+.submission-h3 {
+    font-weight: bold;
+    color: #0b2677;
+    margin: 4px 0 0 0;
+    padding: 0;
+    font-size: 1em;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    clear: both;
+}
+
+.submission-grid-table {
+    width: 100%;
+}
+
+  .submission-grid-table table {
+      border-collapse: collapse;
+  }
+
+      .submission-grid-table table thead tr th {
+          text-wrap-mode: nowrap;
+          padding-bottom: 1px;
+          background-color: Navy;
+          border: 1px solid black;
+          align-items: center;
+      }
+
+      .submission-grid-table table thead tr th {
+          color: White;
+          padding-left: 5px;
+          padding-right: 5px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+      }
+
+      .submission-grid-table table tr td {
+          border: 1px solid black;
+          border-spacing: 0;
+          padding-left: 5px;
+          padding-right: 5px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+      }
+
+
+  .submission-grid-table tr:nth-child(even) {
+      background-color: #efefef;
+  }
+
+  .submission-grid-table tr form button:hover {
+      text-decoration-line: underline
+  }
+/*End Submission samples*/
