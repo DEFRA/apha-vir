@@ -74,7 +74,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(VirusCharacteristicDetails model)
         {
-            var validationErrors = await ValidateVirusCharacteristicAsync(model);
+            var validationErrors = await ValidateVirusCharacteristicAdd(model);
 
             if (validationErrors.Count > 0)
             {
@@ -118,7 +118,7 @@ namespace Apha.VIR.Web.Controllers
 
             return View(model);
         }
-        private async Task<List<string>> ValidateVirusCharacteristicAsync(VirusCharacteristicDetails model)
+        private async Task<List<string>> ValidateVirusCharacteristicAdd(VirusCharacteristicDetails model)
         {
             var errors = new List<string>();
 
@@ -126,20 +126,8 @@ namespace Apha.VIR.Web.Controllers
             var allCharacteristics = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
             if (allCharacteristics.Any(vc => vc.Id == model.Id))
             {
-                errors.Add("- Item already exists.<br />");
-            }
-
-            // Ensure that the name is entered
-            if (string.IsNullOrWhiteSpace(model.Name))
-            {
-                errors.Add("- Name not specified for this item.<br />");
-            }
-
-            // Ensure that the index is entered
-            if (!model.CharacteristicIndex.HasValue)
-            {
-                errors.Add("- Display Order not specified for this item.<br />");
-            }
+                errors.Add("- Item already exists.");
+            }          
 
             // Ensure that the length is not greater than 100 characters
             if (model.Length.HasValue && model.Length.Value > 100)
