@@ -81,7 +81,6 @@ namespace Apha.VIR.DataAccess.Repositories
         }
         public async Task UpdateEntryAsync(VirusCharacteristic virusCharacteristic)
         {
-            var lastModified = new byte[8];
             await _context.Database.ExecuteSqlInterpolatedAsync(
                 $@"EXEC spVirusCharacteristicUpdate 
             @Id = {virusCharacteristic.Id}, 
@@ -95,8 +94,7 @@ namespace Apha.VIR.DataAccess.Repositories
             @DecimalPlaces ={virusCharacteristic.DecimalPlaces},
             @Length ={virusCharacteristic.Length},
             @Index ={virusCharacteristic.CharacteristicIndex},
-            @LastModified = {lastModified}");
-            virusCharacteristic.LastModified = lastModified;
+            @LastModified = {virusCharacteristic.LastModified}");
         }
     }
 }
