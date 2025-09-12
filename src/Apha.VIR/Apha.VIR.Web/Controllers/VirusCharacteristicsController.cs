@@ -57,6 +57,15 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
         {
+            var validationErrors = await ValidateVirusCharacteristicAdd(model);
+
+            if (validationErrors.Count > 0)
+            {
+                foreach (var error in validationErrors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+            }
             if (!ModelState.IsValid)
             {
                 // Repopulate the dropdown list
@@ -74,10 +83,23 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(VirusCharacteristicDetails model)
         {
+            ViewBag.showsummary = false;
+            if (!ModelState.IsValid)
+            {
+                // Repopulate the dropdown list
+                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+                model.CharacteristicTypeNameList = virusTypesDto
+                    .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType })
+                    .ToList();
+                return View("Create", model);
+            }
+
             var validationErrors = await ValidateVirusCharacteristicAdd(model);
 
             if (validationErrors.Count > 0)
             {
+
+                ViewBag.showsummary = true;
                 foreach (var error in validationErrors)
                 {
                     ModelState.AddModelError(string.Empty, error);
@@ -127,12 +149,11 @@ namespace Apha.VIR.Web.Controllers
             if (allCharacteristics.Any(vc => vc.Id == model.Id))
             {
                 errors.Add("- Item already exists.");
-            }          
-
+            }           
             // Ensure that the length is not greater than 100 characters
             if (model.Length.HasValue && model.Length.Value > 100)
             {
-                errors.Add("- Maximum length must be no more than 100 characters.<br />");
+                errors.Add("- Maximum length must be no more than 100 characters.");
             }
 
             return errors;
@@ -140,15 +161,22 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> Delete(VirusCharacteristicDetails model, Guid id)
         {
+            var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+            model.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
+
             if (!ModelState.IsValid || id == Guid.Empty)
             {
-                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
-                model.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
+                ModelState.AddModelError("", "Id not specified for this item.");
                 return View("Edit", model);
             }
             else if (CheckEntries(id).Result)
             {
                 ModelState.AddModelError("", "Virus Characteristic cannot be deleted as it is already assigned to one or more Virus Isolates.");
+                return View("Edit", model);
+            }
+            else if (!CheckEntryExists(id))
+            {
+                ModelState.AddModelError("", "Item does not exist.");
                 return View("Edit", model);
             }
             else
@@ -162,6 +190,12 @@ namespace Apha.VIR.Web.Controllers
         private async Task<bool> CheckEntries(Guid id)
         {
             return await _virusCharacteristicService.CheckVirusCharactersticsUsageByIdAsync(id);
+        }
+        private bool CheckEntryExists(Guid id)
+        {
+            var VirusEntry = _virusCharacteristicService.GetVirusCharacteristicsByIdAsync(id);
+            var viewModel = _mapper.Map<VirusCharacteristicDetails>(VirusEntry);
+            return viewModel.Id == id ? true : false;
         }
 
         public async Task<IActionResult> BindCharacteristicEntriesGridOnPagination(int pageNo, int pageSize)
