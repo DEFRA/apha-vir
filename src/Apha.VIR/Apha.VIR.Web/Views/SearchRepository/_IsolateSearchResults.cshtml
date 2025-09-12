@@ -1,12 +1,12 @@
 ﻿@model IsolateSearchGirdViewModel
-@if (Model.IsolateSearchResults?.Count > 0)
+@if (Model.IsolateSearchResults.Count > 0)
 {
 	<div class="d-flex ">
-		<span id="lblNumberOfIsolates" class="search-repository-label ">Number of Isolates found matching the above criteria: @Model.Pagination?.TotalCount</span>
-		<span id="lblPageNumber" class="search-repository-label text-center">Displaying Page @Model.Pagination?.PageNumber of @Model.Pagination?.TotalPages</span>
+		<span id="lblNumberOfIsolates" class="search-repository-label ">Number of Isolates found matching the above criteria: @Model.Pagination.TotalCount</span>
+		<span id="lblPageNumber" class="search-repository-label text-center">Displaying Page @Model.Pagination.PageNumber of @Model.Pagination.TotalPages</span>
 	</div>
 	<div>
-		<table id="SearchRepositoryGrid" cellpadding="1" class="VIRtable">
+		<table id="SearchRepositoryGrid"  class="VIRtable">
 			<thead>
 				<tr>
 					<th><a href="" data-sortcolumn="Avnumber" data-sortorder="@Model.SortOrderFor("Avnumber")">AV Number</a></th>
