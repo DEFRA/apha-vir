@@ -5,17 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class WorkgroupRepository : IWorkgroupRepository
+public class WorkgroupRepository : RepositoryBase<Workgroup>, IWorkgroupRepository
 {
-    private readonly VIRDbContext _context;
-
-    public WorkgroupRepository(VIRDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    public WorkgroupRepository(VIRDbContext context): base(context) { }
 
     public async Task<IEnumerable<Workgroup>> GetWorkgroupfListAsync()
     {
-        return await _context.Workgroups.ToListAsync();
+        return await GetDbSetFor<Workgroup>().ToListAsync();
     }
 }

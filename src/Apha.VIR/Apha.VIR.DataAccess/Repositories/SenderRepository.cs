@@ -8,19 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class SenderRepository : ISenderRepository
+public class SenderRepository : RepositoryBase<Sender>, ISenderRepository
 {
-    private readonly VIRDbContext _context;
-
-    public SenderRepository(VIRDbContext context)
+    public SenderRepository(VIRDbContext context) : base(context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<IEnumerable<Sender>> GetAllSenderOrderBySenderAsync(Guid? countryId)
     {
-        var senders = await _context.Set<Sender>()
-            .FromSqlRaw($"EXEC spSenderGetAllOrderBySender").ToListAsync();
+        var senders = await GetQueryableResultFor<Sender>($"EXEC spSenderGetAllOrderBySender").ToListAsync();
 
         if (countryId != null && countryId != Guid.Empty)
         {
@@ -32,8 +28,7 @@ public class SenderRepository : ISenderRepository
 
     public async Task<IEnumerable<Sender>> GetAllSenderOrderByOrganisationAsync(Guid? countryId)
     {
-        var senders = await _context.Set<Sender>()
-            .FromSqlRaw($"EXEC spSenderGetAllOrderByOrganisation").ToListAsync();
+        var senders = await GetQueryableResultFor<Sender>($"EXEC spSenderGetAllOrderByOrganisation").ToListAsync();
 
         if (countryId != null && countryId != Guid.Empty)
         {
@@ -46,8 +41,7 @@ public class SenderRepository : ISenderRepository
     public async Task<PagedData<Sender>> GetAllSenderAsync(int pageNo, int pageSize)
     {
         //stored procedure is non-composable SQL and EF does support AsQueryable to get performance of skip. 
-        var result = await _context.Set<Sender>()
-           .FromSqlInterpolated($"EXEC spSenderGetAllOrderBySender").ToListAsync();
+        var result = await GetQueryableInterpolatedFor<Sender>($"EXEC spSenderGetAllOrderBySender").ToListAsync();
 
         var totalRecords = result.Count;
         var senders = result.Skip((pageNo - 1) * pageSize)
@@ -63,8 +57,7 @@ public class SenderRepository : ISenderRepository
              new SqlParameter("@ID", SqlDbType.UniqueIdentifier, 20) { Value = senderId}
         };
 
-        var resultList = await _context.Set<Sender>()
-            .FromSqlRaw("EXEC spSenderGet @ID", parameters).ToListAsync();
+        var resultList = await GetQueryableResultFor<Sender>("EXEC spSenderGet @ID", parameters).ToListAsync();
 
         var result = resultList.FirstOrDefault();
 
@@ -82,7 +75,7 @@ public class SenderRepository : ISenderRepository
            new SqlParameter("@Country", SqlDbType.UniqueIdentifier) { Value = sender.Country.HasValue ? sender.Country : DBNull.Value }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
             @"EXEC spSenderInsert @SenderID, @Sender, @SenderOrganisation, @SenderAddress, @Country", parameters);
     }
 
@@ -97,7 +90,7 @@ public class SenderRepository : ISenderRepository
            new SqlParameter("@Country", SqlDbType.UniqueIdentifier) { Value = sender.Country.HasValue ? sender.Country : DBNull.Value }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
             @"EXEC spSenderUpdate @SenderID, @Sender, @SenderOrganisation, @SenderAddress, @Country", parameters);
     }
 
@@ -108,6 +101,6 @@ public class SenderRepository : ISenderRepository
            new SqlParameter("@SenderID", SqlDbType.UniqueIdentifier) { Value = senderId },
         };
 
-        await _context.Database.ExecuteSqlRawAsync(@"EXEC spSenderDelete @SenderID", parameters);
+        await ExecuteSqlAsync(@"EXEC spSenderDelete @SenderID", parameters);
     }
 }

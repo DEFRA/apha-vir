@@ -7,14 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class CharacteristicRepository : ICharacteristicRepository
+public class CharacteristicRepository : RepositoryBase<IsolateCharacteristicInfo>, ICharacteristicRepository
 {
-    private readonly VIRDbContext _context;
-
-    public CharacteristicRepository(VIRDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    public CharacteristicRepository(VIRDbContext context) : base(context) { }
 
     public async Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristicInfoAsync(Guid isolateId)
     {
@@ -69,7 +64,7 @@ public class CharacteristicRepository : ICharacteristicRepository
 
     public async Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicInfo item, string User)
     {
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
            "EXEC spCharacteristicUpdate @UserID, @CharacteristicId, @CharacteristicIsolateId, @VirusCharacteristicId, @CharacteristicValue, @LastModified OUTPUT",
                 new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
                 new SqlParameter("@CharacteristicId", SqlDbType.UniqueIdentifier) { Value = item.CharacteristicId },
