@@ -1,0 +1,64 @@
+﻿@model IsolateRelocateViewModel
+
+<div id="contentbox" class="contentbox w-600">
+    <div class="box_title">Edit Isolate Relocation</div>
+    <div class="editisolate-box_body">
+
+        <form asp-action="Update" method="post">
+            <div class="isolate-form ms-2">
+
+                <input type="hidden" asp-for="@Model.IsolateId" />
+                <input type="hidden" asp-for="@Model.LastModified" />
+                <!-- Freezer -->
+                <div class="row mt-3">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">Freezer</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <select id="FreezerSearch" asp-for="@Model.Freezer" asp-items="@ViewBag.FreezersList" class="form-control" style="width:226px" asp-option-label="Select Freezer">
+                            
+                        </select>
+                        <span asp-validation-for="@Model.Freezer" style="color:red;"></span>
+                    </div>
+                </div>
+
+                <!-- Tray -->
+                <div class="row mt-3">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">Tray</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <select id="TraySearch" asp-for="@Model.Tray" asp-items="@ViewBag.TrayList" class="form-control" style="width:226px" asp-option-label="Select Freezer">
+                           
+                        </select>
+                        <span asp-validation-for="@Model.Tray" style="color:red;"></span>
+                    </div>
+                </div>
+
+                <!-- Well -->
+                <div class="row mt-3">
+                    <div class="col-sm-3 text-end">
+                        <span class="col-form-label">Well</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <input asp-for="@Model.Well" class="form-control" style="width:226px" />
+                        <span asp-validation-for="@Model.Well" style="color:red;"></span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="row mt-3 mb-3">
+                    <div class="col-sm-8 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-link isolaterelocate-btn-link-custom">Update</button>
+                        <a asp-action="Isolate" asp-controller="Relocation" class="btn btn-link ms-2">Cancel</a>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
