@@ -117,22 +117,22 @@
         }
 
         .breadcrumb li a {
-            color: #0000FF;
+            color: #0b2677;
             text-decoration: none;
         }
 
             .breadcrumb li a:link {
-                color: #0000FF;
+                color: #0b2677;
                 text-decoration: none
             }
 
             .breadcrumb li a:visited {
-                color: #0000FF;
+                color: #0b2677;
                 text-decoration: none
             }
 
             .breadcrumb li a:hover {
-                color: #0000FF;
+                color: #0b2677;
                 text-decoration: underline
             }
 
@@ -179,7 +179,7 @@
     }
 
         .searchRepo-grid-table table thead tr th {
-            text-wrap-mode: wrap;
+            text-wrap-mode: nowrap;
             padding-bottom: 10px;
             background-color: Navy;
             border: 1px solid white;
@@ -484,9 +484,9 @@
         background-color: #efefef;
     }
 
-    .isolate-grid-table tr form button:hover {
-        text-decoration-line: underline
-    }
+.isolate-grid-table tr form button:hover {
+    text-decoration-line: underline
+}
 
 .custom-underline-hover {
     text-decoration: none;
@@ -494,35 +494,22 @@
     color: #000040;
 }
 
-.btn-as-link {
-    background: none;
-    border: none;
-    color: #0000FF;
-    padding: 0;
-    font: inherit;
-    /* text-decoration: underline; */
-    cursor: pointer;
+.av-number-box_body {
+    padding-top: 0px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
 }
 
-    .btn-as-link:hover {
-        color: #0000FF;
-        text-decoration: underline;
-    }
-
-.inline-form {
-    display: inline;
-}
-/* view isolate details */
-.view-isolate-header {
+.submission-h3 {
     font-weight: bold;
     color: #0b2677;
     margin: 4px 0 0 0;
-    padding: 0 0 0 0;
+    padding: 0;
     font-size: 1em;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     clear: both;
 }
-
 .sr-only {
     position: absolute;
     width: 1px;
@@ -534,68 +521,30 @@
     white-space: nowrap;
     border: 0;
 }
-
 .isolate-chid-tbl {
     width: 90%;
 }
-
-    .isolate-chid-tbl thead tr th {
-        text-wrap-mode: wrap !important;
-    }
+.isolate-chid-tbl thead tr th {
+    text-wrap-mode: wrap!important;
+}
 /* end view isolate details */
 
-.isolatereport-box_title {
-    padding-top: 3px;
-    padding-right: 10px;
-    padding-bottom: 3px;
-    padding-left: 10px;
-    /* padding: 0.2em 1px 2px 14px; */
-    background-color: #0b2677;
-    color: #ffffff;
-    /* font-size: 0.9em; */
-    font-weight: bold;
-}
-
-.isolatereport-contentbox {
-    border-top: #0b2677 1px solid;
-    border-right: #0b2677 1px solid;
-    border-bottom: #0b2677 1px solid;
-    border-left: #0b2677 1px solid;
-    margin: 0px 0px 15px 0px;
-}
-
-.isolatereport-box_body {
-    background-color: #ffffff;
-    color: #333333;
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-size: small;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-}
-
-.isolatereport-header {
-    background-color: #0b2677;
-    font-size: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-
-.isolatereporttable {
-    border-collapse: collapse;
+/* Submission Table of View Isolate Details  */
+.submission-grid-table {
     width: 100%;
-    border: 1px solid #0b2677;
-    margin-bottom: 20px;
 }
 
-    .isolatereporttable th, .isolatereporttable td {
-        border: 1px solid #0b2677;
-        padding: 6px 8px;
-        text-align: left;
+    .submission-grid-table table {
+        border-collapse: collapse;
     }
+
+        .submission-grid-table table thead tr th {
+            text-wrap-mode: nowrap;
+            padding-bottom: 1px;
+            background-color: Navy;
+            border: 1px solid black;
+            align-items: center;
+        }
 
     .isolatereporttable th {
         background-color: #0b2677;
@@ -607,123 +556,96 @@
 /*----- VirusCharacterstics*/
 .viruscharacteristictable {
     border-collapse: collapse;
-    width: auto;
-    border: 1px solid #888888;
+    width: 100%;
+    border: 1px solid #0b2677;
     margin-bottom: 20px;
 }
-.viruscharacteristics-empty-box {
-    border: 1px solid #888888;
-    background-color: #fff;
-    color: #333333;
-    padding: 4px 8px;
-    border-radius: 0;
-    margin: 6px 0;
-    font-size: 0.95em;
-    display: inline-block;
-}
 
-.viruscharacteristictable th, .viruscharacteristictable td {
-    border: 1px solid #888888;
-    padding: 6px 8px;
-    text-align: left;
-}
-
-    .viruscharacteristictable th {
-        background-color: #0b2677;
-        color: #fff;
-        font-weight: bold;
+    .viruscharacteristictable th, .viruscharacteristictable td {
+        border: 1px solid #0b2677;
+        padding: 6px 8px;
+        text-align: left;
     }
 
-    .viruscharacteristictable tbody tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
+        .submission-grid-table table tr td {
+            border: 1px solid black;
+            border-spacing: 0;
+            padding-left: 5px;
+            padding-right: 5px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
 
-    .viruscharacteristictable tbody tr:nth-child(even) {
+
+    .submission-grid-table tr:nth-child(even) {
         background-color: #efefef;
     }
-/*---- Headings ----*/
 
-h1 {
-    font-weight: bold;
-    color: #0b2677;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-    font-size: 1.7em;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    clear: both;
+h1
+{
+	font-weight: bold;
+	color: #0b2677;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	font-size:1.7em;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	clear: both;
 }
 
-h2 {
-    font-weight: bold;
-    color: #0b2677;
-    margin: 1.5em 0 0 0;
-    padding: 0 0 0 0;
-    font-size: 1.2em;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    clear: both;
+h2
+{
+	font-weight: bold;
+	color: #0b2677;
+	margin: 1.5em 0 0 0;
+	padding: 0 0 0 0;
+	font-size: 1.2em;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	clear: both;
 }
 
-h3 {
-    font-weight: bold;
-    color: #0b2677;
-    margin: 4px 0 0 0;
-    padding: 0 0 0 0;
-    font-size: 1em;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    clear: both;
+h3
+{
+	font-weight: bold;
+	color: #0b2677;
+	margin: 4px 0 0 0;
+	padding: 0 0 0 0;
+	font-size: 1em;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	clear: both;
 }
 
 /*---- General Links ----*/
-a {
-    color: #0000FF;
-}
-
-    a:link {
-        color: #0000FF;
-        text-decoration: none;
-    }
-
-    a:visited {
-        color: #0000FF;
-        text-decoration: none;
-    }
-
-    a:hover {
-        color: #0000FF;
-        text-decoration: underline;
-    }
+a {color: #0000FF; }
+a:link {color: #0000FF; text-decoration: none; }
+a:visited {color: #0000FF;  text-decoration: none; }
+a:hover {color: #0000FF;  text-decoration: underline; }
 
 .Validation {
     color: Red;
     font-weight: bold
 }
 
-.para-darkblue-xsmall {
-    color: #0b2677;
-    font-size: x-small;
+.av-number-thead {
+    background-color: #0b2677;
+    font-size: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    color: #ffffff;
+    font-weight: bold;
 }
 
-.para-darkblue-small {
-    color: #0b2677;
-    font-size: small;
+
+.recent-av-link {
+    text-decoration: none;
+    color: #0000FF;
+    transition: text-decoration 0.2s;
 }
 
-.para-darkblue-medium {
-    color: #0b2677;
-    font-size: medium;
-}
+    .recent-av-link:hover, .recent-av-link:focus {
+        text-decoration: underline;
+    }
 
-.para-darkblue-large {
-    color: #0b2677;
-    font-size: large;
-}
 
-.para-darkblue-xlarge {
-    color: #0b2677;
-    font-size: x-large;
-}
-
-/*-- Edit Submission --*/
 .editsubmission-contentbox {
     border-top: #0b2677 1px solid;
     border-right: #0b2677 1px solid;
@@ -752,7 +674,7 @@ a {
 }
 
 .editsubmission-form-group_row {
-    margin-top: 1px;
+    margin-top: 1
 }
 
 .editsubmission-body_title {
@@ -920,17 +842,17 @@ a {
         height: 80px;
     }
 
-/* Validation message */
-.text-danger {
-    font-weight: bold;
-    color: red;
-    display: block;
-    margin-top: 2px;
-    font-size: 12px;
-}
+    /* Validation message */
+    .editsubmission-addsender-input .text-danger {
+        font-weight: bold;
+        color: red;
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+    }
 
 
-#AddSenderPopupForm fieldset {
+#senderForm fieldset {
     display: table;
     border-collapse: collapse;
     width: 100%;
@@ -955,45 +877,43 @@ a {
     width: 350px;
 }
 
-/* Flex layout for term/value pairs */
-.info-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+.w-80 {
+    width: 80px !important;
 }
 
-/* Each row: label left, value right */
-.info-row {
-    display: flex;
-    gap: 1rem;
-    align-items: baseline;
-    padding: 5px 0;
+.w-170 {
+    width: 170px !important;
 }
 
-    /* Labels (dt) */
-    .info-row dt {
-        min-width: 220px;
-        font-weight: normal;
-        margin: 0;
-    }
+.w-200 {
+    width: 200px !important;
+}
 
-    /* Values (dd) */
-    .info-row dd {
-        margin: 0;
-        flex: 1;
-    }
+.w-210 {
+    width: 210px !important;
+}
 
-/* Box Styles */
-#contentbox {
+.w-250 {
+    width: 250px !important;
+}
+
+.w-500 {
+    width: 500px !important;
+}
+
+.w-600 {
+    width: 600px !important;
+}
+
+.contentbox {
     border-top: #0b2677 1px solid;
     border-right: #0b2677 1px solid;
     border-bottom: #0b2677 1px solid;
     border-left: #0b2677 1px solid;
     margin: 0px 0px 15px 0px;
-    width: 88%;
 }
 
-    #contentbox .box_title {
+    .contentbox .box_title {
         padding-top: 3px;
         padding-right: 10px;
         padding-bottom: 3px;
@@ -1005,7 +925,7 @@ a {
         font-weight: bold;
     }
 
-    #contentbox .box_body {
+    .contentbox .box_body {
         padding-top: 0px;
         padding-right: 10px;
         padding-bottom: 10px;
@@ -1130,25 +1050,25 @@ a {
     margin-bottom: 20px;
 }
 
-    .sendertable th, .sendertable td {
-        border: 1px solid gray;
-        padding: 5px 5px;
-        text-align: left;
-    }
+.sendertable th, .sendertable td {
+    border: 1px solid gray;
+    padding: 5px 5px;
+    text-align: left;
+}
 
-    .sendertable th {
-        background-color: #0b2677;
-        color: #fff;
-        font-weight: bold;
-    }
+.sendertable th {
+    background-color: #0b2677;
+    color: #fff;
+    font-weight: bold;
+}
 
-    .sendertable tr:nth-child(even) {
-        background-color: #efefef;
-    }
+.sendertable tr:nth-child(even) {
+    background-color: #efefef;
+}
 
-    .sendertable tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
+.sendertable tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
 
 .w-200 {
     width: 200px;
@@ -1193,23 +1113,45 @@ a {
     margin-top: 20px;
 }
 
-.contentbox {
-    border-top: #0b2677 1px solid;
-    border-right: #0b2677 1px solid;
-    border-bottom: #0b2677 1px solid;
-    border-left: #0b2677 1px solid;
-    margin: 0px 0px 15px 0px;
+.IsolateRelocatetable {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    table-layout: auto; /* auto-sizes columns based on content */
+    width: auto; /* do not force 100% */
+    box-sizing: border-box;
 }
 
-    .contentbox .box_title {
-        padding-top: 3px;
-        padding-right: 10px;
-        padding-bottom: 3px;
-        padding-left: 10px;
+    .IsolateRelocatetable thead th {
         background-color: #0b2677;
         color: #ffffff;
         font-weight: bold;
+        font-size: 100%;
     }
+
+    .IsolateRelocatetable tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+    .IsolateRelocatetable tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .IsolateRelocatetable th,
+    .IsolateRelocatetable td {
+        border: 1px solid gray;
+        padding: 6px 10px;
+        white-space: nowrap; /* keeps columns as wide as their content */
+    }
+
+.isolaterelocate-btn-link-custom {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    font-family: Verdana, Arial, Helvetica, sans-serif !important;
+    color: #0000FF !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+}
 
 .av-number-box_body {
     padding-top: 0px;
@@ -1217,57 +1159,3 @@ a {
     padding-bottom: 10px;
     padding-left: 10px;
 }
-
-/*Submission samples*/
-.submission-h3 {
-    font-weight: bold;
-    color: #0b2677;
-    margin: 4px 0 0 0;
-    padding: 0;
-    font-size: 1em;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    clear: both;
-}
-
-.submission-grid-table {
-    width: 100%;
-}
-
-  .submission-grid-table table {
-      border-collapse: collapse;
-  }
-
-      .submission-grid-table table thead tr th {
-          text-wrap-mode: nowrap;
-          padding-bottom: 1px;
-          background-color: Navy;
-          border: 1px solid black;
-          align-items: center;
-      }
-
-      .submission-grid-table table thead tr th {
-          color: White;
-          padding-left: 5px;
-          padding-right: 5px;
-          padding-top: 5px;
-          padding-bottom: 5px;
-      }
-
-      .submission-grid-table table tr td {
-          border: 1px solid black;
-          border-spacing: 0;
-          padding-left: 5px;
-          padding-right: 5px;
-          padding-top: 5px;
-          padding-bottom: 5px;
-      }
-
-
-  .submission-grid-table tr:nth-child(even) {
-      background-color: #efefef;
-  }
-
-  .submission-grid-table tr form button:hover {
-      text-decoration-line: underline
-  }
-/*End Submission samples*/

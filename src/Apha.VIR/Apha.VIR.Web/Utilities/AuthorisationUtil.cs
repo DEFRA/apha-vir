@@ -5,8 +5,7 @@ namespace Apha.VIR.Web.Utilities
     public static class AuthorisationUtil
     {
         private static IHttpContextAccessor? _httpContextAccessor;
-        private static List<string> _authMessages = new List<string>();
-
+        private static List<string>? _authMessages;
 
         public static List<string> AppRoles
         {

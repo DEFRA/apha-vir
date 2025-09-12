@@ -5,17 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class StaffRepository : IStaffRepository
+public class StaffRepository : RepositoryBase<Staff>, IStaffRepository
 {
-    private readonly VIRDbContext _context;
-
-    public StaffRepository(VIRDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    public StaffRepository(VIRDbContext context) : base(context) { }
 
     public async Task<IEnumerable<Staff>> GetStaffListAsync()
     {
-        return await _context.Staffs.ToListAsync();
+        return await GetDbSetFor<Staff>().ToListAsync();
     }
 }
