@@ -4,9 +4,9 @@
 <div id="characteristicsContainer">
 	@if (Model.list.Any())
 	{
-		<table class="isolatereporttable">
+		<table class="viruscharacteristictable">
 			<thead>
-				<tr class=".isolatereport-header">
+				<tr class="viruscharacteristictable-header">
 					<th>Name</th>
 					<th>Display In Nomenclature</th>
 					<th>Prefix</th>
@@ -15,7 +15,7 @@
 					<th>Decimal Places</th>
 					<th>Length</th>
 					<th>Display Order</th>
-					<th>Actions</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -27,10 +27,10 @@
 							<input type="checkbox" disabled @(characteristic.DisplayOnSearch ? "checked" : "")>
 						</td>
 						<td>@characteristic.Prefix</td>
-						<td>@characteristic.MinValue</td>
-						<td>@characteristic.MaxValue</td>
-						<td>@characteristic.DecimalPlaces</td>
-						<td>@characteristic.Length</td>
+						<td>@(characteristic.MinValue ?? 0)</td>
+						<td>@(characteristic.MaxValue ?? 0)</td>
+						<td>@(characteristic.DecimalPlaces ?? 0)</td>
+						<td>@(characteristic.Length ?? 0)</td>
 						<td>@characteristic.CharacteristicIndex</td>
 						<td>
 							<a asp-controller="VirusCharacteristics" asp-action="Edit" asp-route-id="@characteristic.Id" class="btn btn-primary">Edit</a>

@@ -16,27 +16,27 @@
 		<br /><span asp-validation-for="CharacteristicType" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="NumericSort" style="min-width: 150px; margin: 0; margin-right: 12px;">NumericSort *</label>
+		<label for="NumericSort" style="min-width: 150px; margin: 0; margin-right: 12px;">NumericSort</label>
 		<input asp-for="NumericSort" type="checkbox" />
 		<br /><span asp-validation-for="NumericSort" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="DisplayOnSearch" style="min-width: 150px; margin: 0; margin-right: 12px;">DisplayOnSearch *</label>
+		<label for="DisplayOnSearch" style="min-width: 150px; margin: 0; margin-right: 12px;">Display In Nomenclature</label>
 		<input asp-for="DisplayOnSearch" type="checkbox" />
 		<br /><span asp-validation-for="DisplayOnSearch" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="Prefix" style="min-width: 150px; margin: 0; margin-right: 12px;">Prefix *</label>
+		<label for="Prefix" style="min-width: 150px; margin: 0; margin-right: 12px;">Prefix</label>
 		<input asp-for="Prefix" maxlength="50" />
 		<br /><span asp-validation-for="Prefix" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="MinValue" style="min-width: 150px; margin: 0; margin-right: 12px;">MinValue *</label>
+		<label for="MinValue" style="min-width: 150px; margin: 0; margin-right: 12px;">MinValue</label>
 		<input asp-for="MinValue" />
 		<br /><span asp-validation-for="MinValue" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="MaxValue" style="min-width: 150px; margin: 0; margin-right: 12px;">MaxValue *</label>
+		<label for="MaxValue" style="min-width: 150px; margin: 0; margin-right: 12px;">MaxValue</label>
 		<input asp-for="MaxValue" />
 		<span asp-validation-for="MaxValue" class="text-danger"></span>
 	</div>
@@ -46,12 +46,12 @@
 		<br /><span asp-validation-for="DecimalPlaces" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="Length" style="min-width: 150px; margin: 0; margin-right: 12px;">Length *</label>
+		<label for="Length" style="min-width: 150px; margin: 0; margin-right: 12px;">Length</label>
 		<input asp-for="Length" />
 		<br /><span asp-validation-for="Length" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="CharacteristicIndex" style="min-width: 150px; margin: 0; margin-right: 12px;">CharacteristicIndex *</label>
+		<label for="CharacteristicIndex" style="min-width: 150px; margin: 0; margin-right: 12px;">Display Order *</label>
 		<input asp-for="CharacteristicIndex" />
 		<br /><span asp-validation-for="CharacteristicIndex" class="text-danger"></span>
 	</div>
@@ -96,3 +96,47 @@
 		</div>
 	</div>
 }
+@section Scripts {
+	<script>
+		function updateFields() {
+			var typeText = $("#CharacteristicType option:selected").text();
+			var numericSort = $("#NumericSort");
+			var minValue = $("#MinValue");
+			var maxValue = $("#MaxValue");
+			var decimalPlaces = $("#DecimalPlaces");
+			var length = $("#Length");
+
+			if (typeText === "Text") {
+				numericSort.prop("disabled", true);
+				minValue.prop("disabled", true);
+				maxValue.prop("disabled", true);
+				decimalPlaces.prop("disabled", true);
+				length.prop("disabled", false);
+			} else if (typeText === "Numeric") {
+				numericSort.prop("disabled", true);
+				minValue.prop("disabled", false);
+				maxValue.prop("disabled", false);
+				decimalPlaces.prop("disabled", false);
+				length.prop("disabled", true);
+			} else if (typeText === "Yes/No") {
+				numericSort.prop("disabled", true);
+				minValue.prop("disabled", true);
+				maxValue.prop("disabled", true);
+				decimalPlaces.prop("disabled", true);
+				length.prop("disabled", true);
+			} else if (typeText === "SingleList") {
+				numericSort.prop("disabled", false);
+				minValue.prop("disabled", true);
+				maxValue.prop("disabled", true);
+				decimalPlaces.prop("disabled", true);
+				length.prop("disabled", true);
+			}
+		}
+
+		$(document).ready(function () {
+			$("#CharacteristicType").change(updateFields);
+			updateFields(); // Initial call
+		});
+	</script>
+}
+

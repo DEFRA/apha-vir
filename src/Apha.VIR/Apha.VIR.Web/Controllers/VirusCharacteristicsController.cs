@@ -58,8 +58,14 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
         {
             if (!ModelState.IsValid)
+            {
+                // Repopulate the dropdown list
+                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+                model.CharacteristicTypeNameList = virusTypesDto
+                    .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType })
+                    .ToList();
                 return View("Edit", model);
-
+            }
             var dto = _mapper.Map<VirusCharacteristicDTO>(model);
             await _virusCharacteristicService.UpdateEntryAsync(dto);
 
@@ -69,8 +75,14 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Create(VirusCharacteristicDetails model)
         {
             if (!ModelState.IsValid)
+            {
+                // Repopulate the dropdown list
+                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+                model.CharacteristicTypeNameList = virusTypesDto
+                    .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType })
+                    .ToList();
                 return View("Create", model);
-
+            }
             var dto = _mapper.Map<VirusCharacteristicDTO>(model);
             await _virusCharacteristicService.AddEntryAsync(dto);
 
