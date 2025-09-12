@@ -24,7 +24,7 @@
 					<tr>
 						<td>@characteristic.Name</td>
 						<td>
-							<input type="checkbox" disabled @(characteristic.DisplayOnSearch.HasValue ? "checked" : "")>
+							<input type="checkbox" disabled @(characteristic.DisplayOnSearch ? "checked" : "")>
 						</td>
 						<td>@characteristic.Prefix</td>
 						<td>@characteristic.MinValue</td>
@@ -33,7 +33,7 @@
 						<td>@characteristic.Length</td>
 						<td>@characteristic.CharacteristicIndex</td>
 						<td>
-							<a asp-controller="VirusCharacteristic" asp-action="Edit" asp-route-id="@characteristic.Id" class="btn btn-primary">Edit</a>
+							<a asp-controller="VirusCharacteristics" asp-action="Edit" asp-route-id="@characteristic.Id" class="btn btn-primary">Edit</a>
 							<a asp-controller="VirusCharacteristicsListEntry" asp-action="ListEntries" asp-route-id="@characteristic.Id" class="btn btn-secondary">Edit List Entries</a>
 						</td>
 					</tr>

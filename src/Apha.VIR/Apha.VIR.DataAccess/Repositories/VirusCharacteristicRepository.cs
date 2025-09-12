@@ -32,7 +32,15 @@ namespace Apha.VIR.DataAccess.Repositories
                 .Take(pageSize).ToList();
             return new PagedData<VirusCharacteristic>(entries, totalRecords);
         }
+        public async Task<VirusCharacteristic> GetVirusCharacteristicsByIdAsync(Guid? id)
+        {
+            var result = await _context.Set<VirusCharacteristic>()
+                .FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync();
 
+            var totalRecords = result.Count;
+            var entry = result.Where(x => x.Id == id).SingleOrDefault();
+            return entry;
+        }
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)
         {
             if (isAbscent)
@@ -57,6 +65,25 @@ namespace Apha.VIR.DataAccess.Repositories
             var lastModified = new byte[8];
             await _context.Database.ExecuteSqlInterpolatedAsync(
                 $@"EXEC spVirusCharacteristicInsert 
+            @Id = {virusCharacteristic.Id}, 
+            @Name = {virusCharacteristic.Name}, 
+            @CharacteristicType ={virusCharacteristic.CharacteristicType},
+            @NumericSort ={virusCharacteristic.NumericSort},
+            @DisplayOnSearch ={virusCharacteristic.DisplayOnSearch},
+            @Prefix ={virusCharacteristic.Prefix},
+            @MinValue ={virusCharacteristic.MinValue},
+            @MaxValue ={virusCharacteristic.MaxValue},
+            @DecimalPlaces ={virusCharacteristic.DecimalPlaces},
+            @Length ={virusCharacteristic.Length},
+            @Index ={virusCharacteristic.CharacteristicIndex},
+            @LastModified = {lastModified}");
+            virusCharacteristic.LastModified = lastModified;
+        }
+        public async Task UpdateEntryAsync(VirusCharacteristic virusCharacteristic)
+        {
+            var lastModified = new byte[8];
+            await _context.Database.ExecuteSqlInterpolatedAsync(
+                $@"EXEC spVirusCharacteristicUpdate 
             @Id = {virusCharacteristic.Id}, 
             @Name = {virusCharacteristic.Name}, 
             @CharacteristicType ={virusCharacteristic.CharacteristicType},

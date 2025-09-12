@@ -27,7 +27,11 @@ namespace Apha.VIR.Application.Services
             var result = await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
             return _mapper.Map<PaginatedResult<VirusCharacteristicDTO>>(result);
         }
-
+        public async Task<VirusCharacteristicDTO> GetVirusCharacteristicsByIdAsync(Guid? id)
+        {
+            var result = await _virusCharacteristicRepository.GetVirusCharacteristicsByIdAsync(id);
+            return _mapper.Map<VirusCharacteristicDTO>(result);
+        }
         public async Task<IEnumerable<VirusCharacteristicDTO>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)
         {
             return _mapper.Map<IEnumerable<VirusCharacteristicDTO>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsByVirusTypeAsync(virusType, isAbscent));
@@ -36,6 +40,10 @@ namespace Apha.VIR.Application.Services
         {
             dto.Id = Guid.NewGuid();
             await _virusCharacteristicRepository.AddEntryAsync(_mapper.Map<VirusCharacteristic>(dto));
+        }
+        public async Task UpdateEntryAsync(VirusCharacteristicDTO dto)
+        {
+            await _virusCharacteristicRepository.UpdateEntryAsync(_mapper.Map<VirusCharacteristic>(dto));
         }
         public async Task<IEnumerable<VirusCharacteristicDataTypeDTO>> GetAllVirusCharactersticsTypeNamesAsync()
         {

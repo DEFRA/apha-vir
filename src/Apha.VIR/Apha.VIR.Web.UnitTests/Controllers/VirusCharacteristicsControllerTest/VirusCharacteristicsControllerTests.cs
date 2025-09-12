@@ -42,7 +42,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
 
             // Act
-            var result = await _controller.EditAsync();
+            var result = await _controller.CreateAsync();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -63,7 +63,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
 
             // Act
-            var result = await _controller.EditAsync();
+            var result = await _controller.CreateAsync();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -82,7 +82,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().ThrowsAsync(new Exception("Test exception"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _controller.EditAsync());
+            await Assert.ThrowsAsync<Exception>(() => _controller.CreateAsync());
         }
         [Fact]
         public async Task Test_Edit_ValidModel_ReturnsRedirectToActionResult()
@@ -93,7 +93,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(dto);
 
             // Act
-            var result = await _controller.Edit(model);
+            var result = await _controller.Create(model);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
@@ -110,7 +110,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _controller.ModelState.AddModelError("Error", "Model error");
 
             // Act
-            var result = await _controller.Edit(model);
+            var result = await _controller.Create(model);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);

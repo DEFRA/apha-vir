@@ -5,6 +5,7 @@ using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.VirusCharacteristic;
 using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace Apha.VIR.Web.Controllers
             return View(new VirusCharacteristicsViewModel());
         }
         [HttpGet]
-        public async Task<IActionResult> EditAsync()
+        public async Task<IActionResult> CreateAsync()
         {
 
             VirusCharacteristicDetails model = new VirusCharacteristicDetails();
@@ -39,11 +40,36 @@ namespace Apha.VIR.Web.Controllers
             return View(model);
 
         }
+        [HttpGet]
+        public async Task<IActionResult> EditAsync(Guid? id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _virusCharacteristicService.GetVirusCharacteristicsByIdAsync(id);
+            var viewModel = _mapper.Map<VirusCharacteristicDetails>(result);
+
+            //VirusCharacteristicDetails model = new VirusCharacteristicDetails();
+            var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+            viewModel.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
+            return View(viewModel);
+
+        }
         [HttpPost]
         public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
         {
             if (!ModelState.IsValid)
                 return View("Edit", model);
+
+            var dto = _mapper.Map<VirusCharacteristicDTO>(model);
+            await _virusCharacteristicService.UpdateEntryAsync(dto);
+
+            return RedirectToAction("List");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(VirusCharacteristicDetails model)
+        {
+            if (!ModelState.IsValid)
+                return View("Create", model);
 
             var dto = _mapper.Map<VirusCharacteristicDTO>(model);
             await _virusCharacteristicService.AddEntryAsync(dto);
