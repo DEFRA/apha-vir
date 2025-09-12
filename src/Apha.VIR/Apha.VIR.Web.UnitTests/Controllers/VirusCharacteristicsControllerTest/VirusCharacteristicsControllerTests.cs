@@ -110,7 +110,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _controller.ModelState.AddModelError("Error", "Model error");
 
             // Act
-            var result = await _controller.Create(model);
+            var result = await _controller.Edit(model);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
