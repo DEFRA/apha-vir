@@ -12,5 +12,7 @@ namespace Apha.VIR.Application.Interfaces
         Task<IEnumerable<VirusCharacteristicDTO>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent);
         Task<IEnumerable<VirusCharacteristicDataTypeDTO>> GetAllVirusCharactersticsTypeNamesAsync();
         Task UpdateEntryAsync(VirusCharacteristicDTO dto);
+        Task DeleteVirusCharactersticsAsync(Guid id, byte[] lastModified);
+        Task<bool> CheckVirusCharactersticsUsageByIdAsync(Guid id);
     }
 }

@@ -109,6 +109,31 @@ namespace Apha.VIR.Web.Controllers
 
             return View(model);
         }
+        public async Task<IActionResult> Delete(VirusCharacteristicDetails model, Guid id)
+        {
+            if (!ModelState.IsValid || id == Guid.Empty)
+            {
+                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
+                model.CharacteristicTypeNameList = virusTypesDto.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType }).ToList();
+                return View("Edit", model);
+            }
+            else if (CheckEntries(id).Result)
+            {
+                ModelState.AddModelError("", "Virus Characteristic cannot be deleted as it is already assigned to one or more Virus Isolates.");
+                return View("Edit", model);
+            }
+            else
+            {
+                await _virusCharacteristicService.DeleteVirusCharactersticsAsync(id, model.LastModified);
+            }
+
+            return RedirectToAction(nameof(List));
+        }
+
+        private async Task<bool> CheckEntries(Guid id)
+        {
+            return await _virusCharacteristicService.CheckVirusCharactersticsUsageByIdAsync(id);
+        }
 
         public async Task<IActionResult> BindCharacteristicEntriesGridOnPagination(int pageNo, int pageSize)
         {

@@ -45,6 +45,13 @@ namespace Apha.VIR.Application.Services
         {
             await _virusCharacteristicRepository.UpdateEntryAsync(_mapper.Map<VirusCharacteristic>(dto));
         }
+        public async Task DeleteVirusCharactersticsAsync(Guid id, byte[] lastModified)
+        {
+            await _virusCharacteristicRepository.DeleteVirusCharactersticsAsync(id, lastModified);
+        } public async Task<bool> CheckVirusCharactersticsUsageByIdAsync(Guid id)
+        {
+            return await _virusCharacteristicRepository.CheckVirusCharactersticsUsageByIdAsync(id);
+        }
         public async Task<IEnumerable<VirusCharacteristicDataTypeDTO>> GetAllVirusCharactersticsTypeNamesAsync()
         {
             return _mapper.Map<IEnumerable<VirusCharacteristicDataTypeDTO>>(await _virusCharacteristicRepository.GetAllVirusCharactersticsTypeNamesAsync());
