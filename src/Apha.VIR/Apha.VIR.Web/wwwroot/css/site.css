@@ -752,10 +752,6 @@ a {
     padding-left: 10px;
 }
 
-.editsubmission-form-group_row {
-    margin-top: 1px;
-}
-
 .editsubmission-body_title {
     background-color: #ffffff;
     color: #333333;
@@ -935,10 +931,6 @@ a {
     display: table;
     border-collapse: collapse;
     width: 100%;
-}
-
-.editsubmission-form-group_row {
-    display: table-row;
 }
 
 .editsubmission-addsender-cell {
@@ -1194,23 +1186,7 @@ a {
     margin-top: 20px;
 }
 
-.contentbox {
-    border-top: #0b2677 1px solid;
-    border-right: #0b2677 1px solid;
-    border-bottom: #0b2677 1px solid;
-    border-left: #0b2677 1px solid;
-    margin: 0px 0px 15px 0px;
-}
 
-    .contentbox .box_title {
-        padding-top: 3px;
-        padding-right: 10px;
-        padding-bottom: 3px;
-        padding-left: 10px;
-        background-color: #0b2677;
-        color: #ffffff;
-        font-weight: bold;
-    }
 
 .av-number-box_body {
     padding-top: 0px;
@@ -1244,9 +1220,6 @@ a {
             background-color: Navy;
             border: 1px solid black;
             align-items: center;
-        }
-
-        .submission-grid-table table thead tr th {
             color: White;
             padding-left: 5px;
             padding-right: 5px;
