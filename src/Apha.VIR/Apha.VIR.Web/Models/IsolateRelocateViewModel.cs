@@ -39,4 +39,10 @@ namespace Apha.VIR.Web.Models
         public string? Well { get; set; }
         public byte[]? LastModified { get; set; }
     }   
+
+    public enum RelocationType  
+    {
+        Isolate,
+        Tray
+    }
 }

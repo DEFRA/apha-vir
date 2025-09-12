@@ -99,7 +99,7 @@ namespace Apha.VIR.Web.Controllers
                     Well = isolate.Well!,
                     UserID = "Test",
                     LastModified = isolate.LastModified,
-                    UpdateType = "Isolate"
+                    UpdateType = RelocationType.Isolate.ToString()
                 });
             }
 
@@ -138,7 +138,7 @@ namespace Apha.VIR.Web.Controllers
                     Well = model.Well,
                     UserID = "Test",
                     LastModified = model.LastModified,
-                    UpdateType = "Isolate"
+                    UpdateType = RelocationType.Isolate.ToString()
                 });
                 return RedirectToAction("Isolate", "Relocation");
             }
@@ -208,7 +208,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 Freezer = model.SelectedNewFreezer!.Value,
                 Tray = model.SelectedTray!.Value,
-                UpdateType = "Tray"
+                UpdateType = RelocationType.Tray.ToString()
             });
 
             var data = await _isolateRelocateService.GetIsolatesByCriteria(model.MinAVNumber!,
@@ -224,7 +224,7 @@ namespace Apha.VIR.Web.Controllers
                     Well = isolate.Well,
                     UserID = "Test",
                     LastModified = isolate.LastModified,
-                    UpdateType = "Isolate"
+                    UpdateType = RelocationType.Isolate.ToString()
                 });
             }
 

@@ -2,7 +2,7 @@
 @using System.Security.Claims
 @{
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
-    var isIsolateManager = true; // isAuthenticated && (User?.IsInRole("Isolate Manager") ?? false);
+    var isIsolateManager = isAuthenticated && (User?.IsInRole("Isolate Manager") ?? false);
     var isIsolateViewer = isAuthenticated && (User?.IsInRole("Isolate Viewer") ?? false);
     var isLookupDataManager = isAuthenticated && (User?.IsInRole("Lookup Data Manager") ?? false);
     var isReportViewer = isAuthenticated && (User?.IsInRole("Report Viewer") ?? false);

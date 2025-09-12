@@ -9,6 +9,7 @@ using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NSubstitute;
@@ -378,6 +379,179 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task SearchIsolates_WhenFreezerAndTraySelected_ReturnsPartialView()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV1",
+                MaxAVNumber = "AV2"
+            };
+
+            var serviceResult = new List<IsolateRelocateDTO>();
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+            .Returns(serviceResult);
+
+            var mappedResult = new List<IsolateRelocateViewModel>();
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>()).Returns(mappedResult);
+
+            // Act
+            var result = await _controller.SearchIsolates(model);
+
+            // Assert
+            var partialViewResult = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_SearchIsolates", partialViewResult.ViewName);
+            Assert.Equal(mappedResult, partialViewResult.Model);
+        }
+
+        [Fact]
+        public async Task SearchIsolates_WhenFreezerOrTrayNotSelected_AddModelError()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedFreezer = Guid.NewGuid(),
+                SelectedTray = null,
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+
+            // Act
+            var result = await _controller.SearchIsolates(model);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
+                      
+            Assert.True(modelState.ContainsKey(string.Empty));
+            Assert.Equal("You must select both a freezer and tray.", ((string[])modelState[string.Empty])[0]);
+        }
+
+        [Fact]
+        public async Task SearchIsolates_WhenModelStateInvalid_ReturnsBadRequest()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "test error");
+
+            // Act
+            var result = await _controller.SearchIsolates(new IsolateRelocationViewModel());
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task SearchIsolates_WhenEmptyResultFromService_ReturnsEmptyList()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV1",
+                MaxAVNumber = "AV2"
+            };
+
+            var emptyServiceResult = new List<IsolateRelocateDTO>();
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+            .Returns(emptyServiceResult);
+
+            var emptyMappedResult = new List<IsolateRelocateViewModel>();
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>()).Returns(emptyMappedResult);
+
+            // Act
+            var result = await _controller.SearchIsolates(model);
+
+            // Assert
+            var partialViewResult = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_SearchIsolates", partialViewResult.ViewName);
+            Assert.Empty((List<IsolateRelocateViewModel>)partialViewResult.Model!);
+        }
+
+
+        [Fact]
+        public async Task RelocateTray_ValidModel_ReturnsSuccessResult()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedNewFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+            .Returns(new List<IsolateRelocateDTO>());
+
+            // Act
+            var result = await _controller.RelocateTray(model);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            dynamic value = jsonResult.Value!;
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(value));
+            Assert.True(dict.ContainsKey("success"));
+
+            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>());
+        }
+
+        [Fact]
+        public async Task RelocateTray_InvalidModelState_ReturnsBadRequest()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.RelocateTray(new IsolateRelocationViewModel());
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task RelocateTray_NullSelectedNewFreezer_ReturnsBadRequest()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedNewFreezer = null,
+                SelectedTray = Guid.NewGuid()
+            };
+
+            // Act
+            var result = await _controller.RelocateTray(model);
+           
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
+
+            Assert.True(modelState.ContainsKey(string.Empty));
+            Assert.Equal("You must select a Freezer for the Tray to be relocated into.", ((string[])modelState[string.Empty])[0]);  
+        }
+
+        [Fact]
+        public async Task RelocateTray_ServiceThrowsException_ReturnsBadRequest()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedNewFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+
+            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>())
+            .Returns(Task.FromException(new Exception("Service error")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _controller.RelocateTray(model));
         }
     }
 }
