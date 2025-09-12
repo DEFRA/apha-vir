@@ -34,7 +34,7 @@ namespace Apha.VIR.Web.Controllers
             return View("AuditLog", viewModel);
         }
 
-        [HttpPost]
+        [HttpPost("SearchAudit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
         {
@@ -143,7 +143,7 @@ namespace Apha.VIR.Web.Controllers
             return View("IsolateAuditLogDetail", viewModel);
         }
 
-        [HttpPost]
+        [HttpPost("GetAuditLogs")]
         public async Task<IActionResult> GetAuditLogs(string requesttype)
         {
             switch (requesttype.ToLower())

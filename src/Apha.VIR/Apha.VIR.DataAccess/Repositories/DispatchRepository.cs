@@ -7,14 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class DispatchRepository : IIsolateDispatchRepository
+public class DispatchRepository : RepositoryBase<IsolateDispatchInfo>, IIsolateDispatchRepository
 {
-    private readonly VIRDbContext _context;
-
-    public DispatchRepository(VIRDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    public DispatchRepository(VIRDbContext context) : base(context) { }
 
     public async Task<IEnumerable<IsolateDispatchInfo>> GetDispatchesHistoryAsync(Guid IsolateId)
     {
@@ -94,7 +89,7 @@ public class DispatchRepository : IIsolateDispatchRepository
            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)DispatchInfo.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
            @"EXEC spDispatchInsert @UserID, @DispatchId, @DispatchIsolateId, @NoOfAliquots, @PassageNumber, 
 @Recipient, @RecipientName, @RecipientAddress, @ReasonForDispatch, @DispatchedDate, @DispatchedBy, @LastModified OUTPUT",
            parameters);
@@ -103,7 +98,7 @@ public class DispatchRepository : IIsolateDispatchRepository
     public async Task DeleteDispatchAsync(Guid DispatchId, Byte[] LastModified, string User)
     {
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
             "EXEC spDispatchDelete @UserID, @DispatchId, @LastModified OUTPUT",
             new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = User },
             new SqlParameter("@DispatchId", SqlDbType.UniqueIdentifier) { Value = DispatchId },
@@ -113,7 +108,7 @@ public class DispatchRepository : IIsolateDispatchRepository
 
     public async Task UpdateDispatchAsync(IsolateDispatchInfo DispatchInfo, string User)
     {
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
             "EXEC spDispatchUpdate @UserId, @DispatchId, @DispatchIsolateId, @NoOfAliquots, @PassageNumber, @Recipient, @RecipientName, @RecipientAddress, @ReasonForDispatch, @DispatchedDate, @DispatchedById, @LastModified OUTPUT",
             new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
             new SqlParameter("@DispatchId", SqlDbType.UniqueIdentifier) { Value = DispatchInfo.DispatchId ?? Guid.Empty },
