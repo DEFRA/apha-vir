@@ -57,10 +57,12 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
         {
-            var validationErrors = await ValidateVirusCharacteristicAdd(model);
+            ViewBag.showsummary = false;
+            var validationErrors = await ValidateVirusCharacteristicEdit(model);
 
             if (validationErrors.Count > 0)
             {
+                ViewBag.showsummary = true;
                 foreach (var error in validationErrors)
                 {
                     ModelState.AddModelError(string.Empty, error);
@@ -98,21 +100,11 @@ namespace Apha.VIR.Web.Controllers
 
             if (validationErrors.Count > 0)
             {
-
                 ViewBag.showsummary = true;
                 foreach (var error in validationErrors)
                 {
                     ModelState.AddModelError(string.Empty, error);
                 }
-            }
-            if (!ModelState.IsValid)
-            {
-                // Repopulate the dropdown list
-                var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
-                model.CharacteristicTypeNameList = virusTypesDto
-                    .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.DataType })
-                    .ToList();
-                return View("Create", model);
             }
             var dto = _mapper.Map<VirusCharacteristicDTO>(model);
             await _virusCharacteristicService.AddEntryAsync(dto);
@@ -158,7 +150,39 @@ namespace Apha.VIR.Web.Controllers
 
             return errors;
         }
+        private async Task<List<string>> ValidateVirusCharacteristicEdit(VirusCharacteristicDetails model)
+        {
+            var errors = new List<string>();
 
+            // Ensure the item does already exist
+            var allCharacteristics = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
+            if (!allCharacteristics.Any(vc => vc.Id == model.Id))
+            {
+                errors.Add("- Item does not exist.<br />");
+            }
+            //Ensure that the id is entered
+            if (!string.IsNullOrEmpty(model.Id.ToString()))
+            {
+                errors.Add("- Id not specified for this item.<br />");
+            }
+            // Ensure that the name is entered
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                errors.Add("- Name not specified for this item.<br />");
+            }
+            // Ensure that the index is entered
+            if (!model.CharacteristicIndex.HasValue)
+            {
+                errors.Add("- Display Order not specified for this item.<br />");
+            }
+            // Ensure that the length is not greater than 100 characters
+            if (model.Length.HasValue && model.Length.Value > 100)
+            {
+                errors.Add("- Maximum length must be no more than 100 characters.");
+            }
+
+            return errors;
+        }
         public async Task<IActionResult> Delete(VirusCharacteristicDetails model, Guid id)
         {
             var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();

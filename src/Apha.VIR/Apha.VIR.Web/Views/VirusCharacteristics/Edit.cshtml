@@ -70,7 +70,7 @@
 	</div>
 </form>
 
-@if (!ViewData.ModelState.IsValid)
+@if (ViewBag.showsummary == true)
 {
 	<div class="alert alert-danger">
 		<p>There are validation messages requiring your attention.</p>
