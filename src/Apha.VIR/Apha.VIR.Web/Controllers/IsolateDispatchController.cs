@@ -188,11 +188,6 @@ namespace Apha.VIR.Web.Controllers
             model.DispatchId = DispatchId;
             model.RecipientLocation = recepientLocation;
 
-            if (!await CheckFieldsVisibility(AVNumber, DispatchIsolateId))
-            {
-                model.IsFieldInVisible = true;
-            }
-
             return View(model);
         }
 

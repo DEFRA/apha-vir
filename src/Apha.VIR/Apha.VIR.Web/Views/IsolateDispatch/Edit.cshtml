@@ -7,8 +7,7 @@
 <form asp-action="Edit" asp-controller="IsolateDispatch" method="post">
     <input asp-for="DispatchIsolateId" type="hidden" />
     <input asp-for="LastModified" type="hidden" />
-    <input asp-for="DispatchId" type="hidden" />
-    <input asp-for="IsFieldInVisible" type="hidden" />
+    <input asp-for="DispatchId" type="hidden" />    
     <table>
         <thead class="sr-only"><tr><th scope="col"></th></tr></thead>
         <tr>
@@ -27,7 +26,7 @@
                 <input type="hidden" asp-for="NoOfAliquots" autofocus />
             </td>
         </tr>
-        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
+        <tr>
             <td>Nomenclature</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
@@ -43,7 +42,7 @@
                 <input type="hidden" asp-for="ValidToIssue" />
             </td>
         </tr>
-        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
+        <tr>
             <td>Viability</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
@@ -61,7 +60,7 @@
                 <span asp-validation-for="NoOfAliquotsToBeDispatched"  class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
             </td>
         </tr>
-        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
+        <tr>
             <td>Passage&nbsp;Number&nbsp;*</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
