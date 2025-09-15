@@ -3,17 +3,17 @@
     ViewData["Title"] = "Isolate Details | Virus Isolates Repository";
 }
 
-<div class="w-95">
+<div class="contentbox w-95">
     <form method="post">
         <input type="hidden" asp-for="@Model.AVNumber" />
         <input type="hidden" asp-for="@Model.IsolateId" />
         <input type="hidden" asp-for="@Model.IsolateSampleId" />
         <input type="hidden" asp-for="IsolateNumber" />
         <input type="hidden" asp-for="LastModified" />        
-        <div class="id-box-title">
+        <div class="contentbox_title">
             <span id="lblBoxTitle">Update the Isolate Details</span>
         </div>
-        <div class="id-box_body">
+        <div class="contentbox_body">
             <br>
             <div class="container mt-3" id="IsolateDetails">
 
@@ -62,7 +62,7 @@
                         Year Of Isolation
                     </div>
                     <div class="col-sm-9">
-                        <input asp-for="YearOfIsolation" class="form-control w-75" />
+                        <input asp-for="YearOfIsolation" class="form-control" style="   width: 202px;" />
                         <span asp-validation-for="YearOfIsolation" class="text-danger"></span>
                     </div>
                 </div>
@@ -173,7 +173,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">First Viable Passage Number</div>
                     <div class="col-sm-9">
-                        <input asp-for="FirstViablePassageNumber" type="text" class="form-control w-170" />
+                        <input asp-for="FirstViablePassageNumber" type="text" class="form-control w-210" />
                         <span asp-validation-for="FirstViablePassageNumber" class="text-danger"></span>
                     </div>
                 </div>
@@ -181,7 +181,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">No. Of Aliquots</div>
                     <div class="col-sm-9">
-                        <input asp-for="NoOfAliquots" type="text" class="form-control w-170" />
+                        <input asp-for="NoOfAliquots" type="text" class="form-control w-210" />
                         <span asp-validation-for="NoOfAliquots" class="text-danger"></span>
                     </div>
                 </div>
@@ -189,7 +189,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Freezer</div>
                     <div class="col-sm-9">
-                        <select id="ddlFreezer" asp-for="Freezer" asp-items="@Model.FreezerList" class="form-select small-select-dropdown w-210">
+                        <select id="ddlFreezer" asp-for="Freezer" asp-items="@Model.FreezerList" class="form-select small-select-dropdown width-218 ">
                             <option value=""></option>
                         </select>
                         <span asp-validation-for="Freezer" class="text-danger"></span>
@@ -199,7 +199,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Tray</div>
                     <div class="col-sm-9">
-                        <select id="ddlTray" asp-for="Tray" asp-items="@Model.TrayList" class="form-select small-select-dropdown w-210">
+                        <select id="ddlTray" asp-for="Tray" asp-items="@Model.TrayList" class="form-select small-select-dropdown width-218">
                             <option value=""></option>
                         </select>
                         <span asp-validation-for="Tray" class="text-danger"></span>
@@ -209,7 +209,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Well</div>
                     <div class="col-sm-9">
-                        <input asp-for="Well" type="text" class="form-control w-170" />
+                        <input asp-for="Well" type="text" class="form-control w-210" />
                         <span asp-validation-for="Well" class="text-danger"></span>
                     </div>
                 </div>
@@ -233,7 +233,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Current Viability</div>
                     <div class="col-sm-9">
-                        <select asp-for="PreviousViable" asp-items="@Model.ViabilityList" class="form-select w-200" disabled>
+                        <select asp-for="PreviousViable" asp-items="@Model.ViabilityList" class="form-select width-218" disabled>
                             <option value=""></option>
                         </select>
                         <span asp-validation-for="PreviousViable" class="text-danger"></span>
@@ -242,14 +242,14 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Date Checked</div>
                     <div class="col-sm-9">
-                        <input asp-for="PreviousDateChecked" type="date" class="form-control w-200" disabled />
+                        <input asp-for="PreviousDateChecked" type="date" class="form-control" style=" width: 214px;" disabled />
                         <span asp-validation-for="PreviousDateChecked" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3">Previous Checked By</div>
                     <div class="col-sm-9">
-                        <select asp-for="PreviousCheckedBy" asp-items="@Model.StaffList" class="form-select w-200" disabled>
+                        <select asp-for="PreviousCheckedBy" asp-items="@Model.StaffList" class="form-select width-218" disabled>
                             <option value=""></option>
                         </select>
                         <span asp-validation-for="PreviousCheckedBy" class="text-danger"></span>
@@ -269,7 +269,7 @@
                             Viability
                         </div>
                         <div class="col-sm-9">
-                            <select asp-for="Viable" asp-items="@Model.ViabilityList" class="form-select w-200">
+                            <select asp-for="Viable" asp-items="@Model.ViabilityList" class="form-select width-218">
                                 <option value=""></option>
                             </select>
                             <span asp-validation-for="Viable" class="text-danger"></span>
@@ -282,9 +282,9 @@
                         </div>
                         <div class="col-sm-9 d-flex align-items-center">
                             <input asp-for="DateChecked" type="date"
-                                   class="form-control d-inline-block w-200"
+                                   class="form-control d-inline-block" style=" width: 214px;"
                                    title="Date format is dd/mm/yyyy" />
-                            <img id="imgCalender" src="~/Images/calendar.png" class="ms-2" alt="" />
+                           
                             <span asp-validation-for="DateChecked" class="text-danger ms-2"></span>
                         </div>
                     </div>
@@ -294,7 +294,7 @@
                             Checked By
                         </div>
                         <div class="col-sm-9">
-                            <select asp-for="CheckedBy" asp-items="@Model.StaffList" class="form-select w-200">
+                            <select asp-for="CheckedBy" asp-items="@Model.StaffList" class="form-select width-218">
                                 <option value=""></option>
                             </select>
                             <span asp-validation-for="CheckedBy" class="text-danger"></span>
