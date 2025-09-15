@@ -10,7 +10,7 @@ public class LookupItemModel
     public Guid? Parent { get; set; }
     public string? ParentName { get; set; }
     public string? AlternateName { get; set; }
-    public bool Active { get; set; } = true;
+    public bool Active { get; set; } = false;
     public bool Sms { get; set; } = false;
     public string? Smscode { get; set; }
     public byte[] LastModified { get; set; } = null!;
@@ -23,13 +23,13 @@ public class LookupItemModel
 
         if (Name == string.Empty)
         {
-            results.Add(new ValidationResult("- Name not specified for this item."));
+            results.Add(new ValidationResult("Name not specified for this item."));
         }
 
         //Ensure that the parent is chosen (if required)
         if (parentExist && (Parent == Guid.Empty || Parent == null))
         {
-            results.Add(new ValidationResult("- Parent item not specified for this item"));
+            results.Add(new ValidationResult("Parent item not specified for this item"));
         }
 
         //Ensure the item does not already exist
@@ -44,7 +44,7 @@ public class LookupItemModel
 
         if (isDuplicate)
         {
-            results.Add(new ValidationResult("- Item already exists."));
+            results.Add(new ValidationResult("Item already exists."));
         }
 
         return results;
@@ -57,17 +57,17 @@ public class LookupItemModel
 
         if (Id == Guid.Empty)
         {
-            results.Add(new ValidationResult("- Id not specified for this item."));
+            results.Add(new ValidationResult("Id not specified for this item."));
         }
         if (Name == string.Empty)
         {
-            results.Add(new ValidationResult("- Name not specified for this item."));
+            results.Add(new ValidationResult("Name not specified for this item."));
         }
 
         //Ensure that the parent is chosen (if required)
         if (parentExist && (Parent == Guid.Empty || Parent == null))
         {
-            results.Add(new ValidationResult("- Parent item not specified for this item"));
+            results.Add(new ValidationResult("Parent item not specified for this item"));
         }
 
         //Ensure the item already exists
@@ -75,7 +75,7 @@ public class LookupItemModel
 
         if (!found)
         {
-            results.Add(new ValidationResult("- Item does not exist."));
+            results.Add(new ValidationResult("Item does not exist."));
         }
 
         //Ensure that the item is unique
@@ -90,12 +90,12 @@ public class LookupItemModel
 
         if (isDuplicate)
         {
-            results.Add(new ValidationResult("- Item is not unique."));
+            results.Add(new ValidationResult("Item is not unique."));
         }
 
         if (!Active && isIteminUse)
         {
-            results.Add(new ValidationResult("- Item cannot be set to inactive status as it is already in use."));
+            results.Add(new ValidationResult("Item cannot be set to inactive status as it is already in use."));
         }
         return results;
     }
@@ -110,12 +110,12 @@ public class LookupItemModel
 
         if (!found)
         {
-            results.Add(new ValidationResult("- Item does not exist."));
+            results.Add(new ValidationResult("Item does not exist."));
         }
 
         if (isIteminUse)
         {
-            results.Add(new ValidationResult("- Item cannot be deleted as it is already in use. Please ensure that all records dependent on this item have been removed eg. characteristics"));
+            results.Add(new ValidationResult("Item cannot be deleted as it is already in use. Please ensure that all records dependent on this item have been removed eg. characteristics"));
         }
         return results;
     }
