@@ -22,12 +22,13 @@
 <div id="listEntries" class="mt-3">
 	<partial name="_VirusCharatersticsList" for="@Model" />
 </div>
+
 @section Scripts {
 	<script>
 		$(document).on('click','.pagination a', function (e) {
 			e.preventDefault();
 			var pageNo=$(this).data('pageno');
-			$.get('BindCharacteristicEntriesGridOnPagination', {pageNo: pageNo, pageSize:10}, function (htmlData) {
+			$.get('BindCharacteristicsGridOnPagination', {pageNo: pageNo, pageSize:10}, function (htmlData) {
 			$('#listEntries').html(htmlData);
 			});
 			});

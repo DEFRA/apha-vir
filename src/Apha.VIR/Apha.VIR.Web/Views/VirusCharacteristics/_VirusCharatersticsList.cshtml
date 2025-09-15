@@ -2,7 +2,7 @@
 @model VirusCharacteristicsViewModel
 
 <div id="characteristicsContainer">
-	@if (Model.list.Any())
+	@if (Model.List.Any())
 	{
 		<table class="viruscharacteristictable">
 			<thead>
@@ -19,7 +19,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach (var characteristic in Model.list)
+				@foreach (var characteristic in Model.List)
 				{
 					<tr>
 						<td>@characteristic.Name</td>
