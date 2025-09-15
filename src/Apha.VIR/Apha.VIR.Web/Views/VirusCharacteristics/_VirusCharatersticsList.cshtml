@@ -34,7 +34,7 @@
 						<td>@characteristic.CharacteristicIndex</td>
 						<td>
 							<a asp-controller="VirusCharacteristics" asp-action="Edit" asp-route-id="@characteristic.Id" class="btn btn-primary">Edit</a>
-							<a asp-controller="VirusCharacteristicsListEntry" asp-action="ListEntries" asp-route-id="@characteristic.Id" class="btn btn-secondary">Edit List Entries</a>
+							<a asp-controller="VirusCharacteristicsListEntry" asp-action="ListEntries" asp-route-characteristicId="@characteristic.Id" class="btn btn-secondary">Edit List Entries</a>
 						</td>
 					</tr>
 				}

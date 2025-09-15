@@ -7,24 +7,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryControllerTest
+namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 {
     [Collection("UserAppRolesValidationTests")]
     public class IndexTests
     {
         private readonly object _lock;
-        private readonly IVirusCharacteristicService _service;
-        private readonly IVirusCharacteristicListEntryService _listEntryService;
-        private readonly IMapper _mapper;
-        private readonly VirusCharacteristicsListEntryController _controller;
+        private readonly IVirusCharacteristicService _mockVirusCharacteristicService;
+        private readonly IMapper _mockMapper;
+        private readonly VirusCharacteristicsController _controller;
         private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
         public IndexTests(AppRolesFixture fixture)
         {
-            _service = Substitute.For<IVirusCharacteristicService>();
-            _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
-            _mapper = Substitute.For<IMapper>();
-            _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _mapper);
+            _mockVirusCharacteristicService = Substitute.For<IVirusCharacteristicService>();
+            _mockMapper = Substitute.For<IMapper>();
+            _controller = new VirusCharacteristicsController(_mockVirusCharacteristicService, _mockMapper);
             _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             AuthorisationUtil.Configure(_mockHttpContextAccessor);
             _lock = fixture.LockObject;
@@ -52,7 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("VirusCharacteristic", viewResult.ViewName);
+            Assert.Equal("VirusCharacteristicManagement", viewResult.ViewName);
         }
     }
 }

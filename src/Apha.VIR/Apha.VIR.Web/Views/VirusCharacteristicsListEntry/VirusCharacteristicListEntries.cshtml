@@ -50,7 +50,7 @@
 			e.preventDefault();
 			var id = "@Model.CharacteristicId";
 			var pageNo=$(this).data('pageno');
-			$.get('BindCharacteristicEntriesGridOnPagination', {characteristic: id, pageNo: pageNo, pageSize:10}, function (htmlData) {
+			$.get('BindCharacteristicEntriesGridOnPagination', {characteristicId: id, pageNo: pageNo, pageSize:10}, function (htmlData) {
 			$('#listEntries').html(htmlData);
 			});
 			});

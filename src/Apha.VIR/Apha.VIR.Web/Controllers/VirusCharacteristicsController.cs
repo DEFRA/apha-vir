@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.VirusCharacteristic;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,7 +23,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(new VirusCharacteristicsViewModel());
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+            }
+            return View("VirusCharacteristicManagement");
         }
 
         [HttpGet]
