@@ -21,7 +21,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         private readonly ILookupService _mockLookupService;
         private readonly IMapper _mockMapper;
         private readonly SearchRepositoryController _controller;
-        private readonly ITempDataDictionary _tempData;
+        private readonly TempDataDictionary _tempData;
 
         private readonly QueryParameters<SearchCriteriaDTO> queryParameters = new QueryParameters<SearchCriteriaDTO>
         {
@@ -472,10 +472,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             var jListValues = jObject["ListValues"] as JArray;
 
             Assert.NotNull(jComparators);
-            Assert.Equal(2, jComparators.Count());
+            Assert.Equal(2, jComparators.Count);
 
             Assert.NotNull(jListValues);
-            Assert.Equal(2, jListValues.Count());
+            Assert.Equal(2, jListValues.Count);
         }
 
         [Fact]
@@ -763,7 +763,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // This might involve parsing the Excel file and checking its structure
         }
 
-        private List<IsolateSearchExportDto> SetupValidSearchCriteriaExportResult()
+        private static List<IsolateSearchExportDto> SetupValidSearchCriteriaExportResult()
         {
             return new List<IsolateSearchExportDto>
             {
@@ -805,7 +805,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             };
         }
 
-        private List<IsolateSearchExportViewModel> SetupValidSearchCriteriaExportMappedResult()
+        private static List<IsolateSearchExportViewModel> SetupValidSearchCriteriaExportMappedResult()
         {
             return new List<IsolateSearchExportViewModel>
             {

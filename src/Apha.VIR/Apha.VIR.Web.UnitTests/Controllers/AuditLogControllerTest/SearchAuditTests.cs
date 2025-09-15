@@ -153,7 +153,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             Assert.True(model.ShowDefaultView);
         }
 
-        private void ValidateModel(object model, Controller controller)
+        private static void ValidateModel(object model, Controller controller)
         {
             var validationContext = new ValidationContext(model, null, null);
             var validationResults = new List<ValidationResult>();

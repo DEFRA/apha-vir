@@ -34,7 +34,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         {
             // Arrange
             var expectedViewName = requestType == "viability" ? "_IsolateViabilityAuditLogResults"
-                : $"_{requestType.Substring(0, 1).ToUpper() + requestType.Substring(1)}AuditLogResults";
+               : string.Concat(
+            "_",
+            char.ToUpper(requestType[0]),
+            requestType.AsSpan(1).ToString(),
+            "AuditLogResults");
 
             var auditLogService = Substitute.For<IAuditLogService>();
             var mapper = Substitute.For<IMapper>();
