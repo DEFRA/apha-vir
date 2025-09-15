@@ -8,7 +8,6 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Web.Controllers;
-using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.VirusCharacteristic;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +46,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<VirusCharacteristicDetails>(viewResult.Model);
+            var model = Assert.IsType<VirusCharacteristicsModel>(viewResult.Model);
             Assert.NotNull(model.CharacteristicTypeNameList);
             Assert.Equal(2, model.CharacteristicTypeNameList.Count);
         }
@@ -68,7 +67,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<VirusCharacteristicDetails>(viewResult.Model);
+            var model = Assert.IsType<VirusCharacteristicsModel>(viewResult.Model);
             Assert.Equal(2, model.CharacteristicTypeNameList?.Count);
             Assert.Equal(new Guid().ToString(), model.CharacteristicTypeNameList?[0].Value);
             Assert.Equal("Type1", model.CharacteristicTypeNameList?[0].Text);
@@ -89,7 +88,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         public async Task Test_Edit_ValidModel_ReturnsRedirectToActionResult()
         {
             // Arrange
-            var model = new VirusCharacteristicDetails();
+            var model = new VirusCharacteristicsModel();
             var dto = new VirusCharacteristicDTO();
             _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(dto);
 
@@ -107,7 +106,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         public async Task Test_Edit_InvalidModel_ReturnsViewResult()
         {
             // Arrange
-            var model = new VirusCharacteristicDetails();
+            var model = new VirusCharacteristicsModel();
             _controller.ModelState.AddModelError("Error", "Model error");
 
             // Act
@@ -125,8 +124,8 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             // Arrange
             var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(1, 10).Returns(expectedData);
-            _mockMapper.Map<List<VirusCharacteristicDetails>>(expectedData).Returns(new List<VirusCharacteristicDetails>());
-
+            _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
+                
             // Act
             var result = await _controller.List() as ViewResult;
 
@@ -145,7 +144,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             // Arrange
             var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(2, 20).Returns(expectedData);
-            _mockMapper.Map<List<VirusCharacteristicDetails>>(expectedData).Returns(new List<VirusCharacteristicDetails>());
+            _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
 
             // Act
             var result = await _controller.List(2, 20) as ViewResult;
@@ -166,7 +165,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
             //var expectedResult = (data: expectedData, TotalCount: 0);
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(1, 10).Returns(expectedData);
-            _mockMapper.Map<List<VirusCharacteristicDetails>>(expectedData).Returns(new List<VirusCharacteristicDetails>());
+            _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
 
             // Act
             var result = await _controller.List(1, 10) as ViewResult;
@@ -191,10 +190,10 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
                 data = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO() },
                 TotalCount = 1
             };
-            var entryViewModel = new VirusCharacteristicDetails();
+            var entryViewModel = new VirusCharacteristicsModel();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize).Returns(mockResult);
-            _mockMapper.Map<IEnumerable<VirusCharacteristicDetails>>(mockResult.data)
-                .Returns(new List<VirusCharacteristicDetails> { entryViewModel });
+            _mockMapper.Map<IEnumerable<VirusCharacteristicsModel>>(mockResult.data)
+                .Returns(new List<VirusCharacteristicsModel> { entryViewModel });
 
             // Act
             var result = await _controller.BindCharacteristicsGridOnPagination(pageNo, pageSize);
@@ -224,7 +223,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         public async Task Delete_InvalidModelState_ReturnsViewResult()
         {
             // Arrange
-            var model = new VirusCharacteristicDetails();
+            var model = new VirusCharacteristicsModel();
             _controller.ModelState.AddModelError("error", "some error");
 
             // Act
@@ -239,7 +238,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         public async Task Delete_EmptyGuid_ReturnsViewResult()
         {
             // Arrange
-            var model = new VirusCharacteristicDetails();
+            var model = new VirusCharacteristicsModel();
 
             // Act
             var result = await _controller.Delete(model, Guid.Empty);
@@ -253,7 +252,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         public async Task Delete_ValidModelAndId_ReturnsRedirectToActionResult()
         {
             // Arrange
-            var model = new VirusCharacteristicDetails { LastModified = new byte[8] };
+            var model = new VirusCharacteristicsModel { LastModified = new byte[8] };
             var id = Guid.NewGuid();
 
             // Act

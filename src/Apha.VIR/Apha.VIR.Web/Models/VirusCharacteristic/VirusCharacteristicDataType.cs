@@ -1,6 +1,6 @@
 ﻿using Apha.VIR.Core.Entities;
 
-namespace Apha.VIR.Web.Models
+namespace Apha.VIR.Web.Models.VirusCharacteristic
 {
     public class VirusCharacteristicDataType
     {

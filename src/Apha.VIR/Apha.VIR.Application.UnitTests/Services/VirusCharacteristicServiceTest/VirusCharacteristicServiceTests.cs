@@ -2,7 +2,7 @@
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
-using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Models.VirusCharacteristic;
 using AutoMapper;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -190,8 +190,8 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicServiceTest
         {
             // Arrange
             var dto = new VirusCharacteristicDTO();
-            var entity = new VirusCharacteristicDetails();
-            _mockMapper.Map<VirusCharacteristicDetails>(dto).Returns(entity);
+            var entity = new VirusCharacteristicsModel();
+            _mockMapper.Map<VirusCharacteristicsModel>(dto).Returns(entity);
 
             // Act
             await _mockVirusCharacteristicService.AddEntryAsync(dto);

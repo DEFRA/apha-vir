@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Models.VirusCharacteristic;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,7 +33,7 @@ namespace Apha.VIR.Web.Controllers
            
             var result = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
             
-            var virusCharacteristics = _mapper.Map<List<VirusCharacteristicDetails>>(result.data);
+            var virusCharacteristics = _mapper.Map<List<VirusCharacteristicsModel>>(result.data);
 
             var viewmodel = new VirusCharacteristicsViewModel
             {
@@ -56,7 +57,7 @@ namespace Apha.VIR.Web.Controllers
 
             var result = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
             
-            var virusCharacteristics = _mapper.Map<List<VirusCharacteristicDetails>>(result.data);
+            var virusCharacteristics = _mapper.Map<List<VirusCharacteristicsModel>>(result.data);
 
             var viewmodel = new VirusCharacteristicsViewModel
             {
@@ -86,7 +87,7 @@ namespace Apha.VIR.Web.Controllers
                                                                      { Value = x.Id.ToString(), 
                                                                        Text = x.DataType }).ToList();
 
-            var viewmodel = new VirusCharacteristicDetails
+            var viewmodel = new VirusCharacteristicsModel
             {
                 CharacteristicTypeNameList = virusTypesSelectList,
             };
@@ -95,7 +96,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(VirusCharacteristicDetails model)
+        public async Task<IActionResult> Create(VirusCharacteristicsModel model)
         {
             ViewBag.showsummary = false;
 
@@ -125,7 +126,7 @@ namespace Apha.VIR.Web.Controllers
                     Text = x.DataType
                 }).ToList();
 
-                var viewmodel = new VirusCharacteristicDetails
+                var viewmodel = new VirusCharacteristicsModel
                 {
                     CharacteristicTypeNameList = virusTypesSelectList,
                 };
@@ -146,7 +147,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
 
             var result = await _virusCharacteristicService.GetVirusCharacteristicsByIdAsync(id);
-            var viewModel = _mapper.Map<VirusCharacteristicDetails>(result);
+            var viewModel = _mapper.Map<VirusCharacteristicsModel>(result);
 
             var virusTypesDto = await _virusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync();
 
@@ -165,7 +166,7 @@ namespace Apha.VIR.Web.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Edit(VirusCharacteristicDetails model)
+        public async Task<IActionResult> Edit(VirusCharacteristicsModel model)
         {
             ViewBag.showsummary = false;
 
@@ -206,7 +207,7 @@ namespace Apha.VIR.Web.Controllers
             return RedirectToAction("List");
         }
 
-        public async Task<IActionResult> Delete(VirusCharacteristicDetails model, Guid id)
+        public async Task<IActionResult> Delete(VirusCharacteristicsModel model, Guid id)
         {
 
             ViewBag.showsummary = false;
@@ -247,7 +248,7 @@ namespace Apha.VIR.Web.Controllers
             return RedirectToAction(nameof(List));
         }
 
-        private async Task<List<string>> ValidateVirusCharacteristicAdd(VirusCharacteristicDetails model)
+        private async Task<List<string>> ValidateVirusCharacteristicAdd(VirusCharacteristicsModel model)
         {
             var errors = new List<string>();
 
@@ -275,7 +276,7 @@ namespace Apha.VIR.Web.Controllers
             return errors;
         }
         
-        private async Task<List<string>> ValidateVirusCharacteristicEdit(VirusCharacteristicDetails model)
+        private async Task<List<string>> ValidateVirusCharacteristicEdit(VirusCharacteristicsModel model)
         {
             var errors = new List<string>();
 
@@ -309,7 +310,7 @@ namespace Apha.VIR.Web.Controllers
             return errors;
         }
 
-        private async Task<List<string>> ValidateVirusCharacteristicDelete(VirusCharacteristicDetails model)
+        private async Task<List<string>> ValidateVirusCharacteristicDelete(VirusCharacteristicsModel model)
         {
             var errors = new List<string>();
 
