@@ -70,7 +70,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.VirusCharacteristicRepository
 
         protected override Task<int> ExecuteSqlAsync(string sql, params object[] parameters)
         {
-            if (sql.ToLowerInvariant().Contains("delete"))
+            if (sql.Contains("delete", StringComparison.OrdinalIgnoreCase))
             {
                 DeleteCalled = true;
                 return Task.FromResult(1);
