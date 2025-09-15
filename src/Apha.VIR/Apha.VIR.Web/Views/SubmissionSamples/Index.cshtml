@@ -178,8 +178,17 @@
 								<a href="#">Delete</a>
 							}
 						</td>
-						<td><a asp-controller="IsolateDispatch" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
-							   asp-route-IsolateId="@isolate.IsolateId" asp-route-Source="Summary">Dispatch</a>
+						<td>
+							@if (isolate.IsDispatchEnabled)
+							{
+								<a asp-controller="IsolateDispatch" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
+								   asp-route-IsolateId="@isolate.IsolateId" asp-route-Source="Summary">Dispatch</a>
+							}
+							else
+							{
+								<a href="#">Dispatch</a>
+							}
+							
 						</td>
 					</tr>
 				}

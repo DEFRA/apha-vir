@@ -40,6 +40,11 @@ namespace Apha.VIR.Web.Utilities
             return IsInRole(role);
         }
 
+        public static bool CanHistoryItem(string role)
+        {
+            return IsInRole(role);
+        }
+
         public static bool IsUserInAnyRole()
         {
             var userroles = GetUserRoles();

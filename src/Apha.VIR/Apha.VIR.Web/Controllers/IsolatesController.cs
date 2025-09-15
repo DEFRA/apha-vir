@@ -45,6 +45,17 @@ namespace Apha.VIR.Web.Controllers
             }
             var result = await _isolatesService.GetIsolateFullDetailsAsync(IsolateId);
             var isolateDetails = _mapper.Map<IsolateDetailsViewModel>(result);
+            if (isolateDetails != null && isolateDetails.IsolateDetails != null)
+            {
+                if (AuthorisationUtil.CanHistoryItem(AppRoleConstant.Administrator))
+                {
+                    isolateDetails.IsolateDetails.IsEditHistory = true;
+                }
+                if (AuthorisationUtil.CanGetItem(AppRoleConstant.IsolateManager))
+                {
+                    isolateDetails.IsolateDetails.IsFullViewIsolateDetails = true;
+                }
+            }
             return View("IsolateDetails", isolateDetails);
         }
 
@@ -81,12 +92,12 @@ namespace Apha.VIR.Web.Controllers
                 var sample = samplesDto.Result.FirstOrDefault(s => s.SampleId == SampleId);
                 if (sample?.SampleTypeName == "FTA Cards" || sample?.SampleTypeName == "RNA")
                 {
-                    isolateCreateModel.IsDetection = true;
+                    isolateCreateModel.IsChkDetection = true;
                 }
                 isolateCreateModel.Nomenclature = $"[Virus Type]/" +
                     $"{(string.IsNullOrEmpty(sample?.HostBreedName) ? sample?.HostSpeciesName : sample.HostBreedName)}/" +
                     $"{submission.CountryOfOriginName}/{sample?.SenderReferenceNumber}/[Year of Isolation]";
-            }
+            }            
 
             return View(isolateCreateModel);
         }
@@ -126,7 +137,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.ActionType == "SaveAndContinue")
             {
-                return RedirectToAction(IndexActionName, "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
+                return RedirectToAction("Edit", "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
             }
             else
             {
@@ -169,7 +180,7 @@ namespace Apha.VIR.Web.Controllers
                 var sample = samplesDto.Result.FirstOrDefault(s => s.SampleId == SampleId);
                 if (sample?.SampleTypeName == "FTA Cards" || sample?.SampleTypeName == "RNA")
                 {
-                    isolateModel.IsDetection = true;
+                    isolateModel.IsChkDetection = true;
                 }
             }
 
@@ -398,6 +409,6 @@ namespace Apha.VIR.Web.Controllers
             }
 
             return IsViabilityInsert;
-        }
+        }              
     }
 }

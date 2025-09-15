@@ -134,7 +134,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Edit", result.ActionName);
             Assert.Equal("IsolateCharacteristics", result.ControllerName);
             Assert.Equal(isolateModel.AVNumber, result!.RouteValues!["AVNumber"]);
             Assert.Equal(isolateModel.IsolateId, result!.RouteValues["IsolateId"]);
