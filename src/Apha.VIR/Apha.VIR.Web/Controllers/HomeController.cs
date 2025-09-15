@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using DocumentFormat.OpenXml.InkML;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,12 @@ namespace Apha.VIR.Web.Controllers
         {
             // Set URL for Error log button
             ViewBag.UserMgmtUrl = $"{UserMgmtUrl()}";
-            ViewBag.EnvironmentName = _sysInfoService.GetEnvironmentName().Result;
+
+            if (HttpContext.Session.GetString("EnvironmentName") == null)
+            {
+                var envName = _sysInfoService.GetEnvironmentName().Result;
+                HttpContext.Session.SetString("EnvironmentName", envName);
+            }
 
             return View();
         }

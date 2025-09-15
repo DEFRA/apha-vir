@@ -22,7 +22,7 @@ else
         loggerConfiguration.UseAwsCloudWatch(builder.Configuration);
     });
 }
-builder.Services.AddHttpContextAccessor();
+
 // Extracted to methods for testability
 builder.ConfigureServices();
 

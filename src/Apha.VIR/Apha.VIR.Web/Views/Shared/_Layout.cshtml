@@ -19,6 +19,7 @@
 		userId = User?.Identity?.Name!;
 		username = User?.FindFirst("name")?.Value!;
 	}
+	var envName = Context.Session.GetString("EnvironmentName");
 }
 
 <!DOCTYPE html>
@@ -46,7 +47,7 @@
 						<a asp-controller="ContactUs" asp-action="Index">Contact Us</a>
 					</div>
 					<div>
-						<span id="lblEnvironment" class="Version">@ViewBag.EnvironmentName</span>
+						<span id="lblEnvironment" class="Version">@envName</span>
 					</div>
 				</div>
 			</div>
