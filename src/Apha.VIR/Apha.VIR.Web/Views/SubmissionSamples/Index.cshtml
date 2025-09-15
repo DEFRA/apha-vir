@@ -54,7 +54,7 @@
 <div class="submission-grid-table mt-1">
 	<h3 class="submission-h3">Submission Summary</h3>
 	<br />
-	<table class="table">
+	<table class="VIRtable">
 		<thead>
 			<tr>
 				<th>Submission Sender Ref</th>
@@ -75,7 +75,7 @@
 	<br />
 	@if (Model.Samples != null && Model.Samples.Any())
 	{
-		<table class="table table-striped">
+		<table class="VIRtable">
 			<thead>
 				<tr>
 					<th>Sample Number</th>
@@ -122,7 +122,7 @@
 	}
 	else
 	{
-		<div style="border: 1px solid gray; padding: 5px; display: inline-block;">
+		<div class="no_record">
 			No isolates recorded for this submission.
 		</div>
 		<br />
@@ -132,7 +132,7 @@
 	<br />
 	@if (Model.Isolates != null && Model.Isolates.Any())
 	{
-		<table class="table table-striped">
+		<table class="VIRtable">
 			<thead>
 				<tr>
 					<th>Sample Number</th>
@@ -189,7 +189,7 @@
 	}
 	else
 	{
-		<div style="border: 1px solid gray; padding: 5px; display: inline-block;">
+		<div class="no_record">
 			There are no isolates matching the criteria specified
 		</div>
 	}
