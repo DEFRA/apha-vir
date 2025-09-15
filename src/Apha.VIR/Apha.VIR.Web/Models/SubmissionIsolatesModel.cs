@@ -15,5 +15,6 @@
         public string? Nomenclature { get; set; }
         public bool IsUniqueNomenclature { get; set; } = false;
         public byte[] LastModified { get; set; } = null!;
+        public bool IsDeleteEnabled { get; set; } = false;
     }
 }

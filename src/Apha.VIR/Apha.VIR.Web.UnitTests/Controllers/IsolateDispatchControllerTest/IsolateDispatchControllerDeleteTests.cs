@@ -1,13 +1,18 @@
-﻿using Apha.VIR.Application.Interfaces;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolateDispatchControllerDeleteTests
     {
+        private readonly object _lock;
         private readonly IIsolateDispatchService _mockIsolateDispatchService;
         private readonly ILookupService _mockLookupService;
         private readonly IIsolatesService _mockIsolatesService;
@@ -15,8 +20,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         private readonly ISampleService _mockSampleService;
         private readonly IMapper _mockMapper;
         private readonly IsolateDispatchController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolateDispatchControllerDeleteTests()
+        public IsolateDispatchControllerDeleteTests(AppRolesFixture fixture)
         {
             _mockIsolateDispatchService = Substitute.For<IIsolateDispatchService>();
             _mockLookupService = Substitute.For<ILookupService>();
@@ -24,6 +30,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockSubmissionService = Substitute.For<ISubmissionService>();
             _mockSampleService = Substitute.For<ISampleService>();
             _mockMapper = Substitute.For<IMapper>();
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
 
             _controller = new IsolateDispatchController(_mockIsolateDispatchService,
                 _mockLookupService,
@@ -41,7 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
             var isolateId = Guid.NewGuid();
             const string avNumber = "AV123";
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
 
@@ -66,7 +75,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
             var isolateId = Guid.NewGuid();
             const string avNumber = "AV123";
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
 
@@ -85,7 +94,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var dispatchId = Guid.NewGuid();
             var isolateId = Guid.NewGuid();
             const string avNumber = "AV123";
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
 
@@ -104,7 +113,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             const string avNumber = "AV123";
 
             _controller.ModelState.AddModelError("Error", "Sample error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
 
@@ -120,7 +129,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
             var isolateId = Guid.NewGuid();
             const string avNumber = "AV123";
-
+            SetupMockUserAndRoles();
             // Act
             await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
 
@@ -175,6 +184,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Create", redirectResult.ActionName);
             Assert.Equal("IsolateDispatch", redirectResult.ControllerName);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

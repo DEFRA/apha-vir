@@ -2,8 +2,10 @@
 using System.Reflection;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apha.VIR.Web.Controllers
@@ -12,12 +14,15 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IReportService _iReportService;
         private readonly IMapper _mapper;
+        private const string IsolateDispatchReport = "IsolateDispatchReport";
 
         public ReportsController(IReportService iReportService, IMapper mapper)
         {
             _iReportService = iReportService;
             _mapper = mapper;
         }
+
+        [Authorize(Roles = AppRoleConstant.ReportViewer)]
         public IActionResult Index()
         {
             return View();
@@ -27,20 +32,25 @@ namespace Apha.VIR.Web.Controllers
         {
             var model = new IsolateDispatchReportViewModel
             {
-                DateFrom = DateTime.Today,
-                DateTo = DateTime.Today
+                //DateFrom = DateTime.Today,
+                //DateTo = DateTime.Today
             };
-            return View("IsolateDispatchReport", model);
+            return View(IsolateDispatchReport, model);
         }
 
         [HttpPost]
         public async Task<IActionResult> GenerateReport(IsolateDispatchReportViewModel model)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
+
             ModelState.Remove(nameof(model.ReportData));
 
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(IsolateDispatchReport, model);
             }
 
             var result = await _iReportService.GetDispatchesReportAsync(model.DateFrom, model.DateTo);
@@ -54,13 +64,18 @@ namespace Apha.VIR.Web.Controllers
                 ReportData = reportData.ToList()
             };
 
-            return View("IsolateDispatchReport", viewModel);
+            return View(IsolateDispatchReport, viewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> ExportToExcel(DateTime? dateFrom, DateTime? dateTo)
         {
             ModelState.Clear();
+
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list");
+            }
 
             if (dateFrom == null)
             {
@@ -78,9 +93,9 @@ namespace Apha.VIR.Web.Controllers
                     DateFrom = dateFrom,
                     DateTo = dateTo
                 };
-                return View("IsolateDispatchReport", viewmodel);
+                return View(IsolateDispatchReport, viewmodel);
             }
-
+    
             var result = await _iReportService.GetDispatchesReportAsync(dateFrom, dateTo);
 
             var reportData = _mapper.Map<IEnumerable<IsolateDispatchReportModel>>(result);

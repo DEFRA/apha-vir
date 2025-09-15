@@ -3,7 +3,7 @@
     ViewData["Title"] = "Isolate Details | Virus Isolates Repository";
 }
 
-<div class="contentbox w-95">
+<div class="w-95">
     <form method="post">
         <input type="hidden" asp-for="@Model.AVNumber" />
         <input type="hidden" asp-for="@Model.IsolateId" />
@@ -108,7 +108,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Phylogenetic Analysis</div>
                     <div class="col-sm-9">
-                        <textarea asp-for="PhylogeneticAnalysis" rows="5" class="form-control w-500" style="height:166px"></textarea>
+                        <textarea asp-for="PhylogeneticAnalysis" rows="5" class="form-control w-500 height-166" ></textarea>
                         <span asp-validation-for="PhylogeneticAnalysis" class="text-danger"></span>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">Comment</div>
                     <div class="col-sm-9">
-                        <textarea asp-for="Comment" rows="5" class="form-control w-500" style="height:166px"></textarea>
+                        <textarea asp-for="Comment" rows="5" class="form-control w-500 height-166"></textarea>
                         <span asp-validation-for="Comment" class="text-danger"></span>
                     </div>
                 </div>

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
-namespace Apha.BST.Web.UnitTests.Startup
+namespace Apha.VIR.Web.UnitTests.Controllers.Startup
 {
     public class AuthenticationExtensionTests
     {

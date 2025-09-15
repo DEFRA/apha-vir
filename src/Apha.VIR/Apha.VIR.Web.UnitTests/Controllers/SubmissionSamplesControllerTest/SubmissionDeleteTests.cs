@@ -1,30 +1,43 @@
-﻿using System.Text.Json;
+﻿using System.Security.Claims;
+using System.Text.Json;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class SubmissionDeleteTests
     {
+        private readonly object _lock;
         private readonly ISubmissionService _mockSubmissionService;
         private readonly ISampleService _mockSampleService;
         private readonly IIsolatesService _mockIsolatesService;
         private readonly IIsolateDispatchService _mockIsolatesDispatchService;
         private readonly IMapper _mockMapper;
         private readonly SubmissionSamplesController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public SubmissionDeleteTests()
+        public SubmissionDeleteTests(AppRolesFixture fixture)
         {
             _mockSubmissionService = Substitute.For<ISubmissionService>();
             _mockSampleService = Substitute.For<ISampleService>();
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockIsolatesDispatchService = Substitute.For<IIsolateDispatchService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SubmissionSamplesController(_mockSubmissionService, _mockSampleService, _mockIsolatesService, _mockIsolatesDispatchService, _mockMapper);
+            _controller = new SubmissionSamplesController(_mockSubmissionService, 
+                _mockSampleService, 
+                _mockIsolatesService, 
+                _mockIsolatesDispatchService, 
+                _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -37,6 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 
             _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDTO>());
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.SubmissionDelete(avNumber, submissionId, lastModified);
@@ -64,6 +78,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 
             _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDTO> { new SampleDTO() });
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.SubmissionDelete(avNumber, submissionId, lastModified);
@@ -91,6 +106,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
 
             _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDTO>());
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO> { new IsolateInfoDTO() });
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.SubmissionDelete(avNumber, submissionId, lastModified);
@@ -112,6 +128,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.SubmissionDelete("AV12345", Guid.NewGuid(), new byte[] { 0x00 });
@@ -119,6 +136,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.IsType<SerializableError>(badRequestResult.Value);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateDeleter)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.IsolateDeleter };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

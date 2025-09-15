@@ -96,7 +96,16 @@
 						<td>@sample.HostSpeciesName</td>
 						<td>@sample.HostBreedName</td>
 						<td><a asp-controller="Sample" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-Sample="@sample.SampleId">Edit</a></td>
-						<td><a class="delete-sample-link" data-sampleid="@sample.SampleId" data-lastmodified="@Convert.ToBase64String(@sample.LastModified)">Delete</a></td>
+						<td>
+							@if (sample.IsDeleteEnabled)
+							{
+								<a class="delete-sample-link" data-sampleid="@sample.SampleId" data-lastmodified="@Convert.ToBase64String(@sample.LastModified)">Delete</a>
+							}
+							else
+							{
+								<a href="#">Delete</a>
+							}
+						</td>
 						@if (@sample.IsDetection)
 						{
 							<td><a asp-controller="Isolates" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-SampleId="@sample.SampleId">Add Detection</a></td>
@@ -157,9 +166,18 @@
 							}
 						</td>
 						<td><a asp-controller="Isolates" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
-							   asp-route-SampleId="@isolate.IsolateSampleId" asp-route-IsolateId="@isolate.IsolateId">Edit</a>
+							asp-route-SampleId="@isolate.IsolateSampleId" asp-route-IsolateId="@isolate.IsolateId">Edit</a>
 						</td>
-						<td><a class="delete-isolate-link" data-isolateid="@isolate.IsolateId" data-lastmodified="@Convert.ToBase64String(@isolate.LastModified)">Delete</a></td>
+						<td>
+							@if (isolate.IsDeleteEnabled)
+							{
+								<a class="delete-isolate-link" data-isolateid="@isolate.IsolateId" data-lastmodified="@Convert.ToBase64String(@isolate.LastModified)">Delete</a>
+							}
+							else
+							{
+								<a href="#">Delete</a>
+							}
+						</td>
 						<td><a asp-controller="IsolateDispatch" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
 							   asp-route-IsolateId="@isolate.IsolateId" asp-route-Source="Summary">Dispatch</a>
 						</td>

@@ -1,23 +1,33 @@
-﻿using Apha.VIR.Application.Interfaces;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class DeleteTests
     {
+        private readonly object _lock;
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
         private readonly IsolateViabilityController _controller;
         private readonly ILookupService _lookupService;
-        public DeleteTests()
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
+
+        public DeleteTests(AppRolesFixture fixture)
         {
             _lookupService = Substitute.For<ILookupService>();
             _isolateViabilityService = Substitute.For<IIsolateViabilityService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new IsolateViabilityController(_isolateViabilityService, _lookupService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -31,7 +41,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
 
             _isolateViabilityService.DeleteIsolateViabilityAsync(Arg.Any<Guid>(), Arg.Any<byte[]>(), Arg.Any<string>())
             .Returns(Task.CompletedTask);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId);
 
@@ -63,7 +73,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
 
             _isolateViabilityService.DeleteIsolateViabilityAsync(Arg.Any<Guid>(), Arg.Any<byte[]>(), Arg.Any<string>())
             .Returns(Task.FromException(new Exception("Service error")));
-
+            SetupMockUserAndRoles();
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId));
         }
@@ -76,7 +86,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var lastModified = "invalid_base64";
             var avNumber = "AV123";
             var isolateId = Guid.NewGuid();
-
+            SetupMockUserAndRoles();
             // Act & Assert
             await Assert.ThrowsAsync<FormatException>(() => _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId));
         }
@@ -84,6 +94,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
         [Fact]
         public async Task Delete_InvalidModelState_ShouldReturnBadRequest()
         {
+            SetupMockUserAndRoles();
             // Arrange
             _controller.ModelState.AddModelError("key", "error");
             var result = await _controller.Delete(Guid.NewGuid(), "validBase64", "AV123", Guid.NewGuid());
@@ -95,6 +106,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
         [Fact]
         public async Task Delete_EmptyViabilityId_ShouldReturnBadRequest()
         {
+            SetupMockUserAndRoles();
             // Arrange
             var result = await _controller.Delete(Guid.Empty, "validBase64", "AV123", Guid.NewGuid());
 
@@ -106,12 +118,29 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
         [Fact]
         public async Task Delete_EmptyLastModified_ShouldReturnBadRequest()
         {
+            SetupMockUserAndRoles();
             // Arrange
             var result = await _controller.Delete(Guid.NewGuid(), "", "AV123", Guid.NewGuid());
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Last Modified cannot be empty.", badRequestResult.Value);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

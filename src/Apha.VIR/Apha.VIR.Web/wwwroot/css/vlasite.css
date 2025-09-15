@@ -1,0 +1,134 @@
+﻿
+
+.width-400 {
+    width: 400px;
+}
+
+.margin70 {
+    margin-left: -70px;
+}
+.width-110{
+    width:110px;
+}
+
+.height-166 {
+    height:166px;
+}
+
+.master_content {
+    margin: 10px 10px 10px 10px;
+    padding: 0px 0px 0px 0px;
+    width: 95%;
+    min-width:1200px;
+}
+
+/*---- Common Table CSS ----*/
+.VIRtable {
+    border-collapse: collapse;
+   
+    border: 1px solid #0b2677;
+    margin-bottom: 20px;
+}
+
+    .VIRtable td {
+        border: 1px solid black;
+        padding: 4px 4px;
+        text-align: left;
+    }
+
+    .VIRtable th {
+        padding-bottom: 10px;
+        background-color: Navy;
+        border: 1px solid white;
+        padding:4px 4px;
+        text-align: left;
+    }
+
+    .VIRtable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
+
+
+    .VIRtable tr:nth-child(even) {
+        background-color: #efefef;
+    }
+
+    .VIRtable tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+
+.spvalidation  li{ text-align:center;}
+
+
+
+
+.textInput {
+    font-family: Verdana;
+    width: 100%;
+    /*    background-color: white;*/
+    height: fit-content;
+}
+
+
+/*----------Form label alignment*/
+.isolatedetailsblock_Left {
+    width: 50%;
+    
+
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+    .isolatedetailsblock_Left .rowdetails {
+        min-width: 200px;
+       
+              display: flex;
+        /*        width: 100%;*/
+        margin: 10px 0px;
+    }
+
+.isolatedetailsblock_Left .isolatelabel_title {
+    display:inline-block;
+    width: 40%;
+}
+
+    .isolatedetailsblock_Left span {
+        display: inline-block;
+        width: auto;
+    }
+    .isolatedetailsblock_Left p {
+        width: 60%;
+    }
+    .isolatedetailsblock_Left h3 {
+        color: navy;
+    }
+.isolatedetailsblock_Right {
+
+    width:50%;
+    float:left;
+}
+.isolate-details{
+                     display:flex;
+}
+
+
+.btn-linkColor {
+    text-decoration: underline;
+    color: #0000FF;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    
+}
+
+.search-repository-container table tr td table tbody tr td div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.isolate-grid-table table thead tr th {
+    text-wrap-mode: wrap;
+}
