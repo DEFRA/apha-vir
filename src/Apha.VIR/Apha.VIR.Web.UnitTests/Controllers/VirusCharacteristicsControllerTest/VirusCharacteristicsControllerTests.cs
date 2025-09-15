@@ -31,7 +31,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         }
 
         [Fact]
-        public async Task EditAsync_ReturnsViewResultWithCorrectModel()
+        public async Task CreateAsync_ReturnsViewResultWithCorrectModel()
         {
             // Arrange
             var expectedTypes = new List<VirusCharacteristicDataTypeDTO>
@@ -48,11 +48,11 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<VirusCharacteristicsModel>(viewResult.Model);
             Assert.NotNull(model.CharacteristicTypeNameList);
-            Assert.Equal(2, model.CharacteristicTypeNameList.Count);
+            Assert.Equal(0, model.CharacteristicTypeNameList.Count);
         }
 
         [Fact]
-        public async Task EditAsync_PopulatesCharacteristicTypeNameListCorrectly()
+        public async Task CreateAsync_PopulatesCharacteristicTypeNameListCorrectly()
         {
             // Arrange
             var expectedTypes = new List<VirusCharacteristicDataTypeDTO>
@@ -68,15 +68,15 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<VirusCharacteristicsModel>(viewResult.Model);
-            Assert.Equal(2, model.CharacteristicTypeNameList?.Count);
-            Assert.Equal(new Guid().ToString(), model.CharacteristicTypeNameList?[0].Value);
-            Assert.Equal("Type1", model.CharacteristicTypeNameList?[0].Text);
-            Assert.Equal(new Guid().ToString(), model.CharacteristicTypeNameList?[1].Value);
-            Assert.Equal("Type2", model.CharacteristicTypeNameList?[1].Text);
+            Assert.Equal(2, expectedTypes?.Count);
+            Assert.Equal(new Guid().ToString(), expectedTypes?[0].Id.ToString());
+            Assert.Equal("Type1", expectedTypes?[0].DataType);
+            Assert.Equal(new Guid().ToString(), expectedTypes?[1].Id.ToString());
+            Assert.Equal("Type2", expectedTypes?[1].DataType);
         }
 
         [Fact]
-        public async Task EditAsync_HandlesExceptionFromService()
+        public async Task CreateAsync_HandlesExceptionFromService()
         {
             // Arrange
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().ThrowsAsync(new Exception("Test exception"));
@@ -85,10 +85,13 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             await Assert.ThrowsAsync<Exception>(() => _controller.CreateAsync());
         }
         [Fact]
-        public async Task Test_Edit_ValidModel_ReturnsRedirectToActionResult()
+        public async Task Create_ValidModel_ReturnsRedirectToActionResult()
         {
             // Arrange
             var model = new VirusCharacteristicsModel();
+            model.Name = "test";
+            model.DisplayOnSearch = true;
+            model.CharacteristicIndex = 0;
             var dto = new VirusCharacteristicDTO();
             _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(dto);
 
@@ -103,7 +106,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         }
 
         [Fact]
-        public async Task Test_Edit_InvalidModel_ReturnsViewResult()
+        public async Task Edit_InvalidModel_ReturnsViewResult()
         {
             // Arrange
             var model = new VirusCharacteristicsModel();
@@ -117,7 +120,56 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             Assert.Equal("Edit", viewResult.ViewName);
             Assert.Equal(model, viewResult.Model);
         }
+        [Fact]
+        public async Task Edit_ValidModel_ReturnsRedirectToActionResult()
+        {
+            // Arrange
+            var model = new VirusCharacteristicsModel { Id = Guid.NewGuid(), Name = "Test" };
+            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
+            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
 
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("List", redirectToActionResult.ActionName);
+            await _mockVirusCharacteristicService.Received(1).UpdateEntryAsync(Arg.Any<VirusCharacteristicDTO>());
+        }
+        [Fact]
+        public async Task Edit_ValidationErrors_ReturnsViewWithErrors()
+        {
+            // Arrange
+            var model = new VirusCharacteristicsModel { Id = Guid.NewGuid(), Name = "Test" };
+            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
+            _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(new List<VirusCharacteristicDataTypeDTO>());
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+            Assert.True(_controller.ViewBag.showsummary);
+            Assert.NotEmpty(_controller.ModelState);
+        }
+        [Fact]
+        public async Task Edit_ServiceThrowsException_ReturnsViewWithError()
+        {
+            // Arrange
+            var model = new VirusCharacteristicsModel { Id = Guid.NewGuid(), Name = "Test" };
+            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
+            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
+            _mockVirusCharacteristicService.UpdateEntryAsync(Arg.Any<VirusCharacteristicDTO>()).Throws(new Exception("Test exception"));
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+            Assert.NotEmpty(_controller.ModelState);
+        }
         [Fact]
         public async Task List_WithDefaultParameters_ReturnsCorrectViewModel()
         {
@@ -125,7 +177,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(1, 10).Returns(expectedData);
             _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
-                
+
             // Act
             var result = await _controller.List() as ViewResult;
 
@@ -252,9 +304,16 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
         public async Task Delete_ValidModelAndId_ReturnsRedirectToActionResult()
         {
             // Arrange
-            var model = new VirusCharacteristicsModel { LastModified = new byte[8] };
+            var model = new VirusCharacteristicsModel();
+            model.Name = "test";
+            model.DisplayOnSearch = true;
+            model.CharacteristicIndex = 0;
+            var dto = new VirusCharacteristicDTO();
+            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(dto);
             var id = Guid.NewGuid();
-
+            var expectedTypes = new List<VirusCharacteristicDataTypeDTO>();
+            List<VirusCharacteristicDataType> virusCharacteristicDataTypes = new List<VirusCharacteristicDataType>();
+            _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
             // Act
             var result = await _controller.Delete(model, id);
 

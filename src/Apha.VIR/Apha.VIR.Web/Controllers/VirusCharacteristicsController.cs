@@ -19,7 +19,7 @@ namespace Apha.VIR.Web.Controllers
             _virusCharacteristicService = virusCharacteristicService;
             _mapper = mapper;
         }
-        
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -35,9 +35,9 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-           
+
             var result = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
-            
+
             var virusCharacteristics = _mapper.Map<List<VirusCharacteristicsModel>>(result.data);
 
             var viewmodel = new VirusCharacteristicsViewModel
@@ -61,7 +61,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
 
             var result = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize);
-            
+
             var virusCharacteristics = _mapper.Map<List<VirusCharacteristicsModel>>(result.data);
 
             var viewmodel = new VirusCharacteristicsViewModel
@@ -88,9 +88,11 @@ namespace Apha.VIR.Web.Controllers
 
             var virusTypes = _mapper.Map<List<VirusCharacteristicDataType>>(virusTypesDto);
 
-            var virusTypesSelectList = virusTypes.Select(x => new SelectListItem 
-                                                                     { Value = x.Id.ToString(), 
-                                                                       Text = x.DataType }).ToList();
+            var virusTypesSelectList = virusTypes == null ? new List<SelectListItem>() : virusTypes.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.DataType
+            }).ToList();
 
             var viewmodel = new VirusCharacteristicsModel
             {
@@ -165,11 +167,11 @@ namespace Apha.VIR.Web.Controllers
             }).ToList();
 
             viewModel.CharacteristicTypeNameList = virusTypesSelectList;
-       
+
             return View(viewModel);
 
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Edit(VirusCharacteristicsModel model)
         {
@@ -195,15 +197,15 @@ namespace Apha.VIR.Web.Controllers
 
                 var virusTypes = _mapper.Map<List<VirusCharacteristicDataType>>(virusTypesDto);
 
-                var virusTypesSelectList = virusTypes.Select(x => new SelectListItem
+                var virusTypesSelectList = virusTypes == null ? new List<SelectListItem>() : virusTypes.Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.DataType
                 }).ToList();
 
                 model.CharacteristicTypeNameList = virusTypesSelectList;
-         
-                 return View("Edit", model);
+
+                return View("Edit", model);
             }
 
             var dto = _mapper.Map<VirusCharacteristicDTO>(model);
@@ -237,7 +239,7 @@ namespace Apha.VIR.Web.Controllers
 
                 var virusTypes = _mapper.Map<List<VirusCharacteristicDataType>>(virusTypesDto);
 
-                var virusTypesSelectList = virusTypes.Select(x => new SelectListItem
+                var virusTypesSelectList = virusTypes == null ? new List<SelectListItem>() : virusTypes.Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.DataType
@@ -277,10 +279,10 @@ namespace Apha.VIR.Web.Controllers
             {
                 errors.Add("Maximum length must be no more than 100 characters.");
             }
-      
+
             return errors;
         }
-        
+
         private async Task<List<string>> ValidateVirusCharacteristicEdit(VirusCharacteristicsModel model)
         {
             var errors = new List<string>();
@@ -301,12 +303,12 @@ namespace Apha.VIR.Web.Controllers
             {
                 errors.Add("Name not specified for this item.");
             }
-  
+
             if (!model.CharacteristicIndex.HasValue)
             {
                 errors.Add("Display Order not specified for this item.");
             }
-    
+
             if (model.Length.HasValue && model.Length.Value > 100)
             {
                 errors.Add("Maximum length must be no more than 100 characters.");
@@ -331,7 +333,7 @@ namespace Apha.VIR.Web.Controllers
                 errors.Add("Item does not exist.");
             }
 
-           var inUse = await _virusCharacteristicService.CheckVirusCharactersticsUsageByIdAsync(model.Id);
+            var inUse = await _virusCharacteristicService.CheckVirusCharactersticsUsageByIdAsync(model.Id);
 
             if (inUse)
             {
