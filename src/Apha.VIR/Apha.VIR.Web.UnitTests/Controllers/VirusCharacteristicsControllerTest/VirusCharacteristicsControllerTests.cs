@@ -197,7 +197,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
                 .Returns(new List<VirusCharacteristicDetails> { entryViewModel });
 
             // Act
-            var result = await _controller.BindCharacteristicEntriesGridOnPagination(pageNo, pageSize);
+            var result = await _controller.BindCharacteristicsGridOnPagination(pageNo, pageSize);
 
             // Assert
             var partialViewResult = Assert.IsType<PartialViewResult>(result);
@@ -215,7 +215,7 @@ new VirusCharacteristicDataTypeDTO { Id = new Guid(), DataType = "Type2" }
             _controller.ModelState.AddModelError("error", "some error");
 
             // Act
-            var result = await _controller.BindCharacteristicEntriesGridOnPagination(1, 10);
+            var result = await _controller.BindCharacteristicsGridOnPagination(1, 10);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
