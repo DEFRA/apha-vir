@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +41,20 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var avNumber = "AV123";
             var isolateId = Guid.NewGuid();
 
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+
             _isolateViabilityService.DeleteIsolateViabilityAsync(Arg.Any<Guid>(), Arg.Any<byte[]>(), Arg.Any<string>())
             .Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
@@ -71,9 +87,24 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var avNumber = "AV123";
             var isolateId = Guid.NewGuid();
 
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+
             _isolateViabilityService.DeleteIsolateViabilityAsync(Arg.Any<Guid>(), Arg.Any<byte[]>(), Arg.Any<string>())
             .Returns(Task.FromException(new Exception("Service error")));
             SetupMockUserAndRoles();
+
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId));
         }
@@ -86,45 +117,84 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var lastModified = "invalid_base64";
             var avNumber = "AV123";
             var isolateId = Guid.NewGuid();
+
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
             SetupMockUserAndRoles();
+
             // Act & Assert
             await Assert.ThrowsAsync<FormatException>(() => _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId));
         }
 
         [Fact]
-        public async Task Delete_InvalidModelState_ShouldReturnBadRequest()
+        public async Task Delete_InvalidModelState_ReturnsBadRequest()
         {
+            var isolateId = Guid.NewGuid();
+            var isolateViabilityId = Guid.NewGuid();
+
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+
             SetupMockUserAndRoles();
+            
             // Arrange
             _controller.ModelState.AddModelError("key", "error");
             var result = await _controller.Delete(Guid.NewGuid(), "validBase64", "AV123", Guid.NewGuid());
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<ViewResult>(result);
+            Assert.False(_controller.ModelState.IsValid);
         }
 
         [Fact]
         public async Task Delete_EmptyViabilityId_ShouldReturnBadRequest()
         {
+            var isolateId = Guid.NewGuid();
+            var isolateViabilityId = Guid.NewGuid();
+
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
             SetupMockUserAndRoles();
+            
             // Arrange
             var result = await _controller.Delete(Guid.Empty, "validBase64", "AV123", Guid.NewGuid());
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Invalid ViabilityId ID.", badRequestResult.Value);
-        }
-
-        [Fact]
-        public async Task Delete_EmptyLastModified_ShouldReturnBadRequest()
-        {
-            SetupMockUserAndRoles();
-            // Arrange
-            var result = await _controller.Delete(Guid.NewGuid(), "", "AV123", Guid.NewGuid());
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Last Modified cannot be empty.", badRequestResult.Value);
+            Assert.IsType<ViewResult>(result);
+            Assert.False(_controller.ModelState.IsValid);
         }
 
         private void SetupMockUserAndRoles()

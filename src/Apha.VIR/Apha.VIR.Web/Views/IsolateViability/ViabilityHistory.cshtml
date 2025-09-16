@@ -10,7 +10,7 @@
 @if (Model.ViabilityHistoryList.Any())
 {
 	<div class="isolate-grid-table mt-3">
-		<table class="table" cellpadding="5">
+		<table class="VIRtable" >
 			<thead>
 				<tr>
 					<th class="view-isolate-details-label2">Viable</th>
@@ -51,6 +51,13 @@
 			</tbody>
 		</table>
 	</div>
+	@if (!ViewData.ModelState.IsValid)
+	{
+		<div id="validationSummary" class="validation">
+			<p>There are validation messages requiring your attention.</p>
+			<div asp-validation-summary="All" class="validation"></div>
+		</div>
+	}
 }
 else
 {

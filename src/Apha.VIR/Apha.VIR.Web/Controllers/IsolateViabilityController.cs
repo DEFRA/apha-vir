@@ -85,6 +85,15 @@ namespace Apha.VIR.Web.Controllers
             }
             string userid = "TestUser";
 
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.Administrator))
+            {
+                throw new UnauthorizedAccessException("Not authorised to modify viability.");
+            }
+           
+            await ValidateModel(model.IsolateViability.IsolateViabilityId,
+                Convert.ToBase64String(model.IsolateViability.LastModified), 
+                model.IsolateViability.IsolateViabilityIsolateId);
+
             if (!ModelState.IsValid)
             {
                 var vaibilities = await _lookupService.GetAllViabilityAsync();
@@ -111,25 +120,54 @@ namespace Apha.VIR.Web.Controllers
             }
             string userid = "TestUser";
 
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete viability.");
+            }
+           
+            await ValidateModel(isolateViabilityId, lastModified, isolateId);
+
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
-            }
+                var result = _isolateViabilityService.GetViabilityHistoryAsync(avNUmber, isolateId).Result;
 
-            if (isolateViabilityId == Guid.Empty)
-            {
-                return BadRequest("Invalid ViabilityId ID.");
-            }
-            if (string.IsNullOrWhiteSpace(lastModified))
-            {
-                return BadRequest("Last Modified cannot be empty.");
-            }
+                var viabilityHistories = _mapper.Map<IEnumerable<IsolateViabilityModel>>(result);
 
+                var viewModel = new IsolateViabilityHistoryViewModel
+                {
+                    IsolateId = isolateId,
+                    Nomenclature = viabilityHistories.FirstOrDefault()?.Nomenclature!,
+                    ViabilityHistoryList = viabilityHistories
+                };
+
+                return View("ViabilityHistory", viewModel);
+            }
+            
             byte[] lastModifiedbyte = Convert.FromBase64String(lastModified);
 
             await _isolateViabilityService.DeleteIsolateViabilityAsync(isolateViabilityId, lastModifiedbyte, userid);
 
             return RedirectToAction(nameof(History), new { AVNumber = avNUmber, Isolate = isolateId });
+        }
+
+        private async Task ValidateModel(Guid isolateViabilityId, string lastModified, Guid isolateId)
+        {
+            if (isolateViabilityId == Guid.Empty)
+            {
+                ModelState.AddModelError(string.Empty, "ID is required.");
+            }
+            if (string.IsNullOrWhiteSpace(lastModified))
+            {
+                ModelState.AddModelError(string.Empty, "Last Modified cannot be empty.");
+            }
+
+            var isolateViabilities = await _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId);
+            int count = isolateViabilities.Count(u => u.IsolateViabilityId == isolateViabilityId);
+
+            if (count == 0)
+            {
+                ModelState.AddModelError(string.Empty, "The item does not exist");
+            }
         }
     }
 }

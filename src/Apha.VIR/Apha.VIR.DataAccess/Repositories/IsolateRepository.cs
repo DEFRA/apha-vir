@@ -9,13 +9,11 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class IsolateRepository : IIsolateRepository
+public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
 {
-    private readonly VIRDbContext _context;
     private const string NoOfAliquots = "NoOfAliquots";
-    public IsolateRepository(VIRDbContext context)
+    public IsolateRepository(VIRDbContext context) : base(context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<IEnumerable<IsolateInfo>> GetIsolateInfoByAVNumberAsync(string AVNumber)
@@ -45,6 +43,7 @@ public class IsolateRepository : IIsolateRepository
                         {
                             AvNumber = result["AVNumber"] as string,
                             Nomenclature = result["Nomenclature"] as string,
+                            IsolateNomenclature = result["IsolateNomenclature"] as string,
                             IsolateId = (Guid)result["IsolateId"],
                             NoOfAliquots = (int)result[NoOfAliquots],
                             ValidToIssue = (result["ValidToIssue"] != DBNull.Value ? (bool?)result["ValidToIssue"] : false),
@@ -123,8 +122,7 @@ public class IsolateRepository : IIsolateRepository
             new SqlParameter("@AVNumber", avNumber),
         };
 
-        List<Isolate> isolateList = await _context.Set<Isolate>()
-           .FromSqlRaw($"EXEC spIsolateGetByAVNumber  @AVNumber ", parameters).ToListAsync();
+        List<Isolate> isolateList = await GetQueryableResultFor<Isolate>($"EXEC spIsolateGetByAVNumber  @AVNumber ", parameters).ToListAsync();
 
         Isolate isolate = isolateList.First(i => i.IsolateId == isolateId);
         return isolate;
@@ -142,7 +140,7 @@ public class IsolateRepository : IIsolateRepository
         parameters = parameters.Concat(new[] { new SqlParameter("@LastModified", SqlDbType.Timestamp) { Direction = ParameterDirection.Output } })
         .ToArray();
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spIsolateInsert @UserID, @IsolateId, @IsolateSampleId, @IsolateNumber, @Family, @Type, @YearOfIsolation,
             @IsMixedIsolate, @IsolationMethod, @AntiserumProduced, @AntigenProduced, @PhylogeneticAnalysis, @MaterialTransferAgreement,  
             @MTALocation, @Comment, @ValidToIssue, @WhyNotValidToIssue, @OriginalSampleAvailable, @FirstViablePassageNumber,
@@ -160,7 +158,7 @@ public class IsolateRepository : IIsolateRepository
         parameters = parameters.Concat(new[] { new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = isolate.LastModified } })
         .ToArray();
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spIsolateUpdate @UserID, @IsolateId, @IsolateSampleId, @IsolateNumber, @Family, @Type, @YearOfIsolation,
             @IsMixedIsolate, @IsolationMethod, @AntiserumProduced, @AntigenProduced, @PhylogeneticAnalysis, @MaterialTransferAgreement,  
             @MTALocation, @Comment, @ValidToIssue, @WhyNotValidToIssue, @OriginalSampleAvailable, @FirstViablePassageNumber,
@@ -170,7 +168,7 @@ public class IsolateRepository : IIsolateRepository
 
     public async Task DeleteIsolateAsync(Guid isolateId, string userId, byte[] lastModified)
     {
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           "EXEC spIsolateDelete @UserID, @IsolateId, @LastModified OUTPUT",
           new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
           new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolateId },
@@ -185,8 +183,7 @@ public class IsolateRepository : IIsolateRepository
             new SqlParameter("@Id", isolateId),
         };       
 
-        List<IsolateNomenclature> isolateNomenclature = await _context.Database
-               .SqlQueryRaw<IsolateNomenclature>($"EXEC spNomenclatureGetByCriteria  @Id ", parameters)
+        List<IsolateNomenclature> isolateNomenclature = await SqlQueryRawFor<IsolateNomenclature>($"EXEC spNomenclatureGetByCriteria  @Id ", parameters)
                .ToListAsync();
 
         return isolateNomenclature;
@@ -201,7 +198,7 @@ public class IsolateRepository : IIsolateRepository
             new SqlParameter("@Type", SqlDbType.UniqueIdentifier) { Value = type }
         };
 
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
           @"EXEC spIsolateCharacteristicsInsert @IsolateId, @Type, @UserID",
           parameters);
     }
