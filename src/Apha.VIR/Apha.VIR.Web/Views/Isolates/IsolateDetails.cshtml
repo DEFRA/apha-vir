@@ -11,148 +11,145 @@
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">AVNumber</span>
-			<span>@Model.IsolateDetails!.Avnumber</span>
-
-		</div>
+				<span>@Model.IsolateDetails!.Avnumber</span>
+				
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Nomenclature
-			</span>
-			<span>@Model.IsolateDetails.Nomenclature</span>
+				</span>
+				<span>@Model.IsolateDetails.Nomenclature</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
-			<span class="view-isolate-details-label">	Dispatch Warning</span>
-			<span>
-				@if ((Model.IsolateDetails.MaterialTransferAgreement || Model.IsolateDetails.IsMixedIsolate) || (!(Model.IsolateDetails.ValidToIssue)))
-				{
-					<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="yes-label">
-						Yes
-					</span>
-				}
-				else
-				{
-					<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="no-label">
-						No
-					</span>
-				}
+			<span class="view-isolate-details-label isolatelabel_title">	Dispatch Warning</span>
 
-			</span>
-
-		</div>
+					@if ((Model.IsolateDetails.MaterialTransferAgreement || Model.IsolateDetails.IsMixedIsolate) || (!(Model.IsolateDetails.ValidToIssue)))
+					{
+						<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="yes-label">
+							Yes
+						</span>
+					}
+					else
+					{
+						<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="no-label">
+							No
+						</span>
+					}
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Mixed Isolate
-			</span>
-			<span>
-				@(Model.IsolateDetails.IsMixedIsolate ? "Yes" : "No")
-			</span>
+				</span>
+				<span>
+					@(Model.IsolateDetails.IsMixedIsolate ? "Yes" : "No")
+				</span>
 
-		</div>
+			</div>
 
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Virus Family
-			</span>
-			<span>
-				@Model.IsolateDetails.FamilyName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.FamilyName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Virus Type
-			</span>
-			<span>
-				@Model.IsolateDetails.TypeName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.TypeName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Host Purpose
-			</span>
-			<span>
-				@Model.IsolateDetails.HostPurposeName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.HostPurposeName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Sample Type
-			</span>
-			<span>
-				@Model.IsolateDetails.SampleTypeName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.SampleTypeName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Group
-			</span>
-			<span>
-				@Model.IsolateDetails.GroupSpeciesName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.GroupSpeciesName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Species
-			</span>
-			<span>
-				@Model.IsolateDetails.BreedName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.BreedName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Country Of Origin
-			</span>
-			<span>
-				@Model.IsolateDetails.CountryOfOriginName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.CountryOfOriginName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Year Of Isolation
-			</span>
-			<span>
-				@Model.IsolateDetails.YearOfIsolation
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.YearOfIsolation
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Isolation Method
-			</span>
-			<span>
-				@Model.IsolateDetails.IsolationMethodName
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.IsolationMethodName
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Received Date
-			</span>
-			<span>
-				@Model.IsolateDetails.ReceivedDate?.ToString("dd/MM/yyyy")
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.ReceivedDate?.ToString("dd/MM/yyyy")
+				</span>
 
-		</div>
+			</div>
 		@if (Model.IsolateDetails.IsFullViewIsolateDetails)
 		{
 			<div class="rowdetails">
@@ -179,129 +176,128 @@
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Well
-			</span>
-			<span>
-				@Model.IsolateDetails.Well
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.Well
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				No Of Aliquots
-			</span>
-			<span>
-				@Model.IsolateDetails.NoOfAliquots
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.NoOfAliquots
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Valid To Issue
-			</span>
-			<span>
-				@(Model.IsolateDetails.ValidToIssue ? "Yes" : "No")
-			</span>
+				</span>
+				<span>
+					@(Model.IsolateDetails.ValidToIssue ? "Yes" : "No")
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Why Not Valid To Issue
-			</span>
-			<span>
-				@Model.IsolateDetails.WhyNotValidToIssue
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.WhyNotValidToIssue
+				</span>
 
-		</div>
+			</div>
 
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Original Sample Available
-			</span>
-			<span>
-				@(Model.IsolateDetails.OriginalSampleAvailable ? "Yes" : "No")
-			</span>
+				</span>
+				<span>
+					@(Model.IsolateDetails.OriginalSampleAvailable ? "Yes" : "No")
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
-				First Viable Passage Number
-			</span>
-			<span>
-				@Model.IsolateDetails.FirstViablePassageNumber
-			</span>
+				First Viable Passage Number</span>
+				<span>
+					@Model.IsolateDetails.FirstViablePassageNumber
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Antiserum Produced
-			</span>
-			<span>
-				@(Model.IsolateDetails.AntiserumProduced ? "Yes" : "No")
-			</span>
+				</span>
+				<span>
+					@(Model.IsolateDetails.AntiserumProduced ? "Yes" : "No")
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Antigen Produced
-			</span>
-			<span>
-				@(Model.IsolateDetails.AntigenProduced ? "Yes" : "No")
-			</span>
+				</span>
+				<span>
+					@(Model.IsolateDetails.AntigenProduced ? "Yes" : "No")
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Phylogenetic Analysis
-			</span>
-			<span>
-				@Model.IsolateDetails.PhylogeneticAnalysis
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.PhylogeneticAnalysis
+				</span>
 
-		</div>
+			</div>
 
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Phylogenetic File
-			</span>
-			<span>
-				@Model.IsolateDetails.PhylogeneticFileName
-				@if (!string.IsNullOrEmpty(Model.IsolateDetails.PhylogeneticFileName))
-				{
-					<a href="@Url.Action("OpenPhylogeneticFile", "Isolate", new { fileName = Model.IsolateDetails.PhylogeneticFileName })" target="_blank">Open</a>
-				}
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.PhylogeneticFileName
+					@if (!string.IsNullOrEmpty(Model.IsolateDetails.PhylogeneticFileName))
+					{
+						<a href="@Url.Action("OpenPhylogeneticFile", "Isolate", new { fileName = Model.IsolateDetails.PhylogeneticFileName })" target="_blank">Open</a>
+					}
+				</span>
 
-		</div>
+			</div>
 
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				MTA
-			</span>
-			<span>
-				@(Model.IsolateDetails.MaterialTransferAgreement ? "Yes" : "No")
-			</span>
+				</span>
+				<span>
+					@(Model.IsolateDetails.MaterialTransferAgreement ? "Yes" : "No")
+				</span>
 
-		</div>
+			</div>
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				MTA Location
-			</span>
-			<span>
-				@Model.IsolateDetails.Mtalocation
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.Mtalocation
+				</span>
 
-		</div>
+			</div>
 
 
 
@@ -309,36 +305,36 @@
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Sender Reference Number
-			</span>
-			<span>
-				@Model.IsolateDetails.SenderReferenceNumber
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.SenderReferenceNumber
+				</span>
 
-		</div>
+			</div>
 
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				SMS Reference Number
-			</span>
-			<span>
-				@Model.IsolateDetails.SmsreferenceNumber
-			</span>
+				</span>
+				<span>
+					@Model.IsolateDetails.SmsreferenceNumber
+				</span>
 
-		</div>
+			</div>
 
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				Comment
-			</span>
-			<span>
-				<textarea readonly rows="10" cols="45">@Model.IsolateDetails.Comment</textarea>
-			</span>
+				</span>
+				<span>
+					<textarea readonly rows="10" cols="45">@Model.IsolateDetails.Comment</textarea>
+				</span>
 
-		</div>
+			</div>
 
-
+		
 
 	</div>
 	<div class="isolatedetailsblock_Right">
@@ -346,7 +342,7 @@
 		<h3 class="view-isolate-header mt-3">Viability Check Information</h3>
 		@if (Model.IsolateViabilityDetails.Any())
 		{
-			<div class="isolate-grid-table mt-1">
+			<div class=" mt-1">
 				<table class="VIRtable">
 					<thead>
 						<tr>
@@ -381,7 +377,7 @@
 
 		@if (Model.IsolateDispatchDetails.Any())
 		{
-			<div class="isolate-grid-table mt-1">
+			<div class=" mt-1">
 				<table class="VIRtable">
 					<thead>
 						<tr>
@@ -401,7 +397,7 @@
 								<td>@dispatch.RecipientName</td>
 								<td>@dispatch.RecipientAddress</td>
 								<td>@dispatch.ReasonForDispatch</td>
-								<td>@dispatch.NoOfAliquotsToBeDispatched</td>
+								<td>@dispatch.NoOfAliquots</td>
 								<td>@dispatch.PassageNumber</td>
 								<td>@dispatch.DispatchedByName</td>
 								<td>@dispatch.DispatchedDate.ToString("d")</td>
@@ -424,7 +420,7 @@
 
 		@if (Model.IsolateCharacteristicDetails.Any())
 		{
-			<div class="isolate-grid-table mt-1">
+			<div class=" mt-1">
 				<table class="VIRtable">
 					<thead>
 						<tr>

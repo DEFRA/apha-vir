@@ -10,6 +10,18 @@
 .width-110{
     width:110px;
 }
+.width-180 {
+   width:180px;
+}
+.width-50 {
+  width: 50px;
+}
+.minwidth-120{
+    min-width: 120px;
+}
+.paddingLeft15 {
+    padding-left: 15px;
+}
 
 .height-166 {
     height:166px;
@@ -34,20 +46,20 @@
         border: 1px solid black;
         padding: 4px 4px;
         text-align: left;
+        font-weight: normal;
+        color: #333333;
     }
 
-    .VIRtable th {
-        padding-bottom: 10px;
-        background-color: Navy;
-        border: 1px solid white;
-        padding:4px 4px;
-        text-align: left;
-    }
+
 
     .VIRtable th {
+        text-wrap-mode: wrap;
         background-color: #0b2677;
         color: #fff;
+        border: 1px solid black;
+        padding: 4px 4px;
         font-weight: bold;
+        text-align: left;
     }
 
 
@@ -58,6 +70,10 @@
     .VIRtable tr:nth-child(odd) {
         background-color: #f9f9f9;
     }
+    .VIRtable th a{
+        color:white !important;
+    }
+
 
 
 .spvalidation  li{ text-align:center;}
@@ -199,10 +215,65 @@ select , input, textarea {
     font-family:Verdana !important;
 }
 
+reports_page{
+    margin:0;
+    width:auto;
+}
+.reports_page ul {
+    list-style: none; /* Remove default bullets */
+}
+
+    .reports_page ul li::before {
+        content: url('../images/chevron-rt-dkblue.gif'); /* Add the greater than symbol and a space */
+      margin-right:20px;
+       
+    }
+
+.report_date {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.error_msg {
+    color:red;
+    font-weight: bold;
+}
 
 
 
 
+.auto-width-table {
+    table-layout: auto;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.width-300 {
+    width: 300px;
+}
+
+.width-150 {
+    width: 150px;
+}
+
+.width-10 {
+    width: 10% !important;
+}
+
+.width-20 {
+    width: 20% !important;
+}
+
+
+.width-75 {
+    width: 75% !important;
+}
 
 
 
