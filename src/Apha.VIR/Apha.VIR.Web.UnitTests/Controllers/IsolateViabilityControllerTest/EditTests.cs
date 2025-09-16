@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
@@ -147,14 +148,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
         public async Task Edit_Post_ValidModel_ReturnsRedirectToActionResult()
         {
             // Arrange
+            var isolateId = Guid.NewGuid();
+            var isolateViabilityId = Guid.NewGuid();
+
             var model = new IsolateViabilityViewModel
             {
                 IsolateViability = new IsolateViabilityModel
                 {
                     AVNumber = "AV123",
-                    IsolateViabilityIsolateId = Guid.NewGuid()
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
                 }
             };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
 
             var dto = new IsolateViabilityInfoDTO();
             _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability).Returns(dto);
