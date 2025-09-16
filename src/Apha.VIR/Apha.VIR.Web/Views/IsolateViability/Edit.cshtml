@@ -8,6 +8,7 @@
 	<input asp-for="@Model.IsolateViability.LastModified" type="hidden" />
 	<input asp-for="@Model.IsolateViability.IsolateViabilityIsolateId" type="hidden" />
 	<input asp-for="@Model.IsolateViability.AVNumber" type="hidden" />
+	<input asp-for="@Model.IsolateViability.Nomenclature" type="hidden" />
 	<table>
 		<thead class="sr-only"><tr><th scope="col"></th></tr></thead>
 		<tbody>
@@ -62,7 +63,10 @@
 		</tbody>
 	</table>
 </form>
-<div id="validationSummary" class="text-danger" style="display:none;">
-	<p>There are validation messages requiring your attention.</p>
-	<div asp-validation-summary="All"></div>
-</div>
+@if (!ViewData.ModelState.IsValid)
+{
+	<div id="validationSummary" class="validation">
+		<p>There are validation messages requiring your attention.</p>
+		<div asp-validation-summary="All" class="validation"></div>
+	</div>
+}

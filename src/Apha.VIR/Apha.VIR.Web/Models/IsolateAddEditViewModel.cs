@@ -45,7 +45,7 @@ namespace Apha.VIR.Web.Models
         public DateTime? DateChecked { get; set; }
         public Guid? CheckedBy { get; set; }
         public string? ActionType { get; set; }
-        public bool IsDetection { get; set; } = false;
+        public bool IsChkDetection { get; set; } = false;
         public bool IsViabilityInsert { get; set; } = false;
         public string? CreatedBy { get; set; }
         public Guid? PreviousViable { get; set; }

@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Services;
+using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Utilities;
@@ -317,11 +319,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         [Fact]
         public async Task Edit_Post_ValidInput_SuccessfulUpdateAndRedirect()
         {
+            var dispatchId = Guid.NewGuid();
+            var isolateId = Guid.NewGuid();
+            var avnumber = "AV123";
             // Arrange
             var model = new IsolateDispatchEditViewModel
             {
-                Avnumber = "AV123",
-                DispatchIsolateId = Guid.NewGuid(),
+                Avnumber = avnumber,
+                DispatchId = dispatchId,
+                DispatchIsolateId = isolateId,
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
@@ -331,6 +337,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService.GetAllViabilityAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllWorkGroupsAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllStaffAsync().Returns(new List<LookupItemDTO>());
+
+            _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
+           .Returns(new[] { new IsolateDispatchInfoDTO { DispatchId = dispatchId } });
 
             _mockMapper.Map<IsolateDispatchInfoDTO>(model).Returns(new IsolateDispatchInfoDTO());
             SetupMockUserAndRoles();
@@ -368,10 +377,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         public async Task Edit_Post_ExceptionThrownByUpdateDispatchAsync_HandlesErrorAppropriately()
         {
             // Arrange
+            var dispatchId = Guid.NewGuid();
+            var isolateId = Guid.NewGuid();
+            var avnumber = "AV123";
+
             var model = new IsolateDispatchEditViewModel
             {
-                Avnumber = "AV123",
-                DispatchIsolateId = Guid.NewGuid(),
+                Avnumber = avnumber,
+                DispatchId = dispatchId,
+                DispatchIsolateId = isolateId,
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
@@ -382,11 +396,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService.GetAllWorkGroupsAsync().Returns(new List<LookupItemDTO>());
             _mockLookupService.GetAllStaffAsync().Returns(new List<LookupItemDTO>());
 
+            _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
+          .Returns(new[] { new IsolateDispatchInfoDTO { DispatchId = dispatchId } });
+
             _mockMapper.Map<IsolateDispatchInfoDTO>(model).Returns(new IsolateDispatchInfoDTO());
 
             _mockIsolateDispatchService.UpdateDispatchAsync(Arg.Any<IsolateDispatchInfoDTO>(), Arg.Any<string>())
             .Returns(Task.FromException(new Exception("Update failed")));
             SetupMockUserAndRoles();
+
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Edit(model));
         }
