@@ -144,12 +144,13 @@ new Claim(ClaimTypes.Role, "DifferentRole")
             Assert.True(result);
         }
 
+        private static readonly string[] OtherRoleArray = new[] { "OtherRole" };
         [Fact]
         public void CanAddItem_UserNotInRole_ReturnsFalse()
         {
             // Arrange
             var role = "TestRole";
-            SetupMockUser(new[] { "OtherRole" });
+            SetupMockUser(OtherRoleArray);
 
             // Act
             var result = AuthorisationUtil.CanAddItem(role);
@@ -172,12 +173,13 @@ new Claim(ClaimTypes.Role, "DifferentRole")
             Assert.False(result);
         }
 
+        private static readonly string[] SomeRoleArray = new[] { "SomeRole" };
         [Fact]
         public void CanAddItem_EmptyRole_ReturnsFalse()
         {
             // Arrange
             var role = string.Empty;
-            SetupMockUser(new[] { "SomeRole" });
+            SetupMockUser(SomeRoleArray);
 
             // Act
             var result = AuthorisationUtil.CanAddItem(role);
