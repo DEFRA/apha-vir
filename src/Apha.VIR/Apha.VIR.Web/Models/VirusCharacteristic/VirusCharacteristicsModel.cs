@@ -25,5 +25,6 @@ namespace Apha.VIR.Web.Models.VirusCharacteristic
         public int? CharacteristicIndex { get; set; }
         public byte[] LastModified { get; set; } = Array.Empty<byte>();
         public List<SelectListItem>? CharacteristicTypeNameList { get; set; } = new List<SelectListItem>();
+        public string? DataType { get; set; }
     }
 }
