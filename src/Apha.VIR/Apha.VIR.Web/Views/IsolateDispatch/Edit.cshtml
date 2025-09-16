@@ -46,7 +46,7 @@
             <td>Viability</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
-                <select asp-for="ViabilityId" asp-items="Model.ViabilityList" disabled style="width: 208px;">
+                <select asp-for="ViabilityId" asp-items="Model.ViabilityList" disabled class="width-208">
                     <option value="">Select Viability</option>
                 </select>
                 <input type="hidden" name="ViabilityId" value="@Model.ViabilityId" />
@@ -57,7 +57,7 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
                 <input asp-for="NoOfAliquotsToBeDispatched" type="text" class="w-200" />
-                <span asp-validation-for="NoOfAliquotsToBeDispatched"  class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+                <span asp-validation-for="NoOfAliquotsToBeDispatched" class="text-danger dispatchValidation_text"></span>
             </td>
         </tr>
         <tr>
@@ -65,7 +65,7 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
                 <input asp-for="PassageNumber" type="text" class="w-200" />
-                <span asp-validation-for="PassageNumber" class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+                <span asp-validation-for="PassageNumber" class="text-danger dispatchValidation_text"></span>
             </td>
         </tr>
         <tr>
@@ -83,7 +83,7 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
                 <div id="recipientDropdown">
-                    <select asp-for="RecipientId" asp-items="Model.RecipientList" style="width: 208px;">
+                    <select asp-for="RecipientId" asp-items="Model.RecipientList" class="width-208">
                         <option value=""> </option>
                     </select>
                     <small>(Internal Recipients Only)</small>
@@ -121,7 +121,8 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>          
                 <input asp-for="DispatchedDate" />         
-                <span asp-validation-for="DispatchedDate" class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+               
+                <span asp-validation-for="DispatchedDate" class="text-danger dispatchValidation_text"></span>
             </td>
         </tr>
         <tr>
