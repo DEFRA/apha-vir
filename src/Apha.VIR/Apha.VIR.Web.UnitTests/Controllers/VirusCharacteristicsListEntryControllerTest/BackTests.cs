@@ -22,8 +22,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirectResult.ActionName);
-            Assert.Equal("VirusCharacteristicsListEntry", redirectResult.ControllerName);
+            Assert.Equal("List", redirectResult.ActionName);
+            Assert.Equal("VirusCharacteristics", redirectResult.ControllerName);
         }
     }
 }
