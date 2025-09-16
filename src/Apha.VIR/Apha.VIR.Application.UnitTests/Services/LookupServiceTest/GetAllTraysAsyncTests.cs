@@ -32,14 +32,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Tray 2" }
             };
 
-            var expectedDTOs = new List<LookupItemDTO>
+            var expectedDTOs = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray 2" }
             };
 
             _mockLookupRepository.GetAllTraysAsync().Returns(mockTrays);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
 
             // Act
             var result = await _mockLookupService.GetAllTraysAsync();
@@ -47,7 +47,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(expectedDTOs, result);
             await _mockLookupRepository.Received(1).GetAllTraysAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>());
         }
 
         [Fact]
@@ -66,14 +66,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var freezerId = Guid.NewGuid();
-            var expectedTrays = new List<LookupItemDTO>
+            var expectedTrays = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray 2" }
             };
 
             _mockLookupRepository.GetAllTraysByParentAsync(freezerId).Returns(Task.FromResult(expectedTrays as IEnumerable<LookupItem>)!);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItemDTO>>()).Returns(expectedTrays);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItemDto>>()).Returns(expectedTrays);
 
             // Act
             var result = await _mockLookupService.GetAllTraysByParentAsync(freezerId);
@@ -87,9 +87,9 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         public async Task Test_GetAllTraysByParentAsync_WithNullFreezer()
         {
             // Arrange
-            var expectedTrays = new List<LookupItemDTO>();
+            var expectedTrays = new List<LookupItemDto>();
             _mockLookupRepository.GetAllTraysByParentAsync(null).Returns(Task.FromResult(expectedTrays as IEnumerable<LookupItem>)!);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItemDTO>>()).Returns(expectedTrays);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItemDto>>()).Returns(expectedTrays);
 
             // Act
             var result = await _mockLookupService.GetAllTraysByParentAsync(null);

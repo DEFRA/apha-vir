@@ -16,14 +16,14 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<VirusCharacteristicDTO>> GetAllVirusCharacteristicsAsync()
+        public async Task<IEnumerable<VirusCharacteristicDto>> GetAllVirusCharacteristicsAsync()
         {
-            return _mapper.Map<IEnumerable<VirusCharacteristicDTO>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync());
+            return _mapper.Map<IEnumerable<VirusCharacteristicDto>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync());
         }
 
-        public async Task<IEnumerable<VirusCharacteristicDTO>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)
+        public async Task<IEnumerable<VirusCharacteristicDto>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)
         {
-            return _mapper.Map<IEnumerable<VirusCharacteristicDTO>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsByVirusTypeAsync(virusType, isAbscent));
+            return _mapper.Map<IEnumerable<VirusCharacteristicDto>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsByVirusTypeAsync(virusType, isAbscent));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Apha.VIR.Application.Services
             _lookupRepository = lookupRepository ?? throw new ArgumentNullException(nameof(lookupRepository));
             _mapper = mapper;
         }
-        public async Task<IEnumerable<IsolateDispatchReportDTO>> GetDispatchesReportAsync(DateTime? dateFrom, DateTime? dateTo)
+        public async Task<IEnumerable<IsolateDispatchReportDto>> GetDispatchesReportAsync(DateTime? dateFrom, DateTime? dateTo)
         {
             var result = await _reportRepository.GetDispatchesReportAsync(dateFrom, dateTo);
 
@@ -41,7 +41,7 @@ namespace Apha.VIR.Application.Services
                 }
             }
 
-            return _mapper.Map<IEnumerable<IsolateDispatchReportDTO>>(result);
+            return _mapper.Map<IEnumerable<IsolateDispatchReportDto>>(result);
         }
     }
 }

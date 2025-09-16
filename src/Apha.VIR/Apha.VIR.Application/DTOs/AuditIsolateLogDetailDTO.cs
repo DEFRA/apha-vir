@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class AuditIsolateLogDetailDTO
+public class AuditIsolateLogDetailDto
 {
     public Guid LogId { get; set; }
     public string UserId { get; set; } = null!;

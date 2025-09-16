@@ -39,27 +39,27 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task Test_UpdateIsolateDetailsAsync_Success()
         {
             // Arrange
-            var isolateDto = new IsolateDTO { IsolateId = Guid.NewGuid() };
-            var isolateEntity = new Isolate { IsolateId = isolateDto.IsolateId };
+            var IsolateDto = new IsolateDto { IsolateId = Guid.NewGuid() };
+            var isolateEntity = new Isolate { IsolateId = IsolateDto.IsolateId };
 
-            _mockMapper.Map<Isolate>(isolateDto).Returns(isolateEntity);
+            _mockMapper.Map<Isolate>(IsolateDto).Returns(isolateEntity);
 
             // Act
-            await _mockIsolatesService.UpdateIsolateDetailsAsync(isolateDto);
+            await _mockIsolatesService.UpdateIsolateDetailsAsync(IsolateDto);
 
             // Assert
-            await _mockIsolateRepository.Received(1).UpdateIsolateDetailsAsync(Arg.Is<Isolate>(i => i.IsolateId == isolateDto.IsolateId));
+            await _mockIsolateRepository.Received(1).UpdateIsolateDetailsAsync(Arg.Is<Isolate>(i => i.IsolateId == IsolateDto.IsolateId));
         }
 
         [Fact]
         public async Task Test_UpdateIsolateDetailsAsync_MappingFailure()
         {
             // Arrange
-            var isolateDto = new IsolateDTO { IsolateId = Guid.NewGuid() };
-            _mockMapper.Map<Isolate>(isolateDto).Throws(new AutoMapperMappingException("Mapping failed"));
+            var IsolateDto = new IsolateDto { IsolateId = Guid.NewGuid() };
+            _mockMapper.Map<Isolate>(IsolateDto).Throws(new AutoMapperMappingException("Mapping failed"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<AutoMapperMappingException>(() => _mockIsolatesService.UpdateIsolateDetailsAsync(isolateDto));
+            await Assert.ThrowsAsync<AutoMapperMappingException>(() => _mockIsolatesService.UpdateIsolateDetailsAsync(IsolateDto));
         }
 
         [Fact]

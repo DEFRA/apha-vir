@@ -1,9 +1,9 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateFullDetailDTO
+public class IsolateFullDetailDto
 {
-    public IsolateInfoDTO? IsolateDetails { get; set; }
-    public required List<IsolateViabilityInfoDTO> IsolateViabilityDetails { get; set; }
-    public required List<IsolateDispatchInfoDTO> IsolateDispatchDetails { get; set; }
-    public required List<IsolateCharacteristicInfoDTO> IsolateCharacteristicDetails { get; set; }
+    public IsolateInfoDto? IsolateDetails { get; set; }
+    public required List<IsolateViabilityInfoDto> IsolateViabilityDetails { get; set; }
+    public required List<IsolateDispatchInfoDto> IsolateDispatchDetails { get; set; }
+    public required List<IsolateCharacteristicInfoDto> IsolateCharacteristicDetails { get; set; }
 }

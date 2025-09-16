@@ -91,7 +91,7 @@ namespace Apha.VIR.Web.Controllers
 
             foreach (var isolate in model.SelectedNewIsolatedList!)
             {
-                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
                 {
                     IsolateId = isolate.IsolatedId!.Value,
                     Freezer = model.SelectedNewFreezer!.Value,
@@ -130,7 +130,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
                 {
                     IsolateId = model.IsolateId,
                     Freezer = model.Freezer,
@@ -204,7 +204,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+            await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
             {
                 Freezer = model.SelectedNewFreezer!.Value,
                 Tray = model.SelectedTray!.Value,
@@ -216,7 +216,7 @@ namespace Apha.VIR.Web.Controllers
 
             foreach (var isolate in data!)
             {
-                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
                 {
                     IsolateId = isolate.IsolateId,
                     Freezer = model.SelectedNewFreezer!.Value,

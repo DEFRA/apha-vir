@@ -37,14 +37,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
             // Arrange
             var familyId = Guid.NewGuid();
             var typeId = Guid.NewGuid();
-            var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var virusTypes = new List<LookupItemDTO> { new LookupItemDTO { Id = typeId, Name = "Type1" } };
-            var characteristics = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic1" } };
+            var families = new List<LookupItemDto> { new LookupItemDto { Id = familyId, Name = "Family1" } };
+            var virusTypes = new List<LookupItemDto> { new LookupItemDto { Id = typeId, Name = "Type1" } };
+            var characteristics = new List<VirusCharacteristicDto> { new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic1" } };
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
             _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, false).Returns(characteristics);
-            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDTO>());
+            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDto>());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Index(familyId, typeId);
@@ -66,14 +66,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
             // Arrange
             var familyId = Guid.NewGuid();
             var typeId = Guid.NewGuid();
-            var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var virusTypes = new List<LookupItemDTO> { new LookupItemDTO { Id = typeId, Name = "Type1" } };
-            var characteristics = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic1" } };
+            var families = new List<LookupItemDto> { new LookupItemDto { Id = familyId, Name = "Family1" } };
+            var virusTypes = new List<LookupItemDto> { new LookupItemDto { Id = typeId, Name = "Type1" } };
+            var characteristics = new List<VirusCharacteristicDto> { new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic1" } };
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
             _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, false).Returns(characteristics);
-            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDTO>());
+            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDto>());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Index(familyId, null);
@@ -95,14 +95,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
             // Arrange
             var familyId = Guid.NewGuid();
             var typeId = Guid.NewGuid();
-            var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var virusTypes = new List<LookupItemDTO>();
-            var characteristics = new List<VirusCharacteristicDTO>();
+            var families = new List<LookupItemDto> { new LookupItemDto { Id = familyId, Name = "Family1" } };
+            var virusTypes = new List<LookupItemDto>();
+            var characteristics = new List<VirusCharacteristicDto>();
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
             _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, false).Returns(characteristics);
-            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDTO>());
+            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(typeId, true).Returns(new List<VirusCharacteristicDto>());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Index(null, typeId);
@@ -123,14 +123,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
         {
             // Arrange
             var familyId = Guid.NewGuid();
-            var families = new List<LookupItemDTO> { new LookupItemDTO { Id = familyId, Name = "Family1" } };
-            var virusTypes = new List<LookupItemDTO>();
-            var characteristics = new List<VirusCharacteristicDTO>();
+            var families = new List<LookupItemDto> { new LookupItemDto { Id = familyId, Name = "Family1" } };
+            var virusTypes = new List<LookupItemDto>();
+            var characteristics = new List<VirusCharacteristicDto>();
 
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
             _lookupService.GetAllVirusTypesByParentAsync(familyId).Returns(virusTypes);
             _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(Arg.Any<Guid?>(), false).Returns(characteristics);
-            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(Arg.Any<Guid?>(), true).Returns(new List<VirusCharacteristicDTO>());
+            _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(Arg.Any<Guid?>(), true).Returns(new List<VirusCharacteristicDto>());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Index(null, null);
@@ -150,7 +150,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
         public async Task Index_FamiliesIsEmpty_ReturnsViewWithNullSelectedFamilyIdAndEmptyTypes()
         {
             // Arrange
-            var families = new List<LookupItemDTO>();
+            var families = new List<LookupItemDto>();
             _lookupService.GetAllVirusFamiliesAsync().Returns(families);
             SetupMockUserAndRoles();
             // Act

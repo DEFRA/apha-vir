@@ -41,16 +41,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var isolate = Guid.NewGuid();
             var isolateViabilityId = Guid.NewGuid();
 
-            var viabilityHistory = new List<IsolateViabilityInfoDTO> { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } };
+            var viabilityHistory = new List<IsolateViabilityInfoDto> { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } };
             var isolateViabilityModelList = new List<IsolateViabilityModel> { new IsolateViabilityModel { IsolateViabilityId = isolateViabilityId } };
-            var MapviabilityList = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Viability" } };
-            var MapStaffList = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Staff" } };
+            var MapviabilityList = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Viability" } };
+            var MapStaffList = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Staff" } };
 
             _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(viabilityHistory);
             _lookupService.GetAllViabilityAsync().Returns(MapviabilityList);
             _lookupService.GetAllStaffAsync().Returns(MapStaffList);
 
-            _mapper.Map<IEnumerable<IsolateViabilityModel>>(Arg.Any<IEnumerable<IsolateViabilityInfoDTO>>())
+            _mapper.Map<IEnumerable<IsolateViabilityModel>>(Arg.Any<IEnumerable<IsolateViabilityInfoDto>>())
            .Returns(isolateViabilityModelList);
 
             _mapper.Map<IsolateViabilityModel>(Arg.Any<IsolateViabilityModel>()).Returns(isolateViabilityModelList.First());
@@ -114,19 +114,19 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var avNumber = "AV123";
             var isolate = Guid.NewGuid();
             var isolateViabilityId = Guid.NewGuid();
-            var viabilityHistory = new List<IsolateViabilityInfoDTO>
+            var viabilityHistory = new List<IsolateViabilityInfoDto>
                                     {
-                                    new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId },
-                                    new IsolateViabilityInfoDTO { IsolateViabilityId = Guid.NewGuid() }
+                                    new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId },
+                                    new IsolateViabilityInfoDto { IsolateViabilityId = Guid.NewGuid() }
                                     };
             var isolateViabilityModelList = new List<IsolateViabilityModel>
             { new IsolateViabilityModel { IsolateViabilityId = isolateViabilityId } };
 
             _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(viabilityHistory);
-            _lookupService.GetAllViabilityAsync().Returns(new List<LookupItemDTO>());
-            _lookupService.GetAllStaffAsync().Returns(new List<LookupItemDTO>());
+            _lookupService.GetAllViabilityAsync().Returns(new List<LookupItemDto>());
+            _lookupService.GetAllStaffAsync().Returns(new List<LookupItemDto>());
 
-            _mapper.Map<IEnumerable<IsolateViabilityModel>>(Arg.Any<IEnumerable<IsolateViabilityInfoDTO>>())
+            _mapper.Map<IEnumerable<IsolateViabilityModel>>(Arg.Any<IEnumerable<IsolateViabilityInfoDto>>())
             .Returns(isolateViabilityModelList);
 
             _mapper.Map<IsolateViabilityModel>(Arg.Any<IsolateViabilityModel>()).Returns(isolateViabilityModelList.First());
@@ -156,8 +156,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                 }
             };
 
-            var dto = new IsolateViabilityInfoDTO();
-            _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability).Returns(dto);
+            var dto = new IsolateViabilityInfoDto();
+            _mapper.Map<IsolateViabilityInfoDto>(model.IsolateViability).Returns(dto);
             SetupMockUserAndRoles();
 
             // Act

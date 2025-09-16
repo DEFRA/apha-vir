@@ -5,12 +5,12 @@ namespace Apha.VIR.Application.Interfaces
 {
     public interface ISenderService
     {
-        Task<IEnumerable<SenderDTO>> GetAllSenderOrderByOrganisationAsync(Guid? countryId);
-        Task<IEnumerable<SenderDTO>> GetAllSenderOrderBySenderAsync(Guid? countryId);
-        Task<PaginatedResult<SenderDTO>> GetAllSenderAsync(int pageNo, int pageSize);
-        Task<SenderDTO> GetSenderAsync(Guid senderId);
-        Task AddSenderAsync(SenderDTO sender);
-        Task UpdateSenderAsync(SenderDTO sender);
+        Task<IEnumerable<SenderDto>> GetAllSenderOrderByOrganisationAsync(Guid? countryId);
+        Task<IEnumerable<SenderDto>> GetAllSenderOrderBySenderAsync(Guid? countryId);
+        Task<PaginatedResult<SenderDto>> GetAllSenderAsync(int pageNo, int pageSize);
+        Task<SenderDto> GetSenderAsync(Guid senderId);
+        Task AddSenderAsync(SenderDto sender);
+        Task UpdateSenderAsync(SenderDto sender);
         Task DeleteSenderAsync(Guid senderId);
     }
 }

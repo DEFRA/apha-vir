@@ -39,10 +39,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var lookup = new LookupViewModel { Id = lookupId, Parent = Guid.NewGuid() };
             var lookupItem = new LookupItemModel { Id = lookupItemId };
 
-            _lookupService.GetLookupByIdAsync(lookupId).Returns(new LookupDTO());
-            _lookupService.GetLookupItemAsync(lookupId, lookupItemId).Returns(new LookupItemDTO());
-            _mapper.Map<LookupViewModel>(Arg.Any<LookupDTO>()).Returns(lookup);
-            _mapper.Map<LookupItemModel>(Arg.Any<LookupItemDTO>()).Returns(lookupItem);
+            _lookupService.GetLookupByIdAsync(lookupId).Returns(new LookupDto());
+            _lookupService.GetLookupItemAsync(lookupId, lookupItemId).Returns(new LookupItemDto());
+            _mapper.Map<LookupViewModel>(Arg.Any<LookupDto>()).Returns(lookup);
+            _mapper.Map<LookupItemModel>(Arg.Any<LookupItemDto>()).Returns(lookupItem);
 
             // Act
             var result = await _controller.Edit(lookupId, lookupItemId) as ViewResult;
@@ -85,7 +85,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         public async Task Edit_Get_GetLookupsByIdAsyncThrowsException_ThrowsException()
         {
             // Arrange
-            _lookupService.GetLookupByIdAsync(Arg.Any<Guid>()).Returns(Task.FromException<LookupDTO>(new Exception("Service exception")));
+            _lookupService.GetLookupByIdAsync(Arg.Any<Guid>()).Returns(Task.FromException<LookupDto>(new Exception("Service exception")));
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Edit(Guid.NewGuid(), Guid.NewGuid()));
@@ -95,8 +95,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         public async Task Edit_Get_GetLookupItemAsyncThrowsException_ThrowsException()
         {
             // Arrange
-            _lookupService.GetLookupByIdAsync(Arg.Any<Guid>()).Returns(new LookupDTO());
-            _lookupService.GetLookupItemAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(Task.FromException<LookupItemDTO>(new Exception("Service exception")));
+            _lookupService.GetLookupByIdAsync(Arg.Any<Guid>()).Returns(new LookupDto());
+            _lookupService.GetLookupItemAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(Task.FromException<LookupItemDto>(new Exception("Service exception")));
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Edit(Guid.NewGuid(), Guid.NewGuid()));
@@ -114,10 +114,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var lookup = new LookupViewModel { Id = lookupId };
             var lookupItem = new LookupItemModel { Id = lookupItemId };
 
-            _lookupService.GetLookupByIdAsync(lookupId).Returns(new LookupDTO());
-            _lookupService.GetLookupItemAsync(lookupId, lookupItemId).Returns(new LookupItemDTO());
-            _mapper.Map<LookupViewModel>(Arg.Any<LookupDTO>()).Returns(lookup);
-            _mapper.Map<LookupItemModel>(Arg.Any<LookupItemDTO>()).Returns(lookupItem);
+            _lookupService.GetLookupByIdAsync(lookupId).Returns(new LookupDto());
+            _lookupService.GetLookupItemAsync(lookupId, lookupItemId).Returns(new LookupItemDto());
+            _mapper.Map<LookupViewModel>(Arg.Any<LookupDto>()).Returns(lookup);
+            _mapper.Map<LookupItemModel>(Arg.Any<LookupItemDto>()).Returns(lookupItem);
 
             // Act
             var result = await _controller.Edit(lookupId, lookupItemId, currentPage) as ViewResult;
@@ -146,7 +146,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 
                 }
             };
-            var lookupListdto = new List<LookupItemDTO> { new LookupItemDTO { Id = lookupItemId } };
+            var lookupListdto = new List<LookupItemDto> { new LookupItemDto { Id = lookupItemId } };
             var lookuitemList = new List<LookupItemModel> { new LookupItemModel { Id = lookupItemId } };
 
             var lookup = new LookupViewModel { Id = lookupId, Parent = Guid.NewGuid() };
@@ -156,8 +156,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             _mapper.Map<IEnumerable<LookupItemModel>>(lookupListdto).Returns(lookuitemList);
 
 
-            var dto = new LookupItemDTO();
-            _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
+            var dto = new LookupItemDto();
+            _mapper.Map<LookupItemDto>(model.LookupItem).Returns(dto);
 
             lock (_lock)
             {
@@ -221,12 +221,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             };
             _controller.ModelState.AddModelError("Error", "Test error");
 
-            var lookupResult = new LookupDTO { Parent = Guid.NewGuid() };
+            var lookupResult = new LookupDto { Parent = Guid.NewGuid() };
             var lookupViewModel = new LookupViewModel { Parent = Guid.NewGuid() };
             _lookupService.GetLookupByIdAsync(model.LookupId).Returns(lookupResult);
             _mapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
 
-            var parentItems = new List<LookupItemDTO>();
+            var parentItems = new List<LookupItemDto>();
             _lookupService.GetLookupItemParentListAsync(Arg.Any<Guid>()).Returns(parentItems);
             _mapper.Map<IEnumerable<LookupItemModel>>(parentItems).Returns(new List<LookupItemModel>());
 
@@ -261,8 +261,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 LookupItem = new LookupItemModel()
             };
 
-            _lookupService.GetAllLookupItemsAsync(model.LookupId).Returns(new List<LookupItemDTO>());
-            _mapper.Map<IEnumerable<LookupItemModel>>(Arg.Any<IEnumerable<LookupItemDTO>>()).Returns(new List<LookupItemModel>());
+            _lookupService.GetAllLookupItemsAsync(model.LookupId).Returns(new List<LookupItemDto>());
+            _mapper.Map<IEnumerable<LookupItemModel>>(Arg.Any<IEnumerable<LookupItemDto>>()).Returns(new List<LookupItemModel>());
 
             lock (_lock)
             {
@@ -294,8 +294,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 LookupId = Guid.NewGuid(),
                 LookupItem = new LookupItemModel()
             };
-            var dto = new LookupItemDTO();
-            _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
+            var dto = new LookupItemDto();
+            _mapper.Map<LookupItemDto>(model.LookupItem).Returns(dto);
             _lookupService.UpdateLookupItemAsync(model.LookupId, dto).Returns(Task.FromException(new Exception("Test exception")));
 
             lock (_lock)
@@ -334,7 +334,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
 
                 }
             };
-            var lookupListdto = new List<LookupItemDTO> { new LookupItemDTO { Id = lookupItemId } };
+            var lookupListdto = new List<LookupItemDto> { new LookupItemDto { Id = lookupItemId } };
             var lookuitemList = new List<LookupItemModel> { new LookupItemModel { Id = lookupItemId } };
 
             var lookup = new LookupViewModel { Id = lookupId, Parent = Guid.NewGuid() };
@@ -344,8 +344,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             _mapper.Map<IEnumerable<LookupItemModel>>(lookupListdto).Returns(lookuitemList);
 
 
-            var dto = new LookupItemDTO();
-            _mapper.Map<LookupItemDTO>(model.LookupItem).Returns(dto);
+            var dto = new LookupItemDto();
+            _mapper.Map<LookupItemDto>(model.LookupItem).Returns(dto);
 
             // Simulate a user with no roles
             var claimsIdentity = new ClaimsIdentity();

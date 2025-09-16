@@ -37,7 +37,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
                 UserId = "user123"
             };
 
-            var submissionLogs = new List<AuditSubmissionLogDTO> { new AuditSubmissionLogDTO(), new AuditSubmissionLogDTO() };
+            var submissionLogs = new List<AuditSubmissionLogDto> { new AuditSubmissionLogDto(), new AuditSubmissionLogDto() };
 
             _auditLogService.GetSubmissionLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Returns(submissionLogs);
@@ -108,7 +108,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             _controller.TempData = tempData;
 
-            var isolateLogs = new List<AuditIsolateLogDTO> { new AuditIsolateLogDTO(), new AuditIsolateLogDTO() };
+            var isolateLogs = new List<AuditIsolateLogDto> { new AuditIsolateLogDto(), new AuditIsolateLogDto() };
             _auditLogService.GetIsolatLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Returns(isolateLogs);
 

@@ -101,12 +101,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 SelectedFreezer = Guid.NewGuid(),
                 SelectedTray = Guid.NewGuid()
             };
-            var dtoList = new List<IsolateRelocateDTO>();
+            var dtoList = new List<IsolateRelocateDto>();
             var viewModelList = new List<IsolateRelocateViewModel>();
 
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(dtoList);
-            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>()).Returns(viewModelList);
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(viewModelList);
 
             // Act
             var result = await _controller.Search(model);
@@ -145,8 +145,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 SelectedTray = Guid.NewGuid()
             };
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
-            .Returns(new List<IsolateRelocateDTO>());
-            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>()).Returns(new List<IsolateRelocateViewModel>());
+            .Returns(new List<IsolateRelocateDto>());
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(new List<IsolateRelocateViewModel>());
 
             // Act
             var result = await _controller.Search(model);
@@ -169,8 +169,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 SelectedTray = Guid.NewGuid()
             };
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
-            .Returns(new List<IsolateRelocateDTO>());
-            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>()).Returns(new List<IsolateRelocateViewModel>());
+            .Returns(new List<IsolateRelocateDto>());
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(new List<IsolateRelocateViewModel>());
 
             // Act
             var result = await _controller.Search(model);
@@ -191,8 +191,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 SelectedTray = Guid.Empty
             };
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(),
-                Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(new List<IsolateRelocateDTO>());
-            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>())
+                Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(new List<IsolateRelocateDto>());
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>())
                 .Returns(new List<IsolateRelocateViewModel>());
 
             // Act
@@ -220,7 +220,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 }
             };
 
-            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>())
+            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>())
             .Returns(Task.CompletedTask);
 
             // Act
@@ -233,7 +233,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             Assert.True(dict.ContainsKey("success"));             
 
             // Verify that the service method was called once
-            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>());
+            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>());
         }
 
         [Fact]
@@ -288,8 +288,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Arrange
             var model = new IsolateRelocateViewModel();           
 
-            _lookupService.GetAllFreezerAsync().Returns(new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Freezer1" } });
-            _lookupService.GetAllTraysAsync().Returns(new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray1" } });
+            _lookupService.GetAllFreezerAsync().Returns(new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Freezer1" } });
+            _lookupService.GetAllTraysAsync().Returns(new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray1" } });
 
             // Act
             var result = await _controller.Edit(model);
@@ -315,7 +315,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 LastModified = BitConverter.GetBytes(DateTime.UtcNow.Ticks)
             };
 
-            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>())
+            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>())
             .Returns(Task.CompletedTask);
 
             // Act
@@ -326,7 +326,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             Assert.Equal("Isolate", redirectResult.ActionName);
             Assert.Equal("Relocation", redirectResult.ControllerName);
 
-            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>());
+            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>());
         }
 
         [Fact]
@@ -334,10 +334,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         {
             // Arrange
             var freezerId = Guid.NewGuid();
-            var trays = new List<LookupItemDTO>
+            var trays = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray 2" }
             };
             _lookupService.GetAllTraysByParentAsync(freezerId).Returns(trays);
 
@@ -357,7 +357,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         {
             // Arrange
             Guid? freezerId = null;
-            _lookupService.GetAllTraysByParentAsync(freezerId).Returns(new List<LookupItemDTO>());
+            _lookupService.GetAllTraysByParentAsync(freezerId).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _controller.GetTraysByFreezerId(freezerId);
@@ -393,12 +393,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 MaxAVNumber = "AV2"
             };
 
-            var serviceResult = new List<IsolateRelocateDTO>();
+            var serviceResult = new List<IsolateRelocateDto>();
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(serviceResult);
 
             var mappedResult = new List<IsolateRelocateViewModel>();
-            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>()).Returns(mappedResult);
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(mappedResult);
 
             // Act
             var result = await _controller.SearchIsolates(model);
@@ -457,12 +457,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 MaxAVNumber = "AV2"
             };
 
-            var emptyServiceResult = new List<IsolateRelocateDTO>();
+            var emptyServiceResult = new List<IsolateRelocateDto>();
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(emptyServiceResult);
 
             var emptyMappedResult = new List<IsolateRelocateViewModel>();
-            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>()).Returns(emptyMappedResult);
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(emptyMappedResult);
 
             // Act
             var result = await _controller.SearchIsolates(model);
@@ -487,7 +487,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             };
 
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
-            .Returns(new List<IsolateRelocateDTO>());
+            .Returns(new List<IsolateRelocateDto>());
 
             // Act
             var result = await _controller.RelocateTray(model);
@@ -498,7 +498,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(value));
             Assert.True(dict.ContainsKey("success"));
 
-            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>());
+            await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>());
         }
 
         [Fact]
@@ -547,7 +547,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 MaxAVNumber = "AV00-02"
             };
 
-            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>())
+            _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>())
             .Returns(Task.FromException(new Exception("Service error")));
 
             // Act & Assert

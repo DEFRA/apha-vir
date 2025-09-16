@@ -120,7 +120,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             tempData["SearchCriteria"] = "{\"AVNumber\":\"AV123\",\"DateTimeFrom\":\"2023-01-01\",\"DateTimeTo\":\"2023-12-31\",\"UserId\":\"testuser\"}";
 
             auditLogService.GetSubmissionLogsAsync(Arg.Any<string>(), Arg.Any<DateTime>(), Arg.Any<DateTime>(), Arg.Any<string>())
-            .Returns(new AuditSubmissionLogDTO[] { new AuditSubmissionLogDTO() });
+            .Returns(new AuditSubmissionLogDto[] { new AuditSubmissionLogDto() });
 
             _controller.TempData = tempData;
 

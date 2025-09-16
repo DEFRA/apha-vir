@@ -48,9 +48,9 @@ namespace Apha.VIR.Web.Controllers
 
             // reuse existing service that returns all and pick by id
             var all = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
-            var characteristicDto = all.FirstOrDefault(c => c.Id == characteristic.Value);
+            var CharacteristicDto = all.FirstOrDefault(c => c.Id == characteristic.Value);
 
-            var name = characteristicDto?.Name ?? string.Empty;
+            var name = CharacteristicDto?.Name ?? string.Empty;
             var listDtos = await _listEntryService.GetVirusCharacteristicListEntries(characteristic.Value, pageNo, pageSize);
             var vcEntries = _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(listDtos.data);
 
@@ -142,7 +142,7 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 return View("CreateVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.AddEntryAsync(dto);
 
             return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
@@ -180,7 +180,7 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 return View("EditVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.UpdateEntryAsync(dto);
 
             return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
