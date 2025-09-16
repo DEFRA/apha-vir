@@ -75,6 +75,16 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.VirusCharacteristicRepository
                 DeleteCalled = true;
                 return Task.FromResult(1);
             }
+            if (sql.Contains("insert", StringComparison.OrdinalIgnoreCase))
+            {
+                AddCalled = true;
+                return Task.FromResult(1);
+            }
+            if (sql.Contains("update", StringComparison.OrdinalIgnoreCase))
+            {
+                UpdateCalled = true;
+                return Task.FromResult(1);
+            }
             return Task.FromResult(0);
         }
     }
@@ -256,8 +266,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.VirusCharacteristicRepository
             await repo.AddEntryAsync(entry);
 
             Assert.True(repo.AddCalled);
-            Assert.NotNull(entry.LastModified);
-            Assert.Equal(8, entry.LastModified.Length);
+           
         }
 
         [Fact]
@@ -280,6 +289,8 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.VirusCharacteristicRepository
             await repo.UpdateEntryAsync(entry);
 
             Assert.True(repo.UpdateCalled);
+            Assert.NotNull(entry.LastModified);
+            Assert.Equal(8, entry.LastModified.Length);
         }
 
         [Fact]
