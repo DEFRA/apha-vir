@@ -13,8 +13,8 @@ namespace Apha.VIR.Web.Models.VirusCharacteristic
 
         [Required]
         public Guid? CharacteristicType { get; set; }
-        public bool NumericSort { get; set; }
-        public bool DisplayOnSearch { get; set; }
+        public bool NumericSort { get; set; } = false;
+        public bool DisplayOnSearch { get; set; } = false;
         public string? Prefix { get; set; }
         public double? MinValue { get; set; }
         public double? MaxValue { get; set; }

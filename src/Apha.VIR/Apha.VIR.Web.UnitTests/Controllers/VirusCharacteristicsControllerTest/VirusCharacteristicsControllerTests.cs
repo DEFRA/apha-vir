@@ -269,9 +269,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var model = Assert.IsAssignableFrom<VirusCharacteristicsModel>(viewResult.Model);
             Assert.Equal(id, model.Id);
             Assert.Equal("Test Characteristic", model.Name);
-            Assert.NotEmpty(model.CharacteristicTypeNameList);
-            Assert.Single(model.CharacteristicTypeNameList);
-            Assert.Equal(virusTypeId.ToString(), model.CharacteristicTypeNameList[0].Value.ToString());
+            Assert.NotEmpty(model.CharacteristicTypeNameList!);
+            Assert.Single(model.CharacteristicTypeNameList!);
+            Assert.Equal(virusTypeId.ToString(), model.CharacteristicTypeNameList![0].Value.ToString());
             Assert.Equal("Type1", model.CharacteristicTypeNameList[0].Text);
 
             await _mockVirusCharacteristicService.Received(1).GetVirusCharacteristicsByIdAsync(id);
@@ -283,7 +283,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             var id = Guid.NewGuid();
-            _mockVirusCharacteristicService.GetVirusCharacteristicsByIdAsync(id).Returns((VirusCharacteristicDTO)null);
+            _mockVirusCharacteristicService.GetVirusCharacteristicsByIdAsync(id).Returns((VirusCharacteristicDTO?)null);
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() => _controller.EditAsync(id));

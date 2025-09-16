@@ -257,17 +257,5 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _mockVirusCharacteristicService.DeleteVirusCharactersticsAsync(id, lastModified));
         }
-
-
-        [Fact]
-        public async Task Test_DeleteVirusCharactersticsAsync_NullId()
-        {
-            // Arrange
-            Guid? nullId = null;
-            var lastModified = new byte[] { 1, 2, 3 };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _mockVirusCharacteristicService.DeleteVirusCharactersticsAsync(nullId.Value, lastModified));
-        }
     }
 }
