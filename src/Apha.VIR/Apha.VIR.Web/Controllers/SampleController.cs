@@ -27,6 +27,11 @@ namespace Apha.VIR.Web.Controllers
         [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Create(string AVNumber)
         {
+            if (string.IsNullOrEmpty(AVNumber))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -63,7 +68,11 @@ namespace Apha.VIR.Web.Controllers
         [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Edit(string AVNumber, Guid Sample)
         {
-         
+            if (string.IsNullOrEmpty(AVNumber))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

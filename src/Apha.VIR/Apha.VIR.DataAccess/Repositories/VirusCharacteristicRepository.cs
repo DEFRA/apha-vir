@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Apha.VIR.DataAccess.Repositories
 {
     public class VirusCharacteristicRepository : RepositoryBase<VirusCharacteristic>, IVirusCharacteristicRepository
-    {
-        public VirusCharacteristicRepository(VIRDbContext context) : base(context)
+    {        
+        public VirusCharacteristicRepository(VIRDbContext context): base(context)
         {
         }
 
@@ -18,26 +18,25 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
         }
+
         public async Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo, int pageSize)
         {
-            var result = await _context.Set<VirusCharacteristic>()
-                .FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync();
+            var result = await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
 
             var totalRecords = result.Count;
             var entries = result.Skip((pageNo - 1) * pageSize)
                 .Take(pageSize).ToList();
-
             return new PagedData<VirusCharacteristic>(entries, totalRecords);
         }
+ 
         public async Task<VirusCharacteristic?> GetVirusCharacteristicsByIdAsync(Guid id)
         {
-            var result = await _context.Set<VirusCharacteristic>()
-                .FromSqlInterpolated($"EXEC spVirusCharacteristicGetAll").ToListAsync(); ;
-  
-            var entry = result.SingleOrDefault(x => x.Id == id);
+            var result = await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
 
+            var entry = result.SingleOrDefault(x => x.Id == id);
             return entry;
         }
+
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)
         {
             if (isAbscent)
@@ -49,12 +48,13 @@ namespace Apha.VIR.DataAccess.Repositories
                 return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetByVirusTypeWherePresent @VirusType = {virusType}").ToListAsync();
             }
         }
+
         public async Task<IEnumerable<VirusCharacteristicDataType>> GetAllVirusCharactersticsTypeNamesAsync()
         {
-            return (await _context.Set<VirusCharacteristicDataType>()
-            .FromSqlRaw($"EXEC spVirusCharacteristicTypeGetAll").ToListAsync())
+            return (await GetQueryableResultFor<VirusCharacteristicDataType>($"EXEC spVirusCharacteristicTypeGetAll").ToListAsync())
             .ToList();
         }
+
         public async Task AddEntryAsync(VirusCharacteristic virusCharacteristic)
         {
             SqlParameter[] parameters = GetAddSqlParameters(virusCharacteristic);
@@ -72,16 +72,18 @@ namespace Apha.VIR.DataAccess.Repositories
             @"EXEC spVirusCharacteristicUpdate @Id, @Name, @CharacteristicType, @NumericSort, 
                       @DisplayOnSearch, @Prefix, @MinValue, @MaxValue, @DecimalPlaces, @Length, @Index, @LastModified", parameters);
         }
+
         public async Task DeleteVirusCharactersticsAsync(Guid id, byte[] lastModified)
         {
             var parameters = new[]
             {
-           new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id },
-           new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified },
-        };
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id },
+                new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified }
+            };
 
             await ExecuteSqlAsync(@"EXEC spVirusCharacteristicDelete @Id,@LastModified", parameters);
         }
+
         public async Task<bool> CheckVirusCharactersticsUsageByIdAsync(Guid id)
         {
             int TotalEntries = 0;
@@ -160,8 +162,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     ParameterName = "@LastModified",
                     SqlDbType = SqlDbType.Timestamp,
                     Value =  virusCharacteristic.LastModified == null ? DBNull.Value: virusCharacteristic.LastModified,
-                    //Direction = ParameterDirection.Output,
-                } 
+                }
             };
         }
     }

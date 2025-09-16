@@ -20,7 +20,7 @@ namespace Apha.VIR.Application.Services
 
             var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
 
-            return characteristicNomenclature;
+            return (string.IsNullOrEmpty(characteristicNomenclature) ? "" : "(" + characteristicNomenclature + ")") ;
         }
     }
 }

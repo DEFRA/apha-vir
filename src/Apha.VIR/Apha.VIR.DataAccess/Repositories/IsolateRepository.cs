@@ -43,6 +43,7 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
                         {
                             AvNumber = result["AVNumber"] as string,
                             Nomenclature = result["Nomenclature"] as string,
+                            IsolateNomenclature = result["IsolateNomenclature"] as string,
                             IsolateId = (Guid)result["IsolateId"],
                             NoOfAliquots = (int)result[NoOfAliquots],
                             ValidToIssue = (result["ValidToIssue"] != DBNull.Value ? (bool?)result["ValidToIssue"] : false),

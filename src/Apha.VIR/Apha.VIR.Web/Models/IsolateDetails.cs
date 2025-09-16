@@ -37,5 +37,7 @@ namespace Apha.VIR.Web.Models
         public string? FirstViablePassageNumber { get; set; }
         public string? ValidationErrorsList { get; set; }
         public string? ValidationErrorsListHTML { get; set; }
+        public bool IsEditHistory { get; set; } = false;
+        public bool IsFullViewIsolateDetails { get; set; } = false;
     }
 }

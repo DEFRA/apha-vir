@@ -281,7 +281,7 @@
 .textInput {
     font-family: Verdana;
     width: 100%;
-    background-color: white;
+/*    background-color: white;*/
     height: fit-content;
 }
 
@@ -611,7 +611,6 @@
     border: 1px solid #888888;
     margin-bottom: 20px;
 }
-
 .viruscharacteristics-empty-box {
     border: 1px solid #888888;
     background-color: #fff;
@@ -629,19 +628,19 @@
     text-align: left;
 }
 
-.viruscharacteristictable th {
-    background-color: #0b2677;
-    color: #fff;
-    font-weight: bold;
-}
+    .viruscharacteristictable th {
+        background-color: #0b2677;
+        color: #fff;
+        font-weight: bold;
+    }
 
-.viruscharacteristictable tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
-}
+    .viruscharacteristictable tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
 
-.viruscharacteristictable tbody tr:nth-child(even) {
-    background-color: #efefef;
-}
+    .viruscharacteristictable tbody tr:nth-child(even) {
+        background-color: #efefef;
+    }
 /*---- Headings ----*/
 
 h1 {
@@ -750,6 +749,10 @@ a {
     padding-right: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
+}
+
+.editsubmission-form-group_row {
+    margin-top: 1px;
 }
 
 .editsubmission-body_title {
@@ -931,6 +934,10 @@ a {
     display: table;
     border-collapse: collapse;
     width: 100%;
+}
+
+.editsubmission-form-group_row {
+    display: table-row;
 }
 
 .editsubmission-addsender-cell {
@@ -1186,7 +1193,23 @@ a {
     margin-top: 20px;
 }
 
+.contentbox {
+    border-top: #0b2677 1px solid;
+    border-right: #0b2677 1px solid;
+    border-bottom: #0b2677 1px solid;
+    border-left: #0b2677 1px solid;
+    margin: 0px 0px 15px 0px;
+}
 
+    .contentbox .box_title {
+        padding-top: 3px;
+        padding-right: 10px;
+        padding-bottom: 3px;
+        padding-left: 10px;
+        background-color: #0b2677;
+        color: #ffffff;
+        font-weight: bold;
+    }
 
 .av-number-box_body {
     padding-top: 0px;
@@ -1210,42 +1233,44 @@ a {
     width: 100%;
 }
 
-    .submission-grid-table table {
-        border-collapse: collapse;
-    }
+  .submission-grid-table table {
+      border-collapse: collapse;
+  }
 
-        .submission-grid-table table thead tr th {
-            text-wrap-mode: nowrap;
-            padding-bottom: 1px;
-            background-color: Navy;
-            border: 1px solid black;
-            align-items: center;
-            color: White;
-            padding-left: 5px;
-            padding-right: 5px;
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
+      .submission-grid-table table thead tr th {
+          text-wrap-mode: nowrap;
+          padding-bottom: 1px;
+          background-color: Navy;
+          border: 1px solid black;
+          align-items: center;
+      }
 
-        .submission-grid-table table tr td {
-            border: 1px solid black;
-            border-spacing: 0;
-            padding-left: 5px;
-            padding-right: 5px;
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
+      .submission-grid-table table thead tr th {
+          color: White;
+          padding-left: 5px;
+          padding-right: 5px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+      }
+
+      .submission-grid-table table tr td {
+          border: 1px solid black;
+          border-spacing: 0;
+          padding-left: 5px;
+          padding-right: 5px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+      }
 
 
-    .submission-grid-table tr:nth-child(even) {
-        background-color: #efefef;
-    }
+  .submission-grid-table tr:nth-child(even) {
+      background-color: #efefef;
+  }
 
-    .submission-grid-table tr form button:hover {
-        text-decoration-line: underline
-    }
+  .submission-grid-table tr form button:hover {
+      text-decoration-line: underline
+  }
 /*End Submission samples*/
-
 /* Isolate Relocate */
 .w-80 {
     width: 80px !important;
