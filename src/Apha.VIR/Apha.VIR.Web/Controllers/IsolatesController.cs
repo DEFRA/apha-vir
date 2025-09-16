@@ -47,7 +47,7 @@ namespace Apha.VIR.Web.Controllers
             var isolateDetails = _mapper.Map<IsolateDetailsViewModel>(result);
             if (isolateDetails != null && isolateDetails.IsolateDetails != null)
             {
-                if (AuthorisationUtil.CanHistoryItem(AppRoleConstant.Administrator))
+                if (AuthorisationUtil.CanGetItem(AppRoleConstant.Administrator))
                 {
                     isolateDetails.IsolateDetails.IsEditHistory = true;
                 }

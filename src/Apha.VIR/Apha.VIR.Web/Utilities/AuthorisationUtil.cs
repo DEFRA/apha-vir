@@ -38,12 +38,7 @@ namespace Apha.VIR.Web.Utilities
         public static bool CanDeleteItem(string role)
         {
             return IsInRole(role);
-        }
-
-        public static bool CanHistoryItem(string role)
-        {
-            return IsInRole(role);
-        }
+        }        
 
         public static bool IsUserInAnyRole()
         {
