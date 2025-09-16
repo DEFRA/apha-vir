@@ -1,0 +1,55 @@
+﻿@using Apha.VIR.Web.Models.VirusCharacteristic
+@model VirusCharacteristicsViewModel
+
+<div id="characteristicsContainer">
+	@if (Model.List.Any())
+	{
+		<table class="viruscharacteristictable">
+			<thead>
+				<tr class="viruscharacteristictable-header">
+					<th>Name</th>
+					<th>Display In Nomenclature</th>
+					<th>Prefix</th>
+					<th>Min Value</th>
+					<th>Max Value</th>
+					<th>Decimal Places</th>
+					<th>Length</th>
+					<th>Display Order</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var characteristic in Model.List)
+				{
+					<tr>
+						<td>@characteristic.Name</td>
+						<td>
+							<input type="checkbox" disabled @(characteristic.DisplayOnSearch ? "checked" : "")>
+						</td>
+						<td>@characteristic.Prefix</td>
+						<td>@(characteristic.MinValue ?? 0)</td>
+						<td>@(characteristic.MaxValue ?? 0)</td>
+						<td>@(characteristic.DecimalPlaces ?? 0)</td>
+						<td>@(characteristic.Length ?? 0)</td>
+						<td>@characteristic.CharacteristicIndex</td>
+						<td>
+							<a asp-controller="VirusCharacteristics" asp-action="Edit" asp-route-id="@characteristic.Id" class="btn btn-primary">Edit</a>
+							<a asp-controller="VirusCharacteristicsListEntry" asp-action="ListEntries" asp-route-characteristicId="@characteristic.Id" class="btn btn-secondary">Edit List Entries</a>
+						</td>
+					</tr>
+				}
+				<tr>
+					<td colspan="2">
+						<div id="girdPagination" class="pagination" style="text-align:left">
+							@await Component.InvokeAsync("Pagination", Model.Pagination)
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	}
+	else
+	{
+		<p>No virus characteristics recorded at this time.</p>
+	}
+</div>
