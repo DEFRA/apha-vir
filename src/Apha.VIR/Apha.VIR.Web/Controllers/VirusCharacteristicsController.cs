@@ -33,6 +33,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> List(int pageNo = 1, int pageSize = 10)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -57,6 +62,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> BindCharacteristicsGridOnPagination(int pageNo, int pageSize)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -81,6 +91,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateAsync()
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -106,6 +121,11 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Create(VirusCharacteristicsModel model)
         {
             ViewBag.showsummary = false;
+
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to insert entry in VirusCharacteristic list.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -150,6 +170,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> EditAsync(Guid id)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+            }
+
             if (id == Guid.Empty || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -176,6 +201,11 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Edit(VirusCharacteristicsModel model)
         {
             ViewBag.showsummary = false;
+
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to update entry in VirusCharacteristic list.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -216,8 +246,12 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> Delete(VirusCharacteristicsModel model, Guid id)
         {
-
             ViewBag.showsummary = false;
+
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete entry in VirusCharacteristic list.");
+            }
 
             if (ModelState.IsValid)
             {

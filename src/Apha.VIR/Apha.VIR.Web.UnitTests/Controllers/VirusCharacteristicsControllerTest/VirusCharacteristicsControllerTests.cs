@@ -36,18 +36,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         public void Index_ReturnsVirusCharacteristicManagementView()
         {
             // Arrange
-            lock (_lock)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
-                };
-                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
-                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
-
-                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
-                AuthorisationUtil.AppRoles = appRoles;
-            }
+            SetupMockUserAndRoles();
 
             // Act
             var result = _controller.Index();
@@ -64,7 +53,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(1, 10).Returns(expectedData);
             _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.List() as ViewResult;
 
@@ -84,7 +73,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(2, 20).Returns(expectedData);
             _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.List(2, 20) as ViewResult;
 
@@ -105,7 +94,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(1, 10).Returns(expectedData);
             _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.List(1, 10) as ViewResult;
 
@@ -136,6 +125,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(pageNo, pageSize).Returns(mockResult);
             _mockMapper.Map<IEnumerable<VirusCharacteristicsModel>>(mockResult.data)
                 .Returns(new List<VirusCharacteristicsModel> { entryViewModel });
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.BindCharacteristicsGridOnPagination(pageNo, pageSize);
@@ -154,7 +144,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.BindCharacteristicsGridOnPagination(1, 10);
 
@@ -173,6 +163,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.CreateAsync();
@@ -198,6 +189,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.CreateAsync();
@@ -215,7 +207,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().ThrowsAsync(new Exception("Test exception"));
-
+            SetupMockUserAndRoles();
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.CreateAsync());
         }
@@ -233,6 +225,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
  
             var dto = new VirusCharacteristicDTO();
             _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(dto);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Create(model);
@@ -260,6 +253,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             _mockMapper.Map<VirusCharacteristicsModel>(virusCharacteristicDto).Returns(virusCharacteristicModel);
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(virusTypesDto);
             _mockMapper.Map<List<VirusCharacteristicDataType>>(virusTypesDto).Returns(virusTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.EditAsync(id);
@@ -284,6 +278,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             // Arrange
             var id = Guid.NewGuid();
             _mockVirusCharacteristicService.GetVirusCharacteristicsByIdAsync(id).Returns((VirusCharacteristicDTO?)null);
+            SetupMockUserAndRoles();
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() => _controller.EditAsync(id));
@@ -294,7 +289,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             var id = Guid.Empty;
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.EditAsync(id);
 
@@ -308,6 +303,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             // Arrange
             var model = new VirusCharacteristicsModel();
             _controller.ModelState.AddModelError("Error", "Model error");
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Edit(model);
@@ -338,8 +334,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             .Returns(new[] { new VirusCharacteristicDTO { Id = id } });
      
             _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
-   
-            // Act
+            SetupMockUserAndRoles();
+            
+            // 
             var result = await _controller.Edit(model);
 
             // Assert
@@ -355,6 +352,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var model = new VirusCharacteristicsModel { Id = Guid.NewGuid(), Name = "Test" };
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(new List<VirusCharacteristicDataTypeDTO>());
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Edit(model);
@@ -374,6 +372,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
             _mockVirusCharacteristicService.UpdateEntryAsync(Arg.Any<VirusCharacteristicDTO>()).Throws(new Exception("Test exception"));
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Edit(model);
@@ -384,13 +383,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             Assert.NotEmpty(_controller.ModelState);
         }
         
-        
         [Fact]
         public async Task Delete_InvalidModelState_ReturnsViewResult()
         {
             // Arrange
             var model = new VirusCharacteristicsModel();
             _controller.ModelState.AddModelError("error", "some error");
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Delete(model, Guid.NewGuid());
@@ -405,7 +404,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             var model = new VirusCharacteristicsModel();
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Delete(model, Guid.Empty);
 
@@ -437,7 +436,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
 
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
-      
+            SetupMockUserAndRoles();
+
             // Act
             var result = await _controller.Delete(model, id);
 
@@ -445,6 +445,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("List", redirectToActionResult.ActionName);
             await _mockVirusCharacteristicService.Received(1).DeleteVirusCharactersticsAsync(id, model.LastModified);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }
