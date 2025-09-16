@@ -8,6 +8,7 @@
 			<thead>
 				<tr class="viruscharacteristictable-header">
 					<th>Name</th>
+					<th>Type</th>
 					<th>Display In Nomenclature</th>
 					<th>Prefix</th>
 					<th>Min Value</th>
@@ -16,6 +17,7 @@
 					<th>Length</th>
 					<th>Display Order</th>
 					<th></th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -23,6 +25,7 @@
 				{
 					<tr>
 						<td>@characteristic.Name</td>
+						<td>@characteristic.DataType</td>
 						<td>
 							<input type="checkbox" disabled @(characteristic.DisplayOnSearch ? "checked" : "")>
 						</td>
@@ -34,17 +37,31 @@
 						<td>@characteristic.CharacteristicIndex</td>
 						<td>
 							<a asp-controller="VirusCharacteristics" asp-action="Edit" asp-route-id="@characteristic.Id" class="btn btn-primary">Edit</a>
-							<a asp-controller="VirusCharacteristicsListEntry" asp-action="ListEntries" asp-route-characteristicId="@characteristic.Id" class="btn btn-secondary">Edit List Entries</a>
 						</td>
-					</tr>
+						<td>
+							@if (@characteristic.DataType == "SingleList")
+							{
+								<a asp-controller="VirusCharacteristicsListEntry"
+								asp-action="ListEntries"
+								asp-route-characteristicId="@characteristic.Id"
+								class="btn btn-secondary">
+								Edit List Entries
+							</a>
+							}
+							else
+							{
+								<a id="EditListEntriy">Edit List Entries</a>
+							}
+                       </td>
+                    </tr>
 				}
-				<tr>
-					<td colspan="2">
-						<div id="girdPagination" class="pagination" style="text-align:left">
-							@await Component.InvokeAsync("Pagination", Model.Pagination)
-						</div>
-					</td>
-				</tr>
+				    <tr>
+				    	<td colspan="2">
+				    		<div id="girdPagination" class="pagination" style="text-align:left">
+				    			@await Component.InvokeAsync("Pagination", Model.Pagination)
+				    		</div>
+				    	</td>
+				    </tr>
 			</tbody>
 		</table>
 	}
