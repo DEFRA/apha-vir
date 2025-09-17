@@ -22,22 +22,22 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
 
 
         [Fact]
-        public async Task GetSenderAsync_ReturnsSenderDTO_WhenValidSenderId()
+        public async Task GetSenderAsync_ReturnsSenderDto_WhenValidSenderId()
         {
             // Arrange
             var senderId = Guid.NewGuid();
             var sender = new Sender { SenderId = senderId, SenderName = "Test Sender" };
-            var senderDTO = new SenderDTO { SenderId = senderId, SenderName = "Test Sender" };
+            var SenderDto = new SenderDto { SenderId = senderId, SenderName = "Test Sender" };
 
             _mockSenderRepository.GetSenderAsync(senderId).Returns(sender);
-            _mockMapper.Map<SenderDTO>(sender).Returns(senderDTO);
+            _mockMapper.Map<SenderDto>(sender).Returns(SenderDto);
 
             // Act
             var result = await _senderService.GetSenderAsync(senderId);
 
             // Assert
             Assert.NotNull(result);
-            Assert.IsType<SenderDTO>(result);
+            Assert.IsType<SenderDto>(result);
             Assert.Equal(senderId, result.SenderId);
             Assert.Equal("Test Sender", result.SenderName);
         }
@@ -68,7 +68,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             await _senderService.GetSenderAsync(senderId);
 
             // Assert
-            _mockMapper.Received(1).Map<SenderDTO>(Arg.Is<Sender>(s => s.SenderId == senderId));
+            _mockMapper.Received(1).Map<SenderDto>(Arg.Is<Sender>(s => s.SenderId == senderId));
         }
     }
 }

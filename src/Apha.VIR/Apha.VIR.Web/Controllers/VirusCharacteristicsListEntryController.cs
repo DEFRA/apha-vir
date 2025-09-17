@@ -133,7 +133,7 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 return View("CreateVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.AddEntryAsync(dto);
 
             return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
@@ -171,7 +171,7 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 return View("EditVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.UpdateEntryAsync(dto);
 
             return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });

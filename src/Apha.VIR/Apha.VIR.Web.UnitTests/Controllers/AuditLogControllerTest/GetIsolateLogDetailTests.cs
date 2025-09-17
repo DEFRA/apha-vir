@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Arrange
             var logId = Guid.NewGuid();
             var avNumber = "AV123";
-            var serviceResult = new AuditIsolateLogDetailDTO();
+            var serviceResult = new AuditIsolateLogDetailDto();
             var mappedResult = new AuditIsolateLogDetailsViewModel();
 
             _auditLogService.GetIsolatLogDetailAsync(logId).Returns(serviceResult);

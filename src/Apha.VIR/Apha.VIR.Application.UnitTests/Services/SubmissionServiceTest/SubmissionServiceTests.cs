@@ -86,15 +86,15 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
         }
 
         [Fact]
-        public async Task GetSubmissionDetailsByAVNumberAsync_ExistingAVNumber_ReturnsSubmissionDTO()
+        public async Task GetSubmissionDetailsByAVNumberAsync_ExistingAVNumber_ReturnsSubmissionDto()
         {
             // Arrange
             var avNumber = "AV123";
             var submission = new Submission { Avnumber = avNumber };
-            var expectedDto = new SubmissionDTO { Avnumber = avNumber };
+            var expectedDto = new SubmissionDto { Avnumber = avNumber };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
-            _mockMapper.Map<SubmissionDTO>(submission).Returns(expectedDto);
+            _mockMapper.Map<SubmissionDto>(submission).Returns(expectedDto);
 
             // Act
             var result = await _submissionService.GetSubmissionDetailsByAVNumberAsync(avNumber);
@@ -124,10 +124,10 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             // Arrange
             var avNumber = "AV456";
             var submission = new Submission { Avnumber = avNumber, Sender = "Test Submission" };
-            var expectedDto = new SubmissionDTO { Avnumber = avNumber, Sender = "Test Submission" };
+            var expectedDto = new SubmissionDto { Avnumber = avNumber, Sender = "Test Submission" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
-            _mockMapper.Map<SubmissionDTO>(submission).Returns(expectedDto);
+            _mockMapper.Map<SubmissionDto>(submission).Returns(expectedDto);
 
             // Act
             var result = await _submissionService.GetSubmissionDetailsByAVNumberAsync(avNumber);
@@ -136,19 +136,19 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             Assert.NotNull(result);
             Assert.Equal(expectedDto.Avnumber, result.Avnumber);
             Assert.Equal(expectedDto.Sender, result.Sender);
-            _mockMapper.Received(1).Map<SubmissionDTO>(submission);
+            _mockMapper.Received(1).Map<SubmissionDto>(submission);
         }
 
         [Fact]
         public async Task AddSubmissionAsync_ValidSubmission_SuccessfullyAdded()
         {
             // Arrange
-            var submissionDto = new SubmissionDTO { Avnumber = "AV123" };
+            var SubmissionDto = new SubmissionDto { Avnumber = "AV123" };
             var submissionEntity = new Submission { Avnumber = "AV123" };
-            _mockMapper.Map<Submission>(submissionDto).Returns(submissionEntity);
+            _mockMapper.Map<Submission>(SubmissionDto).Returns(submissionEntity);
 
             // Act
-            await _submissionService.AddSubmissionAsync(submissionDto, "testUser");
+            await _submissionService.AddSubmissionAsync(SubmissionDto, "testUser");
 
             // Assert
             await _mockSubmissionRepository.Received(1).AddSubmissionAsync(Arg.Is<Submission>(s => s.Avnumber == "AV123"), "testUser");
@@ -158,25 +158,25 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
         public async Task AddSubmissionAsync_RepositoryThrowsException_ExceptionPropagated()
         {
             // Arrange
-            var submissionDto = new SubmissionDTO { Avnumber = "AV123" };
+            var SubmissionDto = new SubmissionDto { Avnumber = "AV123" };
             var submissionEntity = new Submission { Avnumber = "AV123" };
-            _mockMapper.Map<Submission>(submissionDto).Returns(submissionEntity);
+            _mockMapper.Map<Submission>(SubmissionDto).Returns(submissionEntity);
             _mockSubmissionRepository.AddSubmissionAsync(Arg.Any<Submission>(), Arg.Any<string>()).Throws(new Exception("Repository error"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _submissionService.AddSubmissionAsync(submissionDto, "testUser"));
+            await Assert.ThrowsAsync<Exception>(() => _submissionService.AddSubmissionAsync(SubmissionDto, "testUser"));
         }
 
         [Fact]
         public async Task UpdateSubmissionAsync_ValidSubmission_CallsRepositoryUpdate()
         {
             // Arrange
-            var submissionDto = new SubmissionDTO { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
+            var SubmissionDto = new SubmissionDto { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
             var submissionEntity = new Submission { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
-            _mockMapper.Map<Submission>(submissionDto).Returns(submissionEntity);
+            _mockMapper.Map<Submission>(SubmissionDto).Returns(submissionEntity);
 
             // Act
-            await _submissionService.UpdateSubmissionAsync(submissionDto, "testUser");
+            await _submissionService.UpdateSubmissionAsync(SubmissionDto, "testUser");
 
             // Assert
             await _mockSubmissionRepository.Received(1).UpdateSubmissionAsync(Arg.Is<Submission>(s => s == submissionEntity), Arg.Is<string>(u => u == "testUser"));
@@ -186,14 +186,14 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
         public async Task UpdateSubmissionAsync_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var submissionDto = new SubmissionDTO { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
+            var SubmissionDto = new SubmissionDto { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
             var submissionEntity = new Submission { SubmissionId = Guid.NewGuid(), Avnumber = "AV001" };
-            _mockMapper.Map<Submission>(submissionDto).Returns(submissionEntity);
+            _mockMapper.Map<Submission>(SubmissionDto).Returns(submissionEntity);
             _mockSubmissionRepository.UpdateSubmissionAsync(Arg.Any<Submission>(), Arg.Any<string>())
             .Returns(Task.FromException(new Exception("Repository error")));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _submissionService.UpdateSubmissionAsync(submissionDto, "testUser"));
+            await Assert.ThrowsAsync<Exception>(() => _submissionService.UpdateSubmissionAsync(SubmissionDto, "testUser"));
         }
 
        [Fact]

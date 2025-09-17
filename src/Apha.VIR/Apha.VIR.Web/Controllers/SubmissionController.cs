@@ -67,8 +67,8 @@ namespace Apha.VIR.Web.Controllers
                 submission.Organisations = new List<SubmissionSenderViewModel>();
                 return View(submission);
             }
-            var submissionDto = _mapper.Map<SubmissionDTO>(submission);
-            await _submissionService.AddSubmissionAsync(submissionDto, "TestUser");
+            var SubmissionDto = _mapper.Map<SubmissionDto>(submission);
+            await _submissionService.AddSubmissionAsync(SubmissionDto, "TestUser");
 
             return RedirectToAction("Index", "SubmissionSamples");
         }
@@ -88,8 +88,8 @@ namespace Apha.VIR.Web.Controllers
                 return RedirectToAction("Create", new { AVNumber = AVNumber });
             }
 
-            var submissionDto = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
-            SubmissionEditViewModel submissionModel = _mapper.Map<SubmissionEditViewModel>(submissionDto);
+            var SubmissionDto = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
+            SubmissionEditViewModel submissionModel = _mapper.Map<SubmissionEditViewModel>(SubmissionDto);
             submissionModel.CountryList = await GetCountryDropdownList();
             submissionModel.SubmittingLabList = await GetSubmittingLabDropdownList();
             submissionModel.SubmissionReasonList = await GetSubmissionReasonDropdownList();
@@ -116,8 +116,8 @@ namespace Apha.VIR.Web.Controllers
                 submission.Organisations = new List<SubmissionSenderViewModel>();
                 return View(submission);
             }
-            var submissionDto = _mapper.Map<SubmissionDTO>(submission);
-            await _submissionService.UpdateSubmissionAsync(submissionDto, "TestUser");
+            var SubmissionDto = _mapper.Map<SubmissionDto>(submission);
+            await _submissionService.UpdateSubmissionAsync(SubmissionDto, "TestUser");
 
             return RedirectToAction("Index", "SubmissionSamples");
         }
@@ -133,8 +133,8 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 countryId = null;
 
-            var senderDto = await _senderService.GetAllSenderOrderBySenderAsync(countryId);
-            var senderModel = _mapper.Map<List<SubmissionSenderViewModel>>(senderDto);
+            var SenderDto = await _senderService.GetAllSenderOrderBySenderAsync(countryId);
+            var senderModel = _mapper.Map<List<SubmissionSenderViewModel>>(SenderDto);
             return PartialView("_MainSenders", senderModel);
         }
 
@@ -159,7 +159,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var sender = _mapper.Map<SenderDTO>(senderModel);
+                var sender = _mapper.Map<SenderDto>(senderModel);
                 await _senderService.AddSenderAsync(sender);
                 return Json(new { success = true, message = "Sender add successfully!" });
             }
@@ -177,8 +177,8 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 countryId = null;
 
-            var senderDto = await _senderService.GetAllSenderOrderByOrganisationAsync(countryId);
-            var senderModel = _mapper.Map<List<SubmissionSenderViewModel>>(senderDto);
+            var SenderDto = await _senderService.GetAllSenderOrderByOrganisationAsync(countryId);
+            var senderModel = _mapper.Map<List<SubmissionSenderViewModel>>(SenderDto);
             return PartialView("_MainOrganisations", senderModel);
         }
 

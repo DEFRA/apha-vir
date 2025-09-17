@@ -126,12 +126,12 @@ namespace Apha.VIR.Web.Controllers
 
             isolateModel.CreatedBy = "testuser";
 
-            var isolateDto = _mapper.Map<IsolateDTO>(isolateModel);
-            isolateModel.IsolateId = await _isolatesService.AddIsolateDetailsAsync(isolateDto);
+            var IsolateDto = _mapper.Map<IsolateDto>(isolateModel);
+            isolateModel.IsolateId = await _isolatesService.AddIsolateDetailsAsync(IsolateDto);
 
             if (isolateModel.IsViabilityInsert)
             {
-                var isolateViability = _mapper.Map<IsolateViabilityInfoDTO>(isolateModel);
+                var isolateViability = _mapper.Map<IsolateViabilityInfoDto>(isolateModel);
                 await _isolateViabilityService.AddIsolateViabilityAsync(isolateViability, isolateModel.CreatedBy);
             }
 
@@ -210,12 +210,12 @@ namespace Apha.VIR.Web.Controllers
             }
 
             isolateModel.CreatedBy = "testuser";
-            var isolateDto = _mapper.Map<IsolateDTO>(isolateModel);
-            await _isolatesService.UpdateIsolateDetailsAsync(isolateDto);
+            var IsolateDto = _mapper.Map<IsolateDto>(isolateModel);
+            await _isolatesService.UpdateIsolateDetailsAsync(IsolateDto);
 
             if (isolateModel.IsViabilityInsert)
             {
-                var isolateViability = _mapper.Map<IsolateViabilityInfoDTO>(isolateModel);
+                var isolateViability = _mapper.Map<IsolateViabilityInfoDto>(isolateModel);
                 await _isolateViabilityService.AddIsolateViabilityAsync(isolateViability, isolateModel.CreatedBy);
             }
 

@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateDispatchReportDTO
+public class IsolateDispatchReportDto
 {
     public string? AVNumber { get; set; } = null!;
     public string? Nomenclature { get; set; } = null!;
