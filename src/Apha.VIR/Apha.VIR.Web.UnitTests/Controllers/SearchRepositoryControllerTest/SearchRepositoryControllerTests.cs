@@ -11,6 +11,8 @@ using Apha.VIR.Web.Models;
 using Apha.VIR.Application.Pagination;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Apha.VIR.Web.Services;
+using Microsoft.OpenApi.Services;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 {
@@ -19,9 +21,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         private readonly IVirusCharacteristicService _mockVirusCharacteristicService;
         private readonly IIsolateSearchService _mockIsolateSearchService;
         private readonly ILookupService _mockLookupService;
+        private readonly ICacheService _mockCacheService;
         private readonly IMapper _mockMapper;
-        private readonly SearchRepositoryController _controller;
-        private readonly ITempDataDictionary _tempData;
+        private readonly SearchRepositoryController _controller;       
 
         private readonly QueryParameters<SearchCriteriaDTO> queryParameters = new QueryParameters<SearchCriteriaDTO>
         {
@@ -40,13 +42,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             _mockVirusCharacteristicService = Substitute.For<IVirusCharacteristicService>();
             _mockIsolateSearchService = Substitute.For<IIsolateSearchService>();
             _mockLookupService = Substitute.For<ILookupService>();
+            _mockCacheService = Substitute.For<ICacheService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockMapper);
-            _tempData = new TempDataDictionary(new DefaultHttpContext(), Substitute.For<ITempDataProvider>())
-            {
-                ["SearchCriteria"] = JsonConvert.SerializeObject(queryParameters)
-            };
-            _controller.TempData = _tempData;
+            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockCacheService, _mockMapper);           
         }
 
         [Fact]
@@ -94,7 +92,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 CreatedFromDate = DateTime.Today.AddDays(-30),
                 CreatedToDate = DateTime.Today
             };
-            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(new SearchCriteria());
+            var inputSearchCriteria = new SearchCriteria()
+            {
+                CharacteristicSearch = new List<CharacteristicCriteria>() {
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null}
+                }
+            };
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(inputSearchCriteria);
             var searchResults = new PaginatedResult<IsolateSearchResultDTO>
             {
                 data = new List<IsolateSearchResultDTO>(),
@@ -117,8 +123,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task Search_WithInvalidModelState_ReturnsViewWithEmptyResults()
         {
             // Arrange
+            var inputSearchCriteria = new SearchCriteria()
+            {
+                CharacteristicSearch = new List<CharacteristicCriteria>() {
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null}
+                }
+            };
             _controller.ModelState.AddModelError("Error", "Model state is invalid");
-            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(new SearchCriteria());
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(inputSearchCriteria);
             var searchResults = new PaginatedResult<IsolateSearchResultDTO>
             {
                 data = new List<IsolateSearchResultDTO>(),
@@ -126,7 +140,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             };
             _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>()).Returns(searchResults);
 
-            // Act
+            // Act            
             var result = await _controller.Search(new SearchCriteria()) as ViewResult;
 
             // Assert
@@ -140,9 +154,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         [Fact]
         public async Task Search_WhenTempDataIsNull_ReturnsViewWithEmptyResults()
         {
-            // Arrange
-            _tempData.Remove("SearchCriteria");
-            _controller.TempData = _tempData;
+            // Arrange            
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string?)null);
             // Act
             var result = await _controller.BindIsolateGridOnPaginationAndSort(1, "CreatedDate", true) as PartialViewResult;
 
@@ -157,9 +170,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         [Fact]
         public async Task Search_WhenTempDataIsNotEmpty_ReturnsViewWithResults()
         {
-            // Arrange           
-            _tempData["SearchCriteria"] = JsonConvert.SerializeObject(queryParameters);
-            _controller.TempData = _tempData;
+            // Arrange                       
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDTO>
             {
@@ -513,10 +525,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 SortBy = "Avnumber",
                 Descending = false,
                 Filter = new SearchCriteriaDTO()
-            };
-            var criteriaString = JsonConvert.SerializeObject(criteriaDto);
-            _tempData["SearchCriteria"] = criteriaString;
-            _controller.TempData = _tempData;
+            };            
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDTO>
             {
@@ -554,10 +564,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 SortBy = "FreezerName",
                 Descending = true,
                 Filter = new SearchCriteriaDTO { AVNumber = "XWERWE" }
-            };
-            var criteriaString = JsonConvert.SerializeObject(criteriaDto);
-            _tempData["SearchCriteria"] = criteriaString;
-            _controller.TempData = _tempData;
+            };            
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDTO>
             {
@@ -594,11 +602,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 SortBy = "FreezerName",
                 Descending = false,
                 Filter = new SearchCriteriaDTO()
-            };
-            var criteriaString = JsonConvert.SerializeObject(criteriaDto);
-
-            _tempData["SearchCriteria"] = criteriaString;
-            _controller.TempData = _tempData;
+            };           
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDTO>
             {
@@ -682,9 +687,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         [Fact]
         public async Task ExportToExcel_ValidSearchCriteria_ReturnsFileContentResult()
         {
-            // Arrange         
-            _tempData["SearchCriteria"] = JsonConvert.SerializeObject(queryParameters);
-            _controller.TempData = _tempData;
+            // Arrange                    
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
 
             var exportResults = SetupValidSearchCriteriaExportResult();
             _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
@@ -729,6 +733,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             var exportResults = SetupValidSearchCriteriaExportResult();
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
             _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
            .Returns(Task.FromResult(exportResults));
             var mappedResults = SetupValidSearchCriteriaExportMappedResult();
