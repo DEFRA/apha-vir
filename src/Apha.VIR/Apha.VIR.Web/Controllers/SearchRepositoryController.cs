@@ -4,6 +4,7 @@ using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using ClosedXML.Excel;
@@ -20,23 +21,27 @@ namespace Apha.VIR.Web.Controllers
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IIsolateSearchService _isolateSearchService;
         private readonly ILookupService _lookupService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
+        private const string keySearchCriteria = "SearchCriteria";
 
         public SearchRepositoryController(ILookupService lookupService,
             IVirusCharacteristicService virusCharacteristicService,
             IIsolateSearchService isolateSearchService,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _lookupService = lookupService;
             _virusCharacteristicService = virusCharacteristicService;
             _isolateSearchService = isolateSearchService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
             var searchModel = await LoadIsolateSearchFilterControlsData(null);
-            
+
             return View("IsolateSearch", searchModel);
         }
 
@@ -53,7 +58,7 @@ namespace Apha.VIR.Web.Controllers
                 if (!ModelState.IsValid)
                 {
                     searchModel = await LoadIsolateSearchFilterControlsData(criteria);
-                    TempData.Remove("SearchCriteria");
+                    await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
                     searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
                     {
                         IsolateSearchResults = new List<IsolateSearchResult>(),
@@ -79,7 +84,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                criteriaPaginationDto = RetriveThePreviousSearchFilter();
+                criteriaPaginationDto = await RetriveThePreviousSearchFilter();
                 criteria = _mapper.Map<SearchCriteria>(criteriaPaginationDto.Filter);
                 criteria.Pagination = new PaginationModel
                 {
@@ -97,7 +102,7 @@ namespace Apha.VIR.Web.Controllers
             searchModel.IsolateSearchGird.Pagination = criteria.Pagination;
             searchModel.IsFilterApplied = true;
 
-            TempData["SearchCriteria"] = JsonConvert.SerializeObject(criteriaPaginationDto);
+            await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(criteriaPaginationDto));
             return View("IsolateSearch", searchModel);
         }
 
@@ -139,11 +144,11 @@ namespace Apha.VIR.Web.Controllers
                     ListValues = new SelectListItem()
                 });
             }
-            var (comparators, listValues) = await _isolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId);
+            var (comparators, listValues) = await GetComparatorsAndListValuesDropDownsList(virusCharacteristicId);
             return Json(new
             {
-                Comparators = comparators.Select(c => new SelectListItem { Value = c.ToString(), Text = c.ToString() }).ToList(),
-                ListValues = listValues.Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Name.ToString() }).ToList()
+                Comparators = comparators,
+                ListValues = listValues
             });
         }
 
@@ -155,7 +160,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest("Invalid parameters.");
             }
             var modelIsolateSearchGird = new IsolateSearchGirdViewModel();
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
             if (!String.IsNullOrEmpty(criteriaString))
             {
                 var criteriaDto = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
@@ -179,7 +184,7 @@ namespace Apha.VIR.Web.Controllers
                     SortDirection = criteriaDto.Descending,
                     TotalCount = searchResults.TotalCount
                 };
-                TempData["SearchCriteria"] = JsonConvert.SerializeObject(criteriaDto);
+                await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(criteriaDto));
             }
 
             return PartialView("_IsolateSearchResults", modelIsolateSearchGird);
@@ -197,7 +202,7 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> ExportToExcel()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
             List<IsolateSearchExportViewModel> searchExportRecords = new List<IsolateSearchExportViewModel>();
             var criteriaDto = String.IsNullOrEmpty(criteriaString) ? null : JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
             if (criteriaDto != null)
@@ -329,10 +334,23 @@ namespace Apha.VIR.Web.Controllers
             var hostPurposeDto = await _lookupService.GetAllHostPurposesAsync();
             var sampleTypeDto = await _lookupService.GetAllSampleTypesAsync();
             var characteristicsDto = await GetVirusCharacteristicsDropdownList(criteria?.VirusType);
-            var characteristicSearchList = Enumerable.Range(0, 3).Select(i => new CharacteristicSearchViewModel
+            var characteristicSearchList = new List<CharacteristicSearchViewModel>();
+            for (int i = 0; i < 3; i++)
             {
-                CharacteristicList = characteristicsDto
-            }).ToList();
+                var (comparators, listValues) = await GetComparatorsAndListValuesDropDownsList(criteria?.CharacteristicSearch[i].Characteristic);
+                characteristicSearchList.Add(new CharacteristicSearchViewModel
+                {
+                    CharacteristicList = characteristicsDto,
+                    Characteristic = criteria?.CharacteristicSearch[i].Characteristic,
+                    CharacteristicType = criteria?.CharacteristicSearch[i].CharacteristicType,
+                    Comparator = criteria?.CharacteristicSearch[i].Comparator,
+                    CharacteristicValue1 = criteria?.CharacteristicSearch[i].CharacteristicValue1,
+                    CharacteristicValue2 = criteria?.CharacteristicSearch[i].CharacteristicValue2,
+                    CharacteristicListValue = criteria?.CharacteristicSearch[i].CharacteristicListValue,
+                    CharacteristicValues = listValues,
+                    ComparatorList = comparators,
+                });
+            }
 
             searchViewModel.VirusFamilyList = virusFamilyDto.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
             searchViewModel.VirusTypeList = await GetVirusTypesDropdownList(criteria?.VirusFamily);
@@ -397,10 +415,26 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        private QueryParameters<SearchCriteriaDTO> RetriveThePreviousSearchFilter()
+        private async Task<(List<SelectListItem> ComparatorDdl, List<SelectListItem> ListValueDdl)> GetComparatorsAndListValuesDropDownsList(Guid? virusCharacteristicId)
+        {
+            if (!SearchCriteria.IsNullOrEmptyGuid(virusCharacteristicId))
+            {
+                var (comparators, listValues) = await _isolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId ?? Guid.Empty);
+                var ComparatorsDdl = comparators.Select(c => new SelectListItem { Value = c.ToString(), Text = c.ToString() }).ToList();
+                var ListValuesDdl = listValues.Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Name.ToString() }).ToList();
+                return (ComparatorsDdl, ListValuesDdl);
+            }
+            else
+            {
+                return (new List<SelectListItem>(), new List<SelectListItem>());
+            }
+
+        }
+
+        private async Task<QueryParameters<SearchCriteriaDTO>> RetriveThePreviousSearchFilter()
         {
             QueryParameters<SearchCriteriaDTO> previousSearch = new QueryParameters<SearchCriteriaDTO>();
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
             if (criteriaString != null)
             {
                 previousSearch = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString)
