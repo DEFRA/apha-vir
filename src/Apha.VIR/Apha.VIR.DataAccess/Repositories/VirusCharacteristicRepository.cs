@@ -17,7 +17,7 @@ namespace Apha.VIR.DataAccess.Repositories
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsAsync()
         {
             return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
-        }
+        }       
 
         public async Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo, int pageSize)
         {
