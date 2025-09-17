@@ -7,10 +7,14 @@ using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NSubstitute;
 
@@ -20,74 +24,93 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
     {
         private readonly IIsolateRelocateService _isolateRelocateService;
         private readonly ILookupService _lookupService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly IsolateAndTrayRelocationController _controller;
 
         public IsolateAndTrayRelocationControllerTests()
         {
+            // Create the CacheService substitute with the mocked dependencies
+            _cacheService = Substitute.For<ICacheService>();
+
             _isolateRelocateService = Substitute.For<IIsolateRelocateService>();
             _lookupService = Substitute.For<ILookupService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new IsolateAndTrayRelocationController(_isolateRelocateService, _lookupService, _mapper);
+            _controller = new IsolateAndTrayRelocationController(_isolateRelocateService, _lookupService, _cacheService, _mapper);
         }
 
         [Fact]
-        public async Task Relocation_WithIsolatePath_ReturnsIsolateRelocationView()
+        public async Task Test_Relocation_ReturnsIsolateRelocationView_WhenPathContainsIsolate()
         {
             // Arrange
-            _controller.ControllerContext = new ControllerContext
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Path = "/relocation/isolate";
+            _controller.ControllerContext = new ControllerContext()
             {
-                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+                HttpContext = httpContext
             };
-            _controller.ControllerContext.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Mock the services for this scenario            
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(new List<IsolateRelocateDTO>());
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>())
+                .Returns(new List<IsolateRelocateViewModel>());
 
             // Act
             var result = await _controller.Relocation();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("IsolateRelocation", viewResult.ViewName);
-            await _lookupService.Received().GetAllFreezerAsync();
-            await _lookupService.Received().GetAllTraysAsync();
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);  // Ensure correct view name is returned
         }
 
         [Fact]
-        public async Task Relocation_WithTrayPath_ReturnsTrayRelocationView()
+        public async Task Test_Relocation_ReturnsTrayRelocationView_WhenPathContainsTray()
         {
             // Arrange
-            _controller.ControllerContext = new ControllerContext
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Path = "/relocation/tray";
+            _controller.ControllerContext = new ControllerContext()
             {
-                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+                HttpContext = httpContext
             };
-            _controller.ControllerContext.HttpContext.Request.Path = "/relocation/tray";
+
+            // Mock the services for this scenario            
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(new List<IsolateRelocateDTO>());
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>())
+                .Returns(new List<IsolateRelocateViewModel>());
 
             // Act
             var result = await _controller.Relocation();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("TrayRelocation", viewResult.ViewName);
-            await _lookupService.Received().GetAllFreezerAsync();
-            await _lookupService.Received().GetAllTraysAsync();
+            Assert.Equal("TrayRelocation", viewResult.ViewName);  // Ensure correct view name is returned
         }
 
         [Fact]
-        public async Task Relocation_WithInvalidPath_ReturnsNotFound()
+        public async Task Test_Relocation_ReturnsNotFound_WhenPathDoesNotContainIsolateOrTray()
         {
             // Arrange
-            _controller.ControllerContext = new ControllerContext
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Path = "/relocation/invalid";
+            _controller.ControllerContext = new ControllerContext()
             {
-                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+                HttpContext = httpContext
             };
-            _controller.ControllerContext.HttpContext.Request.Path = "/relocation/invalid";
+
+            // Mock the services for this scenario           
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(new List<IsolateRelocateDTO>());
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>())
+                .Returns(new List<IsolateRelocateViewModel>());
 
             // Act
             var result = await _controller.Relocation();
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
-            await _lookupService.Received().GetAllFreezerAsync();
-            await _lookupService.Received().GetAllTraysAsync();
+            Assert.IsType<NotFoundResult>(result);  // Ensure NotFound result is returned
         }
 
         [Fact]
@@ -129,7 +152,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             var serializableError = Assert.IsType<SerializableError>(badRequestResult.Value);
-                        
+
             Assert.True(serializableError.ContainsKey("Error"));
         }
 
@@ -155,7 +178,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             var partialViewResult = Assert.IsType<PartialViewResult>(result);
             var resultList = Assert.IsType<List<IsolateRelocateViewModel>>(partialViewResult.Model);
             Assert.Empty(resultList);
-        }        
+        }
 
         [Fact]
         public async Task Search_EmptyStringsForAVNumbers_ReturnsPartialViewResult()
@@ -212,9 +235,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 SelectedNewTray = Guid.NewGuid(),
                 SelectedNewIsolatedList = new List<IsolatedRelocationData>
                 {
-                    new IsolatedRelocationData { 
-                        IsolatedId = Guid.NewGuid(), 
-                        Well = "A1", 
+                    new IsolatedRelocationData {
+                        IsolatedId = Guid.NewGuid(),
+                        Well = "A1",
                         LastModified = BitConverter.GetBytes(DateTime.UtcNow.Ticks)
                     } //Need to convert to byte array
                 }
@@ -230,7 +253,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             var jsonResult = Assert.IsType<JsonResult>(result);
             dynamic value = jsonResult.Value!;
             var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(value));
-            Assert.True(dict.ContainsKey("success"));             
+            Assert.True(dict.ContainsKey("success"));
 
             // Verify that the service method was called once
             await _isolateRelocateService.Received(1).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDTO>());
@@ -286,7 +309,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         public async Task Edit_ValidModelState_ReturnsViewWithCorrectModel()
         {
             // Arrange
-            var model = new IsolateRelocateViewModel();           
+            var model = new IsolateRelocateViewModel();
 
             _lookupService.GetAllFreezerAsync().Returns(new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Freezer1" } });
             _lookupService.GetAllTraysAsync().Returns(new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Tray1" } });
@@ -300,7 +323,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             Assert.NotNull(_controller.ViewBag.FreezersList);
             Assert.NotNull(_controller.ViewBag.TrayList);
         }
-               
+
 
         [Fact]
         public async Task Update_ValidModelState_ReturnsRedirectToActionResult()
@@ -427,7 +450,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
-                      
+
             Assert.True(modelState.ContainsKey(string.Empty));
             Assert.Equal("You must select both a freezer and tray.", ((string[])modelState[string.Empty])[0]);
         }
@@ -526,13 +549,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             // Act
             var result = await _controller.RelocateTray(model);
-           
+
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             var modelState = Assert.IsType<SerializableError>(badRequestResult.Value);
 
             Assert.True(modelState.ContainsKey(string.Empty));
-            Assert.Equal("You must select a Freezer for the Tray to be relocated into.", ((string[])modelState[string.Empty])[0]);  
+            Assert.Equal("You must select a Freezer for the Tray to be relocated into.", ((string[])modelState[string.Empty])[0]);
         }
 
         [Fact]

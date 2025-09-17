@@ -34,7 +34,7 @@
                 </select>
             </div>
             <div class="col-sm-3" style="width:60px"></div>
-            <div id="divNewFreezer" class="col-sm-3" style="width:400px;display: none;">
+            <div id="divNewFreezer" class="col-sm-3" style="width:400px; display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
                 <label for="NewlocationfortheselectedIsolates" style="white-space: nowrap;"> New location for the selected Isolates </label>
                 <div class="d-flex align-items-center">
                     <label for="NewFreezer" class="me-2 mb-0">Freezer</label>
@@ -56,7 +56,7 @@
                 </select>
             </div>
             <div class="col-sm-3" style="width:60px"></div>
-            <div id="divNewTray" class="col-sm-3" style="width:400px;display: none;">
+            <div id="divNewTray" class="col-sm-3" style="width:400px; display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
                 <img src="~\Images\spacer.gif" width="200px" height="5" alt="">
                 <div class="d-flex align-items-center">
                     <label for="NewTray">Tray</label>
@@ -98,25 +98,11 @@
             <div style="text-align: right;margin-bottom: 5px;">
                 <button id="selectAllButton" class="btn btn-link isolaterelocate-btn-link-custom" style="margin-right:10px">Select All</button>
                 <button id="unselectAllButton" class="btn btn-link isolaterelocate-btn-link-custom">Unselect All</button>
+            </div>            
+            <div id="isolatesGrid">
+                @await Html.PartialAsync("_SearchResults",
+                         (Model.SearchResults != null && Model.SearchResults.Count > 0) ? Model.SearchResults : new List<IsolateRelocateViewModel>())
             </div>
-            <div id="noIsolatesMessage" style="margin: 20px 0; border: 1px solid #ccc; border-spacing: 2px; width: fit-content;">
-                There are no isolates matching the criteria specified
-            </div>
-            <table id="isolatesTable" class="IsolateRelocatetable" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>AV Number</th>
-                        <th>Nomenclature</th>
-                        <th>Freezer</th>
-                        <th>Tray</th>
-                        <th>Well</th>
-                        <th>Select</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>      
         <form id="editForm" method="post" action="/Relocation/Edit">
             <input type="hidden" name="IsolateId" />
@@ -131,7 +117,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () { 
-            $('#searchButton').click(function () {
+            $('#searchButton').click(function () {               
                 performSearch();
             });
 
@@ -192,7 +178,7 @@
             });
         });
 
-        function performSearch() {            
+        function performSearch() {             
                 $.ajax({
                     url: '/Relocation/Search',
                     type: 'POST',
@@ -204,20 +190,16 @@
                         SelectedTray: $('#TraySearch').val() || null
                     }),
                     success: function (data) {
-                        $('#isolatesTable tbody').html(data);
+                        $('#isolatesGrid').html(data);
                         $('#validationPanel').hide();
                         if ($.trim(data).length == 0) {
                             $('#divNewFreezer').hide();
-                            $('#divNewTray').hide();
-                            $('#isolatesTable').hide();
-                            $('#noIsolatesMessage').show();
+                            $('#divNewTray').hide();                           
                         } else {
                             $('#divNewFreezer').show();
-                            $('#divNewTray').show();
-                            $('#isolatesTable').show();
-                            $('#noIsolatesMessage').hide();
+                            $('#divNewTray').show();                            
                             $('#NewFreezer').val('');
-                             $('#NewTray').val('');
+                            $('#NewTray').val('');
                         }
                     },
                     error: function (xhr) {
@@ -236,16 +218,12 @@
                             }
                         }
 
-                        // Display the error messages in a designated area
-                        //$('#errorMessages').html(errorMessages).show(); // Make sure you have an element with id="errorMessages" in your HTML
                         $('#validationMessage').html(errorMessages);
                         $('#validationPanel').show();
 
                         // Optionally, you can hide/show specific divs based on the error state
                         $('#divNewFreezer').hide();
-                        $('#divNewTray').hide();
-                        $('#isolatesTable').hide();
-                        $('#noIsolatesMessage').show();
+                        $('#divNewTray').hide();                        
                       }
                     }
                 });
@@ -262,7 +240,7 @@
                     LastModified: $(this).data('lastmodified') || null
                   });
             });
-
+            
             $.ajax({
                 url: '/Relocation/Save',
                 type: 'POST',
