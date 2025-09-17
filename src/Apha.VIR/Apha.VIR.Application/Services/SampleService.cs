@@ -32,7 +32,7 @@ namespace Apha.VIR.Application.Services
             var hostPurposes = await _lookupRepository.GetAllHostPurposesAsync();
             foreach (var sample in samplesDto)
             {
-                sample.HostBreedName = hostBreeds?.FirstOrDefault(wg => wg.Id == sample.HostBreed!.Value)?.Name;
+                sample.HostBreedName = sample.HostBreed.HasValue ? hostBreeds?.FirstOrDefault(wg => wg.Id == sample.HostBreed!.Value)?.Name : "";
                 sample.HostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample.HostSpecies!.Value)?.Name;
                 sample.SampleTypeName = sampleTypes?.FirstOrDefault(wg => wg.Id == sample.SampleType!.Value)?.Name;
                 sample.HostPurposeName = hostPurposes?.FirstOrDefault(wg => wg.Id == sample.HostPurpose!.Value)?.Name;
