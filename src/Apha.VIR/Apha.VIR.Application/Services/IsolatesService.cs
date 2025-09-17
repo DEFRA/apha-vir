@@ -86,7 +86,7 @@ namespace Apha.VIR.Application.Services
             var samples = await _sampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
             var sample = samples.FirstOrDefault(s => s.SampleId == sampleId);
             var hostBreeds = await _lookupRepository.GetAllHostBreedsAsync();           
-            var hostBreedName = hostBreeds?.FirstOrDefault(wg => wg.Id == sample?.HostBreed!.Value)?.Name;           
+            var hostBreedName = hostBreeds?.FirstOrDefault(wg => wg.Id == sample?.HostBreed.GetValueOrDefault())?.Name;           
 
             nomenclature.Append(!string.IsNullOrEmpty(virusType) ? virusType : "[Virus Type]");
             nomenclature.Append('/');
@@ -97,7 +97,7 @@ namespace Apha.VIR.Application.Services
             else
             {
                 var hostSpecies = await _lookupRepository.GetAllHostSpeciesAsync();
-                var hostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies!.Value)?.Name;
+                var hostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies.GetValueOrDefault())?.Name;
                 nomenclature.Append(hostSpeciesName);
             }
                

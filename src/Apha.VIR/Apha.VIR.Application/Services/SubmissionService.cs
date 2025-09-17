@@ -72,7 +72,7 @@ namespace Apha.VIR.Application.Services
             var hostSpecies = await _lookupRepository.GetAllHostSpeciesAsync();
             foreach (var sample in samplesDto) 
             {
-                sample.HostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies!.Value)?.Name;
+                sample.HostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies.GetValueOrDefault())?.Name;
             }
             return GenerateSubmissionLetter(submission, samplesDto, isolates, user);
         }
