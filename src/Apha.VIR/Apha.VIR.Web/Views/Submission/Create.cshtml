@@ -1,16 +1,16 @@
 ﻿@model SubmissionCreateViewModel
 
-<div id="contentbox" class="editsubmission-contentbox">
-	<div class="editsubmission-box_title">Enter/Update the Submission details.</div>
-	<div class="editsubmission-box_body">
+<div class="contentbox">
+	<div class="contentbox_title">Enter/Update the Submission details.</div>
+	<div class="contentbox_body">
 
-		<div class="editsubmission-body_title  mt-3">Enter Submission details.</div>
+		<h2 class=" mt-3">Enter Submission details.</h2>
 		<form asp-action="Create" asp-controller="Submission" method="post">
 			<div class="submission-form">
 				<input type="hidden" asp-for="SubmissionId" />				
 				<div class="row mt-4">
 					<div class="col-sm-3">
-						<label for="AVNumber" class="col-form-label">AV Number</label>
+						<span for="AVNumber" class="col-form-label">AV Number</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="AVNumber" class="editsubmission-control-width-normal" readonly />
@@ -19,9 +19,9 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="RLReferenceNumber" class="col-form-label">
+						<span for="RLReferenceNumber" class="col-form-label">
 							RL Reference Number<br /><small>(UK Diagnostic Submissions Only)</small>
-						</label>
+						</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="RLReferenceNumber" class="editsubmission-control-width-normal" />
@@ -29,19 +29,19 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="SubmittingLab" class="col-form-label">
+						<span for="SubmittingLab" class="col-form-label">
 							Submitting Lab<br /><small>(UK Diagnostic Submissions Only)</small>
-						</label>
+						</span>
 					</div>
 					<div class="col-sm-9">
-						<select asp-for="SubmittingLab" asp-items="Model.SubmittingLabList" class="editsubmission-control-width-normal">
+						<select asp-for="SubmittingLab" asp-items="Model.SubmittingLabList" class="editsubmission-control-width-normal ">
 							<option value=""></option>
 						</select>
 					</div>
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="SendersReferenceNumber" class="col-form-label">Sender's Submission Reference Number</label>
+						<span for="SendersReferenceNumber" class="col-form-label">Sender's Submission Reference Number</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="SendersReferenceNumber" class="editsubmission-control-width-normal" />
@@ -50,7 +50,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="SubmittingCountry" class="col-form-label">Submitting Country</label>
+						<span for="SubmittingCountry" class="col-form-label">Submitting Country</span>
 					</div>
 					<div class="col-sm-9">
 						<select asp-for="SubmittingCountry" asp-items="Model.CountryList" class="editsubmission-control-width-normal" onchange="changedSubmittingCountry(this)">
@@ -60,7 +60,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="Sender" class="col-form-label">Sender</label>
+						<span for="Sender" class="col-form-label">Sender</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="Sender" class="editsubmission-control-width-large" maxlength="50" />						
@@ -71,7 +71,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="SenderOrganisation" class="col-form-label">Sender Organisation</label>
+						<span for="SenderOrganisation" class="col-form-label">Sender Organisation</span>
 					</div>
 					<div class="col-sm-9">
 						<textarea asp-for="SenderOrganisation" class="editsubmission-control-width-large" maxlength="200"></textarea>						
@@ -81,7 +81,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="SenderAddress" class="col-form-label">Sender Address</label>
+						<span for="SenderAddress" class="col-form-label">Sender Address</span>
 					</div>
 					<div class="col-sm-9">
 						<textarea asp-for="SenderAddress" class="editsubmission-control-width-large" style="height:96px" maxlength="500"></textarea>
@@ -90,7 +90,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="CountryOfOrigin" class="col-form-label">Country of Origin</label>
+						<span for="CountryOfOrigin" class="col-form-label">Country of Origin</span>
 					</div>
 					<div class="col-sm-9">
 						<select asp-for="CountryOfOrigin" asp-items="Model.CountryList" class="editsubmission-control-width-normal">
@@ -100,7 +100,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="ReasonForSubmission" class="col-form-label col-sm-3">Reason for Submission</label>
+						<span for="ReasonForSubmission" class="col-form-label col-sm-3">Reason for Submission</span>
 					</div>
 					<div class="col-sm-9">
 						<select asp-for="ReasonForSubmission" asp-items="Model.SubmissionReasonList" class="editsubmission-control-width-normal">
@@ -110,7 +110,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="DateSubmissionReceived" class="col-form-label">Date Submission Received</label>
+						<span for="DateSubmissionReceived" class="col-form-label">Date Submission Received</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="DateSubmissionReceived" style="width:113" type="date" />
@@ -120,7 +120,7 @@
 
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="NumberOfSamples" class="col-form-label col-sm-3">No. Samples Received</label>
+						<span for="NumberOfSamples" class="col-form-label col-sm-3">No. Samples Received</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="NumberOfSamples" class="editsubmission-control-width-normal" type="number" min="1" />
@@ -129,7 +129,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="CPHNumber" class="col-form-label col-sm-3">CPH Number</label>
+						<span for="CPHNumber" class="col-form-label col-sm-3">CPH Number</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="CPHNumber" class="editsubmission-control-width-normal" />
@@ -138,7 +138,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="Owner" class="col-form-label col-sm-3">Owner</label>
+						<span for="Owner" class="col-form-label col-sm-3">Owner</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="Owner" class="form-control" />
@@ -146,7 +146,7 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-3">
-						<label for="SamplingLocationPremises" class="col-form-label col-sm-3">Sampling Location / Premises</label>
+						<span for="SamplingLocationPremises" class="col-form-label col-sm-3">Sampling Location / Premises</span>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="SamplingLocationPremises" class="form-control" />

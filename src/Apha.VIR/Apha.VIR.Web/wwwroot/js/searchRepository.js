@@ -1,4 +1,19 @@
 ﻿$(function () {
+    // Run once when page loads
+    $(document).ready(function () {
+        $('.characteristic-block').each(function () {            
+            var $block = $(this);
+            var characteristics = $block.find('.characteristic-ddl').val();            
+            var type = $block.find('.characteristic-ddl-type').val();    
+            if (characteristics != null && characteristics != "") {
+                var comparatorSelect = $block.find('.comparator-ddl');
+                comparatorSelect.show();
+                var comparator = comparatorSelect.val();
+                showHideControlsOnPageLoad($block, type, comparator);
+            }            
+        });
+    });
+
     $('#ddlVirusFamily').change(function () {
         var virusFamilyId = $(this).val();
         $.get('/SearchRepository/GetVirusTypesByVirusFamily', { virusFamilyId: virusFamilyId }, function (virusTypes) {
@@ -30,7 +45,7 @@
         rebuildCharacteristicsDropdowns(virusTypeId);
     });
 
-    $('.characteristic-ddl').change(function () {       
+    $('.characteristic-ddl').change(function () {        
         var $charddlBlock = $(this).closest('.characteristic-block');
         var characteristicId = $(this).val();
         var type = $(this).find('option:selected').data('type');
@@ -53,7 +68,10 @@
 
                 updateControlsOnCharacteristicChange($charddlBlock, type);
             });
-        }        
+        }
+        else {
+            resetCharactristicBlock($charddlBlock);
+        }
     });
 
     $('.comparator-ddl').change(function () {
@@ -72,8 +90,7 @@
     });
 
     $(document).on('click', '#SearchRepositoryGrid th a', function (e) {
-        e.preventDefault();
-        debugger;
+        e.preventDefault();        
         var sortcolumn = $(this).data('sortcolumn');
         var sortorder = Boolean(parseInt($(this).data('sortorder')));
         $.get('BindIsolateGridOnPaginationAndSort', { pageNo: 0, column: sortcolumn, sortOrder: sortorder }, function (htmlData) {
@@ -81,15 +98,15 @@
         });
     });
 
-    function rebuildCharacteristicsDropdowns(virusTypeId) {
+    function rebuildCharacteristicsDropdowns(virusTypeId) {        
         $.get('/SearchRepository/GetVirusCharacteristicsByVirusType', { virusTypeId: virusTypeId }, function (virusCharacteristics) {
-            $('.characteristic-block').each(function (index, block) {
+            $('.characteristic-block').each(function (index, block) {                
                 var $charddlBlock = $(block);
                 var $characteristicDdl = $charddlBlock.find('.characteristic-ddl');
                 $characteristicDdl.empty();
                 $characteristicDdl.append($('<option>').text('').attr('value', ''));
                 $.each(virusCharacteristics, function (i, char) {
-                    $characteristicDdl.append($('<option>').text(char.text).attr('value', char.value));
+                    $characteristicDdl.append($('<option>').text(char.text).attr('value', char.value).attr('data-type', char.dataType));
                 });
 
                 resetCharactristicBlock($charddlBlock);
@@ -165,10 +182,47 @@
                 $andLabel.hide();
             }
         } else {
+            $value1.show();
             $value2.val('').hide();
             $andLabel.hide();
         }       
     } 
+
+    function showHideControlsOnPageLoad($block, type, comparator) {
+        var $listValues = $block.find('.char-list-values-ddl');
+        var $value1 = $block.find('.char-value1');
+        var $value2 = $block.find('.char-value2');
+        var $andLabel = $block.find('.char-and-label');
+
+        if (comparator === "between") {
+            $listValues.hide()
+            $value1.show();
+            $value2.show();
+            $andLabel.show();
+        } else if (comparator === "begins with") {
+            $listValues.hide()
+            $value1.show();
+            $value2.hide();
+            $andLabel.hide();
+        } else if (comparator === "=" || comparator === "not equal to") {
+            if (type === "Numeric" || type === "Text") {
+                $listValues.hide()
+                $value1.show();
+                $value2.hide();
+                $andLabel.hide();
+            }
+            else {
+                $listValues.show()
+                $value1.hide();
+                $value2.hide();
+                $andLabel.hide();
+            }
+        } else {
+            $value1.show();
+            $value2.hide();
+            $andLabel.hide();
+        }
+    }
 });
 
 function ClearSearchFilter() {

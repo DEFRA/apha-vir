@@ -51,6 +51,13 @@
 			</tbody>
 		</table>
 	</div>
+	@if (!ViewData.ModelState.IsValid)
+	{
+		<div id="validationSummary" class="validation">
+			<p>There are validation messages requiring your attention.</p>
+			<div asp-validation-summary="All" class="validation"></div>
+		</div>
+	}
 }
 else
 {

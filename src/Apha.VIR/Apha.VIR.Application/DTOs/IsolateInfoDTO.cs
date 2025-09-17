@@ -32,6 +32,7 @@ public class IsolateInfoDto
     public int? FirstViablePassageNumber { get; set; }
     public bool IsMixedIsolate { get; set; }
     public string? Nomenclature { get; set; }
+    public string? IsolateNomenclature { get; set; }
     public string? SmsreferenceNumber { get; set; }
     public string? IsoSMSReferenceNumber { get; set; }
     public string? HostPurposeName { get; set; }

@@ -56,7 +56,8 @@ namespace Apha.VIR.Application.Services
 
             var charNomenclature = ServiceHelper.GetCharacteristicNomenclature(characteristicList.ToList());
 
-            var nomenclature = string.IsNullOrEmpty(charNomenclature) ? matchIsolate[0].Nomenclature : charNomenclature;
+            var nomenclature = GetFullNomenclature(matchIsolate[0].Nomenclature, matchIsolate[0].IsolateNomenclature, matchIsolate[0].FamilyName, matchIsolate[0].TypeName, charNomenclature);
+            
             var staffs = await _lookupRepository.GetAllStaffAsync();
             var Viabilities = await _lookupRepository.GetAllViabilityAsync();
 
@@ -138,6 +139,19 @@ namespace Apha.VIR.Application.Services
                     viability.ViableName = viabilities?.FirstOrDefault(v => v.Id == viability.Viable)?.Name!;
                 }
             }
+        }
+
+        private static string GetFullNomenclature(string? nomenclature, string? isolateNomenclature, string? familyName, string? typeName, string charNomenclature)
+        {
+            if (familyName == "Paramyxoviridae")
+                return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature) + " (" + (string.IsNullOrEmpty(typeName) ? "" : typeName) + ")";
+            else
+            {
+                if (string.IsNullOrEmpty(isolateNomenclature))
+                    return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature) + " " + charNomenclature;
+                else
+                    return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature);
+            }            
         }
     }
 }

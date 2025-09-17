@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -47,17 +49,29 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         {
             // Arrange
             var dispatchId = Guid.NewGuid();
-            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
             var isolateId = Guid.NewGuid();
-            const string avNumber = "AV123";
+            var avnumber = "AV123";
+            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+            var model = new IsolateDispatchEditViewModel
+            {
+                Avnumber = avnumber,
+                DispatchId = dispatchId,
+                DispatchIsolateId = isolateId,
+                ViabilityId = Guid.NewGuid(),
+                RecipientId = Guid.NewGuid(),
+                DispatchedById = Guid.NewGuid(),
+                LastModified = new byte[8]
+            };
+            _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
+                .Returns(new[] { new IsolateDispatchInfoDto { DispatchId = dispatchId } });
             SetupMockUserAndRoles();
             // Act
-            var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
+            var result = await _controller.Delete(dispatchId, lastModified, isolateId, avnumber);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("History", redirectResult.ActionName);
-            Assert.Equal(avNumber, redirectResult!.RouteValues?["AVNumber"]);
+            Assert.Equal(avnumber, redirectResult!.RouteValues?["AVNumber"]);
             Assert.Equal(isolateId, redirectResult!.RouteValues?["IsolateId"]);
 
             await _mockIsolateDispatchService.Received(1).DeleteDispatchAsync(
@@ -71,17 +85,28 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         public async Task Delete_EmptyDispatchId_ReturnsBadRequest()
         {
             // Arrange
-            var dispatchId = Guid.Empty;
-            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+            var dispatchId = Guid.NewGuid();
             var isolateId = Guid.NewGuid();
-            const string avNumber = "AV123";
+            var avnumber = "AV123";
+            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+            var model = new IsolateDispatchEditViewModel
+            {
+                Avnumber = avnumber,
+                DispatchId = dispatchId,
+                DispatchIsolateId = isolateId,
+                ViabilityId = Guid.NewGuid(),
+                RecipientId = Guid.NewGuid(),
+                DispatchedById = Guid.NewGuid(),
+                LastModified = new byte[8]
+            };
+
             SetupMockUserAndRoles();
             // Act
-            var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
+            var result = await _controller.Delete(dispatchId, lastModified, isolateId, avnumber);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Invalid Dispatch ID.", badRequestResult.Value);
+            Assert.IsType<ViewResult>(result);
+            Assert.False(_controller.ModelState.IsValid);
         }
 
         [Theory]
@@ -93,14 +118,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             // Arrange
             var dispatchId = Guid.NewGuid();
             var isolateId = Guid.NewGuid();
-            const string avNumber = "AV123";
+            var avnumber = "AV123";
+            var model = new IsolateDispatchEditViewModel
+            {
+                Avnumber = avnumber,
+                DispatchId = dispatchId,
+                DispatchIsolateId = isolateId,
+                ViabilityId = Guid.NewGuid(),
+                RecipientId = Guid.NewGuid(),
+                DispatchedById = Guid.NewGuid(),
+                LastModified = new byte[8]
+            };
             SetupMockUserAndRoles();
+
             // Act
-            var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
+            var result = await _controller.Delete(dispatchId, lastModified, isolateId, avnumber);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Last Modified cannot be empty.", badRequestResult.Value);
+            Assert.IsType<ViewResult>(result);
+            Assert.False(_controller.ModelState.IsValid);
         }
 
         [Fact]
@@ -118,7 +154,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var result = await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<ViewResult>(result);
+            Assert.False(_controller.ModelState.IsValid);
         }
 
         [Fact]
@@ -126,12 +163,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         {
             // Arrange
             var dispatchId = Guid.NewGuid();
-            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
             var isolateId = Guid.NewGuid();
-            const string avNumber = "AV123";
+            var avnumber = "AV123";
+            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+            var model = new IsolateDispatchEditViewModel
+            {
+                Avnumber = avnumber,
+                DispatchId = dispatchId,
+                DispatchIsolateId = isolateId,
+                ViabilityId = Guid.NewGuid(),
+                RecipientId = Guid.NewGuid(),
+                DispatchedById = Guid.NewGuid(),
+                LastModified = new byte[8]
+            };
+            _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
+                .Returns(new[] { new IsolateDispatchInfoDto { DispatchId = dispatchId } });
+
             SetupMockUserAndRoles();
             // Act
-            await _controller.Delete(dispatchId, lastModified, isolateId, avNumber);
+            await _controller.Delete(dispatchId, lastModified, isolateId, avnumber);
 
             // Assert
             await _mockIsolateDispatchService.Received(1).DeleteDispatchAsync(

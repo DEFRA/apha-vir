@@ -131,7 +131,7 @@ namespace Apha.VIR.Application.Services
             {
                 var isolatecharList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(isolate.IsolateId);
                 var isolateCharNomenclature = ServiceHelper.GetCharacteristicNomenclature(isolatecharList.ToList());
-                isolate.Characteristics = string.IsNullOrEmpty(isolateCharNomenclature) ? "" : "(" + isolateCharNomenclature + ")";
+                isolate.Characteristics = isolateCharNomenclature;
             }
             return isolatesDto;
         }

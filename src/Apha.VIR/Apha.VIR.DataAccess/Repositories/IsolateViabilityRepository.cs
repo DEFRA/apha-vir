@@ -8,15 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class IsolateViabilityRepository : IIsolateViabilityRepository
+public class IsolateViabilityRepository : RepositoryBase<IsolateViability>, IIsolateViabilityRepository
 {
-    private readonly VIRDbContext _context;
-
-    public IsolateViabilityRepository(VIRDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
-
+    public IsolateViabilityRepository(VIRDbContext context) : base(context) { }
     public async Task<IEnumerable<IsolateViability>> GetViabilityHistoryAsync(Guid IsolateId)
     {
 
@@ -25,8 +19,7 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
             new SqlParameter("@IsolateID", IsolateId),
         };
 
-        return (await _context.Set<IsolateViability>()
-           .FromSqlRaw($"EXEC spIsolateViabilityGetByIsolateId  @IsolateID ", parameters).ToListAsync());
+        return (await GetQueryableResultFor<IsolateViability>($"EXEC spIsolateViabilityGetByIsolateId  @IsolateID ", parameters).ToListAsync());
     }
 
     public async Task DeleteIsolateViabilityAsync(Guid IsolateId, byte[] lastModified, string userid)
@@ -44,8 +37,7 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
                 }
             };
 
-        await _context.Database
-            .ExecuteSqlRawAsync($"EXEC spIsolateViabilityDelete @UserID, @IsolateViabilityId, @LastModified", parameters);
+        await ExecuteSqlAsync($"EXEC spIsolateViabilityDelete @UserID, @IsolateViabilityId, @LastModified", parameters);
     }
 
     public async Task UpdateIsolateViabilityAsync(IsolateViability isolateViability, string userid)
@@ -66,16 +58,14 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
                 }
             };
 
-        await _context.Database
-            .ExecuteSqlRawAsync($"EXEC spIsolateViabilityUpdate @UserID, @IsolateViabilityId," +
+        await ExecuteSqlAsync($"EXEC spIsolateViabilityUpdate @UserID, @IsolateViabilityId," +
             $" @IsolateViabilityIsolateID, @Viable, @DateChecked, @CheckedByID, @LastModified", parameters);
     }
 
     public async Task<IEnumerable<IsolateViability>> GetViabilityByIsolateIdAsync(Guid isolateId)
     {
 
-        var result = await _context.IsolateViabilities
-            .FromSqlRaw("EXEC spIsolateViabilityGetByIsolateId @IsolateID",
+        var result = await GetQueryableResultFor<IsolateViability>("EXEC spIsolateViabilityGetByIsolateId @IsolateID",
                 new Microsoft.Data.SqlClient.SqlParameter("@IsolateID", isolateId))
             .ToListAsync();
 
@@ -101,8 +91,7 @@ public class IsolateViabilityRepository : IIsolateViabilityRepository
                 }
             };
 
-        await _context.Database
-            .ExecuteSqlRawAsync($"EXEC spIsolateViabilityInsert @UserID, @IsolateViabilityId, " +
+        await ExecuteSqlAsync($"EXEC spIsolateViabilityInsert @UserID, @IsolateViabilityId, " +
             $"@IsolateViabilityIsolateID, @Viable, @DateChecked, @CheckedByID, @LastModified OUTPUT", parameters);
     }
 }

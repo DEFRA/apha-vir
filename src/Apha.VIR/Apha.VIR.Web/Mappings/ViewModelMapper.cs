@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Net.Http.Headers;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Models.Lookup;
@@ -50,6 +51,8 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<VirusCharacteristicListEntryDto, VirusCharacteristicListEntryModel>().ReverseMap();
             CreateMap<SampleDto, SubmissionSamplesModel>();
             CreateMap<IsolateInfoDto, SubmissionIsolatesModel>();
+            CreateMap<VirusCharacteristicDto, VirusCharacteristicsModel>().ReverseMap();
+            CreateMap<VirusCharacteristicDataTypeDto, VirusCharacteristicDataType>().ReverseMap();
             CreateMap<IsolateRelocateDto, IsolateRelocateViewModel>().ReverseMap();
         }
     }

@@ -32,6 +32,11 @@ namespace Apha.VIR.Web.Controllers
         [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Create(string AVNumber)
         {
+            if(string.IsNullOrEmpty(AVNumber))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var submissionModel = new SubmissionCreateViewModel
             {
                 AVNumber = AVNumber,
@@ -72,6 +77,11 @@ namespace Apha.VIR.Web.Controllers
         [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Edit(string AVNumber)
         {
+            if (string.IsNullOrEmpty(AVNumber))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var isAvNumberPresent = await _submissionService.AVNumberExistsInVirAsync(AVNumber);
             if (!isAvNumberPresent)
             {
@@ -194,6 +204,12 @@ namespace Apha.VIR.Web.Controllers
         [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> SubmissionLetter(string AVNumber)
         {
+            var isExistinVir = await _submissionService.AVNumberExistsInVirAsync(AVNumber);
+            if (!isExistinVir)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var viewModel = new SubmissionLetterViewModel
             {
                 LetterContent = await _submissionService.SubmissionLetter(AVNumber, "TestUser")
