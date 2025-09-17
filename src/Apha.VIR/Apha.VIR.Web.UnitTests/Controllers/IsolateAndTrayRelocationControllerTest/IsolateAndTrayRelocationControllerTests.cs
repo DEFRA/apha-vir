@@ -24,18 +24,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
     {
         private readonly IIsolateRelocateService _isolateRelocateService;
         private readonly ILookupService _lookupService;
-        private readonly CacheService _cacheService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly IsolateAndTrayRelocationController _controller;
 
         public IsolateAndTrayRelocationControllerTests()
         {
-            var mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
-            var mockCache = Substitute.For<IDistributedCache>();
-            var mockLogger = Substitute.For<ILogger<CacheService>>();
-
             // Create the CacheService substitute with the mocked dependencies
-            _cacheService = Substitute.For<CacheService>(mockHttpContextAccessor, mockCache, mockLogger);
+            _cacheService = Substitute.For<ICacheService>();
 
             _isolateRelocateService = Substitute.For<IIsolateRelocateService>();
             _lookupService = Substitute.For<ILookupService>();

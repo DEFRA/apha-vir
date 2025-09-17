@@ -33,7 +33,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IVirusCharacteristicListEntryService, VirusCharacteristicListEntryService>();
             services.AddScoped<IVirusCharacteristicAssociationService, VirusCharacteristicAssociationService>();
             services.AddScoped<IIsolateRelocateService, IsolateRelocateService>();
-            services.AddSingleton<CacheService, CacheService>();
+            services.AddSingleton<ICacheService, CacheService>();
             return services;
         }
         public static IServiceCollection AddRepositories(this IServiceCollection services)

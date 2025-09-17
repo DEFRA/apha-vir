@@ -21,12 +21,12 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly ILookupService _lookupService;
         private readonly IIsolateRelocateService _isolateRelocateService;
-        private readonly CacheService _cacheService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public IsolateAndTrayRelocationController(IIsolateRelocateService isolateRelocateService,
             ILookupService lookupService,
-            CacheService cacheService,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _isolateRelocateService = isolateRelocateService;
