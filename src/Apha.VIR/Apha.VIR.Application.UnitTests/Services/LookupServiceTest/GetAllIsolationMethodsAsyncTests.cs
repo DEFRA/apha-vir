@@ -32,13 +32,13 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
                 new LookupItem { Id = id1, Name = "Method 1" },
                 new LookupItem { Id = id2, Name = "Method 2" }
             };
-            var isolationMethodsDto = new List<LookupItemDTO>
+            var isolationMethodsDto = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = id1, Name = "Method 1" },
-                new LookupItemDTO { Id = id2, Name = "Method 2" }
+                new LookupItemDto { Id = id1, Name = "Method 1" },
+                new LookupItemDto { Id = id2, Name = "Method 2" }
             };
             _mockLookupRepository.GetAllIsolationMethodsAsync().Returns(isolationMethods);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(isolationMethodsDto);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(isolationMethodsDto);
 
             // Act
             var result = await _mockLookupService.GetAllIsolationMethodsAsync();
@@ -55,7 +55,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange            
             _mockLookupRepository.GetAllIsolationMethodsAsync().Returns(new List<LookupItem>());
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItemDTO>>()).Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItemDto>>()).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _mockLookupService.GetAllIsolationMethodsAsync();
@@ -72,16 +72,16 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var isolationMethods = new List<LookupItem>();
-            var isolationMethodsDto = new List<LookupItemDTO>();
+            var isolationMethodsDto = new List<LookupItemDto>();
             _mockLookupRepository.GetAllIsolationMethodsAsync().Returns(isolationMethods);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItemDTO>>()).Returns(isolationMethodsDto);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItemDto>>()).Returns(isolationMethodsDto);
 
             // Act
             await _mockLookupService.GetAllIsolationMethodsAsync();
 
             // Assert
             await _mockLookupRepository.Received(1).GetAllIsolationMethodsAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>());
         }
 
     }

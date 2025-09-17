@@ -1,12 +1,9 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -51,7 +48,7 @@ namespace Apha.VIR.Web.Controllers
                 return View();
             }
 
-            IEnumerable<IsolateDispatchInfoDTO> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(
+            IEnumerable<IsolateDispatchInfoDto> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(
                 AVNumber,
                 IsolateId
             );
@@ -136,7 +133,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 return View(dispatchModel);
             }
-            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDTO>(dispatchModel);
+            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDto>(dispatchModel);
             await _isolateDispatchService.AddDispatchAsync(dispatchRecord, "TestUser");
             string fromSource = dispatchModel!.Source!.ToLower();
             return fromSource switch
@@ -164,26 +161,26 @@ namespace Apha.VIR.Web.Controllers
                 return View();
             }
 
-            IsolateDispatchInfoDTO isolateDispatchInfoDTO =
+            IsolateDispatchInfoDto isolateDispatchInfoDto =
                 await _isolateDispatchService.GetDispatchForIsolateAsync(
                 AVNumber,
                 DispatchId,
                 DispatchIsolateId
             );
 
-            recepientLocation = isolateDispatchInfoDTO.RecipientId == null ? "External" : "Internal";
+            recepientLocation = isolateDispatchInfoDto.RecipientId == null ? "External" : "Internal";
 
-            IEnumerable<LookupItemDTO> viabilityLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllViabilityAsync());
-            IEnumerable<LookupItemDTO> recepientLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllWorkGroupsAsync());
-            IEnumerable<LookupItemDTO> dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllStaffAsync());
+            IEnumerable<LookupItemDto> viabilityLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllViabilityAsync());
+            IEnumerable<LookupItemDto> recepientLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllWorkGroupsAsync());
+            IEnumerable<LookupItemDto> dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllStaffAsync());
 
-            var model = _mapper.Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDTO);
+            var model = _mapper.Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDto);
 
-            model.ViabilityList = viabilityLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDTO.ViabilityId }).ToList();
-            model.RecipientList = recepientLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDTO.RecipientId }).ToList();
+            model.ViabilityList = viabilityLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDto.ViabilityId }).ToList();
+            model.RecipientList = recepientLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDto.RecipientId }).ToList();
             model.DispatchedByList = dispatchedByLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToList();
-            model.DispatchedById = isolateDispatchInfoDTO.DispatchedById ?? Guid.Empty;
-            model.LastModified = isolateDispatchInfoDTO.LastModified ?? Array.Empty<byte>();
+            model.DispatchedById = isolateDispatchInfoDto.DispatchedById ?? Guid.Empty;
+            model.LastModified = isolateDispatchInfoDto.LastModified ?? Array.Empty<byte>();
             model.DispatchIsolateId = DispatchIsolateId;
             model.DispatchId = DispatchId;
             model.RecipientLocation = recepientLocation;
@@ -209,9 +206,9 @@ namespace Apha.VIR.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                var viabilityLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllViabilityAsync());
-                var recepientLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllWorkGroupsAsync());
-                var dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllStaffAsync());
+                var viabilityLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllViabilityAsync());
+                var recepientLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllWorkGroupsAsync());
+                var dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllStaffAsync());
 
                 model.ViabilityList = viabilityLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.ViabilityId }).ToList();
                 model.RecipientList = recepientLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.RecipientId }).ToList();
@@ -220,7 +217,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(model);
             }
 
-            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDTO>(model);
+            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDto>(model);
 
             await _isolateDispatchService.UpdateDispatchAsync(
             dispatchRecord,
@@ -244,7 +241,7 @@ namespace Apha.VIR.Web.Controllers
 
             if(!ModelState.IsValid)
             {
-                IEnumerable<IsolateDispatchInfoDTO> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(AVNumber, IsolateId);
+                IEnumerable<IsolateDispatchInfoDto> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(AVNumber, IsolateId);
 
                 var dispatchHistoryRecords = _mapper.Map<IEnumerable<IsolateDispatchHistory>>(isolateDispatchInfoDTOs);
 

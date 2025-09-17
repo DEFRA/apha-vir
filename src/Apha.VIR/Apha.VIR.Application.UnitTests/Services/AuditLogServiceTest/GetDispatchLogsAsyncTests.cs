@@ -34,11 +34,11 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             var logId2 = Guid.NewGuid();
 
             var repositoryResult = new List<AuditDispatchLog> { new AuditDispatchLog { LogId = logId1 }, new AuditDispatchLog { LogId = logId2 } };
-            var expectedResult = new List<AuditDispatchLogDTO> { new AuditDispatchLogDTO { LogId = logId1 }, new AuditDispatchLogDTO { LogId = logId2 } };
+            var expectedResult = new List<AuditDispatchLogDto> { new AuditDispatchLogDto { LogId = logId1 }, new AuditDispatchLogDto { LogId = logId2 } };
 
             _mockAuditRepository.GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userId)
             .Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<AuditDispatchLogDTO>>(repositoryResult)
+            _mockMapper.Map<IEnumerable<AuditDispatchLogDto>>(repositoryResult)
             .Returns(expectedResult);
 
             // Act
@@ -46,7 +46,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             // Assert
             await _mockAuditRepository.Received(1).GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userId);
-            _mockMapper.Received(1).Map<IEnumerable<AuditDispatchLogDTO>>(repositoryResult);
+            _mockMapper.Received(1).Map<IEnumerable<AuditDispatchLogDto>>(repositoryResult);
             Assert.Equal(expectedResult, result);
         }
 

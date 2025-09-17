@@ -30,14 +30,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Family1" },
                 new LookupItem { Id = Guid.NewGuid(), Name = "Family2" }
             };
-            var expectedDtos = new List<LookupItemDTO>
+            var expectedDtos = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Family1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Family2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Family1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Family2" }
             };
 
             _mockLookupRepository.GetAllVirusFamiliesAsync().Returns(virusFamilies);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
 
             // Act
             var result = await _mockLookupService.GetAllVirusFamiliesAsync();
@@ -45,7 +45,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(expectedDtos, result);
             await _mockLookupRepository.Received(1).GetAllVirusFamiliesAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == virusFamilies));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == virusFamilies));
         }
 
         [Fact]
@@ -63,10 +63,10 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var emptyList = new List<LookupItem>();
-            var emptyDtoList = new List<LookupItemDTO>();
+            var emptyDtoList = new List<LookupItemDto>();
 
             _mockLookupRepository.GetAllVirusFamiliesAsync().Returns(emptyList);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(emptyDtoList);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(emptyDtoList);
 
             // Act
             var result = await _mockLookupService.GetAllVirusFamiliesAsync();
@@ -74,7 +74,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Empty(result);
             await _mockLookupRepository.Received(1).GetAllVirusFamiliesAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == emptyList));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == emptyList));
         }
 
         [Fact]
@@ -82,13 +82,13 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             _mockLookupRepository.GetAllVirusFamiliesAsync().Returns(new List<LookupItem>());
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _mockLookupService.GetAllVirusFamiliesAsync();
 
             // Assert
-            Assert.IsAssignableFrom<IEnumerable<LookupItemDTO>>(result);
+            Assert.IsAssignableFrom<IEnumerable<LookupItemDto>>(result);
         }
     }
 }

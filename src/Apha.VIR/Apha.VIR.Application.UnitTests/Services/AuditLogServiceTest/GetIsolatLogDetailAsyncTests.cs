@@ -26,10 +26,10 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Arrange
             var logId = Guid.NewGuid();
             var expectedResult = new List<AuditIsolateLogDetail> { new AuditIsolateLogDetail() };
-            var expectedDto = new AuditIsolateLogDetailDTO();
+            var expectedDto = new AuditIsolateLogDetailDto();
 
             _mockAuditRepository.GetIsolatLogDetailAsync(logId).Returns(expectedResult);
-            _mockMapper.Map<AuditIsolateLogDetailDTO>(expectedResult.FirstOrDefault()).Returns(expectedDto);
+            _mockMapper.Map<AuditIsolateLogDetailDto>(expectedResult.FirstOrDefault()).Returns(expectedDto);
 
             // Act
             var result = await _auditLogService.GetIsolatLogDetailAsync(logId);
@@ -37,7 +37,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Assert
             Assert.Equal(expectedDto, result);
             await _mockAuditRepository.Received(1).GetIsolatLogDetailAsync(logId);
-            _mockMapper.Received(1).Map<AuditIsolateLogDetailDTO>(expectedResult.FirstOrDefault());
+            _mockMapper.Received(1).Map<AuditIsolateLogDetailDto>(expectedResult.FirstOrDefault());
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             Assert.Null(result);
             await _mockAuditRepository.Received(1).GetIsolatLogDetailAsync(logId);
 
-            _mockMapper.Received(1).Map<AuditIsolateLogDetailDTO>(null);
+            _mockMapper.Received(1).Map<AuditIsolateLogDetailDto>(null);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Assert
             Assert.Null(result);
             await _mockAuditRepository.Received(1).GetIsolatLogDetailAsync(invalidGuid);
-            _mockMapper.Received(1).Map<AuditIsolateLogDetailDTO>(null);
+            _mockMapper.Received(1).Map<AuditIsolateLogDetailDto>(null);
         }
     }
 }

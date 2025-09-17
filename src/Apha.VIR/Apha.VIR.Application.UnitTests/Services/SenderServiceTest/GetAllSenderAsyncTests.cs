@@ -40,24 +40,24 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
 
             var mockPaginatedResult = new PagedData<Sender>(senders, 2);
 
-            var expectedPaginatedResult = new PaginatedResult<SenderDTO>
+            var expectedPaginatedResult = new PaginatedResult<SenderDto>
             {
-                data = new List<SenderDTO>
-                { new SenderDTO{ SenderId = senderId1, SenderName = "Sender1" },
-                 new SenderDTO { SenderId = senderId2, SenderName = "Sender2" }
+                data = new List<SenderDto>
+                { new SenderDto{ SenderId = senderId1, SenderName = "Sender1" },
+                 new SenderDto { SenderId = senderId2, SenderName = "Sender2" }
                 },
                 TotalCount = 2
             };
 
             _mockSenderRepository.GetAllSenderAsync(pageNo, pageSize).Returns(mockPaginatedResult);
-            _mockMapper.Map<PaginatedResult<SenderDTO>>(Arg.Any<PagedData<Sender>>()).Returns(expectedPaginatedResult);
+            _mockMapper.Map<PaginatedResult<SenderDto>>(Arg.Any<PagedData<Sender>>()).Returns(expectedPaginatedResult);
 
             // Act
             var result = await _senderService.GetAllSenderAsync(pageNo, pageSize);
 
             // Assert
             await _mockSenderRepository.Received(1).GetAllSenderAsync(pageNo, pageSize);
-            _mockMapper.Received(1).Map<PaginatedResult<SenderDTO>>(Arg.Any<PagedData<Sender>>());
+            _mockMapper.Received(1).Map<PaginatedResult<SenderDto>>(Arg.Any<PagedData<Sender>>());
             Assert.Equal(expectedPaginatedResult, result);
         }
 
@@ -71,21 +71,21 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
 
             var mockPaginatedResult = new PagedData<Sender>(new List<Sender>(), 0);
 
-            var expectedPaginatedResult = new PaginatedResult<SenderDTO>
+            var expectedPaginatedResult = new PaginatedResult<SenderDto>
             {
-                data = new List<SenderDTO>(),
+                data = new List<SenderDto>(),
                 TotalCount = 0,
             };
 
             _mockSenderRepository.GetAllSenderAsync(pageNo, pageSize).Returns(mockPaginatedResult);
-            _mockMapper.Map<PaginatedResult<SenderDTO>>(Arg.Any<PagedData<Sender>>()).Returns(expectedPaginatedResult);
+            _mockMapper.Map<PaginatedResult<SenderDto>>(Arg.Any<PagedData<Sender>>()).Returns(expectedPaginatedResult);
 
             // Act
             var result = await _senderService.GetAllSenderAsync(pageNo, pageSize);
 
             // Assert
             await _mockSenderRepository.Received(1).GetAllSenderAsync(pageNo, pageSize);
-            _mockMapper.Received(1).Map<PaginatedResult<SenderDTO>>(Arg.Any<PagedData<Sender>>());
+            _mockMapper.Received(1).Map<PaginatedResult<SenderDto>>(Arg.Any<PagedData<Sender>>());
             Assert.Empty(result.data);
             Assert.Equal(0, result.TotalCount);
         }

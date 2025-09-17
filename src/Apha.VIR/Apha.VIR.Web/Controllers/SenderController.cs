@@ -108,7 +108,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("CreateSender", model);
             }
 
-            var sender = _mapper.Map<SenderDTO>(model);
+            var sender = _mapper.Map<SenderDto>(model);
             await _senderService.AddSenderAsync(sender);
 
 
@@ -152,7 +152,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("EditSender", model);
             }
 
-            var sender = _mapper.Map<SenderDTO>(model);
+            var sender = _mapper.Map<SenderDto>(model);
 
             await _senderService.UpdateSenderAsync(sender);
 

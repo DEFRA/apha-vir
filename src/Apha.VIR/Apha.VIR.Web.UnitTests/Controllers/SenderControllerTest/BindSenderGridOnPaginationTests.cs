@@ -31,9 +31,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             int pageNo = 1;
             int pageSize = 10;
-            var mockSenders = new PaginatedResult<SenderDTO>
+            var mockSenders = new PaginatedResult<SenderDto>
             {
-                data = new List<SenderDTO> { new SenderDTO() },
+                data = new List<SenderDto> { new SenderDto() },
                 TotalCount = 1
             };
 
@@ -72,7 +72,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             int pageNo = 1;
             int pageSize = 10;
-            var senders = new PaginatedResult<SenderDTO> { data = new List<SenderDTO>(), TotalCount = 20 };
+            var senders = new PaginatedResult<SenderDto> { data = new List<SenderDto>(), TotalCount = 20 };
             var senderViewModels = new List<SenderViewModel>();
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
@@ -111,7 +111,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             int pageNo = 1;
             int pageSize = 10;
-            var senders = new PaginatedResult<SenderDTO> { data = new List<SenderDTO>(), TotalCount = 0 };
+            var senders = new PaginatedResult<SenderDto> { data = new List<SenderDto>(), TotalCount = 0 };
             var senderViewModels = new List<SenderViewModel>();
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
@@ -133,7 +133,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             int pageNo = 2;
             int pageSize = 15;
-            var senders = new PaginatedResult<SenderDTO> { data = new List<SenderDTO>(), TotalCount = 30 };
+            var senders = new PaginatedResult<SenderDto> { data = new List<SenderDto>(), TotalCount = 30 };
             var senderViewModels = new List<SenderViewModel>();
 
             _mockSenderService.GetAllSenderAsync(pageNo, pageSize).Returns(senders);
@@ -156,15 +156,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             int pageNo = 1;
             int pageSize = 10;
-            var senderDTOs = new List<SenderDTO> { new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" } };
-            var senders = new PaginatedResult<SenderDTO> { data = senderDTOs, TotalCount = 1 };
+            var SenderDtos = new List<SenderDto> { new SenderDto { SenderId = Guid.NewGuid(), SenderName = "Test Sender" } };
+            var senders = new PaginatedResult<SenderDto> { data = SenderDtos, TotalCount = 1 };
 
             var senderViewModels = new List<SenderViewModel>
             {
                 new SenderViewModel
                 {
-                    SenderId = senderDTOs[0].SenderId,
-                    SenderName = senderDTOs[0].SenderName!,
+                    SenderId = SenderDtos[0].SenderId,
+                    SenderName = SenderDtos[0].SenderName!,
                     SenderAddress="test",
                     SenderOrganisation="India"
                 }

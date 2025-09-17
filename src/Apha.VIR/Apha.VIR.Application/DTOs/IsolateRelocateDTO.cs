@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateRelocateDTO
+public class IsolateRelocateDto
 {
     public Guid? IsolateId { get; set; }
     public Guid? Freezer { get; set; }

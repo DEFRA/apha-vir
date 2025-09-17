@@ -61,7 +61,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             var avNumber = "AV123";
             var isolateId = Guid.NewGuid();
             var sampleId = Guid.NewGuid();
-            var isolates = new List<IsolateInfoDTO> { new IsolateInfoDTO { IsolateId = isolateId, IsolateSampleId = sampleId } };
+            var isolates = new List<IsolateInfoDto> { new IsolateInfoDto { IsolateId = isolateId, IsolateSampleId = sampleId } };
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(isolates);
             SetupMockUserAndRoles();
 
@@ -86,7 +86,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
             var lastModified = Array.Empty<byte>();
-            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
+            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDto>());
             _mockSampleService.DeleteSampleAsync(sampleId, "testUser", lastModified).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 
@@ -112,7 +112,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
             var lastModified = Array.Empty<byte>();
-            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
+            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDto>());
             _mockSampleService.DeleteSampleAsync(sampleId, "testUser", lastModified).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 

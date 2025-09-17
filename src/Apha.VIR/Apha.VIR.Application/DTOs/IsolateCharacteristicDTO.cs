@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateCharacteristicDTO
+public class IsolateCharacteristicDto
 {
     public Guid? IsolateId { get; set; }
     public Guid? CharacteristicId { get; set; }

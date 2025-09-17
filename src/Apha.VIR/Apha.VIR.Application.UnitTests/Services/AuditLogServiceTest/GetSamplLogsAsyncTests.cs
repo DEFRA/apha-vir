@@ -31,10 +31,10 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             var userId = "user123";
 
             var repositoryResult = new List<AuditSampleLog> { new AuditSampleLog(), new AuditSampleLog() };
-            var expectedResult = new List<AuditSampleLogDTO> { new AuditSampleLogDTO(), new AuditSampleLogDTO() };
+            var expectedResult = new List<AuditSampleLogDto> { new AuditSampleLogDto(), new AuditSampleLogDto() };
 
             _mockRepository.GetSamplLogsAsync(avNumber, dateFrom, dateTo, userId).Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<AuditSampleLogDTO>>(repositoryResult).Returns(expectedResult);
+            _mockMapper.Map<IEnumerable<AuditSampleLogDto>>(repositoryResult).Returns(expectedResult);
 
             // Act
             var result = await _service.GetSamplLogsAsync(avNumber, dateFrom, dateTo, userId);
@@ -42,7 +42,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Assert
             Assert.Equal(expectedResult, result);
             await _mockRepository.Received(1).GetSamplLogsAsync(avNumber, dateFrom, dateTo, userId);
-            _mockMapper.Received(1).Map<IEnumerable<AuditSampleLogDTO>>(repositoryResult);
+            _mockMapper.Received(1).Map<IEnumerable<AuditSampleLogDto>>(repositoryResult);
         }
 
         [Theory]

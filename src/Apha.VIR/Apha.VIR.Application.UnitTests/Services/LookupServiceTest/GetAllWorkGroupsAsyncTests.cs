@@ -34,14 +34,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             new LookupItem { Id = Guid.NewGuid(), Name = "Group 1" },
             new LookupItem { Id = Guid.NewGuid(), Name = "Group 2" }
             };
-            var workGroupDTOs = new List<LookupItemDTO>
+            var workGroupDTOs = new List<LookupItemDto>
             {
-            new LookupItemDTO { Id = workGroups[0].Id, Name = workGroups[0].Name },
-            new LookupItemDTO { Id = workGroups[1].Id, Name = workGroups[1].Name }
+            new LookupItemDto { Id = workGroups[0].Id, Name = workGroups[0].Name },
+            new LookupItemDto { Id = workGroups[1].Id, Name = workGroups[1].Name }
             };
 
             _mockLookupRepository.GetAllWorkGroupsAsync().Returns(workGroups);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(workGroupDTOs);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(workGroupDTOs);
 
             // Act
             var result = await _mockLookupService.GetAllWorkGroupsAsync();
@@ -50,7 +50,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
             await _mockLookupRepository.Received(1).GetAllWorkGroupsAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == workGroups));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == workGroups));
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             _mockLookupRepository.GetAllWorkGroupsAsync().Returns(new List<LookupItem>());
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _mockLookupService.GetAllWorkGroupsAsync();

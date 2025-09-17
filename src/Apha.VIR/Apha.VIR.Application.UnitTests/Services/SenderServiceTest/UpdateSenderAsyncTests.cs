@@ -24,14 +24,14 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
         public async Task UpdateSenderAsync_ShouldUpdateSuccessfull_WhenValidSendery()
         {
             // Arrange
-            var senderDto = new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" };
-            var senderEntity = new Sender { SenderId = senderDto.SenderId, SenderName = senderDto.SenderName };
+            var SenderDto = new SenderDto { SenderId = Guid.NewGuid(), SenderName = "Test Sender" };
+            var senderEntity = new Sender { SenderId = SenderDto.SenderId, SenderName = SenderDto.SenderName };
 
-            _mockMapper.Map<Sender>(senderDto).Returns(senderEntity);
+            _mockMapper.Map<Sender>(SenderDto).Returns(senderEntity);
             _mockSenderRepository.UpdateSenderAsync(Arg.Any<Sender>()).Returns(Task.CompletedTask);
 
             // Act
-            await _senderService.UpdateSenderAsync(senderDto);
+            await _senderService.UpdateSenderAsync(SenderDto);
 
             // Assert
             await _mockSenderRepository.Received(1).UpdateSenderAsync(Arg.Is<Sender>(s => s.SenderId == senderEntity.SenderId && s.SenderName == senderEntity.SenderName));
@@ -41,14 +41,14 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
         public async Task UpdateSenderAsync_ShouldPropagateException_WhenRepositoryThrowsException()
         {
             // Arrange
-            var senderDto = new SenderDTO { SenderId = Guid.NewGuid(), SenderName = "Test Sender" };
-            var senderEntity = new Sender { SenderId = senderDto.SenderId, SenderName = senderDto.SenderName };
+            var SenderDto = new SenderDto { SenderId = Guid.NewGuid(), SenderName = "Test Sender" };
+            var senderEntity = new Sender { SenderId = SenderDto.SenderId, SenderName = SenderDto.SenderName };
 
-            _mockMapper.Map<Sender>(senderDto).Returns(senderEntity);
+            _mockMapper.Map<Sender>(SenderDto).Returns(senderEntity);
             _mockSenderRepository.UpdateSenderAsync(Arg.Any<Sender>()).Returns(Task.FromException(new Exception("Repository error")));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _senderService.UpdateSenderAsync(senderDto));
+            await Assert.ThrowsAsync<Exception>(() => _senderService.UpdateSenderAsync(SenderDto));
         }
     }
 }

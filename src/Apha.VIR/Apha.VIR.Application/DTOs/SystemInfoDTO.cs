@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class SystemInfoDTO
+public class SystemInfoDto
 {
     public Guid Id { get; set; }
     public string SystemName { get; set; } = null!;

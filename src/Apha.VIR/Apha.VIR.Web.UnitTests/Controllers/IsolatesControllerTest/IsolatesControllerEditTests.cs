@@ -50,7 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
             var isolateId = Guid.NewGuid();
-            var isolate = new IsolateDTO { IsolateId = isolateId, IsolateSampleId = sampleId };
+            var isolate = new IsolateDto { IsolateId = isolateId, IsolateSampleId = sampleId };
             var isolateModel = new IsolateAddEditViewModel();
 
             _mockIsolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
@@ -97,7 +97,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 YearOfIsolation = DateTime.Now.Year
             };
 
-            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns(Task.CompletedTask);
+            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 
             // Act
@@ -146,8 +146,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 CheckedBy = Guid.NewGuid()
             };
 
-            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns(Task.CompletedTask);
-            _mockIsolateViabilityService.AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDTO>(), Arg.Any<string>()).Returns(Task.CompletedTask);
+            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns(Task.CompletedTask);
+            _mockIsolateViabilityService.AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDto>(), Arg.Any<string>()).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 
             // Act
@@ -155,7 +155,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
 
             // Assert
             Assert.IsType<RedirectToActionResult>(result);
-            await _mockIsolateViabilityService.Received(1).AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDTO>(), Arg.Any<string>());
+            await _mockIsolateViabilityService.Received(1).AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDto>(), Arg.Any<string>());
         }
 
         [Fact]
@@ -174,7 +174,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 ActionType = "SaveAndContinue"
             };
 
-            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns(Task.CompletedTask);
+            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 
             // Act
@@ -202,7 +202,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 YearOfIsolation = DateTime.Now.Year
             };
 
-            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns(Task.CompletedTask);
+            _mockIsolatesService.UpdateIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 
             // Act

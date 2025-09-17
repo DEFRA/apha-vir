@@ -48,11 +48,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             var countryId = Guid.NewGuid();
-            var senderDtos = new List<SenderDTO> { new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto() };
             var senderViewModels = new List<SubmissionSenderViewModel> { new SubmissionSenderViewModel() };
 
-            _mockSenderService.GetAllSenderOrderBySenderAsync(countryId).Returns(senderDtos);
-            _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            _mockSenderService.GetAllSenderOrderBySenderAsync(countryId).Returns(SenderDtos);
+            _mockMapper.Map<List<SubmissionSenderViewModel>>(SenderDtos).Returns(senderViewModels);
             SetupMockUserAndRoles();
 
             // Act
@@ -69,11 +69,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             Guid? countryId = null;
-            var senderDtos = new List<SenderDTO> { new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto() };
             var senderViewModels = new List<SubmissionSenderViewModel> { new SubmissionSenderViewModel() };
 
-            _mockSenderService.GetAllSenderOrderBySenderAsync(countryId).Returns(senderDtos);
-            _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            _mockSenderService.GetAllSenderOrderBySenderAsync(countryId).Returns(SenderDtos);
+            _mockMapper.Map<List<SubmissionSenderViewModel>>(SenderDtos).Returns(senderViewModels);
             SetupMockUserAndRoles();
 
             // Act
@@ -90,11 +90,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
-            var senderDtos = new List<SenderDTO> { new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto() };
             var senderViewModels = new List<SubmissionSenderViewModel> { new SubmissionSenderViewModel() };
 
-            _mockSenderService.GetAllSenderOrderBySenderAsync(null).Returns(senderDtos);
-            _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            _mockSenderService.GetAllSenderOrderBySenderAsync(null).Returns(SenderDtos);
+            _mockMapper.Map<List<SubmissionSenderViewModel>>(SenderDtos).Returns(senderViewModels);
             SetupMockUserAndRoles();
 
             // Act
@@ -118,10 +118,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             new SelectListItem { Value = id1.ToString(), Text = "Country 1" },
             new SelectListItem { Value = id2.ToString(), Text = "Country 2" }
             };
-            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>
+            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>
             {
-            new LookupItemDTO { Id = id1, Name = "Country 1" },
-            new LookupItemDTO { Id = id2, Name = "Country 2" }
+            new LookupItemDto { Id = id1, Name = "Country 1" },
+            new LookupItemDto { Id = id2, Name = "Country 2" }
             });
 
             // Act
@@ -135,7 +135,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         public async Task GetAddSender_ReturnsCorrectViewName()
         {
             // Arrange
-            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
+            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _controller.GetAddSender() as PartialViewResult;
@@ -148,7 +148,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         public async Task GetAddSender_ReturnsModelOfTypeSenderViewModel()
         {
             // Arrange
-            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
+            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _controller.GetAddSender() as PartialViewResult;
@@ -163,10 +163,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             // Arrange
             var id1 = Guid.NewGuid();
             var id2 = Guid.NewGuid();
-            var countryList = new List<LookupItemDTO>
+            var countryList = new List<LookupItemDto>
             {
-            new LookupItemDTO { Id = id1, Name = "Country 1" },
-            new LookupItemDTO { Id = id2, Name = "Country 2" }
+            new LookupItemDto { Id = id1, Name = "Country 1" },
+            new LookupItemDto { Id = id2, Name = "Country 2" }
             };
             _mockLookupService.GetAllCountriesAsync().Returns(countryList);
 
@@ -186,9 +186,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             var senderModel = new SubmissionSenderViewModel { SenderName = "Test Sender", Country = Guid.NewGuid() };
-            var senderDto = new SenderDTO();
-            _mockMapper.Map<SenderDTO>(senderModel).Returns(senderDto);
-            _mockSenderService.AddSenderAsync(senderDto).Returns(Task.CompletedTask);
+            var SenderDto = new SenderDto();
+            _mockMapper.Map<SenderDto>(senderModel).Returns(SenderDto);
+            _mockSenderService.AddSenderAsync(SenderDto).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 
             // Act
@@ -203,7 +203,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             string? message = jsonElement.GetProperty("message").GetString();
             Assert.True(success);
             Assert.Equal("Sender add successfully!", message);
-            await _mockSenderService.Received(1).AddSenderAsync(senderDto);
+            await _mockSenderService.Received(1).AddSenderAsync(SenderDto);
         }
 
         [Fact]
@@ -226,7 +226,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             string? message = jsonElement.GetProperty("message").GetString();
             Assert.False(success);
             Assert.Equal("Add sender failed!", message);
-            await _mockSenderService.DidNotReceive().AddSenderAsync(Arg.Any<SenderDTO>());
+            await _mockSenderService.DidNotReceive().AddSenderAsync(Arg.Any<SenderDto>());
         }
 
         [Fact]
@@ -234,11 +234,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             var countryId = Guid.NewGuid();
-            var senderDtos = new List<SenderDTO> { new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto() };
             var senderViewModels = new List<SubmissionSenderViewModel> { new SubmissionSenderViewModel() };
 
-            _mockSenderService.GetAllSenderOrderByOrganisationAsync(countryId).Returns(senderDtos);
-            _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            _mockSenderService.GetAllSenderOrderByOrganisationAsync(countryId).Returns(SenderDtos);
+            _mockMapper.Map<List<SubmissionSenderViewModel>>(SenderDtos).Returns(senderViewModels);
             SetupMockUserAndRoles();
 
             // Act
@@ -256,11 +256,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             Guid? countryId = null;
-            var senderDtos = new List<SenderDTO> { new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto() };
             var senderViewModels = new List<SubmissionSenderViewModel> { new SubmissionSenderViewModel() };
 
-            _mockSenderService.GetAllSenderOrderByOrganisationAsync(countryId).Returns(senderDtos);
-            _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            _mockSenderService.GetAllSenderOrderByOrganisationAsync(countryId).Returns(SenderDtos);
+            _mockMapper.Map<List<SubmissionSenderViewModel>>(SenderDtos).Returns(senderViewModels);
             SetupMockUserAndRoles();
 
             // Act
@@ -280,11 +280,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             var countryId = Guid.NewGuid();
             _controller.ModelState.AddModelError("error", "some error");
 
-            var senderDtos = new List<SenderDTO> { new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto() };
             var senderViewModels = new List<SubmissionSenderViewModel> { new SubmissionSenderViewModel() };
 
-            _mockSenderService.GetAllSenderOrderByOrganisationAsync(null).Returns(senderDtos);
-            _mockMapper.Map<List<SubmissionSenderViewModel>>(senderDtos).Returns(senderViewModels);
+            _mockSenderService.GetAllSenderOrderByOrganisationAsync(null).Returns(SenderDtos);
+            _mockMapper.Map<List<SubmissionSenderViewModel>>(SenderDtos).Returns(senderViewModels);
             SetupMockUserAndRoles();
 
             // Act

@@ -4,10 +4,10 @@ namespace Apha.VIR.Application.Interfaces;
 
 public interface IIsolateViabilityService
 {
-    Task<IEnumerable<IsolateViabilityInfoDTO>> GetViabilityByIsolateIdAsync(Guid isolateId);
-    Task<IEnumerable<IsolateViabilityInfoDTO>> GetViabilityHistoryAsync(string AVNumber, Guid IsolateId);
+    Task<IEnumerable<IsolateViabilityInfoDto>> GetViabilityByIsolateIdAsync(Guid isolateId);
+    Task<IEnumerable<IsolateViabilityInfoDto>> GetViabilityHistoryAsync(string AVNumber, Guid IsolateId);
     Task DeleteIsolateViabilityAsync(Guid IsolateId, byte[] lastModified, string userid);
-    Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userid);
-    Task AddIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userId);
-    Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid IsolateId);
+    Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDto isolateViability, string userid);
+    Task AddIsolateViabilityAsync(IsolateViabilityInfoDto isolateViability, string userId);
+    Task<IsolateViabilityDto?> GetLastViabilityByIsolateAsync(Guid IsolateId);
 }

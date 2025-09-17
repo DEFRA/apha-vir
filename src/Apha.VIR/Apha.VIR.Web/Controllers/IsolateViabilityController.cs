@@ -100,7 +100,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("Edit", model);
             }
 
-            var dto = _mapper.Map<IsolateViabilityInfoDTO>(model.IsolateViability);
+            var dto = _mapper.Map<IsolateViabilityInfoDto>(model.IsolateViability);
 
             await _isolateViabilityService.UpdateIsolateViabilityAsync(dto, userid);
 

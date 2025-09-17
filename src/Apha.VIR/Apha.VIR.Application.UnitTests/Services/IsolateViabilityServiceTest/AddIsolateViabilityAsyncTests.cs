@@ -37,7 +37,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task AddIsolateViabilityAsync_ValidInput_ShouldCallRepository()
         {
             // Arrange
-            var dto = new IsolateViabilityInfoDTO { IsolateViabilityIsolateId = Guid.NewGuid(), DateChecked = DateTime.Now };
+            var dto = new IsolateViabilityInfoDto { IsolateViabilityIsolateId = Guid.NewGuid(), DateChecked = DateTime.Now };
             var userId = "testUser";
             var entity = new IsolateViability();
             _mockMapper.Map<IsolateViability>(dto).Returns(entity);
@@ -53,7 +53,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task AddIsolateViabilityAsync_NullInput_ShouldThrowArgumentNullException()
         {
             // Arrange
-            IsolateViabilityInfoDTO? dto = null;
+            IsolateViabilityInfoDto? dto = null;
             var userId = "testUser";
 
             // Act & Assert
@@ -64,7 +64,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task AddIsolateViabilityAsync_EmptyUserId_ShouldThrowArgumentException()
         {
             // Arrange
-            var dto = new IsolateViabilityInfoDTO { IsolateViabilityIsolateId = Guid.NewGuid(), DateChecked = DateTime.Now };
+            var dto = new IsolateViabilityInfoDto { IsolateViabilityIsolateId = Guid.NewGuid(), DateChecked = DateTime.Now };
             var userId = "";
 
             // Act & Assert
@@ -75,7 +75,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task AddIsolateViabilityAsync_ValidInput_ShouldMapCorrectly()
         {
             // Arrange
-            var dto = new IsolateViabilityInfoDTO { IsolateViabilityIsolateId = Guid.NewGuid(), DateChecked = DateTime.Now };
+            var dto = new IsolateViabilityInfoDto { IsolateViabilityIsolateId = Guid.NewGuid(), DateChecked = DateTime.Now };
             var userId = "testUser";
             var entity = new IsolateViability();
             _mockMapper.Map<IsolateViability>(dto).Returns(entity);

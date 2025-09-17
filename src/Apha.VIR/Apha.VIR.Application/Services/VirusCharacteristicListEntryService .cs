@@ -18,31 +18,31 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<VirusCharacteristicListEntryDTO>> GetEntriesByCharacteristicIdAsync(Guid virusCharacteristicId)
+        public async Task<IEnumerable<VirusCharacteristicListEntryDto>> GetEntriesByCharacteristicIdAsync(Guid virusCharacteristicId)
         {
             var entities = await _repository.GetEntriesByCharacteristicIdAsync(virusCharacteristicId);
-            return _mapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities);
+            return _mapper.Map<IEnumerable<VirusCharacteristicListEntryDto>>(entities);
         }
 
-        public async Task<PaginatedResult<VirusCharacteristicListEntryDTO>> GetVirusCharacteristicListEntries(Guid virusCharacteristicId, int pageNo, int pageSize)
+        public async Task<PaginatedResult<VirusCharacteristicListEntryDto>> GetVirusCharacteristicListEntries(Guid virusCharacteristicId, int pageNo, int pageSize)
         {
             var entities = await _repository.GetVirusCharacteristicListEntries(virusCharacteristicId, pageNo, pageSize);
-            return _mapper.Map<PaginatedResult<VirusCharacteristicListEntryDTO>>(entities);
+            return _mapper.Map<PaginatedResult<VirusCharacteristicListEntryDto>>(entities);
         }
 
-        public async Task<VirusCharacteristicListEntryDTO?> GetEntryByIdAsync(Guid id)
+        public async Task<VirusCharacteristicListEntryDto?> GetEntryByIdAsync(Guid id)
         {
             var entity = await _repository.GetByIdAsync(id);
-            return entity == null ? null : _mapper.Map<VirusCharacteristicListEntryDTO>(entity);
+            return entity == null ? null : _mapper.Map<VirusCharacteristicListEntryDto>(entity);
         }
 
-        public async Task AddEntryAsync(VirusCharacteristicListEntryDTO dto)
+        public async Task AddEntryAsync(VirusCharacteristicListEntryDto dto)
         {
             dto.Id = Guid.NewGuid();
             await _repository.AddEntryAsync(_mapper.Map<VirusCharacteristicListEntry>(dto));
         }
 
-        public async Task UpdateEntryAsync(VirusCharacteristicListEntryDTO dto)
+        public async Task UpdateEntryAsync(VirusCharacteristicListEntryDto dto)
         {
             await _repository.UpdateEntryAsync(_mapper.Map<VirusCharacteristicListEntry>(dto));
         }

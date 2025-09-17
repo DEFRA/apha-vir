@@ -6,6 +6,7 @@ namespace Apha.VIR.Web.Models
     {
         [DataType(DataType.MultilineText)]
         public string? LetterContent { get; set; }
+        public string? AVNumber { get; set; }
 
     }
 }

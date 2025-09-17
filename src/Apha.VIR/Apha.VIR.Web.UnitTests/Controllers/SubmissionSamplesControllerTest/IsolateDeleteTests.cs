@@ -50,7 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             byte[] lastModified = new byte[] { 0x00, 0x01, 0x02 };
 
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber)
-            .Returns(new[] { new IsolateInfoDTO { IsolateId = isolateId } });
+            .Returns(new[] { new IsolateInfoDto { IsolateId = isolateId } });
 
             _mockIsolatesDispatchService.GetIsolateDispatchRecordCountAsync(isolateId)
             .Returns(0);
@@ -81,7 +81,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             byte[] lastModified = new byte[] { 0x00, 0x01, 0x02 };
 
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber)
-            .Returns(new[] { new IsolateInfoDTO { IsolateId = isolateId } });
+            .Returns(new[] { new IsolateInfoDto { IsolateId = isolateId } });
 
             _mockIsolatesDispatchService.GetIsolateDispatchRecordCountAsync(isolateId)
             .Returns(1);
@@ -126,7 +126,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             byte[] lastModified = new byte[] { 0x00, 0x01, 0x02 };
 
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber)
-            .Returns(Array.Empty<IsolateInfoDTO>());
+            .Returns(Array.Empty<IsolateInfoDto>());
             SetupMockUserAndRoles();
 
             // Act

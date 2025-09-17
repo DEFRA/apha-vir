@@ -33,11 +33,11 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             var logId2 = Guid.NewGuid();
 
             var repositoryResult = new List<AuditViabilityLog> { new AuditViabilityLog { LogId = logId1 }, new AuditViabilityLog { LogId = logId2 } };
-            var expectedResult = new List<AuditViabilityLogDTO> { new AuditViabilityLogDTO { LogId = logId1 }, new AuditViabilityLogDTO { LogId = logId2 } };
+            var expectedResult = new List<AuditViabilityLogDto> { new AuditViabilityLogDto { LogId = logId1 }, new AuditViabilityLogDto { LogId = logId2 } };
 
             _auditRepository.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Returns(repositoryResult);
-            _mapper.Map<IEnumerable<AuditViabilityLogDTO>>(repositoryResult).Returns(expectedResult);
+            _mapper.Map<IEnumerable<AuditViabilityLogDto>>(repositoryResult).Returns(expectedResult);
 
             // Act
             var result = await _auditLogService.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid);
@@ -45,7 +45,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Assert
             Assert.Equal(expectedResult, result);
             await _auditRepository.Received(1).GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid);
-            _mapper.Received(1).Map<IEnumerable<AuditViabilityLogDTO>>(repositoryResult);
+            _mapper.Received(1).Map<IEnumerable<AuditViabilityLogDto>>(repositoryResult);
         }
 
         [Theory]
@@ -123,8 +123,8 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             _auditRepository.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Returns(Enumerable.Empty<AuditViabilityLog>());
 
-            _mapper.Map<IEnumerable<AuditViabilityLogDTO>>(Arg.Any<IEnumerable<object>>())
-            .Returns(Enumerable.Empty<AuditViabilityLogDTO>());
+            _mapper.Map<IEnumerable<AuditViabilityLogDto>>(Arg.Any<IEnumerable<object>>())
+            .Returns(Enumerable.Empty<AuditViabilityLogDto>());
 
             // Act
             var result = await _auditLogService.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid);

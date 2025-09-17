@@ -40,7 +40,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
                 UserId = "user123"
             };
 
-            var submissionLogs = new List<AuditSubmissionLogDTO> { new AuditSubmissionLogDTO(), new AuditSubmissionLogDTO() };
+            var submissionLogs = new List<AuditSubmissionLogDto> { new AuditSubmissionLogDto(), new AuditSubmissionLogDto() };
 
             _auditLogService.GetSubmissionLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Returns(submissionLogs);
@@ -101,7 +101,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(searchCriteria));
            _cacheService.GetCacheValueAsync<string>("SearchCriteria").Returns(searchCriteriaJson!);
 
-            var isolateLogs = new List<AuditIsolateLogDTO> { new AuditIsolateLogDTO(), new AuditIsolateLogDTO() };
+            var isolateLogs = new List<AuditIsolateLogDto> { new AuditIsolateLogDto(), new AuditIsolateLogDto() };
             _auditLogService.GetIsolatLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Returns(isolateLogs);
 
@@ -141,7 +141,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             Assert.True(model.ShowDefaultView);
         }
 
-        private void ValidateModel(object model, Controller controller)
+        private static void ValidateModel(object model, Controller controller)
         {
             var validationContext = new ValidationContext(model, null, null);
             var validationResults = new List<ValidationResult>();

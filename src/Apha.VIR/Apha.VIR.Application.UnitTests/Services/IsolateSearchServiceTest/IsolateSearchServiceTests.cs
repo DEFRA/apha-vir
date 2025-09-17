@@ -41,7 +41,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         {
             // Arrange
             var characteristicId = Guid.NewGuid();
-            SetupMockedCharacteristics(new VirusCharacteristicDTO { Id = characteristicId, DataType = "Numeric" });
+            SetupMockedCharacteristics(new VirusCharacteristicDto { Id = characteristicId, DataType = "Numeric" });
 
             // Act
             var result = await _mockIsolateSearchService.GetComparatorsAndListValuesAsync(characteristicId);
@@ -56,12 +56,12 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         {
             // Arrange
             var characteristicId = Guid.NewGuid();
-            SetupMockedCharacteristics(new VirusCharacteristicDTO { Id = characteristicId, DataType = "SingleList" });
+            SetupMockedCharacteristics(new VirusCharacteristicDto { Id = characteristicId, DataType = "SingleList" });
             var listEntries = new List<VirusCharacteristicListEntry> { new VirusCharacteristicListEntry() };
             _mockVirusCharacteristicListEntryRepository.GetEntriesByCharacteristicIdAsync(characteristicId)
             .Returns(listEntries);
-            _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(Arg.Any<IEnumerable<VirusCharacteristicListEntry>>())
-            .Returns(listEntries.Select(e => new VirusCharacteristicListEntryDTO()));
+            _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDto>>(Arg.Any<IEnumerable<VirusCharacteristicListEntry>>())
+            .Returns(listEntries.Select(e => new VirusCharacteristicListEntryDto()));
 
             // Act
             var result = await _mockIsolateSearchService.GetComparatorsAndListValuesAsync(characteristicId);
@@ -76,7 +76,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         {
             // Arrange
             var characteristicId = Guid.NewGuid();
-            SetupMockedCharacteristics(new VirusCharacteristicDTO { Id = characteristicId, DataType = "Yes/No" });
+            SetupMockedCharacteristics(new VirusCharacteristicDto { Id = characteristicId, DataType = "Yes/No" });
 
             // Act
             var result = await _mockIsolateSearchService.GetComparatorsAndListValuesAsync(characteristicId);
@@ -91,7 +91,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         {
             // Arrange
             var characteristicId = Guid.NewGuid();
-            SetupMockedCharacteristics(new VirusCharacteristicDTO { Id = characteristicId, DataType = "Text" });
+            SetupMockedCharacteristics(new VirusCharacteristicDto { Id = characteristicId, DataType = "Text" });
 
             // Act
             var result = await _mockIsolateSearchService.GetComparatorsAndListValuesAsync(characteristicId);
@@ -116,11 +116,11 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
             Assert.Empty(result.Item2);
         }
 
-        private void SetupMockedCharacteristics(params VirusCharacteristicDTO[] characteristics)
+        private void SetupMockedCharacteristics(params VirusCharacteristicDto[] characteristics)
         {
             _mockVirusCharacteristicRepository.GetAllVirusCharacteristicsAsync()
             .Returns(characteristics.Select(c => new VirusCharacteristic()));
-            _mockMapper.Map<IEnumerable<VirusCharacteristicDTO>>(Arg.Any<IEnumerable<VirusCharacteristic>>())
+            _mockMapper.Map<IEnumerable<VirusCharacteristicDto>>(Arg.Any<IEnumerable<VirusCharacteristic>>())
             .Returns(characteristics);
         }
 
@@ -145,15 +145,15 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
             var isolateSearchResult = new List<IsolateSearchResult> { new IsolateSearchResult() };
             var searchResult = new PagedData<IsolateSearchResult>(isolateSearchResult, totalCount: 1);
 
-            var expectedResult = new PaginatedResult<IsolateSearchResultDTO>
+            var expectedResult = new PaginatedResult<IsolateSearchResultDto>
             {
-                data = new List<IsolateSearchResultDTO> { new IsolateSearchResultDTO() },
+                data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
 
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(queryParams).Returns(mappedParams);
             _mockIsolateSearchRepository.PerformSearchAsync(Arg.Any<PaginationParameters<SearchCriteria>>()).Returns(searchResult);
-            _mockMapper.Map<PaginatedResult<IsolateSearchResultDTO>>(searchResult).Returns(expectedResult);
+            _mockMapper.Map<PaginatedResult<IsolateSearchResultDto>>(searchResult).Returns(expectedResult);
 
             // Act
             var result = await _mockIsolateSearchService.PerformSearchAsync(queryParams);
@@ -185,15 +185,15 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
             var isolateSearchResult = new List<IsolateSearchResult>();
             var searchResult = new PagedData<IsolateSearchResult>(isolateSearchResult, totalCount: 0);
 
-            var expectedResult = new PaginatedResult<IsolateSearchResultDTO>
+            var expectedResult = new PaginatedResult<IsolateSearchResultDto>
             {
-                data = new List<IsolateSearchResultDTO>(),
+                data = new List<IsolateSearchResultDto>(),
                 TotalCount = 0
             };
 
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(queryParams).Returns(mappedParams);
             _mockIsolateSearchRepository.PerformSearchAsync(Arg.Any<PaginationParameters<SearchCriteria>>()).Returns(searchResult);
-            _mockMapper.Map<PaginatedResult<IsolateSearchResultDTO>>(searchResult).Returns(expectedResult);
+            _mockMapper.Map<PaginatedResult<IsolateSearchResultDto>>(searchResult).Returns(expectedResult);
 
             // Act
             var result = await _mockIsolateSearchService.PerformSearchAsync(queryParams);
@@ -264,9 +264,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
                     Well = "W1"
                 }
             };
-            var isolateSearchResultDto = new List<IsolateSearchResultDTO>
+            var IsolateSearchResultDto = new List<IsolateSearchResultDto>
             {
-                new IsolateSearchResultDTO
+                new IsolateSearchResultDto
                 {
                      FreezerName = "F1",
                      TrayName = "T1",
@@ -279,34 +279,34 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
                 Tray = "T1",
                 Well = "W1"
             };
-            var isolateFullDetailsDto = new IsolateFullDetailDTO
+            var isolateFullDetailsDto = new IsolateFullDetailDto
             {
-                IsolateDetails = new IsolateInfoDTO
+                IsolateDetails = new IsolateInfoDto
                 {
                     FreezerName = "F1",
                     TrayName = "T1",
                     Well = "W1"
                 },
-                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDto>
                     {
-                        new IsolateViabilityInfoDTO
+                        new IsolateViabilityInfoDto
                         {
                             ViabilityStatus = "Viable",
                             CheckedByName = "John Doe",
                             DateChecked = DateTime.Now
                         }
                     },
-                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDto>
                     {
-                        new IsolateDispatchInfoDTO
+                        new IsolateDispatchInfoDto
                         {
                             RecipientName = "Recp1",
                             RecipientAddress = "RecptAddress"
                         }
                     },
-                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDto>
                     {
-                        new IsolateCharacteristicInfoDTO
+                        new IsolateCharacteristicInfoDto
                         {
                             CharacteristicName = "Color",
                             CharacteristicValue = "Red"
@@ -316,9 +316,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
 
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(isolateFullDetails);
-            _mockMapper.Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>()).Returns(isolateFullDetailsDto);
-            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);
-            _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(isolateSearchResultDto);
+            _mockMapper.Map<IsolateFullDetailDto>(Arg.Any<IsolateFullDetail>()).Returns(isolateFullDetailsDto);
+            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDto>()).Returns(isolateSearchExportDto);
+            _mockMapper.Map<List<IsolateSearchResultDto>>(Arg.Any<List<IsolateSearchResult>>()).Returns(IsolateSearchResultDto);
             // Act
             var result = await _mockIsolateSearchService.GetIsolateSearchExportResultAsync(criteria);
 
@@ -341,9 +341,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
-            _mockMapper.Map<List<IsolateFullDetailDTO>>(Arg.Any<List<IsolateFullDetail>>()).Returns(new List<IsolateFullDetailDTO>());
+            _mockMapper.Map<List<IsolateFullDetailDto>>(Arg.Any<List<IsolateFullDetail>>()).Returns(new List<IsolateFullDetailDto>());
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(new List<IsolateSearchResult>());
-            _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(new List<IsolateSearchResultDTO>());
+            _mockMapper.Map<List<IsolateSearchResultDto>>(Arg.Any<List<IsolateSearchResult>>()).Returns(new List<IsolateSearchResultDto>());
 
             // Act
             var result = await _mockIsolateSearchService.GetIsolateSearchExportResultAsync(criteria);
@@ -370,9 +370,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
                      Well = "W1"
                 }
             };
-            var isolateSearchResultDto = new List<IsolateSearchResultDTO>
+            var IsolateSearchResultDto = new List<IsolateSearchResultDto>
             {
-                new IsolateSearchResultDTO
+                new IsolateSearchResultDto
                 {
                      FreezerName = "F1",
                      TrayName = "T1",
@@ -385,24 +385,24 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
                 Tray = "T1",
                 Well = "W1"
             };
-            var isolateFullDetailsDto = new IsolateFullDetailDTO
+            var isolateFullDetailsDto = new IsolateFullDetailDto
             {
-                IsolateDetails = new IsolateInfoDTO
+                IsolateDetails = new IsolateInfoDto
                 {
                     FreezerName = "F1",
                     TrayName = "T1",
                     Well = "W1"
                 },
-                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
-                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
-                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDto>(),
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDto>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDto>()
             };
 
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
-            _mockMapper.Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>()).Returns(isolateFullDetailsDto);
-            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDTO>()).Returns(isolateSearchExportDto);
+            _mockMapper.Map<IsolateFullDetailDto>(Arg.Any<IsolateFullDetail>()).Returns(isolateFullDetailsDto);
+            _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateInfoDto>()).Returns(isolateSearchExportDto);
             _mockIsolateSearchRepository.GetIsolateSearchExportResultAsync(mappedCriteria).Returns(isolateSearchResult);
-            _mockMapper.Map<List<IsolateSearchResultDTO>>(Arg.Any<List<IsolateSearchResult>>()).Returns(isolateSearchResultDto);
+            _mockMapper.Map<List<IsolateSearchResultDto>>(Arg.Any<List<IsolateSearchResult>>()).Returns(IsolateSearchResultDto);
             _mockMapper.Map<IsolateSearchExportDto>(Arg.Any<IsolateSearchExportDto>()).Returns(x => x.Arg<IsolateSearchExportDto>());
 
             // Act

@@ -5,34 +5,34 @@ namespace Apha.VIR.Application.Interfaces
 {
     public interface ILookupService
     {
-        Task<IEnumerable<LookupDTO>> GetAllLookupsAsync();
-        Task<LookupDTO> GetLookupByIdAsync(Guid lookupId);
-        Task<LookupItemDTO> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
-        Task<PaginatedResult<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize);
-        Task<IEnumerable<LookupItemDTO>> GetAllLookupItemsAsync(Guid lookupId);
-        Task<IEnumerable<LookupItemDTO>> GetLookupItemParentListAsync(Guid lookupId);
+        Task<IEnumerable<LookupDto>> GetAllLookupsAsync();
+        Task<LookupDto> GetLookupByIdAsync(Guid lookupId);
+        Task<LookupItemDto> GetLookupItemAsync(Guid lookupId, Guid lookupItemId);
+        Task<PaginatedResult<LookupItemDto>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize);
+        Task<IEnumerable<LookupItemDto>> GetAllLookupItemsAsync(Guid lookupId);
+        Task<IEnumerable<LookupItemDto>> GetLookupItemParentListAsync(Guid lookupId);
         Task<bool> IsLookupItemInUseAsync(Guid lookupId, Guid lookupItemId);
-        Task InsertLookupItemAsync(Guid LookupId, LookupItemDTO Item);
-        Task UpdateLookupItemAsync(Guid LookupId, LookupItemDTO Item);
-        Task DeleteLookupItemAsync(Guid LookupId, LookupItemDTO Item);
-        Task<IEnumerable<LookupItemDTO>> GetAllVirusFamiliesAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllVirusTypesByParentAsync(Guid? virusFamily);
-        Task<IEnumerable<LookupItemDTO>> GetAllHostSpeciesAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsByParentAsync(Guid? hostSpecies);
-        Task<IEnumerable<LookupItemDTO>> GetAllHostBreedsAltNameAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllCountriesAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllHostPurposesAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllSampleTypesAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllWorkGroupsAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllStaffAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllViabilityAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllSubmittingLabAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllSubmissionReasonAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllIsolationMethodsAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllFreezerAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllTraysAsync();
-        Task<IEnumerable<LookupItemDTO>> GetAllTraysByParentAsync(Guid? freezer);
+        Task InsertLookupItemAsync(Guid LookupId, LookupItemDto Item);
+        Task UpdateLookupItemAsync(Guid LookupId, LookupItemDto Item);
+        Task DeleteLookupItemAsync(Guid LookupId, LookupItemDto Item);
+        Task<IEnumerable<LookupItemDto>> GetAllVirusFamiliesAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllVirusTypesAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllVirusTypesByParentAsync(Guid? virusFamily);
+        Task<IEnumerable<LookupItemDto>> GetAllHostSpeciesAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllHostBreedsAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllHostBreedsByParentAsync(Guid? hostSpecies);
+        Task<IEnumerable<LookupItemDto>> GetAllHostBreedsAltNameAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllCountriesAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllHostPurposesAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllSampleTypesAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllWorkGroupsAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllStaffAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllViabilityAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllSubmittingLabAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllSubmissionReasonAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllIsolationMethodsAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllFreezerAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllTraysAsync();
+        Task<IEnumerable<LookupItemDto>> GetAllTraysByParentAsync(Guid? freezer);
     }
 }

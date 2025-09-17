@@ -67,7 +67,7 @@ namespace Apha.VIR.Web.Controllers
                 submission.Organisations = new List<SubmissionSenderViewModel>();
                 return View(submission);
             }
-            var submissionDto = _mapper.Map<SubmissionDTO>(submission);
+            var submissionDto = _mapper.Map<SubmissionDto>(submission);
             await _submissionService.AddSubmissionAsync(submissionDto, "TestUser");
 
             return RedirectToAction("Index", "SubmissionSamples");
@@ -116,7 +116,7 @@ namespace Apha.VIR.Web.Controllers
                 submission.Organisations = new List<SubmissionSenderViewModel>();
                 return View(submission);
             }
-            var submissionDto = _mapper.Map<SubmissionDTO>(submission);
+            var submissionDto = _mapper.Map<SubmissionDto>(submission);
             await _submissionService.UpdateSubmissionAsync(submissionDto, "TestUser");
 
             return RedirectToAction("Index", "SubmissionSamples");
@@ -159,7 +159,7 @@ namespace Apha.VIR.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var sender = _mapper.Map<SenderDTO>(senderModel);
+                var sender = _mapper.Map<SenderDto>(senderModel);
                 await _senderService.AddSenderAsync(sender);
                 return Json(new { success = true, message = "Sender add successfully!" });
             }
@@ -212,7 +212,8 @@ namespace Apha.VIR.Web.Controllers
 
             var viewModel = new SubmissionLetterViewModel
             {
-                LetterContent = await _submissionService.SubmissionLetter(AVNumber, "TestUser")
+                LetterContent = await _submissionService.SubmissionLetter(AVNumber, "TestUser"),
+                AVNumber = AVNumber
             };
             return View(viewModel);
         }

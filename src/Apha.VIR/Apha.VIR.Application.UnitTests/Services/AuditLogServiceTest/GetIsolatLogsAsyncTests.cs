@@ -30,11 +30,11 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             var userid = "user1";
 
             var repositoryResult = new List<AuditIsolateLog> { new AuditIsolateLog(), new AuditIsolateLog() };
-            var expectedDtos = new List<AuditIsolateLogDTO> { new AuditIsolateLogDTO(), new AuditIsolateLogDTO() };
+            var expectedDtos = new List<AuditIsolateLogDto> { new AuditIsolateLogDto(), new AuditIsolateLogDto() };
 
             _mockAuditRepository.GetIsolatLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<AuditIsolateLogDTO>>(repositoryResult)
+            _mockMapper.Map<IEnumerable<AuditIsolateLogDto>>(repositoryResult)
             .Returns(expectedDtos);
 
             // Act
@@ -42,7 +42,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             // Assert
             await _mockAuditRepository.Received(1).GetIsolatLogsAsync(avNumber, dateFrom, dateTo, userid);
-            _mockMapper.Received(1).Map<IEnumerable<AuditIsolateLogDTO>>(repositoryResult);
+            _mockMapper.Received(1).Map<IEnumerable<AuditIsolateLogDto>>(repositoryResult);
             Assert.Equal(expectedDtos, result);
         }
 
@@ -105,8 +105,8 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             _mockAuditRepository.GetIsolatLogsAsync(avNumber, null, null, userid)
             .Returns(new List<AuditIsolateLog>());
-            _mockMapper.Map<IEnumerable<AuditIsolateLogDTO>>(Arg.Any<IEnumerable<object>>())
-            .Returns(new List<AuditIsolateLogDTO>());
+            _mockMapper.Map<IEnumerable<AuditIsolateLogDto>>(Arg.Any<IEnumerable<object>>())
+            .Returns(new List<AuditIsolateLogDto>());
 
             // Act
             var result = await _auditLogService.GetIsolatLogsAsync(avNumber, null, null, userid);

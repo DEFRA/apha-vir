@@ -25,13 +25,13 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupItemDto = new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Item" };
-            var lookupItem = new LookupItem { Id = lookupItemDto.Id, Name = lookupItemDto.Name };
+            var LookupItemDto = new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Item" };
+            var lookupItem = new LookupItem { Id = LookupItemDto.Id, Name = LookupItemDto.Name };
 
-            _mockMapper.Map<LookupItem>(lookupItemDto).Returns(lookupItem);
+            _mockMapper.Map<LookupItem>(LookupItemDto).Returns(lookupItem);
 
             // Act
-            await _lookupService.DeleteLookupItemAsync(lookupId, lookupItemDto);
+            await _lookupService.DeleteLookupItemAsync(lookupId, LookupItemDto);
 
             // Assert
             await _mockRepository.Received(1).DeleteLookupItemAsync(lookupId, Arg.Is<LookupItem>(item =>
@@ -43,15 +43,15 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupItemDto = new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Item" };
-            var lookupItem = new LookupItem { Id = lookupItemDto.Id, Name = lookupItemDto.Name };
+            var LookupItemDto = new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Item" };
+            var lookupItem = new LookupItem { Id = LookupItemDto.Id, Name = LookupItemDto.Name };
 
-            _mockMapper.Map<LookupItem>(lookupItemDto).Returns(lookupItem);
+            _mockMapper.Map<LookupItem>(LookupItemDto).Returns(lookupItem);
             _mockRepository.DeleteLookupItemAsync(Arg.Any<Guid>(), Arg.Any<LookupItem>())
             .Returns(Task.FromException(new Exception("Test exception")));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _lookupService.DeleteLookupItemAsync(lookupId, lookupItemDto));
+            await Assert.ThrowsAsync<Exception>(() => _lookupService.DeleteLookupItemAsync(lookupId, LookupItemDto));
         }
     }
 }

@@ -39,17 +39,17 @@ namespace Apha.VIR.Web.Controllers
 
             var virusTypes = selectedFamilyId.HasValue
                 ? await _lookupService.GetAllVirusTypesByParentAsync(selectedFamilyId)
-                : Enumerable.Empty<LookupItemDTO>();
+                : Enumerable.Empty<LookupItemDto>();
 
             var selectedVirusTypeId = typeId
                 ?? virusTypes.FirstOrDefault()?.Id;
 
             var presentVirusCharacteristics = selectedVirusTypeId.HasValue
                 ? await _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(selectedVirusTypeId, false)
-                : Enumerable.Empty<VirusCharacteristicDTO>();
+                : Enumerable.Empty<VirusCharacteristicDto>();
             var absentVirusCharacteristics = selectedVirusTypeId.HasValue
                 ? await _characteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(selectedVirusTypeId, true)
-                : Enumerable.Empty<VirusCharacteristicDTO>();
+                : Enumerable.Empty<VirusCharacteristicDto>();
 
             var vm = new VirusCharacteristicAssociationViewModel
             {

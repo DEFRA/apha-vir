@@ -50,8 +50,8 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             _mockMapper.Map<IEnumerable<IsolateViabilityInfo>>(Arg.Any<IEnumerable<IsolateViability>>())
                .Returns(x => x.Arg<IEnumerable<IsolateViability>>().Select(i => new IsolateViabilityInfo()));
 
-            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(Arg.Any<IEnumerable<IsolateViabilityInfo>>())
-                .Returns(x => x.Arg<IEnumerable<IsolateViabilityInfo>>().Select(i => new IsolateViabilityInfoDTO()));
+            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDto>>(Arg.Any<IEnumerable<IsolateViabilityInfo>>())
+                .Returns(x => x.Arg<IEnumerable<IsolateViabilityInfo>>().Select(i => new IsolateViabilityInfoDto()));
 
             _isolateViabilityService = new IsolateViabilityService(
             _mockIsolateViabilityRepository,
@@ -94,7 +94,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             _mockMapper.Map<IEnumerable<IsolateViabilityInfo>>(Arg.Any<IEnumerable<IsolateViability>>())
               .Returns(x => x.Arg<IEnumerable<IsolateViability>>().Select(i => new IsolateViabilityInfo()));
 
-            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(Arg.Any<IEnumerable<IsolateViabilityInfo>>()).Returns(x => x.Arg<IEnumerable<IsolateViabilityInfo>>().Select(i => new IsolateViabilityInfoDTO
+            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDto>>(Arg.Any<IEnumerable<IsolateViabilityInfo>>()).Returns(x => x.Arg<IEnumerable<IsolateViabilityInfo>>().Select(i => new IsolateViabilityInfoDto
             {
                 Nomenclature = "PTest",
                 CheckedByName = "John Doe",

@@ -39,10 +39,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Arrange
             var countries = new List<SelectListItem> { new SelectListItem { Value = "1", Text = "Country" } };
 
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>
-            { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Country" } });
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>
+            { new LookupItemDto { Id = Guid.NewGuid(), Name = "Country" } });
 
-            _mapper.Map<IEnumerable<SelectListItem>>(Arg.Any<IEnumerable<LookupItemDTO>>()).Returns(countries);
+            _mapper.Map<IEnumerable<SelectListItem>>(Arg.Any<IEnumerable<LookupItemDto>>()).Returns(countries);
 
             // Act
             var result = await _controller.Create();
@@ -60,7 +60,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         {
             // Arrange
             var model = new SenderViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
-            _mapper.Map<SenderDTO>(model).Returns(new SenderDTO());
+            _mapper.Map<SenderDto>(model).Returns(new SenderDto());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);
@@ -68,7 +68,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal(nameof(SenderController.Index), redirectResult.ActionName);
-            await _senderService.Received(1).AddSenderAsync(Arg.Any<SenderDTO>());
+            await _senderService.Received(1).AddSenderAsync(Arg.Any<SenderDto>());
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             var model = new SenderViewModel { SenderName = "", SenderAddress = "test", SenderOrganisation = "India" };
 
             _controller.ModelState.AddModelError("SenderName", "Required");
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);
@@ -94,7 +94,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         {
             // Arrange
             SenderViewModel model = null!;
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);

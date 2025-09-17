@@ -37,16 +37,16 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         }
 
         [Fact]
-        public async Task GetIsolateInfoByAVNumberAsync_ReturnsIsolateInfoDTOs_WhenIsolatesExist()
+        public async Task GetIsolateInfoByAVNumberAsync_ReturnsIsolateInfoDtos_WhenIsolatesExist()
         {
             // Arrange
             var avNumber = "AV123";
             var isolates = new List<IsolateInfo> { new IsolateInfo(), new IsolateInfo() };
-            var isolateDtos = new List<IsolateInfoDTO> { new IsolateInfoDTO(), new IsolateInfoDTO() };
+            var IsolateDtos = new List<IsolateInfoDto> { new IsolateInfoDto(), new IsolateInfoDto() };
             var characteristics = new List<IsolateCharacteristicInfo> { new IsolateCharacteristicInfo() };
 
             _mockIsolateRepository.GetIsolateInfoByAVNumberAsync(avNumber).Returns(isolates);
-            _mockMapper.Map<IEnumerable<IsolateInfoDTO>>(isolates).Returns(isolateDtos);
+            _mockMapper.Map<IEnumerable<IsolateInfoDto>>(isolates).Returns(IsolateDtos);
             _mockCharacteristicRepository.GetIsolateCharacteristicInfoAsync(Arg.Any<Guid>()).Returns(characteristics);
 
             // Act

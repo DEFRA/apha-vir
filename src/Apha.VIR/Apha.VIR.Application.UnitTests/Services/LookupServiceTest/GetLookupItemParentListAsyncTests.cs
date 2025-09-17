@@ -27,17 +27,17 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Arrange
             var lookupId = Guid.NewGuid();
             var repositoryResult = new List<LookupItem> { new LookupItem(), new LookupItem() };
-            var expectedResult = new List<LookupItemDTO> { new LookupItemDTO(), new LookupItemDTO() };
+            var expectedResult = new List<LookupItemDto> { new LookupItemDto(), new LookupItemDto() };
 
             _mockRepository.GetLookupItemParentListAsync(lookupId).Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(repositoryResult).Returns(expectedResult);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(repositoryResult).Returns(expectedResult);
 
             // Act
             var result = await _lookupService.GetLookupItemParentListAsync(lookupId);
 
             // Assert
             await _mockRepository.Received(1).GetLookupItemParentListAsync(lookupId);
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(repositoryResult);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(repositoryResult);
             Assert.Equal(expectedResult, result);
         }
 
@@ -50,8 +50,8 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             _mockRepository.GetLookupItemParentListAsync(lookupId)
                          .Returns(Task.FromResult<IEnumerable<LookupItem>>(new List<LookupItem>()));
 
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>())
-                .Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>())
+                .Returns(new List<LookupItemDto>());
 
 
             // Act

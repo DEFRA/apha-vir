@@ -33,12 +33,12 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             var repositoryResult = new List<AuditCharacteristicLog>
             { new AuditCharacteristicLog { LogId = Guid.NewGuid() }};
 
-            var expectedDtoResult = new List<AuditCharacteristicLogDTO>
-            { new AuditCharacteristicLogDTO { LogId = Guid.NewGuid() }};
+            var expectedDtoResult = new List<AuditCharacteristicLogDto>
+            { new AuditCharacteristicLogDto { LogId = Guid.NewGuid() }};
 
             _mockAuditRepository.GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<AuditCharacteristicLogDTO>>(repositoryResult)
+            _mockMapper.Map<IEnumerable<AuditCharacteristicLogDto>>(repositoryResult)
             .Returns(expectedDtoResult);
 
             // Act
@@ -46,7 +46,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             // Assert
             await _mockAuditRepository.Received(1).GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, userid);
-            _mockMapper.Received(1).Map<IEnumerable<AuditCharacteristicLogDTO>>(repositoryResult);
+            _mockMapper.Received(1).Map<IEnumerable<AuditCharacteristicLogDto>>(repositoryResult);
             Assert.Equal(expectedDtoResult, result);
         }
 

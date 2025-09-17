@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class LookupItemDTO
+public class LookupItemDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

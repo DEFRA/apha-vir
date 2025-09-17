@@ -30,14 +30,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Breed2" }
             };
 
-            var expectedDTOs = new List<LookupItemDTO>
+            var expectedDTOs = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = mockHostBreeds[0].Id, Name = mockHostBreeds[0].Name },
-                new LookupItemDTO { Id = mockHostBreeds[1].Id, Name = mockHostBreeds[1].Name }
+                new LookupItemDto { Id = mockHostBreeds[0].Id, Name = mockHostBreeds[0].Name },
+                new LookupItemDto { Id = mockHostBreeds[1].Id, Name = mockHostBreeds[1].Name }
             };
 
             _mockLookupRepository.GetAllHostBreedsAsync().Returns(mockHostBreeds);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
 
             // Act
             var result = await _mockLookupService.GetAllHostBreedsAsync();
@@ -46,7 +46,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             Assert.NotNull(result);
             Assert.Equal(expectedDTOs, result);
             await _mockLookupRepository.Received(1).GetAllHostBreedsAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == mockHostBreeds));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == mockHostBreeds));
         }
 
         [Fact]

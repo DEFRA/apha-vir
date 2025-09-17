@@ -24,7 +24,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var dto = new LookupItemDTO();
+            var dto = new LookupItemDto();
             var entity = new LookupItem();
 
             _mockMapper.Map<LookupItem>(dto).Returns(entity);
@@ -43,7 +43,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var dto = new LookupItemDTO();
+            var dto = new LookupItemDto();
             var entity = new LookupItem();
 
             _mockMapper.Map<LookupItem>(dto).Returns(entity);

@@ -28,13 +28,13 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<IsolateViabilityInfoDTO>> GetViabilityByIsolateIdAsync(Guid isolateId)
+        public async Task<IEnumerable<IsolateViabilityInfoDto>> GetViabilityByIsolateIdAsync(Guid isolateId)
         {
             var isolateViability = await _isolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId);
-            return _mapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(isolateViability);
+            return _mapper.Map<IEnumerable<IsolateViabilityInfoDto>>(isolateViability);
         }
 
-        public async Task<IEnumerable<IsolateViabilityInfoDTO>> GetViabilityHistoryAsync(string AVNumber, Guid IsolateId)
+        public async Task<IEnumerable<IsolateViabilityInfoDto>> GetViabilityHistoryAsync(string AVNumber, Guid IsolateId)
         {
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
 
@@ -42,7 +42,7 @@ namespace Apha.VIR.Application.Services
 
             if (matchIsolate.Count == 0)
             {
-                return Enumerable.Empty<IsolateViabilityInfoDTO>();
+                return Enumerable.Empty<IsolateViabilityInfoDto>();
             }
 
             var matchIsolateId = matchIsolate[0].IsolateId;
@@ -66,7 +66,7 @@ namespace Apha.VIR.Application.Services
 
             GetViableName(viabilityHistorList, Viabilities);
 
-            return _mapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(viabilityHistorList);
+            return _mapper.Map<IEnumerable<IsolateViabilityInfoDto>>(viabilityHistorList);
         }
 
         public async Task DeleteIsolateViabilityAsync(Guid IsolateId, byte[] lastModified, string userid)
@@ -74,7 +74,7 @@ namespace Apha.VIR.Application.Services
             await _isolateViabilityRepository.DeleteIsolateViabilityAsync(IsolateId, lastModified, userid);
         }
 
-        public async Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userid)
+        public async Task UpdateIsolateViabilityAsync(IsolateViabilityInfoDto isolateViability, string userid)
         {
             ArgumentNullException.ThrowIfNull(isolateViability);
 
@@ -85,7 +85,7 @@ namespace Apha.VIR.Application.Services
             await _isolateViabilityRepository.UpdateIsolateViabilityAsync(result, userid);
         }
 
-        public async Task AddIsolateViabilityAsync(IsolateViabilityInfoDTO isolateViability, string userId)
+        public async Task AddIsolateViabilityAsync(IsolateViabilityInfoDto isolateViability, string userId)
         {
             ArgumentNullException.ThrowIfNull(isolateViability);
 
@@ -96,7 +96,7 @@ namespace Apha.VIR.Application.Services
             await _isolateViabilityRepository.AddIsolateViabilityAsync(result, userId);
         }
 
-        public async Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid IsolateId)
+        public async Task<IsolateViabilityDto?> GetLastViabilityByIsolateAsync(Guid IsolateId)
         {
             if (IsolateId == Guid.Empty)
                 throw new ArgumentException("ViabilityId cannot be empty.", nameof(IsolateId));
@@ -107,7 +107,7 @@ namespace Apha.VIR.Application.Services
                 .OrderByDescending(v => v.DateChecked)
                 .FirstOrDefault();
 
-            return lastViability == null ? null : _mapper.Map<IsolateViabilityDTO>(lastViability);
+            return lastViability == null ? null : _mapper.Map<IsolateViabilityDto>(lastViability);
         }
 
         private static void GetNomenclature(IEnumerable<IsolateViabilityInfo> viabilityHistorList, string nomenclature, string AVNumber)

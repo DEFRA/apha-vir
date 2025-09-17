@@ -16,13 +16,13 @@ namespace Apha.VIR.Application.Services
             _isolateRelocateRepository = isolateRelocateRepository ?? throw new ArgumentNullException(nameof(isolateRelocateRepository));
             _mapper = mapper;
         }
-        public async Task<IEnumerable<IsolateRelocateDTO>> GetIsolatesByCriteria(string? min, string? max, Guid? freezer, Guid? tray)
+        public async Task<IEnumerable<IsolateRelocateDto>> GetIsolatesByCriteria(string? min, string? max, Guid? freezer, Guid? tray)
         {
             var isolateDetail = await _isolateRelocateRepository.GetIsolatesByCriteria(min, max, freezer, tray);
-            return _mapper.Map<IEnumerable<IsolateRelocateDTO>>(isolateDetail);           
+            return _mapper.Map<IEnumerable<IsolateRelocateDto>>(isolateDetail);           
         }
 
-        public async Task UpdateIsolateFreezeAndTrayAsync(IsolateRelocateDTO item)
+        public async Task UpdateIsolateFreezeAndTrayAsync(IsolateRelocateDto item)
         {
             var isolateDetail = _mapper.Map<IsolateRelocate>(item);
             await _isolateRelocateRepository.UpdateIsolateFreezeAndTrayAsync(isolateDetail);

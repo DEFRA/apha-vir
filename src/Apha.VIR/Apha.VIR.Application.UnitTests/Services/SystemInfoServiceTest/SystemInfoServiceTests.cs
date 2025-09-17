@@ -21,7 +21,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
         }
 
         [Fact]
-        public async Task GetLatestSysInfo_ReturnsValidSystemInfoDTO()
+        public async Task GetLatestSysInfo_ReturnsValidSystemInfoDto()
         {
             // Arrange
             var mockSystemInfo = new SystemInfo
@@ -35,7 +35,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
                 ReleaseNotes = "Unit Test release"
             };
 
-            var expectedDto = new SystemInfoDTO
+            var expectedDto = new SystemInfoDto
             {
                 Id = mockSystemInfo.Id,
                 SystemName = mockSystemInfo.SystemName,
@@ -47,7 +47,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
             };
 
             _mockRepository.GetLatestSysInfoAsync().Returns(mockSystemInfo);
-            _mockMapper.Map<SystemInfoDTO>(Arg.Any<SystemInfo>()).Returns(expectedDto);
+            _mockMapper.Map<SystemInfoDto>(Arg.Any<SystemInfo>()).Returns(expectedDto);
 
             // Act
             var result = await _systemInfoService.GetLatestSysInfo();
@@ -70,8 +70,8 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
             _mockRepository.GetLatestSysInfoAsync()
                 .Returns(Task.FromResult<SystemInfo>(null!));  // use null! to silence warning
 
-            _mockMapper.Map<SystemInfoDTO>(Arg.Any<SystemInfo>())
-                .Returns((SystemInfoDTO?)null);
+            _mockMapper.Map<SystemInfoDto>(Arg.Any<SystemInfo>())
+                .Returns((SystemInfoDto?)null);
 
             // Act
             var result = await _systemInfoService.GetLatestSysInfo();

@@ -2,6 +2,7 @@
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
+using Apha.VIR.DataAccess.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -59,23 +60,23 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
             {
                 SubmissionId = (Guid)reader["SubmissionId"],
                 Avnumber = reader.GetString("AVNumber"),
-                SendersReferenceNumber = reader["SendersReferenceNumber"] == DBNull.Value ? null : reader["SendersReferenceNumber"].ToString(),
-                RlreferenceNumber = reader["RLReferenceNumber"].ToString(),
-                SubmittingLab = (Guid?)reader["SubmittingLab"],
-                Sender = reader["Sender"] == DBNull.Value ? null : reader["Sender"].ToString(),
-                SenderOrganisation = reader["SenderOrganisation"] == DBNull.Value ? null : reader["SenderOrganisation"].ToString(),
-                SenderAddress = reader["SenderAddress"] == DBNull.Value ? null : reader["SenderAddress"].ToString(),
-                CountryOfOrigin = (Guid?)reader["CountryOfOrigin"],
-                SubmittingCountry = (Guid?)reader["SubmittingCountry"],
-                ReasonForSubmission = (Guid?)reader["ReasonForSubmission"],
-                DateSubmissionReceived = (DateTime?)reader["DateSubmissionReceived"],
-                Cphnumber = reader["CPHNumber"] == DBNull.Value ? null : reader["CPHNumber"].ToString(),
-                Owner = reader["Owner"] == DBNull.Value ? null : reader["Owner"].ToString(),
-                SamplingLocationPremises = reader["SamplingLocationPremises"] == DBNull.Value ? null : reader["SamplingLocationPremises"].ToString(),
-                NumberOfSamples = (int)reader["NumberOfSamples"],
+                SendersReferenceNumber = SqlReaderHelper.GetNullableString(reader, "SendersReferenceNumber"),
+                RlreferenceNumber = SqlReaderHelper.GetNullableString(reader, "RLReferenceNumber"),
+                SubmittingLab = SqlReaderHelper.GetNullableGuid(reader, "SubmittingLab"),
+                Sender = SqlReaderHelper.GetNullableString(reader, "Sender"),
+                SenderOrganisation = SqlReaderHelper.GetNullableString(reader, "SenderOrganisation"),
+                SenderAddress = SqlReaderHelper.GetNullableString(reader, "SenderAddress"),
+                CountryOfOrigin = SqlReaderHelper.GetNullableGuid(reader, "CountryOfOrigin"),
+                SubmittingCountry = SqlReaderHelper.GetNullableGuid(reader, "SubmittingCountry"),
+                ReasonForSubmission = SqlReaderHelper.GetNullableGuid(reader, "ReasonForSubmission"),
+                DateSubmissionReceived = SqlReaderHelper.GetNullableDateTime(reader, "DateSubmissionReceived"),
+                Cphnumber = SqlReaderHelper.GetNullableString(reader, "CPHNumber"),
+                Owner = SqlReaderHelper.GetNullableString(reader, "Owner"),
+                SamplingLocationPremises = SqlReaderHelper.GetNullableString(reader, "SamplingLocationPremises"),
+                NumberOfSamples = SqlReaderHelper.GetNullableInt(reader, "NumberOfSamples"),
                 LastModified = (byte[])reader["LastModified"],
-                CountryOfOriginName = reader["CountryOfOriginName"].ToString(),
-                SubmittingCountryName = reader["SubmittingCountryName"].ToString()
+                CountryOfOriginName = SqlReaderHelper.GetNullableString(reader, "CountryOfOriginName"),
+                SubmittingCountryName = SqlReaderHelper.GetNullableString(reader, "SubmittingCountryName")
             };
         }
         return submission;

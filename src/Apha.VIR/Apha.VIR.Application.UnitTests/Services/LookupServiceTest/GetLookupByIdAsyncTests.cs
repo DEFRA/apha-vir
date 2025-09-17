@@ -27,17 +27,17 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Arrange
             var lookupId = Guid.NewGuid();
             var lookup = new Lookup { Id = lookupId, Name = "TestLookup" };
-            var expectedDto = new LookupDTO { Id = lookupId, Name = "TestLookup" };
+            var expectedDto = new LookupDto { Id = lookupId, Name = "TestLookup" };
 
             _mockRepository.GetLookupByIdAsync(lookupId).Returns(lookup);
-            _mockMapper.Map<LookupDTO>(lookup).Returns(expectedDto);
+            _mockMapper.Map<LookupDto>(lookup).Returns(expectedDto);
 
             // Act
             var result = await _service.GetLookupByIdAsync(lookupId);
 
             // Assert
             await _mockRepository.Received(1).GetLookupByIdAsync(lookupId);
-            _mockMapper.Received(1).Map<LookupDTO>(lookup);
+            _mockMapper.Received(1).Map<LookupDto>(lookup);
             Assert.Equal(expectedDto, result);
         }
 

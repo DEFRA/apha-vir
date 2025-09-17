@@ -40,9 +40,11 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
     {
         if (!string.IsNullOrEmpty(avNumber))
         {
-            var submission = await GetDbSetFor<Submission>().FirstOrDefaultAsync(s => s.Avnumber == avNumber);
-            if (submission != null)
-                sample.SampleSubmissionId = submission.SubmissionId;
+            var submissionId = await GetDbSetFor<Submission>()
+            .Where(s => s.Avnumber == avNumber).Select(s => s.SubmissionId).FirstOrDefaultAsync();
+
+            if (submissionId != Guid.Empty)
+                sample.SampleSubmissionId = submissionId;
         }
 
         sample.SampleNumber = await GetDbSetFor<Sample>().Select(e => e.SampleNumber).OrderByDescending(n => n).FirstOrDefaultAsync() + 1;

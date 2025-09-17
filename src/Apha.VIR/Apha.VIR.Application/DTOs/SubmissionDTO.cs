@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class SubmissionDTO
+public class SubmissionDto
 {
     public Guid SubmissionId { get; set; }
     public string Avnumber { get; set; } = null!;

@@ -45,9 +45,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
                 DateTo = dateTo
             };
 
-            var serviceData = new List<IsolateDispatchReportDTO>
+            var serviceData = new List<IsolateDispatchReportDto>
                                     {
-                                        new IsolateDispatchReportDTO
+                                        new IsolateDispatchReportDto
                                         {
                                             AVNumber = "AV001",
                                             Nomenclature = "Virus X",
@@ -122,9 +122,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             };
 
             _mockReportService.GetDispatchesReportAsync(Arg.Any<DateTime>(), Arg.Any<DateTime>())
-            .Returns(Task.FromResult<IEnumerable<IsolateDispatchReportDTO>>(new List<IsolateDispatchReportDTO>()));
+            .Returns(Task.FromResult<IEnumerable<IsolateDispatchReportDto>>(new List<IsolateDispatchReportDto>()));
 
-            _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(Arg.Any<IEnumerable<IsolateDispatchReportDTO>>())
+            _mockMapper.Map<IEnumerable<IsolateDispatchReportModel>>(Arg.Any<IEnumerable<IsolateDispatchReportDto>>())
             .Returns(new List<IsolateDispatchReportModel>());
 
             lock (_lock)

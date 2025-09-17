@@ -31,14 +31,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Purpose 2" }
             };
 
-            var expectedResult = new List<LookupItemDTO>
+            var expectedResult = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Purpose 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Purpose 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Purpose 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Purpose 2" }
             };
 
             _mockLookupRepository.GetAllHostPurposesAsync().Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedResult);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedResult);
 
             // Act
             var result = await _mockLookupService.GetAllHostPurposesAsync();
@@ -46,7 +46,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(expectedResult, result);
             await _mockLookupRepository.Received(1).GetAllHostPurposesAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == repositoryResult));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == repositoryResult));
         }
 
         [Fact]
@@ -66,12 +66,12 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Arrange
             var repositoryResult = new List<LookupItem>();
             _mockLookupRepository.GetAllHostPurposesAsync().Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Throws(new Exception("Mapper error"));
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Throws(new Exception("Mapper error"));
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllHostPurposesAsync());
             await _mockLookupRepository.Received(1).GetAllHostPurposesAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == repositoryResult));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == repositoryResult));
         }
     }
 }

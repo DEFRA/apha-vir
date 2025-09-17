@@ -35,14 +35,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             new LookupItem { Id = Guid.NewGuid(), Name = "Lab 1" },
             new LookupItem { Id = Guid.NewGuid(), Name = "Lab 2" }
             };
-            var expectedDtos = new List<LookupItemDTO>
+            var expectedDtos = new List<LookupItemDto>
             {
-            new LookupItemDTO { Id = submittingLabs[0].Id, Name = submittingLabs[0].Name },
-            new LookupItemDTO { Id = submittingLabs[1].Id, Name = submittingLabs[1].Name }
+            new LookupItemDto { Id = submittingLabs[0].Id, Name = submittingLabs[0].Name },
+            new LookupItemDto { Id = submittingLabs[1].Id, Name = submittingLabs[1].Name }
             };
 
             _mockLookupRepository.GetAllSubmittingLabAsync().Returns(submittingLabs);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
 
             // Act
             var result = await _mockLookupService.GetAllSubmittingLabAsync();
@@ -50,7 +50,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(expectedDtos, result);
             await _mockLookupRepository.Received(1).GetAllSubmittingLabAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == submittingLabs));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == submittingLabs));
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             _mockLookupRepository.GetAllSubmittingLabAsync().Returns(new List<LookupItem>());
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _mockLookupService.GetAllSubmittingLabAsync();
@@ -66,7 +66,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Empty(result);
             await _mockLookupRepository.Received(1).GetAllSubmittingLabAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => !x.Any()));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => !x.Any()));
         }
 
         [Fact]
@@ -85,12 +85,12 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             _mockLookupRepository.GetAllSubmittingLabAsync().Returns(new List<LookupItem>());
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Throws(new AutoMapperMappingException("Mapping error"));
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Throws(new AutoMapperMappingException("Mapping error"));
 
             // Act & Assert
             await Assert.ThrowsAsync<AutoMapperMappingException>(() => _mockLookupService.GetAllSubmittingLabAsync());
             await _mockLookupRepository.Received(1).GetAllSubmittingLabAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>());
         }
 
     }

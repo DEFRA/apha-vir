@@ -22,5 +22,5 @@ public class SearchCriteriaDTO
     [DataType(DataType.Date)]
     public DateTime? CreatedToDate { get; set; }
     public bool FullSearch { get; set; } = false;
-    public List<CharacteristicCriteriaDTO> CharacteristicSearch { get; set; } = new List<CharacteristicCriteriaDTO>();
+    public List<CharacteristicCriteriaDto> CharacteristicSearch { get; set; } = new List<CharacteristicCriteriaDto>();
 }

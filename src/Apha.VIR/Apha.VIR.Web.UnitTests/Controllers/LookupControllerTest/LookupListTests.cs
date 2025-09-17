@@ -32,9 +32,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupResult = new LookupDTO { Id = lookupId, Name = "Test Lookup" };
+            var lookupResult = new LookupDto { Id = lookupId, Name = "Test Lookup" };
             var lookupViewModel = new LookupViewModel { Id = lookupId, Name = "Test Lookup" };
-            var lookupEntries = new PaginatedResult<LookupItemDTO> { data = new List<LookupItemDTO>(), TotalCount = 0 };
+            var lookupEntries = new PaginatedResult<LookupItemDto> { data = new List<LookupItemDto>(), TotalCount = 0 };
             var lookupItems = new List<LookupItemModel>();
 
             _lookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
@@ -58,9 +58,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupResult = new LookupDTO { Id = lookupId, Name = "Test Lookup" };
+            var lookupResult = new LookupDto { Id = lookupId, Name = "Test Lookup" };
             var lookupViewModel = new LookupViewModel { Id = lookupId, Name = "Test Lookup" };
-            var lookupEntries = new PaginatedResult<LookupItemDTO> { data = new List<LookupItemDTO>(), TotalCount = 100 };
+            var lookupEntries = new PaginatedResult<LookupItemDto> { data = new List<LookupItemDto>(), TotalCount = 100 };
             var lookupItems = new List<LookupItemModel>();
 
             _lookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
@@ -111,11 +111,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         public async Task Index_ReturnsViewResult_WithLookupViewModels()
         {
             // Arrange
-            var mockLookupDTOs = new List<LookupDTO> { new LookupDTO(), new LookupDTO() };
-            _lookupService.GetAllLookupsAsync().Returns(mockLookupDTOs);
+            var mockLookupDtos = new List<LookupDto> { new LookupDto(), new LookupDto() };
+            _lookupService.GetAllLookupsAsync().Returns(mockLookupDtos);
 
             var mockLookupViewModels = new List<LookupViewModel> { new LookupViewModel(), new LookupViewModel() };
-            _mapper.Map<IEnumerable<LookupViewModel>>(Arg.Any<IEnumerable<LookupDTO>>()).Returns(mockLookupViewModels);
+            _mapper.Map<IEnumerable<LookupViewModel>>(Arg.Any<IEnumerable<LookupDto>>()).Returns(mockLookupViewModels);
 
             // Act
             var result = await _controller.Index();

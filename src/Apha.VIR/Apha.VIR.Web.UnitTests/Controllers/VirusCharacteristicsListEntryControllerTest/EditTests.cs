@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
         public async Task EditGet_EntryIsNull_ReturnsNotFound()
         {
             // Arrange
-            _listEntryService.GetEntryByIdAsync(Arg.Any<Guid>()).Returns((VirusCharacteristicListEntryDTO?)null);
+            _listEntryService.GetEntryByIdAsync(Arg.Any<Guid>()).Returns((VirusCharacteristicListEntryDto?)null);
             SetupMockUserAndRoles();
             
             // Act
@@ -63,7 +63,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
         public async Task EditGet_EntryFound_ReturnsEditView()
         {
             // Arrange
-            var dto = new VirusCharacteristicListEntryDTO();
+            var dto = new VirusCharacteristicListEntryDto();
             var vm = new VirusCharacteristicListEntryModel();
             _listEntryService.GetEntryByIdAsync(Arg.Any<Guid>()).Returns(dto);
             _mapper.Map<VirusCharacteristicListEntryModel>(dto).Returns(vm);
@@ -101,8 +101,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
         {
             // Arrange
             var model = new VirusCharacteristicListEntryModel { Id = Guid.NewGuid(), VirusCharacteristicId = Guid.NewGuid(), Name = "Test" };
-            var dto = new VirusCharacteristicListEntryDTO();
-            _mapper.Map<VirusCharacteristicListEntryDTO>(model).Returns(dto);
+            var dto = new VirusCharacteristicListEntryDto();
+            _mapper.Map<VirusCharacteristicListEntryDto>(model).Returns(dto);
 
             SetupMockUserAndRoles();
 

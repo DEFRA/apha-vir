@@ -25,16 +25,16 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupItemDto = new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Item" };
-            var lookupItem = new LookupItem { Id = lookupItemDto.Id, Name = lookupItemDto.Name };
+            var LookupItemDto = new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Item" };
+            var lookupItem = new LookupItem { Id = LookupItemDto.Id, Name = LookupItemDto.Name };
 
-            _mockMapper.Map<LookupItem>(lookupItemDto).Returns(lookupItem);
+            _mockMapper.Map<LookupItem>(LookupItemDto).Returns(lookupItem);
 
             // Act
-            await _lookupService.UpdateLookupItemAsync(lookupId, lookupItemDto);
+            await _lookupService.UpdateLookupItemAsync(lookupId, LookupItemDto);
 
             // Assert
-            await _mockRepository.Received(1).UpdateLookupItemAsync(lookupId, Arg.Is<LookupItem>(i => i.Id == lookupItemDto.Id && i.Name == lookupItemDto.Name));
+            await _mockRepository.Received(1).UpdateLookupItemAsync(lookupId, Arg.Is<LookupItem>(i => i.Id == LookupItemDto.Id && i.Name == LookupItemDto.Name));
         }
 
         [Fact]
@@ -42,14 +42,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupItemDto = new LookupItemDTO { Id = Guid.NewGuid(), Name = "Non-existent Item" };
-            var lookupItem = new LookupItem { Id = lookupItemDto.Id, Name = lookupItemDto.Name };
+            var LookupItemDto = new LookupItemDto { Id = Guid.NewGuid(), Name = "Non-existent Item" };
+            var lookupItem = new LookupItem { Id = LookupItemDto.Id, Name = LookupItemDto.Name };
 
-            _mockMapper.Map<LookupItem>(lookupItemDto).Returns(lookupItem);
+            _mockMapper.Map<LookupItem>(LookupItemDto).Returns(lookupItem);
             _mockRepository.UpdateLookupItemAsync(lookupId, Arg.Any<LookupItem>()).Returns(Task.FromException(new InvalidOperationException("Item not found")));
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _lookupService.UpdateLookupItemAsync(lookupId, lookupItemDto));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _lookupService.UpdateLookupItemAsync(lookupId, LookupItemDto));
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var dto = new LookupItemDTO();
+            var dto = new LookupItemDto();
             var entity = new LookupItem();
 
             _mockMapper.Map<LookupItem>(dto).Returns(entity);

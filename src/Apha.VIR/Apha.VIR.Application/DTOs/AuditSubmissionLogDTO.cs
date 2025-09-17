@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class AuditSubmissionLogDTO
+public class AuditSubmissionLogDto
 {
     public Guid? LogID { get; set; }
     public string UserId { get; set; } = null!;

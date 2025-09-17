@@ -63,7 +63,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 LastModified = new byte[8]
             };
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
-                .Returns(new[] { new IsolateDispatchInfoDTO { DispatchId = dispatchId } });
+                .Returns(new[] { new IsolateDispatchInfoDto { DispatchId = dispatchId } });
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Delete(dispatchId, lastModified, isolateId, avnumber);
@@ -177,7 +177,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 LastModified = new byte[8]
             };
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
-                .Returns(new[] { new IsolateDispatchInfoDTO { DispatchId = dispatchId } });
+                .Returns(new[] { new IsolateDispatchInfoDto { DispatchId = dispatchId } });
 
             SetupMockUserAndRoles();
             // Act

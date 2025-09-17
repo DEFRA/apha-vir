@@ -26,10 +26,10 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookups = new List<Lookup> { new Lookup(), new Lookup() };
-            var expectedDTOs = new List<LookupDTO> { new LookupDTO(), new LookupDTO() };
+            var expectedDTOs = new List<LookupDto> { new LookupDto(), new LookupDto() };
 
             _mockLookupRepository.GetAllLookupsAsync().Returns(lookups);
-            _mockMapper.Map<IEnumerable<LookupDTO>>(Arg.Any<IEnumerable<Lookup>>()).Returns(expectedDTOs);
+            _mockMapper.Map<IEnumerable<LookupDto>>(Arg.Any<IEnumerable<Lookup>>()).Returns(expectedDTOs);
 
             // Act
             var result = await _mockLookupService.GetAllLookupsAsync();
@@ -37,7 +37,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(expectedDTOs, result);
             await _mockLookupRepository.Received(1).GetAllLookupsAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupDTO>>(Arg.Is<IEnumerable<Lookup>>(l => l == lookups));
+            _mockMapper.Received(1).Map<IEnumerable<LookupDto>>(Arg.Is<IEnumerable<Lookup>>(l => l == lookups));
         }
 
         [Fact]
@@ -57,10 +57,10 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var lookups = new List<Lookup> { new Lookup(), new Lookup(), new Lookup() };
-            var expectedDTOs = new List<LookupDTO> { new LookupDTO(), new LookupDTO(), new LookupDTO() };
+            var expectedDTOs = new List<LookupDto> { new LookupDto(), new LookupDto(), new LookupDto() };
 
             _mockLookupRepository.GetAllLookupsAsync().Returns(lookups);
-            _mockMapper.Map<IEnumerable<LookupDTO>>(Arg.Any<IEnumerable<Lookup>>()).Returns(expectedDTOs);
+            _mockMapper.Map<IEnumerable<LookupDto>>(Arg.Any<IEnumerable<Lookup>>()).Returns(expectedDTOs);
 
             // Act
             var result = await _mockLookupService.GetAllLookupsAsync();
@@ -68,7 +68,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(3, result.Count());
             await _mockLookupRepository.Received(1).GetAllLookupsAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupDTO>>(Arg.Is<IEnumerable<Lookup>>(l => l.Count() == 3));
+            _mockMapper.Received(1).Map<IEnumerable<LookupDto>>(Arg.Is<IEnumerable<Lookup>>(l => l.Count() == 3));
         }
     }
 }

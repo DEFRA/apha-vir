@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class AuditSampleLogDTO
+public class AuditSampleLogDto
 {
     public string AVNumber { get; set; } = null!;
     public int? SampleNumber { get; set; }

@@ -32,9 +32,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
         {
             // Arrange
             string avNumber = "AV123";
-            var submission = new SubmissionDTO { SubmissionId = Guid.NewGuid(), Avnumber = avNumber };
-            var samples = new List<SampleDTO>();
-            var isolates = new List<IsolateInfoDTO>();
+            var submission = new SubmissionDto { SubmissionId = Guid.NewGuid(), Avnumber = avNumber };
+            var samples = new List<SampleDto>();
+            var isolates = new List<IsolateInfoDto>();
             var sampleModels = new List<SubmissionSamplesModel>();
             var isolateModels = new List<SubmissionIsolatesModel>();
 
@@ -73,9 +73,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
         {
             // Arrange
             string avNumber = "AV789";
-            var submission = new SubmissionDTO { SubmissionId = Guid.NewGuid(), Avnumber = avNumber };
-            var samples = new List<SampleDTO>();
-            var isolates = new List<IsolateInfoDTO>();
+            var submission = new SubmissionDto { SubmissionId = Guid.NewGuid(), Avnumber = avNumber };
+            var samples = new List<SampleDto>();
+            var isolates = new List<IsolateInfoDto>();
 
             _mockSubmissionService.AVNumberExistsInVirAsync(avNumber).Returns(true);
             _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
@@ -98,13 +98,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
         {
             // Arrange
             string avNumber = "AV101";
-            var submission = new SubmissionDTO { SubmissionId = Guid.NewGuid(), Avnumber = avNumber };
-            var samples = new List<SampleDTO>
+            var submission = new SubmissionDto { SubmissionId = Guid.NewGuid(), Avnumber = avNumber };
+            var samples = new List<SampleDto>
             {
-                new SampleDTO { SampleTypeName = "FTA Cards" },
-                new SampleDTO { SampleTypeName = "Other" }
+                new SampleDto { SampleTypeName = "FTA Cards" },
+                new SampleDto { SampleTypeName = "Other" }
             };
-            var isolates = new List<IsolateInfoDTO> { new IsolateInfoDTO() };
+            var isolates = new List<IsolateInfoDto> { new IsolateInfoDto() };
 
             _mockSubmissionService.AVNumberExistsInVirAsync(avNumber).Returns(true);
             _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);

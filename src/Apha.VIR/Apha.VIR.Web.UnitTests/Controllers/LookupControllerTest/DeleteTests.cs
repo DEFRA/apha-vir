@@ -48,11 +48,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 }
             };
 
-            var lookupListdto = new List<LookupItemDTO> { new LookupItemDTO { Id = lookupItemId } };
+            var lookupListdto = new List<LookupItemDto> { new LookupItemDto { Id = lookupItemId } };
             var lookuitemList = new List<LookupItemModel> { new LookupItemModel { Id = lookupItemId } };
 
             _mockLookupService.IsLookupItemInUseAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(false);
-            _mockMapper.Map<LookupItemDTO>(Arg.Any<LookupItemModel>()).Returns(new LookupItemDTO());
+            _mockMapper.Map<LookupItemDto>(Arg.Any<LookupItemModel>()).Returns(new LookupItemDto());
 
             _mockLookupService.GetAllLookupItemsAsync(lookupId).Returns(lookupListdto);
             _mockMapper.Map<IEnumerable<LookupItemModel>>(lookupListdto).Returns(lookuitemList);
@@ -145,8 +145,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 LookupItem = new LookupItemModel { Id = Guid.NewGuid() }
             };
             _mockLookupService.IsLookupItemInUseAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(false);
-            _mockMapper.Map<LookupItemDTO>(Arg.Any<LookupItemModel>()).Returns(new LookupItemDTO());
-            _mockLookupService.DeleteLookupItemAsync(Arg.Any<Guid>(), Arg.Any<LookupItemDTO>())
+            _mockMapper.Map<LookupItemDto>(Arg.Any<LookupItemModel>()).Returns(new LookupItemDto());
+            _mockLookupService.DeleteLookupItemAsync(Arg.Any<Guid>(), Arg.Any<LookupItemDto>())
             .Returns(Task.FromException(new Exception("Test exception")));
 
             lock (_lock)
@@ -186,11 +186,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 }
             };
 
-            var lookupListdto = new List<LookupItemDTO> { new LookupItemDTO { Id = lookupItemId } };
+            var lookupListdto = new List<LookupItemDto> { new LookupItemDto { Id = lookupItemId } };
             var lookuitemList = new List<LookupItemModel> { new LookupItemModel { Id = lookupItemId } };
 
             _mockLookupService.IsLookupItemInUseAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(false);
-            _mockMapper.Map<LookupItemDTO>(Arg.Any<LookupItemModel>()).Returns(new LookupItemDTO());
+            _mockMapper.Map<LookupItemDto>(Arg.Any<LookupItemModel>()).Returns(new LookupItemDto());
 
             _mockLookupService.GetAllLookupItemsAsync(lookupId).Returns(lookupListdto);
             _mockMapper.Map<IEnumerable<LookupItemModel>>(lookupListdto).Returns(lookuitemList);

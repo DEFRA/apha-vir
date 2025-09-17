@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateDispatchInfoDTO
+public class IsolateDispatchInfoDto
 {
     public Guid DispatchId { get; set; }
     public Guid IsolateId { get; set; }

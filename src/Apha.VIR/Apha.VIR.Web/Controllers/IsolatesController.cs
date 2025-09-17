@@ -86,7 +86,7 @@ namespace Apha.VIR.Web.Controllers
             var submission = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
             if (submission != null)
             {
-                isolateCreateModel.YearOfIsolation = submission.DateSubmissionReceived!.Value.Year;
+                isolateCreateModel.YearOfIsolation = submission.DateSubmissionReceived.GetValueOrDefault().Year;
 
                 var samplesDto = _sampleService.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
                 var sample = samplesDto.Result.FirstOrDefault(s => s.SampleId == SampleId);
@@ -126,12 +126,12 @@ namespace Apha.VIR.Web.Controllers
 
             isolateModel.CreatedBy = "testuser";
 
-            var isolateDto = _mapper.Map<IsolateDTO>(isolateModel);
+            var isolateDto = _mapper.Map<IsolateDto>(isolateModel);
             isolateModel.IsolateId = await _isolatesService.AddIsolateDetailsAsync(isolateDto);
 
             if (isolateModel.IsViabilityInsert)
             {
-                var isolateViability = _mapper.Map<IsolateViabilityInfoDTO>(isolateModel);
+                var isolateViability = _mapper.Map<IsolateViabilityInfoDto>(isolateModel);
                 await _isolateViabilityService.AddIsolateViabilityAsync(isolateViability, isolateModel.CreatedBy);
             }
 
@@ -210,12 +210,12 @@ namespace Apha.VIR.Web.Controllers
             }
 
             isolateModel.CreatedBy = "testuser";
-            var isolateDto = _mapper.Map<IsolateDTO>(isolateModel);
+            var isolateDto = _mapper.Map<IsolateDto>(isolateModel);
             await _isolatesService.UpdateIsolateDetailsAsync(isolateDto);
 
             if (isolateModel.IsViabilityInsert)
             {
-                var isolateViability = _mapper.Map<IsolateViabilityInfoDTO>(isolateModel);
+                var isolateViability = _mapper.Map<IsolateViabilityInfoDto>(isolateModel);
                 await _isolateViabilityService.AddIsolateViabilityAsync(isolateViability, isolateModel.CreatedBy);
             }
 

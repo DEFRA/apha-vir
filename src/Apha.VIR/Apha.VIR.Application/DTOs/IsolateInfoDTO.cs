@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateInfoDTO
+public class IsolateInfoDto
 {
     public string Avnumber { get; set; } = null!;
     public string? FamilyName { get; set; }

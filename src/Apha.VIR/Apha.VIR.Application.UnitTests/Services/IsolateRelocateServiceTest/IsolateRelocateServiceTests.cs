@@ -35,10 +35,10 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateRelocateServiceTest
             var freezer = Guid.NewGuid();
             var tray = Guid.NewGuid();
             var isolates = new List<IsolateRelocate> { new IsolateRelocate(), new IsolateRelocate() };
-            var dtos = new List<IsolateRelocateDTO> { new IsolateRelocateDTO(), new IsolateRelocateDTO() };
+            var dtos = new List<IsolateRelocateDto> { new IsolateRelocateDto(), new IsolateRelocateDto() };
 
             _mockRepository.GetIsolatesByCriteria(min, max, freezer, tray).Returns(isolates);
-            _mockMapper.Map<IEnumerable<IsolateRelocateDTO>>(isolates).Returns(dtos);
+            _mockMapper.Map<IEnumerable<IsolateRelocateDto>>(isolates).Returns(dtos);
 
             // Act
             var result = await _service.GetIsolatesByCriteria(min, max, freezer, tray);
@@ -46,7 +46,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateRelocateServiceTest
             // Assert
             Assert.Equal(dtos, result);
             await _mockRepository.Received(1).GetIsolatesByCriteria(min, max, freezer, tray);
-            _mockMapper.Received(1).Map<IEnumerable<IsolateRelocateDTO>>(isolates);
+            _mockMapper.Received(1).Map<IEnumerable<IsolateRelocateDto>>(isolates);
         }
 
         [Fact]
@@ -55,8 +55,8 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateRelocateServiceTest
             // Arrange
             _mockRepository.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid?>(), Arg.Any<Guid?>())
             .Returns(new List<IsolateRelocate>());
-            _mockMapper.Map<IEnumerable<IsolateRelocateDTO>>(Arg.Any<IEnumerable<IsolateRelocate>>())
-            .Returns(new List<IsolateRelocateDTO>());
+            _mockMapper.Map<IEnumerable<IsolateRelocateDto>>(Arg.Any<IEnumerable<IsolateRelocate>>())
+            .Returns(new List<IsolateRelocateDto>());
 
             // Act
             var result = await _service.GetIsolatesByCriteria("001", "100", null, null);
@@ -70,10 +70,10 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateRelocateServiceTest
         {
             // Arrange
             var isolates = new List<IsolateRelocate> { new IsolateRelocate() };
-            var dtos = new List<IsolateRelocateDTO> { new IsolateRelocateDTO() };
+            var dtos = new List<IsolateRelocateDto> { new IsolateRelocateDto() };
 
             _mockRepository.GetIsolatesByCriteria(null, null, null, null).Returns(isolates);
-            _mockMapper.Map<IEnumerable<IsolateRelocateDTO>>(isolates).Returns(dtos);
+            _mockMapper.Map<IEnumerable<IsolateRelocateDto>>(isolates).Returns(dtos);
 
             // Act
             var result = await _service.GetIsolatesByCriteria(null, null, null, null);
@@ -98,7 +98,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateRelocateServiceTest
         public async Task UpdateIsolateFreezeAndTrayAsync_SuccessfulUpdate()
         {
             // Arrange
-            var inputDto = new IsolateRelocateDTO();
+            var inputDto = new IsolateRelocateDto();
             var mappedEntity = new IsolateRelocate();
             _mockMapper.Map<IsolateRelocate>(inputDto).Returns(mappedEntity);
 
@@ -113,7 +113,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateRelocateServiceTest
         public async Task UpdateIsolateFreezeAndTrayAsync_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var inputDto = new IsolateRelocateDTO();
+            var inputDto = new IsolateRelocateDto();
             var mappedEntity = new IsolateRelocate();
             _mockMapper.Map<IsolateRelocate>(inputDto).Returns(mappedEntity);
             _mockRepository.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocate>()).ThrowsAsync(new Exception("Repository error"));

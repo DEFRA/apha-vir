@@ -25,10 +25,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
         {
             // Arrange
             var familyId = Guid.NewGuid();
-            var expectedTypes = new List<LookupItemDTO>
+            var expectedTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 2" }
             };
             _mockLookupService.GetAllVirusTypesByParentAsync(familyId).Returns(expectedTypes);
 
@@ -37,7 +37,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
-            var actualTypes = Assert.IsAssignableFrom<IEnumerable<LookupItemDTO>>(jsonResult.Value);
+            var actualTypes = Assert.IsAssignableFrom<IEnumerable<LookupItemDto>>(jsonResult.Value);
             Assert.Equal(expectedTypes, actualTypes);
         }
 
@@ -46,14 +46,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicAssociationContr
         {
             // Arrange
             var familyId = Guid.NewGuid();
-            _mockLookupService.GetAllVirusTypesByParentAsync(familyId).Returns(new List<LookupItemDTO>());
+            _mockLookupService.GetAllVirusTypesByParentAsync(familyId).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _controller.GetVirusTypes(familyId);
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
-            var actualTypes = Assert.IsAssignableFrom<IEnumerable<LookupItemDTO>>(jsonResult.Value);
+            var actualTypes = Assert.IsAssignableFrom<IEnumerable<LookupItemDto>>(jsonResult.Value);
             Assert.Empty(actualTypes);
         }
 
