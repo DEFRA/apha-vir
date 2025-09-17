@@ -26,6 +26,9 @@
 .height-166 {
     height:166px;
 }
+.width-258{
+    width:258px;
+}
 
 .master_content {
     margin: 10px 10px 10px 10px;
@@ -207,6 +210,7 @@
     font-weight:bold;
     margin-top:4px;
     color:red;
+  
 }
 .width-208 {
     width: 208px;
@@ -215,19 +219,21 @@ select , input, textarea {
     font-family:Verdana !important;
 }
 
-reports_page{
+.page_links{
     margin:0;
     width:auto;
 }
-.reports_page ul {
-    list-style: none; /* Remove default bullets */
-}
-
-    .reports_page ul li::before {
-        content: url('../images/chevron-rt-dkblue.gif'); /* Add the greater than symbol and a space */
-      margin-right:20px;
-       
+    .page_links ul {
+        list-style: none; /* Remove default bullets */
     }
+
+    .page_links li {
+       margin:5px 0px;
+    }
+        .page_links ul li::before {
+            content: url('../images/chevron-rt-dkblue.gif'); /* Add the greater than symbol and a space */
+            margin-right: 15px;
+        }
 
 .report_date {
     display: flex;
@@ -274,6 +280,17 @@ reports_page{
 .width-75 {
     width: 75% !important;
 }
+.virusform_label {
+    min-width: 190px;
+    margin: 0;
+    margin-right: 12px;
+}
+.marginLeft112{
+    margin-left:112px;
+}
 
+.width-85PC{
+    width:85%;
+}
 
 
