@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
+namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryControllerTest
 {
     public class BackTests
     {
@@ -22,8 +22,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirectResult.ActionName);
-            Assert.Equal("VirusCharacteristicsListEntry", redirectResult.ControllerName);
+            Assert.Equal("List", redirectResult.ActionName);
+            Assert.Equal("VirusCharacteristics", redirectResult.ControllerName);
         }
     }
 }
