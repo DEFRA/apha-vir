@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Apha.VIR.Web.Services
 {
-    public class CacheService
+    public class CacheService : ICacheService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDistributedCache _cache;
@@ -102,6 +102,16 @@ namespace Apha.VIR.Web.Services
                 _logger.LogError(ex, "Failed to remove cache value for key {Key}", key);
             }
         }
+    }
+
+    public interface ICacheService
+    {
+        void SetSessionValue(string key, string value);
+        string? GetSessionValue(string key);
+        void RemoveSessionValue(string key);
+        Task SetCacheValueAsync<T>(string key, T value, TimeSpan? expiration = null);
+        Task<T?> GetCacheValueAsync<T>(string key);
+        Task RemoveCacheValueAsync(string key);
     }
 }
 

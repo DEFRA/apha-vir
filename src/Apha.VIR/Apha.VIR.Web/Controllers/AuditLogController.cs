@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -15,11 +16,13 @@ namespace Apha.VIR.Web.Controllers
     public class AuditLogController : Controller
     {
         private readonly IAuditLogService _auditLogService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
-        public AuditLogController(IAuditLogService auditLogService, IMapper mapper)
+        public AuditLogController(IAuditLogService auditLogService, ICacheService cacheService, IMapper mapper)
         {
             _auditLogService = auditLogService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
@@ -63,8 +66,8 @@ namespace Apha.VIR.Web.Controllers
 
                 FormateSearchCriteria(searchCriteria);
 
-                TempData.Remove("SearchCriteria");
-                TempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
+                await _cacheService.RemoveCacheValueAsync("SearchCriteria");
+                await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(searchCriteria));
 
                 var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
                    searchCriteria.DateTimeTo, searchCriteria.UserId!);
@@ -86,7 +89,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                var criteriaString = TempData.Peek("SearchCriteria") as string;
+                var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
                 ModelState.Remove("AVNumber");
                 if (!String.IsNullOrEmpty(criteriaString))
                 {
@@ -167,7 +170,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetSubmissionAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -187,7 +190,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetSampleAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -208,7 +211,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetIsolateAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -229,7 +232,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetDispatchAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -250,7 +253,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetViabilityAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -271,7 +274,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetCharacteristicsAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
 
             if (!String.IsNullOrEmpty(criteriaString))
             {

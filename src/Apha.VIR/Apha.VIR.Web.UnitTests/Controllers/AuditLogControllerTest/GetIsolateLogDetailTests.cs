@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -12,14 +13,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
     public class GetIsolateLogDetailTests
     {
         private readonly IAuditLogService _auditLogService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly AuditLogController _controller;
 
         public GetIsolateLogDetailTests()
         {
             _auditLogService = Substitute.For<IAuditLogService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new AuditLogController(_auditLogService, _mapper);
+            _controller = new AuditLogController(_auditLogService, _cacheService, _mapper);
         }
 
 
