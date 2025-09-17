@@ -64,9 +64,11 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<SampleDTO, Sample>().ReverseMap();
             CreateMap<SystemInfo, SystemInfoDTO>().ReverseMap();
             CreateMap<IsolateDTO, Isolate>().ReverseMap();
+            CreateMap<VirusCharacteristicDataTypeDTO, VirusCharacteristicDataType>().ReverseMap();
             CreateMap<PagedData<Sender>, PaginatedResult<SenderDTO>>();
             CreateMap<PagedData<VirusCharacteristicListEntry>, PaginatedResult<VirusCharacteristicListEntryDTO>>();
             CreateMap<IsolateRelocate, IsolateRelocateDTO>().ReverseMap();
+            CreateMap<PagedData<VirusCharacteristic>, PaginatedResult<VirusCharacteristicDTO>>();
         }
     }
 }

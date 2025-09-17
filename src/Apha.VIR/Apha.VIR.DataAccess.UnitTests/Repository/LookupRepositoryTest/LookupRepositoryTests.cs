@@ -2,6 +2,7 @@
 using Apha.VIR.DataAccess.Data;
 using Apha.VIR.DataAccess.Repositories;
 using Apha.VIR.DataAccess.UnitTests.Repository.Helpers;
+using Microsoft.Data.SqlClient;
 using Moq;
 
 namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
@@ -9,18 +10,40 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
     public class TestLookupRepository : LookupRepository
     {
         private readonly IQueryable<LookupItem> _lookupItems;
+        private readonly IQueryable<Lookup>? _lookups;
+        public Func<string, object[], Task<int>>? ExecuteSqlAsyncOverride { get; set; }
 
         public TestLookupRepository(VIRDbContext context, IQueryable<LookupItem> lookupItems)
             : base(context)
         {
             _lookupItems = lookupItems;
         }
+        // New constructor for Lookup tests
+        public TestLookupRepository(VIRDbContext context, IQueryable<LookupItem> lookupItems, IQueryable<Lookup> lookups)
+            : base(context)
+        {
+            _lookupItems = lookupItems;
+            _lookups = lookups;
+        }
+
 
         protected override IQueryable<T> GetQueryableResultFor<T>(string sql, params object[] parameters)
         {
             if (typeof(T) == typeof(LookupItem))
                 return (IQueryable<T>)_lookupItems;
             throw new NotImplementedException($"No test data for type {typeof(T).Name}");
+        }
+        protected override IQueryable<T> GetDbSetFor<T>()
+        {
+            if (typeof(T) == typeof(Lookup) && _lookups != null)
+                return (IQueryable<T>)_lookups;
+            throw new NotImplementedException($"No test data for type {typeof(T).Name}");
+        }
+        protected override Task<int> ExecuteSqlAsync(string sql, params object[] parameters)
+        {
+            if (ExecuteSqlAsyncOverride != null)
+                return ExecuteSqlAsyncOverride(sql, parameters);
+            return Task.FromResult(1);
         }
     }
 
@@ -33,6 +56,49 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
                 mockContext.Object,
                 new TestAsyncEnumerable<LookupItem>(lookupItems)
             );
+        }
+        private static TestLookupRepository CreateRepoT(IEnumerable<LookupItem> lookupItems, IEnumerable<Lookup> lookups)
+        {
+            var mockContext = new Mock<VIRDbContext>();
+            return new TestLookupRepository(
+                mockContext.Object,
+                new TestAsyncEnumerable<LookupItem>(lookupItems),
+                new TestAsyncEnumerable<Lookup>(lookups)
+            );
+        }
+        private class TestLookupRepositoryForInUse : LookupRepository
+        {
+            private readonly IQueryable<Lookup> _lookups;
+            public Func<string, object[], Task>? ExecuteSqlAsyncOverride { get; set; }
+            public TestLookupRepositoryForInUse(VIRDbContext context, IQueryable<Lookup> lookups)
+                : base(context)
+            {
+                _lookups = lookups;
+            }
+            protected override IQueryable<T> GetDbSetFor<T>()
+            {
+                if (typeof(T) == typeof(Lookup))
+                    return (IQueryable<T>)_lookups;
+                throw new NotImplementedException();
+            }
+            protected override Task<int> ExecuteSqlAsync(string sql, params object[] parameters)
+            {
+                if (ExecuteSqlAsyncOverride != null)
+                {
+                    ExecuteSqlAsyncOverride(sql, parameters);
+                    return Task.FromResult(1);
+                }
+                return Task.FromResult(1);
+            }
+        }
+
+        private static TestLookupRepositoryForInUse CreateRepoForInUse(IEnumerable<Lookup> lookups, Func<string, object[], Task>? execOverride = null)
+        {
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestLookupRepositoryForInUse(mockContext.Object, new TestAsyncEnumerable<Lookup>(lookups));
+            if (execOverride != null)
+                repo.ExecuteSqlAsyncOverride = execOverride;
+            return repo;
         }
 
         [Fact]
@@ -257,6 +323,332 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
             var result = await repo.GetAllTraysAsync();
             Assert.Single(result);
             Assert.All(result, x => Assert.True(x.Active));
+        }
+
+        [Fact]
+        public async Task InsertLookupItemAsync_ThrowsArgumentException_WhenInsertCommandIsNullOrWhitespace()
+        {
+            var lookupId = Guid.NewGuid();
+            var lookups = new List<Lookup>
+        {
+            new() { Id = lookupId, InsertCommand = null! }
+        };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            var item = new LookupItem { Name = "Test", Active = true };
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
+                repo.InsertLookupItemAsync(lookupId, item));
+            Assert.Contains("Lookup Insert Stored procedure name is required", ex.Message);
+        }        
+
+        [Fact]
+        public async Task InsertLookupItemAsync_CallsExecuteSqlAsync_WithCorrectParameters()
+        {
+            var lookupId = Guid.NewGuid();
+            var allowedProc = "spInsertAllowed";
+            var lookups = new List<Lookup>
+        {
+            new() { Id = lookupId, InsertCommand = allowedProc }
+        };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            // Override ExecuteSqlAsync to verify call
+            bool called = false;
+            repo.ExecuteSqlAsyncOverride = (sql, parameters) =>
+            {
+                called = true;
+                Assert.Contains(allowedProc, sql);
+                Assert.NotNull(parameters);
+                return Task.FromResult(1);
+            };
+
+            var item = new LookupItem
+            {
+                Name = "TestName",
+                AlternateName = "AltName",
+                Parent = Guid.NewGuid(),
+                Active = true
+            };
+
+            await repo.InsertLookupItemAsync(lookupId, item);
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task InsertLookupItemAsync_SetsNullsAndDefaults_WhenItemPropertiesAreNullOrEmpty()
+        {
+            var lookupId = Guid.NewGuid();
+            var allowedProc = "spInsertAllowed";
+            var lookups = new List<Lookup>
+            {
+                new() { Id = lookupId, InsertCommand = allowedProc }
+            };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            bool called = false;
+            repo.ExecuteSqlAsyncOverride = (sql, parameters) =>
+            {
+                called = true;
+                // Check that DBNull is used for null/empty properties
+                var nameParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@Name");
+                var altNameParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@AltName");
+                var parentParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@Parent");
+
+                Assert.NotNull(nameParam);
+                Assert.NotNull(altNameParam);
+                Assert.NotNull(parentParam);
+
+                Assert.Equal(DBNull.Value, nameParam.Value);
+                Assert.Equal(DBNull.Value, altNameParam.Value);
+                Assert.Equal(DBNull.Value, parentParam.Value);
+                return Task.FromResult(1);
+            };
+
+            var item = new LookupItem
+            {
+                Name = null!,
+                AlternateName = null,
+                Parent = Guid.Empty,
+                Active = false
+            };
+
+            await repo.InsertLookupItemAsync(lookupId, item);
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task UpdateLookupItemAsync_ThrowsArgumentException_WhenUpdateCommandIsNullOrWhitespace()
+        {
+            var lookupId = Guid.NewGuid();
+            var lookups = new List<Lookup>
+    {
+        new() { Id = lookupId, UpdateCommand = null! }
+    };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            var item = new LookupItem { Id = Guid.NewGuid(), Name = "Test", Active = true };
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
+                repo.UpdateLookupItemAsync(lookupId, item));
+            Assert.Contains("Lookup update Stored procedure name is required", ex.Message);
+        }
+
+        [Fact]
+        public async Task UpdateLookupItemAsync_CallsExecuteSqlAsync_WithCorrectParameters()
+        {
+            var lookupId = Guid.NewGuid();
+            var allowedProc = "spUpdateAllowed";
+            var lookups = new List<Lookup>
+    {
+        new() { Id = lookupId, UpdateCommand = allowedProc }
+    };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            bool called = false;
+            repo.ExecuteSqlAsyncOverride = (sql, parameters) =>
+            {
+                called = true;
+                Assert.Contains(allowedProc, sql);
+                Assert.NotNull(parameters);
+                return Task.FromResult(1);
+            };
+
+            var item = new LookupItem
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestName",
+                AlternateName = "AltName",
+                Parent = Guid.NewGuid(),
+                Active = true
+            };
+
+            await repo.UpdateLookupItemAsync(lookupId, item);
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task UpdateLookupItemAsync_SetsNullsAndDefaults_WhenItemPropertiesAreNullOrEmpty()
+        {
+            var lookupId = Guid.NewGuid();
+            var allowedProc = "spUpdateAllowed";
+            var lookups = new List<Lookup>
+    {
+        new() { Id = lookupId, UpdateCommand = allowedProc }
+    };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            bool called = false;
+            repo.ExecuteSqlAsyncOverride = (sql, parameters) =>
+            {
+                called = true;
+                var idParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@ID");
+                var nameParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@Name");
+                var altNameParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@AltName");
+                var parentParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@Parent");
+
+                Assert.NotNull(idParam);
+                Assert.NotNull(nameParam);
+                Assert.NotNull(altNameParam);
+                Assert.NotNull(parentParam);
+
+                Assert.Equal(DBNull.Value, idParam!.Value);
+                Assert.Equal(DBNull.Value, nameParam!.Value);
+                Assert.Equal(DBNull.Value, altNameParam!.Value);
+                Assert.Equal(DBNull.Value, parentParam!.Value);
+                return Task.FromResult(1);
+            };
+
+            var item = new LookupItem
+            {
+                Id = Guid.Empty,
+                Name = null!,
+                AlternateName = null,
+                Parent = Guid.Empty,
+                Active = false
+            };
+
+            await repo.UpdateLookupItemAsync(lookupId, item);
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task DeleteLookupItemAsync_ThrowsArgumentException_WhenDeleteCommandIsNullOrWhitespace()
+        {
+            var lookupId = Guid.NewGuid();
+            var lookups = new List<Lookup>
+    {
+        new() { Id = lookupId, DeleteCommand = null! }
+    };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            var item = new LookupItem { Id = Guid.NewGuid(), Name = "Test", Active = true };
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
+                repo.DeleteLookupItemAsync(lookupId, item));
+            Assert.Contains("Lookup delete Stored procedure name is required", ex.Message);
+        }        
+
+        [Fact]
+        public async Task DeleteLookupItemAsync_CallsExecuteSqlAsync_WithCorrectParameters()
+        {
+            var lookupId = Guid.NewGuid();
+            var allowedProc = "spDeleteAllowed";
+            var lookups = new List<Lookup>
+    {
+        new() { Id = lookupId, DeleteCommand = allowedProc }
+    };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            bool called = false;
+            repo.ExecuteSqlAsyncOverride = (sql, parameters) =>
+            {
+                called = true;
+                Assert.Contains(allowedProc, sql);
+                Assert.NotNull(parameters);
+                return Task.FromResult(1);
+            };
+
+            var item = new LookupItem
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestName",
+                AlternateName = "AltName",
+                Parent = Guid.NewGuid(),
+                Active = true
+            };
+
+            await repo.DeleteLookupItemAsync(lookupId, item);
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task DeleteLookupItemAsync_SetsNullsAndDefaults_WhenItemPropertiesAreNullOrEmpty()
+        {
+            var lookupId = Guid.NewGuid();
+            var allowedProc = "spDeleteAllowed";
+            var lookups = new List<Lookup>
+    {
+        new() { Id = lookupId, DeleteCommand = allowedProc }
+    };
+            var repo = CreateRepoT(new List<LookupItem>(), lookups);
+
+            bool called = false;
+            repo.ExecuteSqlAsyncOverride = (sql, parameters) =>
+            {
+                called = true;
+                var idParam = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@ID");
+                Assert.NotNull(idParam);
+                Assert.Equal(DBNull.Value, idParam!.Value);
+                return Task.FromResult(1);
+            };
+
+            var item = new LookupItem
+            {
+                Id = Guid.Empty,
+                Name = null!,
+                AlternateName = null,
+                Parent = Guid.Empty,
+                Active = false
+            };
+
+            await repo.DeleteLookupItemAsync(lookupId, item);
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task IsLookupItemInUseAsync_ReturnsFalse_WhenNoLookupFound()
+        {
+            var repo = CreateRepoForInUse(Enumerable.Empty<Lookup>());
+            var result = await repo.IsLookupItemInUseAsync(Guid.NewGuid(), Guid.NewGuid());
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task IsLookupItemInUseAsync_ReturnsFalse_WhenNoExceptionThrown()
+        {
+            var lookupId = Guid.NewGuid();
+            var lookups = new List<Lookup>
+        {
+            new() { Id = lookupId, InUseCommand = "spInUse" }
+        };
+            bool called = false;
+            var repo = CreateRepoForInUse(lookups, (sql, parameters) =>
+            {
+                called = true;
+                Assert.Contains("spInUse", sql);
+                Assert.NotNull(parameters);
+                var param = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@ID");
+                Assert.NotNull(param);
+                return Task.CompletedTask;
+            });
+
+            var result = await repo.IsLookupItemInUseAsync(lookupId, Guid.NewGuid());
+            Assert.True(called);
+            Assert.False(result);
+        }       
+
+        [Fact]
+        public async Task IsLookupItemInUseAsync_PassesDBNull_WhenLookupItemIdIsEmpty()
+        {
+            var lookupId = Guid.NewGuid();
+            var lookups = new List<Lookup>
+        {
+            new() { Id = lookupId, InUseCommand = "spInUse" }
+        };
+            bool called = false;
+            var repo = CreateRepoForInUse(lookups, (sql, parameters) =>
+            {
+                called = true;
+                var param = parameters.OfType<SqlParameter>().FirstOrDefault(p => p.ParameterName == "@ID");
+                Assert.NotNull(param);
+                Assert.Equal(DBNull.Value, param!.Value);
+                return Task.CompletedTask;
+            });
+
+            var result = await repo.IsLookupItemInUseAsync(lookupId, Guid.Empty);
+            Assert.True(called);
+            Assert.False(result);
         }
     }
 }

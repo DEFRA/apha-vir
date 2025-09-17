@@ -380,6 +380,7 @@ namespace Apha.VIR.DataAccess.Repositories
             return (await GetQueryableResultFor<LookupItem>($"EXEC spTrayGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
+       
 
         public async Task<IEnumerable<LookupItem>> GetAllTraysByParentAsync(Guid? freezer)
         {

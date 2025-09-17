@@ -59,16 +59,9 @@ namespace Apha.VIR.Application.Services
 
             var characteristicList = await _iCharacteristicRepository.GetIsolateCharacteristicInfoAsync(matchIsolateId);
 
-            var charNomenclature = GetCharacteristicNomenclature(characteristicList.ToList());
+            var charNomenclature = ServiceHelper.GetCharacteristicNomenclature(characteristicList.ToList());
 
-            if (string.IsNullOrEmpty(charNomenclature))
-            {
-                nomenclature = matchIsolate.First().Nomenclature ?? string.Empty;
-            }
-            else
-            {
-                nomenclature = charNomenclature!;
-            }
+            nomenclature = GetFullNomenclature(matchIsolate[0].Nomenclature, matchIsolate[0].IsolateNomenclature, matchIsolate[0].FamilyName, matchIsolate[0].TypeName, charNomenclature);
 
             foreach (var item in dispatchHistList)
             {
@@ -199,27 +192,10 @@ namespace Apha.VIR.Application.Services
 
             var lastViability = await GetLastViabilityByIsolateAsync(matchIsolateId);
             dispatch.ViabilityId = lastViability?.Viable;
+            dispatch.IsolateNoOfAliquots = matchIsolate.First().NoOfAliquots;
 
             return _mapper.Map<IsolateDispatchInfoDTO>(dispatch);
-        }
-
-        private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
-        {
-            var characteristicNomenclatureList = new StringBuilder();
-
-            // Build nomenclature string from characteristics
-            foreach (IsolateCharacteristicInfo item in characteristicList)
-            {
-                if ((item.CharacteristicDisplay == true) && (!string.IsNullOrEmpty(item.CharacteristicValue)))
-                {
-                    characteristicNomenclatureList.Append(item.CharacteristicPrefix + item.CharacteristicValue + " ");
-                }
-            }
-
-            var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
-
-            return characteristicNomenclature;
-        }
+        }        
 
         public async Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid IsolateId)
         {
@@ -238,6 +214,19 @@ namespace Apha.VIR.Application.Services
         public async Task<int> GetIsolateDispatchRecordCountAsync(Guid isolateId)
         {
             return await _isolateDispatchRepository.GetIsolateDispatchRecordCountAsync(isolateId);            
+        }
+
+        private static string GetFullNomenclature(string? nomenclature, string? isolateNomenclature, string? familyName, string? typeName, string charNomenclature)
+        {
+            if (familyName == "Paramyxoviridae")
+                return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature) + " (" + (string.IsNullOrEmpty(typeName) ? "" : typeName) + ")";
+            else
+            {
+                if (string.IsNullOrEmpty(isolateNomenclature))
+                    return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature) + " " + charNomenclature;
+                else
+                    return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature);
+            }
         }
     }
 }
