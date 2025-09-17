@@ -28,9 +28,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         public async Task SubmissionLetter_ReturnsViewResult_WithSubmissionLetterViewModel()
         {
             // Arrange
-            string avNumber = "TEST123";
+            string avNumber = "AV0000-01";
             string expectedLetterContent = "Test letter content";
-            _submissionService.SubmissionLetter(avNumber, "TestUser").Returns(expectedLetterContent);
+            _submissionService.AVNumberExistsInVirAsync(avNumber).Returns(Task.FromResult(true));
+            _submissionService.SubmissionLetter(avNumber, "TestUser").Returns(Task.FromResult(expectedLetterContent));
 
             // Act
             var result = await _controller.SubmissionLetter(avNumber);
@@ -45,7 +46,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         public async Task SubmissionLetter_ThrowsException_WhenServiceFails()
         {
             // Arrange
-            string avNumber = "TEST123";
+            string avNumber = "AV0000-01";
+            _submissionService.AVNumberExistsInVirAsync(avNumber).Returns(Task.FromResult(true));
             _submissionService.SubmissionLetter(avNumber, "TestUser").Returns(Task.FromException<string>(new Exception("Service error")));
 
             // Act & Assert

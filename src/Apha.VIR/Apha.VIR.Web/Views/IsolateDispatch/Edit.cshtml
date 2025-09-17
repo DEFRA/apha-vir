@@ -7,8 +7,7 @@
 <form asp-action="Edit" asp-controller="IsolateDispatch" method="post">
     <input asp-for="DispatchIsolateId" type="hidden" />
     <input asp-for="LastModified" type="hidden" />
-    <input asp-for="DispatchId" type="hidden" />
-    <input asp-for="IsFieldInVisible" type="hidden" />
+    <input asp-for="DispatchId" type="hidden" />    
     <table>
         <thead class="sr-only"><tr><th scope="col"></th></tr></thead>
         <tr>
@@ -27,7 +26,7 @@
                 <input type="hidden" asp-for="NoOfAliquots" autofocus />
             </td>
         </tr>
-        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
+        <tr>
             <td>Nomenclature</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
@@ -43,11 +42,11 @@
                 <input type="hidden" asp-for="ValidToIssue" />
             </td>
         </tr>
-        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
+        <tr>
             <td>Viability</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
-                <select asp-for="ViabilityId" asp-items="Model.ViabilityList" disabled style="width: 208px;">
+                <select asp-for="ViabilityId" asp-items="Model.ViabilityList" disabled class="width-208">
                     <option value="">Select Viability</option>
                 </select>
                 <input type="hidden" name="ViabilityId" value="@Model.ViabilityId" />
@@ -58,15 +57,15 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
                 <input asp-for="NoOfAliquotsToBeDispatched" type="text" class="w-200" />
-                <span asp-validation-for="NoOfAliquotsToBeDispatched"  class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+                <span asp-validation-for="NoOfAliquotsToBeDispatched" class="text-danger dispatchValidation_text"></span>
             </td>
         </tr>
-        <tr hidden="@(Model.IsFieldInVisible ? "true" : "false")">
+        <tr>
             <td>Passage&nbsp;Number&nbsp;*</td>
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
                 <input asp-for="PassageNumber" type="text" class="w-200" />
-                <span asp-validation-for="PassageNumber" class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+                <span asp-validation-for="PassageNumber" class="text-danger dispatchValidation_text"></span>
             </td>
         </tr>
         <tr>
@@ -84,7 +83,7 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>
                 <div id="recipientDropdown">
-                    <select asp-for="RecipientId" asp-items="Model.RecipientList" style="width: 208px;">
+                    <select asp-for="RecipientId" asp-items="Model.RecipientList" class="width-208">
                         <option value=""> </option>
                     </select>
                     <small>(Internal Recipients Only)</small>
@@ -122,8 +121,8 @@
             <td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
             <td>          
                 <input asp-for="DispatchedDate" />         
-                @* <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" /> *@
-                <span asp-validation-for="DispatchedDate" class="text-danger" style="display:block;font-weight:bold;margin-top:4px;color:red;"></span>
+               
+                <span asp-validation-for="DispatchedDate" class="text-danger dispatchValidation_text"></span>
             </td>
         </tr>
         <tr>
@@ -145,11 +144,13 @@
         </tr>
     </table>
 </form>
-<div id="validationSummary" class="text-danger" style="display:none;">
-    <p style="color:red;font-weight:bold;">There are validation messages requiring your attention.</p>
-    <div asp-validation-summary="All"></div>
-    <span id="dispatchedDateError" style="display:none;color:red;font-weight:bold;"></span>
-</div>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div id="validationSummary" class="validation">
+        <p>There are validation messages requiring your attention.</p>
+        <div asp-validation-summary="All" class="validation"></div>
+    </div>
+}
 
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>

@@ -17,7 +17,8 @@ namespace Apha.VIR.DataAccess.Repositories
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsAsync()
         {
             return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
-        }
+        }       
+
         public async Task<PagedData<VirusCharacteristic>> GetAllVirusCharacteristicsAsync(int pageNo, int pageSize)
         {
             var result = await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
@@ -27,14 +28,15 @@ namespace Apha.VIR.DataAccess.Repositories
                 .Take(pageSize).ToList();
             return new PagedData<VirusCharacteristic>(entries, totalRecords);
         }
-        public async Task<VirusCharacteristic> GetVirusCharacteristicsByIdAsync(Guid? id)
+ 
+        public async Task<VirusCharacteristic?> GetVirusCharacteristicsByIdAsync(Guid id)
         {
             var result = await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetAll").ToListAsync();
 
-            var totalRecords = result.Count;
-            var entry = result.Where(x => x.Id == id).SingleOrDefault();
+            var entry = result.SingleOrDefault(x => x.Id == id);
             return entry;
         }
+
         public async Task<IEnumerable<VirusCharacteristic>> GetAllVirusCharacteristicsByVirusTypeAsync(Guid? virusType, bool isAbscent)
         {
             if (isAbscent)
@@ -46,57 +48,42 @@ namespace Apha.VIR.DataAccess.Repositories
                 return await GetQueryableInterpolatedFor<VirusCharacteristic>($"EXEC spVirusCharacteristicGetByVirusTypeWherePresent @VirusType = {virusType}").ToListAsync();
             }
         }
+
         public async Task<IEnumerable<VirusCharacteristicDataType>> GetAllVirusCharactersticsTypeNamesAsync()
         {
             return (await GetQueryableResultFor<VirusCharacteristicDataType>($"EXEC spVirusCharacteristicTypeGetAll").ToListAsync())
             .ToList();
         }
+
         public async Task AddEntryAsync(VirusCharacteristic virusCharacteristic)
         {
-            var lastModified = new byte[8];
-            await ExecuteSqlInterpolatedAsync(
-                $@"EXEC spVirusCharacteristicInsert 
-            @Id = {virusCharacteristic.Id}, 
-            @Name = {virusCharacteristic.Name}, 
-            @CharacteristicType ={virusCharacteristic.CharacteristicType},
-            @NumericSort ={virusCharacteristic.NumericSort},
-            @DisplayOnSearch ={virusCharacteristic.DisplayOnSearch},
-            @Prefix ={virusCharacteristic.Prefix},
-            @MinValue ={virusCharacteristic.MinValue},
-            @MaxValue ={virusCharacteristic.MaxValue},
-            @DecimalPlaces ={virusCharacteristic.DecimalPlaces},
-            @Length ={virusCharacteristic.Length},
-            @Index ={virusCharacteristic.CharacteristicIndex},
-            @LastModified = {lastModified}");
-            virusCharacteristic.LastModified = lastModified;
+            SqlParameter[] parameters = GetAddSqlParameters(virusCharacteristic);
+
+            await ExecuteSqlAsync(
+            @"EXEC spVirusCharacteristicInsert @Id, @Name, @CharacteristicType, @NumericSort, 
+                      @DisplayOnSearch, @Prefix, @MinValue, @MaxValue, @DecimalPlaces, @Length, @Index, @LastModified", parameters);
         }
+
         public async Task UpdateEntryAsync(VirusCharacteristic virusCharacteristic)
         {
-            await ExecuteSqlInterpolatedAsync(
-                $@"EXEC spVirusCharacteristicUpdate 
-            @Id = {virusCharacteristic.Id}, 
-            @Name = {virusCharacteristic.Name}, 
-            @CharacteristicType ={virusCharacteristic.CharacteristicType},
-            @NumericSort ={virusCharacteristic.NumericSort},
-            @DisplayOnSearch ={virusCharacteristic.DisplayOnSearch},
-            @Prefix ={virusCharacteristic.Prefix},
-            @MinValue ={virusCharacteristic.MinValue},
-            @MaxValue ={virusCharacteristic.MaxValue},
-            @DecimalPlaces ={virusCharacteristic.DecimalPlaces},
-            @Length ={virusCharacteristic.Length},
-            @Index ={virusCharacteristic.CharacteristicIndex},
-            @LastModified = {virusCharacteristic.LastModified}");
+            SqlParameter[] parameters = GetUpdateSqlParameters(virusCharacteristic);
+
+            await ExecuteSqlAsync(
+            @"EXEC spVirusCharacteristicUpdate @Id, @Name, @CharacteristicType, @NumericSort, 
+                      @DisplayOnSearch, @Prefix, @MinValue, @MaxValue, @DecimalPlaces, @Length, @Index, @LastModified", parameters);
         }
+
         public async Task DeleteVirusCharactersticsAsync(Guid id, byte[] lastModified)
         {
             var parameters = new[]
             {
-           new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id },
-           new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified },
-        };
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id },
+                new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified }
+            };
 
             await ExecuteSqlAsync(@"EXEC spVirusCharacteristicDelete @Id,@LastModified", parameters);
         }
+
         public async Task<bool> CheckVirusCharactersticsUsageByIdAsync(Guid id)
         {
             int TotalEntries = 0;
@@ -125,6 +112,58 @@ namespace Apha.VIR.DataAccess.Repositories
                 }
             }
             return TotalEntries > 0 ? true : false;
+        }
+
+        private static SqlParameter[] GetAddSqlParameters(VirusCharacteristic virusCharacteristic)
+        {
+            return new[]
+             {
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = virusCharacteristic.Id},
+                new SqlParameter("@Name", SqlDbType.VarChar, 50)
+                { Value =  virusCharacteristic.Name == null ? DBNull.Value: virusCharacteristic.Name},
+                new SqlParameter("@CharacteristicType", SqlDbType.UniqueIdentifier)
+                { Value =  virusCharacteristic.CharacteristicType == Guid.Empty ? DBNull.Value: virusCharacteristic.CharacteristicType},
+                new SqlParameter("@NumericSort", SqlDbType.Bit) { Value = virusCharacteristic.NumericSort},
+                new SqlParameter("@DisplayOnSearch", SqlDbType.Bit) { Value = virusCharacteristic.DisplayOnSearch},
+                new SqlParameter("@Prefix", SqlDbType.VarChar, 50) { Value =  virusCharacteristic.Prefix == null ? DBNull.Value: virusCharacteristic.Prefix},
+                new SqlParameter("@MinValue", SqlDbType.Float) { Value =  virusCharacteristic.MinValue == null ? DBNull.Value: virusCharacteristic.MinValue},
+                new SqlParameter("@MaxValue", SqlDbType.Float) { Value =  virusCharacteristic.MaxValue == null ? DBNull.Value: virusCharacteristic.MaxValue},
+                new SqlParameter("@DecimalPlaces", SqlDbType.Int) { Value =  virusCharacteristic.DecimalPlaces == null ? DBNull.Value: virusCharacteristic.DecimalPlaces},
+                new SqlParameter("@Length", SqlDbType.Int) { Value =  virusCharacteristic.Length == null ? DBNull.Value: virusCharacteristic.Length},
+                new SqlParameter("@Index", SqlDbType.Int) { Value =  virusCharacteristic.CharacteristicIndex == null ? DBNull.Value: virusCharacteristic.CharacteristicIndex},
+                new SqlParameter
+                {
+                    ParameterName = "@LastModified",
+                    SqlDbType = SqlDbType.Timestamp,
+                    Direction = ParameterDirection.Output
+                }
+            };
+        }
+
+        private static SqlParameter[] GetUpdateSqlParameters(VirusCharacteristic virusCharacteristic)
+        {
+            return new[]
+             {
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = virusCharacteristic.Id},
+                new SqlParameter("@Name", SqlDbType.VarChar, 50)
+                { Value =  virusCharacteristic.Name == null ? DBNull.Value: virusCharacteristic.Name},
+                new SqlParameter("@CharacteristicType", SqlDbType.UniqueIdentifier)
+                { Value =  virusCharacteristic.CharacteristicType == Guid.Empty ? DBNull.Value: virusCharacteristic.CharacteristicType},
+                new SqlParameter("@NumericSort", SqlDbType.Bit) { Value = virusCharacteristic.NumericSort},
+                new SqlParameter("@DisplayOnSearch", SqlDbType.Bit) { Value = virusCharacteristic.DisplayOnSearch},
+                new SqlParameter("@Prefix", SqlDbType.VarChar, 50) { Value =  virusCharacteristic.Prefix == null ? DBNull.Value: virusCharacteristic.Prefix},
+                new SqlParameter("@MinValue", SqlDbType.Float) { Value =  virusCharacteristic.MinValue == null ? DBNull.Value: virusCharacteristic.MinValue},
+                new SqlParameter("@MaxValue", SqlDbType.Float) { Value =  virusCharacteristic.MaxValue == null ? DBNull.Value: virusCharacteristic.MaxValue},
+                new SqlParameter("@DecimalPlaces", SqlDbType.Int) { Value =  virusCharacteristic.DecimalPlaces == null ? DBNull.Value: virusCharacteristic.DecimalPlaces},
+                new SqlParameter("@Length", SqlDbType.Int) { Value =  virusCharacteristic.Length == null ? DBNull.Value: virusCharacteristic.Length},
+                new SqlParameter("@Index", SqlDbType.Int) { Value =  virusCharacteristic.CharacteristicIndex == null ? DBNull.Value: virusCharacteristic.CharacteristicIndex},
+                new SqlParameter
+                {
+                    ParameterName = "@LastModified",
+                    SqlDbType = SqlDbType.Timestamp,
+                    Value =  virusCharacteristic.LastModified == null ? DBNull.Value: virusCharacteristic.LastModified,
+                }
+            };
         }
     }
 }
