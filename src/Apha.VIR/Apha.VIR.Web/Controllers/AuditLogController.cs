@@ -18,6 +18,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly IAuditLogService _auditLogService;
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
+        private const string keySearchCriteria = "SearchCriteria";
 
         public AuditLogController(IAuditLogService auditLogService, ICacheService cacheService, IMapper mapper)
         {
@@ -66,8 +67,8 @@ namespace Apha.VIR.Web.Controllers
 
                 FormateSearchCriteria(searchCriteria);
 
-                await _cacheService.RemoveCacheValueAsync("SearchCriteria");
-                await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(searchCriteria));
+                await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
+                await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(searchCriteria));
 
                 var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
                    searchCriteria.DateTimeTo, searchCriteria.UserId!);
@@ -89,7 +90,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+                var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
                 ModelState.Remove("AVNumber");
                 if (!String.IsNullOrEmpty(criteriaString))
                 {
@@ -170,7 +171,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetSubmissionAuditLogs()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -190,7 +191,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetSampleAuditLogs()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -211,7 +212,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetIsolateAuditLogs()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -232,7 +233,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetDispatchAuditLogs()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -253,7 +254,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetViabilityAuditLogs()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -274,7 +275,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetCharacteristicsAuditLogs()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {

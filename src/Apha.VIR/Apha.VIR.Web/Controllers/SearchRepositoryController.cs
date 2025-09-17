@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Threading.Tasks;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
@@ -24,6 +23,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ILookupService _lookupService;
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
+        private const string keySearchCriteria = "SearchCriteria";
 
         public SearchRepositoryController(ILookupService lookupService,
             IVirusCharacteristicService virusCharacteristicService,
@@ -58,7 +58,7 @@ namespace Apha.VIR.Web.Controllers
                 if (!ModelState.IsValid)
                 {
                     searchModel = await LoadIsolateSearchFilterControlsData(criteria);
-                    await _cacheService.RemoveCacheValueAsync("SearchCriteria");
+                    await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
                     searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
                     {
                         IsolateSearchResults = new List<IsolateSearchResult>(),
@@ -102,7 +102,7 @@ namespace Apha.VIR.Web.Controllers
             searchModel.IsolateSearchGird.Pagination = criteria.Pagination;
             searchModel.IsFilterApplied = true;
 
-            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(criteriaPaginationDto));
+            await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(criteriaPaginationDto));
             return View("IsolateSearch", searchModel);
         }
 
@@ -160,7 +160,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest("Invalid parameters.");
             }
             var modelIsolateSearchGird = new IsolateSearchGirdViewModel();
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
             if (!String.IsNullOrEmpty(criteriaString))
             {
                 var criteriaDto = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
@@ -184,7 +184,7 @@ namespace Apha.VIR.Web.Controllers
                     SortDirection = criteriaDto.Descending,
                     TotalCount = searchResults.TotalCount
                 };
-                await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(criteriaDto));
+                await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(criteriaDto));
             }
 
             return PartialView("_IsolateSearchResults", modelIsolateSearchGird);
@@ -202,7 +202,7 @@ namespace Apha.VIR.Web.Controllers
 
         public async Task<IActionResult> ExportToExcel()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
             List<IsolateSearchExportViewModel> searchExportRecords = new List<IsolateSearchExportViewModel>();
             var criteriaDto = String.IsNullOrEmpty(criteriaString) ? null : JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
             if (criteriaDto != null)
@@ -434,7 +434,7 @@ namespace Apha.VIR.Web.Controllers
         private async Task<QueryParameters<SearchCriteriaDTO>> RetriveThePreviousSearchFilter()
         {
             QueryParameters<SearchCriteriaDTO> previousSearch = new QueryParameters<SearchCriteriaDTO>();
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>("SearchCriteria");
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
             if (criteriaString != null)
             {
                 previousSearch = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString)
