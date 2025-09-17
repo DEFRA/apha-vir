@@ -23,18 +23,18 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
         public IQueryable<IsolateSearchResult> GetTestQuery() => _searchResults;
 
         // Wrappers for private static methods
-        public IQueryable<IsolateSearchResult> PublicApplyBasicFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
+        public static IQueryable<IsolateSearchResult> PublicApplyBasicFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplyBasicFilters", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-                .Invoke(null, new object?[] { query, filter })!;
+                .Invoke(null, [query, filter])!;
 
-        public IQueryable<IsolateSearchResult> PublicApplyStringFilter(
+        public static IQueryable<IsolateSearchResult> PublicApplyStringFilter(
             IQueryable<IsolateSearchResult> query,
             string filterValue,
             Expression<Func<IsolateSearchResult, string>> selector)
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplyStringFilter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-                .Invoke(null, new object?[] { query, filterValue, selector })!;
+                .Invoke(null, [query, filterValue, selector])!;
 
         public static IQueryable<IsolateSearchResult> PublicApplyGuidFilter(
             IQueryable<IsolateSearchResult> query,
@@ -170,7 +170,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
                 new IsolateSearchResult { IsolateId = Guid.NewGuid(), Avnumber = "AV3" }
             }.AsQueryable();
             var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = repo.PublicApplyBasicFilters(data, null);
+            var result = TestIsolateSearchRepository.PublicApplyBasicFilters(data, null); // Fixed by qualifying with the type name
             Assert.Equal(data, result);
         }
 
@@ -181,8 +181,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid(), Avnumber = "AV4" }
             }.AsQueryable();
-            var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = repo.PublicApplyStringFilter(data, "", i => i.Avnumber);
+            var result = TestIsolateSearchRepository.PublicApplyStringFilter(data, "", i => i.Avnumber); // Fixed by qualifying with the type name
             Assert.Equal(data, result);
         }
 
