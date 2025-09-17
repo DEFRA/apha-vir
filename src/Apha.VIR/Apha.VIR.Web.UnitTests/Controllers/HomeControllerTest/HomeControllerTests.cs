@@ -53,7 +53,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.HomeControllerTest
         }
 
         [Fact]
-        public async Task Index_DoesNotSetSessionWhenEnvironmentNameIsNotNull()
+        public void Index_DoesNotSetSessionWhenEnvironmentNameIsNotNull()
         {
             // Arrange
             var expectedUrl = "http://example.com";
@@ -77,7 +77,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.HomeControllerTest
         }
 
         [Fact]
-        public async Task Index_SetsSessionWhenEnvironmentNameIsNul1l()
+        public void Index_SetsSessionWhenEnvironmentNameIsNul1l()
         {
             // Arrange
             var expectedUrl = "http://example.com";

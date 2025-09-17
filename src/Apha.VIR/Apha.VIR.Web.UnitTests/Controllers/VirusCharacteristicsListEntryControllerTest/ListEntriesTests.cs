@@ -43,17 +43,17 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             var entryId = Guid.NewGuid();
             var lastModified = new byte[] { 1, 2, 3, 4 };
             var entryName = "Test Entry";
-            var characteristic = new VirusCharacteristicDTO { Id = charId, Name = "Test" };
-            var entryDto = new VirusCharacteristicListEntryDTO
+            var characteristic = new VirusCharacteristicDto { Id = charId, Name = "Test" };
+            var entryDto = new VirusCharacteristicListEntryDto
             {
                 Id = entryId,
                 VirusCharacteristicId = charId,
                 Name = entryName,
                 LastModified = lastModified
             };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO> { entryDto },
+                data = new List<VirusCharacteristicListEntryDto> { entryDto },
                 TotalCount = 1
             };
             var entryViewModel = new VirusCharacteristicListEntryModel
@@ -64,7 +64,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
                 LastModified = lastModified
             };
 
-            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO> { characteristic });
+            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto> { characteristic });
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data)
                 .Returns(new List<VirusCharacteristicListEntryModel> { entryViewModel });
@@ -102,10 +102,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             int pageNo = 1;
             int pageSize = 10;
             var charId = Guid.NewGuid();
-            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
-            var PaginatedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto>());
+            var PaginatedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 0
             };
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(PaginatedResult);
@@ -167,15 +167,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             int pageSize = 5;
             var charId = Guid.NewGuid();
             var entryId = Guid.NewGuid();
-            var entryDto = new VirusCharacteristicListEntryDTO
+            var entryDto = new VirusCharacteristicListEntryDto
             {
                 Id = entryId,
                 VirusCharacteristicId = charId,
                 Name = "Test Entry"
             };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO> { entryDto },
+                data = new List<VirusCharacteristicListEntryDto> { entryDto },
                 TotalCount = 1
             };
             var entryViewModel = new VirusCharacteristicListEntryModel
@@ -213,9 +213,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             int pageNo = 1;
             int pageSize = 10;
             var charId = Guid.NewGuid();
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 0
             };
             var entryViewModels = new List<VirusCharacteristicListEntryModel>();
@@ -242,9 +242,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             int pageNo = 3;
             int pageSize = 15;
             var charId = Guid.NewGuid();
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 30
             };
             var entryViewModels = new List<VirusCharacteristicListEntryModel>();
@@ -269,11 +269,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             int pageNo = 1;
             int pageSize = 10;
             var charId = Guid.NewGuid();
-            var entryDTOs = new List<VirusCharacteristicListEntryDTO>
+            var entryDTOs = new List<VirusCharacteristicListEntryDto>
             {
-                new VirusCharacteristicListEntryDTO { Id = Guid.NewGuid(), Name = "Test Entry" }
+                new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Test Entry" }
             };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
                 data = entryDTOs,
                 TotalCount = 1
@@ -340,13 +340,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
         {
             // Arrange
             var charId = Guid.NewGuid();
-            var characteristic = new VirusCharacteristicDTO { Id = charId, Name = "Test" };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var characteristic = new VirusCharacteristicDto { Id = charId, Name = "Test" };
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 0
             };
-            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO> { characteristic });
+            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto> { characteristic });
             _listEntryService.GetVirusCharacteristicListEntries(charId, 1, 10).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data)
                 .Returns(new List<VirusCharacteristicListEntryModel>());

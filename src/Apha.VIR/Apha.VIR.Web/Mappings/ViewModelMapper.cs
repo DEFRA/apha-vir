@@ -12,48 +12,48 @@ namespace Apha.VIR.Web.Mappings
     {
         public ViewModelMapper()
         {
-            CreateMap<LookupDTO, LookupViewModel>();
-            CreateMap<LookupItemDTO, LookupItemModel>().ReverseMap();
-            CreateMap<IsolateDispatchHistory, IsolateDispatchInfoDTO>().ReverseMap();
+            CreateMap<LookupDto, LookupViewModel>();
+            CreateMap<LookupItemDto, LookupItemModel>().ReverseMap();
+            CreateMap<IsolateDispatchHistory, IsolateDispatchInfoDto>().ReverseMap();
             CreateMap<SearchCriteria, SearchRepositoryViewModel>();
             CreateMap<CharacteristicCriteria, CharacteristicSearchViewModel>();
             CreateMap<SearchCriteria, SearchCriteriaDTO>().ReverseMap();
-            CreateMap<CharacteristicCriteria, CharacteristicCriteriaDTO>().ReverseMap();
-            CreateMap<IsolateSearchResultDTO, IsolateSearchResult>();
+            CreateMap<CharacteristicCriteria, CharacteristicCriteriaDto>().ReverseMap();
+            CreateMap<IsolateSearchResultDto, IsolateSearchResult>();
             CreateMap<IsolateSearchExportDto, IsolateSearchExportViewModel>();
-            CreateMap<IsolateFullDetailDTO, IsolateDetailsViewModel>();
-            CreateMap<IsolateInfoDTO, IsolateDetails>();
-            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityCheckInfo>();
-            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>();
-            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
-            CreateMap<IsolateCharacteristicDTO, IsolateCharacteristicViewModel>().ReverseMap();
-            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchEditViewModel>().ReverseMap();
-            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityModel>().ReverseMap();
-            CreateMap<IsolateDispatchCreateViewModel, IsolateDispatchInfoDTO>();
-            CreateMap<IsolateDispatchReportDTO, IsolateDispatchReportModel>().ReverseMap();
-            CreateMap<AuditCharacteristicLogDTO, AuditCharacteristicsLogModel>().ReverseMap();
-            CreateMap<AuditDispatchLogDTO, AuditDispatchLogModel>().ReverseMap();
-            CreateMap<AuditIsolateLogDTO, AuditIsolateLogModel>().ReverseMap();
-            CreateMap<AuditSampleLogDTO, AuditSampleLogModel>().ReverseMap();
-            CreateMap<AuditSubmissionLogDTO, AuditSubmissionLogModel>().ReverseMap();
-            CreateMap<AuditViabilityLogDTO, AuditIsolateViabilityLogModel>().ReverseMap();
-            CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetailsViewModel>().ReverseMap();
-            CreateMap<SenderDTO, SubmissionSenderViewModel>().ReverseMap();
-            CreateMap<SubmissionDTO, SubmissionEditViewModel>().ReverseMap();
-            CreateMap<SubmissionDTO, SubmissionCreateViewModel>().ReverseMap();
-            CreateMap<SampleDTO, SampleViewModel>().ReverseMap();
-            CreateMap<SystemInfoDTO, SystemInformationViewModel>().ReverseMap();
-            CreateMap<SenderDTO, SenderViewModel>().ReverseMap();
-            CreateMap<IsolateAddEditViewModel, IsolateDTO>().ReverseMap();
-            CreateMap<IsolateAddEditViewModel, IsolateViabilityInfoDTO>()
+            CreateMap<IsolateFullDetailDto, IsolateDetailsViewModel>();
+            CreateMap<IsolateInfoDto, IsolateDetails>();
+            CreateMap<IsolateViabilityInfoDto, IsolateViabilityCheckInfo>();
+            CreateMap<IsolateDispatchInfoDto, IsolateDispatchInfo>();
+            CreateMap<IsolateCharacteristicInfoDto, IsolateCharacteristicInfo>().ReverseMap();
+            CreateMap<IsolateCharacteristicDto, IsolateCharacteristicViewModel>().ReverseMap();
+            CreateMap<IsolateDispatchInfoDto, IsolateDispatchEditViewModel>().ReverseMap();
+            CreateMap<IsolateViabilityInfoDto, IsolateViabilityModel>().ReverseMap();
+            CreateMap<IsolateDispatchCreateViewModel, IsolateDispatchInfoDto>();
+            CreateMap<IsolateDispatchReportDto, IsolateDispatchReportModel>().ReverseMap();
+            CreateMap<AuditCharacteristicLogDto, AuditCharacteristicsLogModel>().ReverseMap();
+            CreateMap<AuditDispatchLogDto, AuditDispatchLogModel>().ReverseMap();
+            CreateMap<AuditIsolateLogDto, AuditIsolateLogModel>().ReverseMap();
+            CreateMap<AuditSampleLogDto, AuditSampleLogModel>().ReverseMap();
+            CreateMap<AuditSubmissionLogDto, AuditSubmissionLogModel>().ReverseMap();
+            CreateMap<AuditViabilityLogDto, AuditIsolateViabilityLogModel>().ReverseMap();
+            CreateMap<AuditIsolateLogDetailDto, AuditIsolateLogDetailsViewModel>().ReverseMap();
+            CreateMap<SenderDto, SubmissionSenderViewModel>().ReverseMap();
+            CreateMap<SubmissionDto, SubmissionEditViewModel>().ReverseMap();
+            CreateMap<SubmissionDto, SubmissionCreateViewModel>().ReverseMap();
+            CreateMap<SampleDto, SampleViewModel>().ReverseMap();
+            CreateMap<SystemInfoDto, SystemInformationViewModel>().ReverseMap();
+            CreateMap<SenderDto, SenderViewModel>().ReverseMap();
+            CreateMap<IsolateAddEditViewModel, IsolateDto>().ReverseMap();
+            CreateMap<IsolateAddEditViewModel, IsolateViabilityInfoDto>()
                 .ForMember(dest => dest.IsolateViabilityIsolateId, opt => opt.MapFrom(src => src.IsolateId))
                 .ForMember(dest => dest.CheckedById, opt => opt.MapFrom(src => src.CheckedBy));
-            CreateMap<VirusCharacteristicListEntryDTO, VirusCharacteristicListEntryModel>().ReverseMap();
-            CreateMap<SampleDTO, SubmissionSamplesModel>();
-            CreateMap<IsolateInfoDTO, SubmissionIsolatesModel>();
-            CreateMap<VirusCharacteristicDTO, VirusCharacteristicsModel>().ReverseMap();
-            CreateMap<VirusCharacteristicDataTypeDTO, VirusCharacteristicDataType>().ReverseMap();
-            CreateMap<IsolateRelocateDTO, IsolateRelocateViewModel>().ReverseMap();
+            CreateMap<VirusCharacteristicListEntryDto, VirusCharacteristicListEntryModel>().ReverseMap();
+            CreateMap<SampleDto, SubmissionSamplesModel>();
+            CreateMap<IsolateInfoDto, SubmissionIsolatesModel>();
+            CreateMap<VirusCharacteristicDto, VirusCharacteristicsModel>().ReverseMap();
+            CreateMap<VirusCharacteristicDataTypeDto, VirusCharacteristicDataType>().ReverseMap();
+            CreateMap<IsolateRelocateDto, IsolateRelocateViewModel>().ReverseMap();
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             };
 
             _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
-            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+            .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
 
             _isolateViabilityService.DeleteIsolateViabilityAsync(Arg.Any<Guid>(), Arg.Any<byte[]>(), Arg.Any<string>())
             .Returns(Task.CompletedTask);
@@ -99,7 +99,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             };
 
             _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
-            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+            .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
 
             _isolateViabilityService.DeleteIsolateViabilityAsync(Arg.Any<Guid>(), Arg.Any<byte[]>(), Arg.Any<string>())
             .Returns(Task.FromException(new Exception("Service error")));
@@ -130,7 +130,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             };
 
             _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
-            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+            .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
             SetupMockUserAndRoles();
 
             // Act & Assert
@@ -155,7 +155,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             };
 
             _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
-            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+            .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
 
             SetupMockUserAndRoles();
             
@@ -186,7 +186,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             };
 
             _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
-            .Returns(new[] { new IsolateViabilityInfoDTO { IsolateViabilityId = isolateViabilityId } });
+            .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
             SetupMockUserAndRoles();
             
             // Arrange

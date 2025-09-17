@@ -48,8 +48,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             var submissionId = Guid.NewGuid();
             var lastModified = new byte[] { 0x00, 0x01, 0x02 };
 
-            _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDTO>());
-            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
+            _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDto>());
+            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDto>());
             SetupMockUserAndRoles();
 
             // Act
@@ -76,8 +76,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             var submissionId = Guid.NewGuid();
             var lastModified = new byte[] { 0x00, 0x01, 0x02 };
 
-            _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDTO> { new SampleDTO() });
-            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO>());
+            _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDto> { new SampleDto() });
+            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDto>());
             SetupMockUserAndRoles();
 
             // Act
@@ -104,8 +104,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             var submissionId = Guid.NewGuid();
             var lastModified = new byte[] { 0x00, 0x01, 0x02 };
 
-            _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDTO>());
-            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDTO> { new IsolateInfoDTO() });
+            _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDto>());
+            _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDto> { new IsolateInfoDto() });
             SetupMockUserAndRoles();
 
             // Act

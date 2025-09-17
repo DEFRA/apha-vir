@@ -36,14 +36,14 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
                 new AuditSubmissionLog { LogID = Guid.NewGuid(), AVNumber = avNumber }
             };
 
-            var expectedDtos = new List<AuditSubmissionLogDTO>
+            var expectedDtos = new List<AuditSubmissionLogDto>
             {
-                new AuditSubmissionLogDTO { LogID = Guid.NewGuid(), AVNumber = avNumber }
+                new AuditSubmissionLogDto { LogID = Guid.NewGuid(), AVNumber = avNumber }
             };
 
             _mockAuditRepository.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Returns(repositoryResult);
-            _mockMapper.Map<IEnumerable<AuditSubmissionLogDTO>>(Arg.Any<IEnumerable<AuditSubmissionLog>>())
+            _mockMapper.Map<IEnumerable<AuditSubmissionLogDto>>(Arg.Any<IEnumerable<AuditSubmissionLog>>())
             .Returns(expectedDtos);
 
             // Act
@@ -52,7 +52,7 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
             // Assert
             Assert.Equal(expectedDtos, result);
             await _mockAuditRepository.Received(1).GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid);
-            _mockMapper.Received(1).Map<IEnumerable<AuditSubmissionLogDTO>>(Arg.Any<IEnumerable<AuditSubmissionLog>>());
+            _mockMapper.Received(1).Map<IEnumerable<AuditSubmissionLogDto>>(Arg.Any<IEnumerable<AuditSubmissionLog>>());
         }
 
         [Fact]
@@ -79,8 +79,8 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             _mockAuditRepository.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Returns(new List<AuditSubmissionLog>());
-            _mockMapper.Map<IEnumerable<AuditSubmissionLogDTO>>(Arg.Any<IEnumerable<AuditSubmissionLog>>())
-            .Returns(new List<AuditSubmissionLogDTO>());
+            _mockMapper.Map<IEnumerable<AuditSubmissionLogDto>>(Arg.Any<IEnumerable<AuditSubmissionLog>>())
+            .Returns(new List<AuditSubmissionLogDto>());
 
             // Act
             await _auditLogService.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid);
@@ -100,8 +100,8 @@ namespace Apha.VIR.Application.UnitTests.Services.AuditLogServiceTest
 
             _mockAuditRepository.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid)
             .Returns(new List<AuditSubmissionLog>());
-            _mockMapper.Map<IEnumerable<AuditSubmissionLogDTO>>(Arg.Any<IEnumerable<AuditSubmissionLog>>())
-            .Returns(new List<AuditSubmissionLogDTO>());
+            _mockMapper.Map<IEnumerable<AuditSubmissionLogDto>>(Arg.Any<IEnumerable<AuditSubmissionLog>>())
+            .Returns(new List<AuditSubmissionLogDto>());
 
             // Act
             await _auditLogService.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid);

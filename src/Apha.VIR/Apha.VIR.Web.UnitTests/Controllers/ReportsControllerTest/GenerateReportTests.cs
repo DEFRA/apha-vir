@@ -34,9 +34,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
         public async Task GenerateReport_ValidModelWithData_ReturnsViewWithPopulatedViewModel()
         {
             // Arrange
-            var serviceResult = new List<IsolateDispatchReportDTO>
-            {   new IsolateDispatchReportDTO{ AVNumber = "AV001" },
-                new IsolateDispatchReportDTO{ AVNumber = "AV001" }
+            var serviceResult = new List<IsolateDispatchReportDto>
+            {   new IsolateDispatchReportDto{ AVNumber = "AV001" },
+                new IsolateDispatchReportDto{ AVNumber = "AV001" }
             };
             var mappedResult = new List<IsolateDispatchReportModel>
             {
@@ -121,7 +121,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
                 DateFrom = DateTime.Today.AddDays(-7),
                 DateTo = DateTime.Today
             };
-            var serviceResult = new List<IsolateDispatchReportDTO>();
+            var serviceResult = new List<IsolateDispatchReportDto>();
             var mappedResult = new List<IsolateDispatchReportModel>();
 
             SetupMockUserAndRoles();

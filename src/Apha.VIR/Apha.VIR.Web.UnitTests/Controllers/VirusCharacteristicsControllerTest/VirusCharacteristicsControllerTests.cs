@@ -50,7 +50,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         public async Task List_WithDefaultParameters_ReturnsCorrectViewModel()
         {
             // Arrange
-            var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
+            var expectedData = new PaginatedResult<VirusCharacteristicDto>();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(1, 10).Returns(expectedData);
             _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
             SetupMockUserAndRoles();
@@ -70,7 +70,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         public async Task List_WithCustomParameters_ReturnsCorrectViewModel()
         {
             // Arrange
-            var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
+            var expectedData = new PaginatedResult<VirusCharacteristicDto>();
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(2, 20).Returns(expectedData);
             _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
             SetupMockUserAndRoles();
@@ -90,7 +90,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         public async Task List_WithInvalidParameters_ReturnsCorrectViewModel()
         {
             // Arrange
-            var expectedData = new PaginatedResult<VirusCharacteristicDTO>();
+            var expectedData = new PaginatedResult<VirusCharacteristicDto>();
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync(1, 10).Returns(expectedData);
             _mockMapper.Map<List<VirusCharacteristicsModel>>(expectedData).Returns(new List<VirusCharacteristicsModel>());
@@ -114,9 +114,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             // Arrange
             int pageNo = 1;
             int pageSize = 10;
-            var mockResult = new PaginatedResult<VirusCharacteristicDTO>
+            var mockResult = new PaginatedResult<VirusCharacteristicDto>
             {
-                data = new List<VirusCharacteristicDTO> { new VirusCharacteristicDTO() },
+                data = new List<VirusCharacteristicDto> { new VirusCharacteristicDto() },
                 TotalCount = 1
             };
 
@@ -156,10 +156,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         public async Task CreateAsync_Get_ReturnsViewResultWithCorrectModel()
         {
             // Arrange
-            var expectedTypes = new List<VirusCharacteristicDataTypeDTO>
+            var expectedTypes = new List<VirusCharacteristicDataTypeDto>
             {
-                new VirusCharacteristicDataTypeDTO { Id = Guid.NewGuid(), DataType = "Type1" },
-                new VirusCharacteristicDataTypeDTO { Id = Guid.NewGuid(), DataType = "Type2" }
+                new VirusCharacteristicDataTypeDto { Id = Guid.NewGuid(), DataType = "Type1" },
+                new VirusCharacteristicDataTypeDto { Id = Guid.NewGuid(), DataType = "Type2" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
@@ -182,10 +182,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var id2 = Guid.NewGuid();
 
             // Arrange
-            var expectedTypes = new List<VirusCharacteristicDataTypeDTO>
+            var expectedTypes = new List<VirusCharacteristicDataTypeDto>
             {
-                new VirusCharacteristicDataTypeDTO { Id = id1, DataType = "Type1" },
-                new VirusCharacteristicDataTypeDTO { Id = id2, DataType = "Type2" }
+                new VirusCharacteristicDataTypeDto { Id = id1, DataType = "Type1" },
+                new VirusCharacteristicDataTypeDto { Id = id2, DataType = "Type2" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
@@ -223,8 +223,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
                 CharacteristicIndex = 0,
             };
  
-            var dto = new VirusCharacteristicDTO();
-            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(dto);
+            var dto = new VirusCharacteristicDto();
+            _mockMapper.Map<VirusCharacteristicDto>(model).Returns(dto);
             SetupMockUserAndRoles();
 
             // Act
@@ -233,8 +233,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("List", redirectResult.ActionName);
-            await _mockVirusCharacteristicService.Received(1).AddEntryAsync(Arg.Any<VirusCharacteristicDTO>());
-            _mockMapper.Received(1).Map<VirusCharacteristicDTO>(model);
+            await _mockVirusCharacteristicService.Received(1).AddEntryAsync(Arg.Any<VirusCharacteristicDto>());
+            _mockMapper.Received(1).Map<VirusCharacteristicDto>(model);
         }
 
 
@@ -244,9 +244,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             // Arrange
             var id = Guid.NewGuid();
             var virusTypeId = Guid.NewGuid();
-            var virusCharacteristicDto = new VirusCharacteristicDTO { Id = id, Name = "Test Characteristic" };
+            var virusCharacteristicDto = new VirusCharacteristicDto { Id = id, Name = "Test Characteristic" };
             var virusCharacteristicModel = new VirusCharacteristicsModel { Id = id, Name = "Test Characteristic" };
-            var virusTypesDto = new List<VirusCharacteristicDataTypeDTO> { new VirusCharacteristicDataTypeDTO { Id = virusTypeId, DataType = "Type1" } };
+            var virusTypesDto = new List<VirusCharacteristicDataTypeDto> { new VirusCharacteristicDataTypeDto { Id = virusTypeId, DataType = "Type1" } };
             var virusTypes = new List<VirusCharacteristicDataType> { new VirusCharacteristicDataType { Id = virusTypeId, DataType = "Type1" } };
 
             _mockVirusCharacteristicService.GetVirusCharacteristicsByIdAsync(id).Returns(virusCharacteristicDto);
@@ -277,7 +277,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             var id = Guid.NewGuid();
-            _mockVirusCharacteristicService.GetVirusCharacteristicsByIdAsync(id).Returns((VirusCharacteristicDTO?)null);
+            _mockVirusCharacteristicService.GetVirusCharacteristicsByIdAsync(id).Returns((VirusCharacteristicDto?)null);
             SetupMockUserAndRoles();
 
             // Act & Assert
@@ -331,9 +331,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
-            .Returns(new[] { new VirusCharacteristicDTO { Id = id } });
+            .Returns(new[] { new VirusCharacteristicDto { Id = id } });
      
-            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
+            _mockMapper.Map<VirusCharacteristicDto>(model).Returns(new VirusCharacteristicDto());
             SetupMockUserAndRoles();
             
             // 
@@ -342,7 +342,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("List", redirectToActionResult.ActionName);
-            await _mockVirusCharacteristicService.Received(1).UpdateEntryAsync(Arg.Any<VirusCharacteristicDTO>());
+            await _mockVirusCharacteristicService.Received(1).UpdateEntryAsync(Arg.Any<VirusCharacteristicDto>());
         }
 
         [Fact]
@@ -350,8 +350,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             var model = new VirusCharacteristicsModel { Id = Guid.NewGuid(), Name = "Test" };
-            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
-            _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(new List<VirusCharacteristicDataTypeDTO>());
+            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto>());
+            _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(new List<VirusCharacteristicDataTypeDto>());
             SetupMockUserAndRoles();
 
             // Act
@@ -369,9 +369,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             var model = new VirusCharacteristicsModel { Id = Guid.NewGuid(), Name = "Test" };
-            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
-            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
-            _mockVirusCharacteristicService.UpdateEntryAsync(Arg.Any<VirusCharacteristicDTO>()).Throws(new Exception("Test exception"));
+            _mockMapper.Map<VirusCharacteristicDto>(model).Returns(new VirusCharacteristicDto());
+            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto>());
+            _mockVirusCharacteristicService.UpdateEntryAsync(Arg.Any<VirusCharacteristicDto>()).Throws(new Exception("Test exception"));
             SetupMockUserAndRoles();
 
             // Act
@@ -417,7 +417,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         public async Task Delete_ValidModelAndId_ReturnsRedirectToActionResult()
         {
             // Arrange
-            var expectedTypes = new List<VirusCharacteristicDataTypeDTO>();
+            var expectedTypes = new List<VirusCharacteristicDataTypeDto>();
             var id = Guid.NewGuid();
             var model = new VirusCharacteristicsModel
             {
@@ -431,9 +431,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
-            .Returns(new[] { new VirusCharacteristicDTO { Id = id } });
+            .Returns(new[] { new VirusCharacteristicDto { Id = id } });
 
-            _mockMapper.Map<VirusCharacteristicDTO>(model).Returns(new VirusCharacteristicDTO());
+            _mockMapper.Map<VirusCharacteristicDto>(model).Returns(new VirusCharacteristicDto());
 
             _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(expectedTypes);
             SetupMockUserAndRoles();
