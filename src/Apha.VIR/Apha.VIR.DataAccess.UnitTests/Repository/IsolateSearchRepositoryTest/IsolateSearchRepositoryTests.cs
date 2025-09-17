@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Pagination;
 using Apha.VIR.DataAccess.Data;
@@ -24,10 +19,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             : base(context)
         {
             _searchResults = searchResults;
-        }     
-
-
-        // Test helper to expose data directly
+        }
         public IQueryable<IsolateSearchResult> GetTestQuery() => _searchResults;
 
         // Wrappers for private static methods
@@ -44,52 +36,36 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
                 .GetMethod("ApplyStringFilter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
                 .Invoke(null, new object?[] { query, filterValue, selector })!;
 
-        public IQueryable<IsolateSearchResult> PublicApplyGuidFilter(
+        public static IQueryable<IsolateSearchResult> PublicApplyGuidFilter(
             IQueryable<IsolateSearchResult> query,
             Guid? filterValue,
             Expression<Func<IsolateSearchResult, Guid?>> selector)
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplyGuidFilter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-                .Invoke(null, new object?[] { query, filterValue, selector })!;
+                .Invoke(null, [query, filterValue, selector])!;
 
-        public IQueryable<IsolateSearchResult> PublicApplyYearOfIsolationFilter(IQueryable<IsolateSearchResult> query, int year)
+        public static IQueryable<IsolateSearchResult> PublicApplyYearOfIsolationFilter(IQueryable<IsolateSearchResult> query, int year)
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplyYearOfIsolationFilter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-                .Invoke(null, new object?[] { query, year })!;
+                .Invoke(null, [query, year])!;
 
-        public IQueryable<IsolateSearchResult> PublicApplyDateFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
+        public static IQueryable<IsolateSearchResult> PublicApplyDateFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplyDateFilters", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-                .Invoke(null, new object?[] { query, filter })!;
+                .Invoke(null, [query, filter])!;
 
-        public IQueryable<IsolateSearchResult> PublicApplySorting(IQueryable<IsolateSearchResult> query, string? sortBy, bool desc)
+        public static IQueryable<IsolateSearchResult> PublicApplySorting(IQueryable<IsolateSearchResult> query, string? sortBy, bool desc)
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplySorting", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-                .Invoke(null, new object?[] { query, sortBy, desc })!;
+                .Invoke(null, [query, sortBy, desc])!;
 
-        public IQueryable<IsolateSearchResult> PublicApplySortingByProperty(IQueryable<IsolateSearchResult> query, string property, bool desc)
+        public static IQueryable<IsolateSearchResult> PublicApplySortingByProperty(IQueryable<IsolateSearchResult> query, string property, bool desc)
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplySortingByProperty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-                .Invoke(null, new object?[] { query, property, desc })!;
+                .Invoke(null, [query, property, desc])!;
     }
     public class IsolateSearchRepositoryTests
     {
-        //private static Mock<DbSet<T>> CreateMockDbSet<T>(IEnumerable<T> elements) where T : class
-        //{
-        //    var queryable = elements.AsQueryable();
-
-        //    var mockSet = new Mock<DbSet<T>>();
-        //    mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
-        //    mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
-        //    mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-        //    mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
-
-        //    mockSet.As<IAsyncEnumerable<T>>()
-        //        .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
-        //        .Returns(new TestAsyncEnumerator<T>(queryable.GetEnumerator()));
-
-        //    return mockSet;
-        //}
         private static Mock<DbSet<T>> CreateMockDbSet<T>(IEnumerable<T> elements) where T : class
         {
             var asyncData = new TestAsyncEnumerable<T>(elements);
@@ -117,7 +93,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 Page = 1,
                 PageSize = 10,
-                SortBy = "", // Add this line
+                SortBy = "",
                 Filter = new SearchCriteria
                 {
                     CharacteristicSearch = new List<CharacteristicCriteria>()
@@ -178,8 +154,6 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             Assert.Equal("AV2", result.First().Avnumber);
         }
 
-
-
         [Fact]
         public void IsValidGuid_ReturnsExpected()
         {
@@ -219,8 +193,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid(), Avnumber = "AV5" }
             }.AsQueryable();
-            var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = repo.PublicApplyGuidFilter(data, null, i => i.Family);
+            var result = TestIsolateSearchRepository.PublicApplyGuidFilter(data, null, i => i.Family);
             Assert.Equal(data, result);
         }
 
@@ -231,8 +204,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid(), YearOfIsolation = 2020 }
             }.AsQueryable();
-            var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = repo.PublicApplyYearOfIsolationFilter(data, 0);
+            var result = TestIsolateSearchRepository.PublicApplyYearOfIsolationFilter(data, 0);
             Assert.Equal(data, result);
         }
 
@@ -243,8 +215,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid() }
             }.AsQueryable();
-            var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = repo.PublicApplyDateFilters(data, null);
+            var result = TestIsolateSearchRepository.PublicApplyDateFilters(data, null);
             Assert.Equal(data, result);
         }
 
@@ -255,8 +226,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid() }
             }.AsQueryable();
-            var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = repo.PublicApplySorting(data, null, false);
+            var result = TestIsolateSearchRepository.PublicApplySorting(data, null, false);
             Assert.Equal(data, result);
         }
 
@@ -268,7 +238,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
                 new IsolateSearchResult { IsolateId = Guid.NewGuid() }
             }.AsQueryable();
             var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = repo.PublicApplySortingByProperty(data, "unknown", false);
+            var result = TestIsolateSearchRepository.PublicApplySortingByProperty(data, "unknown", false);
             Assert.Equal(data, result);
         }
     }
