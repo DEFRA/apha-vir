@@ -86,7 +86,7 @@ namespace Apha.VIR.Web.Controllers
             var submission = await _submissionService.GetSubmissionDetailsByAVNumberAsync(AVNumber);
             if (submission != null)
             {
-                isolateCreateModel.YearOfIsolation = submission.DateSubmissionReceived!.Value.Year;
+                isolateCreateModel.YearOfIsolation = submission.DateSubmissionReceived.GetValueOrDefault().Year;
 
                 var samplesDto = _sampleService.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
                 var sample = samplesDto.Result.FirstOrDefault(s => s.SampleId == SampleId);

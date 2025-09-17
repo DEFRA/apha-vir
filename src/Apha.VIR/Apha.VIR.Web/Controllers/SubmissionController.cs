@@ -212,7 +212,8 @@ namespace Apha.VIR.Web.Controllers
 
             var viewModel = new SubmissionLetterViewModel
             {
-                LetterContent = await _submissionService.SubmissionLetter(AVNumber, "TestUser")
+                LetterContent = await _submissionService.SubmissionLetter(AVNumber, "TestUser"),
+                AVNumber = AVNumber
             };
             return View(viewModel);
         }
