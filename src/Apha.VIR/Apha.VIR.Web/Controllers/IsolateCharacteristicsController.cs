@@ -186,12 +186,10 @@ namespace Apha.VIR.Web.Controllers
         {
             if (string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue)) return "";
 
-            if(virusCharacteristicDto.Length.HasValue && virusCharacteristicDto.Length.Value != 0)
+            if(virusCharacteristicDto.Length.HasValue && virusCharacteristicDto.Length.Value != 0
+                && characteristicViewModel.CharacteristicValue.Length > virusCharacteristicDto.Length)
             {
-                if (characteristicViewModel.CharacteristicValue.Length > virusCharacteristicDto.Length)
-                {
-                    return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds maximum length requirement (Maximum Length: {virusCharacteristicDto.Length})";
-                }
+                return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds maximum length requirement (Maximum Length: {virusCharacteristicDto.Length})";
             }            
 
             return "";
