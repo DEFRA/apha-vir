@@ -1,18 +1,13 @@
-﻿using System.Reflection.PortableExecutable;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.Web.Controllers
 {
@@ -119,7 +114,7 @@ namespace Apha.VIR.Web.Controllers
                     Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
                     Tray = model.SelectedNewTray.GetValueOrDefault(),
                     Well = isolate.Well!,
-                    UserID = "Test",
+                    UserID = AuthorisationUtil.GetUserId(),
                     LastModified = isolate.LastModified,
                     UpdateType = RelocationType.Isolate.ToString()
                 });
@@ -158,7 +153,7 @@ namespace Apha.VIR.Web.Controllers
                     Freezer = model.Freezer,
                     Tray = model.Tray,
                     Well = model.Well,
-                    UserID = "Test",
+                    UserID = AuthorisationUtil.GetUserId(),
                     LastModified = model.LastModified,
                     UpdateType = RelocationType.Isolate.ToString()
                 });
@@ -244,12 +239,13 @@ namespace Apha.VIR.Web.Controllers
                     Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
                     Tray = isolate.Tray,
                     Well = isolate.Well,
-                    UserID = "Test",
+                    UserID = AuthorisationUtil.GetUserId(), 
                     LastModified = isolate.LastModified,
                     UpdateType = RelocationType.Isolate.ToString()
                 });
             }
 
+            return Json(new { success = true });
             return Json(new { success = true });
         }
 
