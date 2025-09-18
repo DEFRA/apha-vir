@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.Controllers
                     Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
                     Tray = model.SelectedNewTray.GetValueOrDefault(),
                     Well = isolate.Well!,
-                    UserID = "Test",
+                    UserID = AuthorisationUtil.GetUserId(),
                     LastModified = isolate.LastModified,
                     UpdateType = RelocationType.Isolate.ToString()
                 });
@@ -172,7 +172,7 @@ namespace Apha.VIR.Web.Controllers
                     Freezer = model.Freezer,
                     Tray = model.Tray,
                     Well = model.Well,
-                    UserID = "Test",
+                    UserID = AuthorisationUtil.GetUserId(),
                     LastModified = model.LastModified,
                     UpdateType = RelocationType.Isolate.ToString()
                 });
@@ -272,7 +272,7 @@ namespace Apha.VIR.Web.Controllers
                     Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
                     Tray = isolate.Tray,
                     Well = isolate.Well,
-                    UserID = "Test",
+                    UserID = AuthorisationUtil.GetUserId(),
                     LastModified = isolate.LastModified,
                     UpdateType = RelocationType.Isolate.ToString()
                 });

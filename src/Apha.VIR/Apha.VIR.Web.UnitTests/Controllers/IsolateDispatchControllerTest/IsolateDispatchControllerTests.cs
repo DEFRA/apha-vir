@@ -414,7 +414,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             lock (_lock)
             {
                 var claims = new List<Claim>
-                {
+                {   new Claim(ClaimTypes.Name, "TestUser"),
                     new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));

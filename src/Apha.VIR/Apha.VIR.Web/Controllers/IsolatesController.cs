@@ -124,7 +124,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(isolateModel);
             }
 
-            isolateModel.CreatedBy = "testuser";
+            isolateModel.CreatedBy = AuthorisationUtil.GetUserId();
 
             var isolateDto = _mapper.Map<IsolateDto>(isolateModel);
             isolateModel.IsolateId = await _isolatesService.AddIsolateDetailsAsync(isolateDto);
@@ -209,7 +209,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(isolateModel);
             }
 
-            isolateModel.CreatedBy = "testuser";
+            isolateModel.CreatedBy = AuthorisationUtil.GetUserId();
             var isolateDto = _mapper.Map<IsolateDto>(isolateModel);
             await _isolatesService.UpdateIsolateDetailsAsync(isolateDto);
 

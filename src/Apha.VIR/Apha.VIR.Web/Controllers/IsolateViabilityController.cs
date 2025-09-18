@@ -79,7 +79,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(IsolateViabilityViewModel model)
         {
-            string userid = "TestUser";
+            string userid = AuthorisationUtil.GetUserId();
 
             if (!AuthorisationUtil.CanEditItem(AppRoleConstant.Administrator))
             {
@@ -110,7 +110,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid isolateViabilityId, string lastModified, string avNUmber, Guid isolateId)
         {
-            string userid = "TestUser";
+            string userid = AuthorisationUtil.GetUserId();
 
             if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
             {

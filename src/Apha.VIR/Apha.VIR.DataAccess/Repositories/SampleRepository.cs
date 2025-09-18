@@ -51,7 +51,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
 
         var parameters = new[]
         {
-           new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
+           new SqlParameter("@UserId", SqlDbType.VarChar, 120) { Value = User },
            new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid() },
            new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = sample.SampleSubmissionId },
            new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
@@ -75,7 +75,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
     {
         await ExecuteSqlAsync(
            "EXEC spSampleUpdate @UserID, @sampleID, @SampleSubmissionId, @SampleNumber, @SMSReferenceNumber, @SenderReferenceNumber, @SampleType, @HostSpecies, @HostBreed, @HostPurpose, @SamplingLocationHouse, @LastModified OUTPUT",
-                new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
+                new SqlParameter("@UserId", SqlDbType.VarChar, 120) { Value = User },
                 new SqlParameter("@sampleID", SqlDbType.UniqueIdentifier) { Value = sample.SampleId },
                 new SqlParameter("@SampleSubmissionId", SqlDbType.UniqueIdentifier) { Value = sample.SampleSubmissionId },
                 new SqlParameter("@SampleNumber", SqlDbType.Int) { Value = sample.SampleNumber },
@@ -94,7 +94,7 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
     {
         await ExecuteSqlAsync(
            "EXEC spSampleDelete @UserID, @SampleId, @LastModified",
-           new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+           new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = userId },
            new SqlParameter("@SampleId", SqlDbType.UniqueIdentifier) { Value = sampleId },           
            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified }
         );
