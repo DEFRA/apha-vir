@@ -8,7 +8,8 @@
 	<input asp-for="@Model.IsolateViability.LastModified" type="hidden" />
 	<input asp-for="@Model.IsolateViability.IsolateViabilityIsolateId" type="hidden" />
 	<input asp-for="@Model.IsolateViability.AVNumber" type="hidden" />
-	<table cellpadding="5px">
+	<input asp-for="@Model.IsolateViability.Nomenclature" type="hidden" />
+	<table>
 		<thead class="sr-only"><tr><th scope="col"></th></tr></thead>
 		<tbody>
 			<tr>
@@ -22,7 +23,7 @@
 				<td>Nomenclature</td>
 				<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
 				<td>
-					<span style="width: 600px;">@Model.IsolateViability.Nomenclature</span>
+					<span class="w-600">@Model.IsolateViability.Nomenclature</span>
 				</td>
 			</tr>
 			<tr>
@@ -44,7 +45,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Date Checked;*</td>
+				<td>Date Checked</td>
 				<td><img src="~/images/spacer.gif" width="10" height="5" alt="" /></td>
 				<td>
 					<input type="date" asp-for="@Model.IsolateViability.DateChecked" />
@@ -53,7 +54,7 @@
 			</tr>
 			<tr>
 				<td colspan="3" style="text-align: right;">
-					<button type="submit" class="btn-as-link">Save</button>
+					<button type="submit" class="btn-as-link">Update</button>
 					<img src="~/images/spacer.gif" width="10" height="5" alt="" />
 					<a asp-action="History" asp-controller="IsolateViability" asp-route-AVNumber="@Model.IsolateViability.AVNumber"
 					   asp-route-Isolate="@Model.IsolateViability.IsolateViabilityIsolateId" class="btn btn-secondary">Cancel</a>
@@ -62,7 +63,10 @@
 		</tbody>
 	</table>
 </form>
-<div id="validationSummary" class="text-danger" style="display:none;">
-	<p>There are validation messages requiring your attention.</p>
-	<div asp-validation-summary="All"></div>
-</div>
+@if (!ViewData.ModelState.IsValid)
+{
+	<div id="validationSummary" class="validation">
+		<p>There are validation messages requiring your attention.</p>
+		<div asp-validation-summary="All" class="validation"></div>
+	</div>
+}

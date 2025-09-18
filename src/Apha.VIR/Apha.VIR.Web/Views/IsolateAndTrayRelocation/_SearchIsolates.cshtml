@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Apha.VIR.Web.Models.IsolateRelocateViewModel>
+
+@if (Model.Any())
+{
+    <table id="isolatesTable" class="VIRtable">
+        <thead>
+            <tr>
+                <th>AV Number</th>
+                <th>Nomenclature</th>
+                <th>Freezer</th>
+                <th>Tray</th>
+                <th>Well</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var isolate in Model)
+            {
+                <tr>
+                    <td>@isolate.AVNumber</td>
+                    <td>@isolate.Nomenclature</td>
+                    <td>@isolate.FreezerName</td>
+                    <td>@isolate.TrayName</td>
+                    <td>@isolate.Well</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="no_record">
+        There are no isolates matching the criteria specified
+    </div>
+}

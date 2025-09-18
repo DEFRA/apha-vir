@@ -3,23 +3,23 @@
 
 @if (Model != null && Model.LookupItems.Any())
 {
-    <table class="lookuptable" style="width:75%;">
+    <table class="VIRtable width-75">
 		<thead>
-			<tr class=".isolatereport-header">
-				<th style="width:20%">Name</th>
+			<tr>
+				<th class="width-20">Name</th>
 				@if (Model.ShowAlternateName)
 				{
-					<th style="width:20%">Alternate Name</th>
+					<th class="width-20">Alternate Name</th>
 				}
 				@if (Model.ShowParent)
 				{
-					<th style="width:20%">Parent Name</th>
+					<th class="width-20">Parent Name</th>
 				}
-				<th style="width:10%">Active</th>
+				<th class="width-10">Active</th>
 				@if (Model.ShowSMSRelated)
 				{
-					<th style="width:10%">SMS</th>
-					<th style="width:20%">SMSCode</th>
+					<th class="width-10">SMS</th>
+					<th class="width-20">SMSCode</th>
 				}
 				<th></th>
 			</tr>
@@ -28,24 +28,24 @@
 			@foreach (var item in Model.LookupItems)
 			{
 				<tr>
-					<td>@item.Name</td>
+					<td class="width-20">@item.Name</td>
 					@if (Model.ShowAlternateName)
 					{
-						<td>@item.AlternateName</td>
+						<td class="width-20">@item.AlternateName</td>
 					}
 					@if (Model.ShowParent)
 					{
-						<td>@item.ParentName</td>
+						<td class="width-20">@item.ParentName</td>
 					}
-                    <td>
-						<input type="checkbox" @(item.Active ? "checked" : null) disabled="disabled" />
+					<td class="width-10">
+						<input type="checkbox"@(item.Active ? "checked" : null) disabled="disabled" />
                     </td>
 					@if (Model.ShowSMSRelated)
 					{
-                        <td>
-                            <input type="checkbox" disabled="disabled" @(item.Sms ? "checked" : null) />
+						<td class="width-10">
+							<input type="checkbox" disabled="disabled" @(item.Sms ? "checked" : null) />
                         </td>
-						<td>@item.Smscode</td>
+						<td class="width-20">@item.Smscode</td>
 					}
 					<td>
 						<a asp-action="Edit" asp-route-lookupid="@Model.LookupId" asp-route-lookupItemId="@item.Id"
@@ -61,7 +61,7 @@
 			}
 			<tr>
 				<td colspan="@colspan">
-					<div id="girdPagination" class="pagination" style="text-align:right">
+					<div id="girdPagination" class="text-right">
 						@await Component.InvokeAsync("Pagination", Model.Pagination)
 					</div>
 				</td>

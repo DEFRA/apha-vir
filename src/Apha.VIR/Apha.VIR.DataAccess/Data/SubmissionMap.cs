@@ -60,6 +60,6 @@ public class SubmissionMap : IEntityTypeConfiguration<Submission>
 
         entity.Property(e => e.SendersReferenceNumber)
             .HasMaxLength(50)
-            .IsUnicode(false);
+            .IsUnicode(false); 
     }
 }

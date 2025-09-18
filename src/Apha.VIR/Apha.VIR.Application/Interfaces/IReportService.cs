@@ -4,6 +4,6 @@ namespace Apha.VIR.Application.Interfaces
 {
     public interface IReportService
     {
-        Task<IEnumerable<IsolateDispatchReportDTO>> GetDispatchesReportAsync(DateTime? dateFrom, DateTime? dateTo);
+        Task<IEnumerable<IsolateDispatchReportDto>> GetDispatchesReportAsync(DateTime? dateFrom, DateTime? dateTo);
     }
 }

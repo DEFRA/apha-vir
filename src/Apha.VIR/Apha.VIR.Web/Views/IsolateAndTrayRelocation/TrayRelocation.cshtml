@@ -1,0 +1,203 @@
+﻿@model IsolateRelocationViewModel
+@{
+    ViewData["Title"] = "Tray Relocation | Virus Isolates Repository";
+}
+<p>Please specify the Tray you wish to move:</p>
+<form asp-action="SearchIsolates" method="post" id="searchForm">
+    @Html.AntiForgeryToken()
+    <div class="d-flex" style="font-size:small">
+        <div class="search-criteria flex-grow-1 me-3 w-500" >
+            <div class="form-group row mb-0 width-85PC">
+                <div class="col-sm-2" style="width:120px">
+                    <span for="FreezeAndTray" class="col-form-label">Freezer & Tray</span>
+                </div>
+                <div class="col-sm-10">
+                    <div class="mb-2">
+                        <span for="Freezer" class="col-form-label">Freezer:</span>
+                        <div id="trayDropdownContainer">
+                            <select id="FreezerSearch" asp-for="SelectedFreezer" asp-items="Model.FreezersList" class="d-block w-250 mt-1" asp-option-label="Select Freezer">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <span for="Tray" class="col-form-label" style="margin-top: 10px;">Tray:</span>
+                        <div id="trayDropdownContainer">
+                            <select id="TraySearch" asp-for="SelectedTray" asp-items="Model.TraysList" class="d-block w-250">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row mb-0 width-85PC">
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-5">
+                    <img src="~/images/spacer.gif" width="18px" height="5" alt="" />
+                    <button type="submit" class="btn btn-link isolaterelocate-btn-link-custom ms-5 mt-3">Search</button>
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<p>Isolates currently held within this Tray</p>
+
+<div id="isolatesGrid">
+    @await Html.PartialAsync("_SearchIsolates", new List<IsolateRelocateViewModel>())
+</div>
+
+<div id="validationPanel" class="text-danger fw-bold pt-1 pb-1" style="display: none;">
+    <span>There are validation messages requiring your attention.</span>
+    <div id="validationMessage"></div>
+</div>
+
+
+<div id="locationPanel" style="display:none">
+    <p>New location for the selected Tray</p>
+    <form asp-action="RelocateTray" method="post" id="relocateForm">
+        @Html.AntiForgeryToken()
+        <div class="d-flex flex-column " style="max-width: 500px;">
+            <div class="d-flex align-items-center mb-2">
+                <div style="min-width: 80px;">Freezer</div>
+                <input type="hidden" id="SelectedOldFreezer" asp-for="SelectedFreezer" />
+                <input type="hidden" id="SelectedOldTray" asp-for="SelectedTray" />
+                <div style="width: 10px;">
+                    <img src="~/images/spacer.gif" width="10" height="5" alt="" />
+                </div>
+                <div style="flex: 1;">
+                    <select id="FreezerNewSearch" asp-for="SelectedNewFreezer" asp-items="Model.FreezersList" class="d-block w-250" asp-option-label="Select Freezer">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div style="flex: 1;">
+                    <img src="~/images/spacer.gif" width="305" height="5" alt="" />
+                    <button type="submit" class="btn btn-link isolaterelocate-btn-link-custom" id="saveButton">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="updateMessage" style="color: green;padding-top:10px; display: none;">
+    <strong>Update successful.</strong>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('#FreezerSearch').change(function () {
+                var selectedFreezer = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetTray", "Relocation")',
+                    type: 'GET',
+                    data: { freezerId: selectedFreezer },
+                    success: function (data) {
+                        $('#TraySearch').empty();
+                        $('#TraySearch').append($('<option></option>').val('').text(''));
+                        $.each(data, function (i, item) {
+                            $('#TraySearch').append($('<option></option>').val(item.value).text(item.text));
+                        });
+                    }
+                });
+            });
+
+
+            // Search form (returns partial HTML)
+            $(document).on('submit', '#searchForm', function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (html) {
+                         $('#isolatesGrid').html(html);
+                         $('#validationPanel').hide();
+                         $('#FreezerNewSearch').val('');
+                        var trimmedHtml = $.trim(html).toLowerCase();
+                        if (trimmedHtml.includes("no isolates") || trimmedHtml.includes("there are no isolates matching the criteria specified")) {
+                            $('#locationPanel').hide();
+                        } else {
+                            $('#locationPanel').show();
+                        }
+                    },
+                    error: function (xhr) {
+                        var errors = xhr.responseJSON;  // Get the errors from the response
+                        var errorMessages = '';
+
+                        // Iterate over the model state errors and create error messages
+                        for (var field in errors) {
+                            if (errors.hasOwnProperty(field)) {
+                                var fieldErrors = errors[field];
+                                fieldErrors.forEach(function (error) {
+                                    errorMessages += '<span>' + error + '</span>';
+                                });
+                            }
+                        }
+                        $('#validationMessage').html(errorMessages);
+                        $('#validationPanel').show();
+                    }
+                });
+            });
+
+            // Optional confirm on save button
+            $(document).on('click', '#saveButton', function (e) {
+                $('#SelectedOldFreezer').val($('#FreezerSearch').val());
+                $('#SelectedOldTray').val($('#TraySearch').val());               
+                // If you want a confirm dialog before submitting the relocate form:
+                if (!confirm('Please confirm you wish to relocate the selected Tray')) {
+                    e.preventDefault();
+                }
+            });
+
+            // Relocate form (returns JSON)
+            $(document).on('submit', '#relocateForm', function (e) {
+                
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        // include antiforgery token explicitly (good practice)
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]', form).val()
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            $('#validationPanel').hide();
+                            $('#searchForm').submit();
+                            $('#updateMessage').show().delay(3000).fadeOut();
+                        } 
+                    },
+                    error: function (xhr) {
+                        var errors = xhr.responseJSON;  // Get the errors from the response
+                        var errorMessages = '';
+
+                        // Iterate over the model state errors and create error messages
+                        for (var field in errors) {
+                            if (errors.hasOwnProperty(field)) {
+                                var fieldErrors = errors[field];
+                                fieldErrors.forEach(function (error) {
+                                    errorMessages += '<span>' + error + '</span>';
+                                });
+                            }
+                        }
+                        $('#validationMessage').html(errorMessages);
+                        $('#validationPanel').show();
+                    }
+                });
+            });
+
+        });
+    </script>
+}

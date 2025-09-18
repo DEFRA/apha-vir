@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Apha.VIR.Application.DTOs.VirusCharacteristicDto>
+@{
+    var typeId = ViewData["TypeId"] as Guid?;
+    var isPresent = ViewData["IsPresent"] as bool? ?? false;
+}
+@if (Model != null && Model.Any())
+{
+    <table class="VIRtable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Display On Search</th>
+                <th>Prefix</th>
+                <th>Min Value</th>
+                <th>Max Value</th>
+                <th>Decimal Places</th>
+                <th>Length</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <input type="checkbox" disabled="disabled" @(item.DisplayOnSearch ? "checked" : "") />
+                    </td>
+                    <td>@item.Prefix</td>
+                    <td>@(item.MinValue ?? 0)</td>
+                    <td>@(item.MaxValue ?? 0)</td>
+                    <td>@(item.DecimalPlaces ?? 0)</td>
+                    <td>@(item.Length ?? 0)</td>
+                    <td>
+                        @if (isPresent)
+                        {
+                            <button type="button" class="btn btn-danger btn-as-link" onclick="removeCharacteristic('@typeId', '@item.Id')">Remove</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-danger btn-as-link" onclick="assignCharacteristic('@typeId', '@item.Id')">Add</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="no_record">
+        No virus characteristics recorded for this virus family and type.
+    </div>
+}

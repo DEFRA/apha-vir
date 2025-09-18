@@ -1,25 +1,33 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
 namespace Apha.VIR.Web.Controllers
 {
+    [Authorize(Roles = AppRoleConstant.Administrator)]
+    [Route("AuditLog")]
     public class AuditLogController : Controller
     {
         private readonly IAuditLogService _auditLogService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
+        private const string keySearchCriteria = "SearchCriteria";
 
-        public AuditLogController(IAuditLogService auditLogService, IMapper mapper)
+        public AuditLogController(IAuditLogService auditLogService, ICacheService cacheService, IMapper mapper)
         {
             _auditLogService = auditLogService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             var viewModel = new AuditLogViewModel
@@ -30,7 +38,7 @@ namespace Apha.VIR.Web.Controllers
             return View("AuditLog", viewModel);
         }
 
-        [HttpPost]
+        [HttpPost("SearchAudit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
         {
@@ -59,8 +67,8 @@ namespace Apha.VIR.Web.Controllers
 
                 FormateSearchCriteria(searchCriteria);
 
-                TempData.Remove("SearchCriteria");
-                TempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
+                await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
+                await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(searchCriteria));
 
                 var result = await _auditLogService.GetSubmissionLogsAsync(searchCriteria.AVNumber, searchCriteria.DateTimeFrom,
                    searchCriteria.DateTimeTo, searchCriteria.UserId!);
@@ -82,7 +90,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                var criteriaString = TempData.Peek("SearchCriteria") as string;
+                var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
                 ModelState.Remove("AVNumber");
                 if (!String.IsNullOrEmpty(criteriaString))
                 {
@@ -139,7 +147,7 @@ namespace Apha.VIR.Web.Controllers
             return View("IsolateAuditLogDetail", viewModel);
         }
 
-        [HttpPost]
+        [HttpPost("GetAuditLogs")]
         public async Task<IActionResult> GetAuditLogs(string requesttype)
         {
             switch (requesttype.ToLower())
@@ -163,7 +171,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetSubmissionAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -183,7 +191,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetSampleAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -204,7 +212,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetIsolateAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -225,7 +233,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetDispatchAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -246,7 +254,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetViabilityAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {
@@ -267,7 +275,7 @@ namespace Apha.VIR.Web.Controllers
 
         private async Task<IActionResult> GetCharacteristicsAuditLogs()
         {
-            var criteriaString = TempData.Peek("SearchCriteria") as string;
+            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
 
             if (!String.IsNullOrEmpty(criteriaString))
             {

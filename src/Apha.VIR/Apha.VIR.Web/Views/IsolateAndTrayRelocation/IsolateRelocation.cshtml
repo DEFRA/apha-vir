@@ -1,0 +1,283 @@
+﻿@model IsolateRelocationViewModel
+@{
+    ViewData["Title"] = "Virus Isolate Relocation | Virus Isolates Repository";
+}
+<p>Please specify the criteria you wish to use to search for isolates:</p>
+<div class="d-flex" style="font-size:small">
+    <div class="search-criteria flex-grow-1 me-3 w-500" >
+
+        <div class="form-group row mb-0 width-85PC">
+            <div class="col-sm-3">
+                <span for="MinimumAVNumber" style="white-space: nowrap;">AV Number or AV Number Range</span>
+            </div>
+            <div class="col-sm-3">
+                <span for="MinimumAVNumber">Min AV Number or Single:</span>
+                <input type="text" id="MinimumAVNumber" asp-for="MinAVNumber" class="d-block w-250" />
+            </div>
+        </div>
+        <div class="form-group row mb-0 width-85PC">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+                <span for="MinimumAVNumber">Max AV Number:</span>
+                <input type="text" id="MaximumAVNumber" asp-for="MaxAVNumber" class="d-block w-250" />
+            </div>
+        </div>
+        <div class="form-group row mb-0 mt-2 width-85PC" >
+            <div class="col-sm-3">
+                <span for="Freezer&Tray" style="white-space: nowrap;">Freezer & Tray</span>
+            </div>
+            <div class="col-sm-3">
+                <span for="SelectedFreezer">Freezer</span>
+                <select id="FreezerSearch" asp-for="SelectedFreezer" asp-items="Model.FreezersList" class="d-block width-258" asp-option-label="Select Freezer">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="col-sm-3" style="width:60px"></div>
+            <div id="divNewFreezer" class="col-sm-3 width-400" style="display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
+                <span for="NewlocationfortheselectedIsolates" style="margin-bottom:5px;white-space: nowrap;display:inline-block;"> New location for the selected Isolates </span>
+                <div class="d-flex align-items-center">
+                    <span for="NewFreezer" class="me-2 mb-0">Freezer</span>
+                    <img src="~\Images\spacer.gif" width="31px" height="5" alt="">
+                    <select id="NewFreezer" asp-for="SelectedNewFreezer" asp-items="Model.FreezersList" class="w-250 d-inline-block align-middle me-3" asp-option-label="Select Freezer">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row mb-0 width-85PC">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+                <span for="FreezerSearch">Tray</span>
+                <select id="TraySearch" asp-for="SelectedTray" asp-items="Model.TraysList" class="d-block width-258">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="col-sm-3" style="width:60px"></div>
+            <div id="divNewTray" class="col-sm-3 width-400" style="display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
+                <img src="~\Images\spacer.gif" width="200px" height="5" alt="">
+                <div class="d-flex align-items-center">
+                    <span for="NewTray">Tray</span>
+                    <img src="~\Images\spacer.gif" width="60px" height="5" alt="">
+                    <select id="NewTray" asp-for="SelectedNewTray" asp-items="Model.TraysList" class="w-250 d-inline-block align-middle me-3">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div style="text-align: right; padding-right: 45px;padding-top: 10px;">
+                    <button type="button" id="saveButton" class="btn btn-link isolaterelocate-btn-link-custom">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row mb-0 mt-4 width-85PC">
+            <div class="col-sm-3 offset-sm-5">
+                <button id="searchButton" class="btn  btn-link isolaterelocate-btn-link-custom">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="updateMessage" class="alert alert-success" style="color: green;font-weight:bold; padding-bottom:10px; display: none;">
+    Update successful.
+</div>
+
+<div id="validationPanel" style="color:red;font-weight:bold; padding-bottom:10px; display: none;">
+    <span>There are validation messages requiring your attention.</span>
+    <div id="validationMessage"></div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        Search Results
+    </div>
+    <div class="col-sm-12">
+        <div class="col-sm-7">           
+            <div style="text-align: right;margin-bottom: 5px;">
+                <button id="selectAllButton" class="btn btn-link isolaterelocate-btn-link-custom" style="margin-right:10px">Select All</button>
+                <button id="unselectAllButton" class="btn btn-link isolaterelocate-btn-link-custom">Unselect All</button>
+            </div>
+            <div id="isolatesGrid">
+                @await Html.PartialAsync("_SearchResults",
+                                (Model.SearchResults != null && Model.SearchResults.Count > 0) ? Model.SearchResults : new List<IsolateRelocateViewModel>())
+            </div>
+        </div>      
+        <form id="editForm" method="post" action="/Relocation/Edit">
+            <input type="hidden" name="IsolateId" />
+            <input type="hidden" name="Well" />
+            <input type="hidden" name="Freezer" />
+            <input type="hidden" name="Tray" />
+            <input type="hidden" name="LastModified" />
+       </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () { 
+            $('#searchButton').click(function () {
+                performSearch();
+            });
+
+            $('#saveButton').click(function () {
+                if (confirm('Please confirm you wish to relocate the selected Isolates')) {
+                    saveRelocations();
+                }
+            });
+
+            $('#selectAllButton').click(function () {
+                $('.select-isolate').prop('checked', true);
+            });
+
+            $('#unselectAllButton').click(function () {
+                $('.select-isolate').prop('checked', false);
+            });
+
+            $('#FreezerSearch').change(function () {
+                var selectedFreezer = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetTray", "Relocation")',
+                    type: 'GET',
+                    data: { freezerId: selectedFreezer },
+                    success: function (data) {
+                        $('#TraySearch').empty();
+                        $('#TraySearch').append($('<option></option>').val('').text(''));
+                        $.each(data, function (i, item) {
+                            $('#TraySearch').append($('<option></option>').val(item.value).text(item.text));
+                        });
+                    }
+                });
+            });
+
+            $('#NewFreezer').change(function () {
+                var selectedFreezer = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetTray", "Relocation")',
+                    type: 'GET',
+                    data: { freezerId: selectedFreezer },
+                    success: function (data) {
+                        $('#NewTray').empty();
+                        $('#NewTray').append($('<option></option>').val('').text(''));
+                        $.each(data, function (i, item) {
+                            $('#NewTray').append($('<option></option>').val(item.value).text(item.text));
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit-isolate', function () {               
+                var button = $(this);
+                $('#editForm input[name="IsolateId"]').val(button.data('id'));
+                $('#editForm input[name="Well"]').val(button.data('well'));
+                $('#editForm input[name="Freezer"]').val(button.data('freezer'));
+                $('#editForm input[name="Tray"]').val(button.data('tray'));
+                $('#editForm input[name="LastModified"]').val(button.data('lastmodified'));
+                $('#editForm').submit();
+            });
+        });
+
+        function performSearch() {            
+                $.ajax({
+                    url: '/Relocation/Search',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        MinAVNumber: $('#MinimumAVNumber').val(),
+                        MaxAVNumber: $('#MaximumAVNumber').val(),
+                        SelectedFreezer: $('#FreezerSearch').val() || null,
+                        SelectedTray: $('#TraySearch').val() || null
+                    }),
+                    success: function (data) {
+                       $('#isolatesGrid').html(data);
+                        $('#validationPanel').hide();
+                        if ($.trim(data).length == 0) {
+                            $('#divNewFreezer').hide();
+                            $('#divNewTray').hide();
+                         } else {
+                            $('#divNewFreezer').show();
+                            $('#divNewTray').show();
+                          $('#NewFreezer').val('');
+                             $('#NewTray').val('');
+                        }
+                    },
+                    error: function (xhr) {
+                    // Handle model validation errors returned by the server
+                    if (xhr.status === 400) {
+                        var errors = xhr.responseJSON;  // Get the errors from the response
+                        var errorMessages = '';
+
+                        // Iterate over the model state errors and create error messages
+                        for (var field in errors) {
+                            if (errors.hasOwnProperty(field)) {
+                                var fieldErrors = errors[field];
+                                fieldErrors.forEach(function (error) {
+                                    errorMessages += '<span>' + error + '</span>';
+                                });
+                            }
+                        }
+
+                        $('#validationMessage').html(errorMessages);
+                        $('#validationPanel').show();
+
+                        // Optionally, you can hide/show specific divs based on the error state
+                        $('#divNewFreezer').hide();
+                        $('#divNewTray').hide();
+                      }
+                    }
+                });
+             }
+         
+
+
+        function saveRelocations() {           
+            var selectedIsolates = [];
+            $('.select-isolate:checked').each(function () {
+                  selectedIsolates.push({
+                    IsolatedId: $(this).data('id') || null,
+                    Well: $(this).data('well') || null,
+                    LastModified: $(this).data('lastmodified') || null
+                  });
+            });
+
+            $.ajax({
+                url: '/Relocation/Save',
+                type: 'POST',
+                data: {
+                    SelectedNewIsolatedList: selectedIsolates || null,
+                    SelectedNewFreezer: $('#NewFreezer').val() || null,
+                    SelectedNewTray: $('#NewTray').val() || null
+                },
+                success: function (data) {
+                    if (data.success) {
+                        $('#updateMessage').show().delay(3000).fadeOut();                                             
+                        $('#validationPanel').hide();
+                        debugger;
+                        performSearch();
+                    } 
+                },
+                error: function (xhr) {
+                // Handle model validation errors returned by the server
+                    if (xhr.status === 400) {
+                        var errors = xhr.responseJSON;  // Get the errors from the response
+                        var errorMessages = '';
+
+                        // Iterate over the model state errors and create error messages
+                        for (var field in errors) {
+                            if (errors.hasOwnProperty(field)) {
+                                var fieldErrors = errors[field];
+                                fieldErrors.forEach(function (error) {
+                                    errorMessages += '<span>' + error + '</span>';
+                                });
+                            }
+                        }
+                        $('#validationMessage').html(errorMessages);
+                        $('#validationPanel').show();                        
+                        
+                  }
+                }
+            });
+        }        
+    </script>
+}

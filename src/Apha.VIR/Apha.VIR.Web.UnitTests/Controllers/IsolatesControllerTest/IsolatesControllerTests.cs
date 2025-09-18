@@ -1,8 +1,11 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
@@ -10,8 +13,10 @@ using NSubstitute.ExceptionExtensions;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolatesControllerTests
     {
+        private readonly object _lock;
         private readonly IIsolatesService _mockIsolatesService;
         private readonly ILookupService _mockLookupService;
         private readonly IIsolateViabilityService _mockIsolateViabilityService;
@@ -19,8 +24,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         private readonly ISampleService _mockSampleService;
         private readonly IMapper _mockMapper;
         private readonly IsolatesController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolatesControllerTests()
+        public IsolatesControllerTests(AppRolesFixture fixture)
         {
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockLookupService = Substitute.For<ILookupService>();
@@ -34,6 +40,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 _mockSubmissionService,
                 _mockSampleService,
                 _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -55,12 +64,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         {
             // Arrange
             var isolateId = Guid.NewGuid();
-            var isolateDetails = new IsolateFullDetailDTO
+            var isolateDetails = new IsolateFullDetailDto
             {
-                IsolateDetails = new IsolateInfoDTO(),
-                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
-                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
-                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
+                IsolateDetails = new IsolateInfoDto(),
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDto>(),
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDto>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDto>()
             };
             var isolateViewModel = new IsolateDetailsViewModel
             {
@@ -100,12 +109,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         public async Task GetVirusTypesByVirusFamily_NullOrEmptyVirusFamilyId_ReturnsAllVirusTypes()
         {
             // Arrange
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 2" }
             };
             _mockLookupService.GetAllVirusTypesAsync().Returns(virusTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetVirusTypesByVirusFamily(null);
@@ -127,11 +137,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         {
             // Arrange
             Guid virusFamilyId = Guid.NewGuid();
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" }
             };
             _mockLookupService.GetAllVirusTypesByParentAsync(virusFamilyId).Returns(virusTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetVirusTypesByVirusFamily(virusFamilyId);
@@ -150,12 +161,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         public async Task GetTraysByFeezer_NullOrEmptyVirusFamilyId_ReturnsAllVirusTypes()
         {
             // Arrange
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 2" }
             };
             _mockLookupService.GetAllTraysAsync().Returns(virusTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetTraysByFeezer(null);
@@ -177,11 +189,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         {
             // Arrange
             Guid virusFamilyId = Guid.NewGuid();
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" }
             };
             _mockLookupService.GetAllTraysByParentAsync(virusFamilyId).Returns(virusTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetTraysByFeezer(virusFamilyId);
@@ -230,6 +243,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
 
             // Assert
             await _mockIsolatesService.Received(1).GenerateNomenclature(avNumber, sampleId, virusType, yearOfIsolation);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

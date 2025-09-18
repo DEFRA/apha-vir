@@ -28,10 +28,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             // Arrange
             var avNumber = "AV123";
             var isolateGuid = Guid.NewGuid();
-            var serviceResult = new List<IsolateViabilityInfoDTO> { new IsolateViabilityInfoDTO { Nomenclature = "NULL/Congo Peafowl/Ascension Island/Ref 2/2025" } };
+            var serviceResult = new List<IsolateViabilityInfoDto> { new IsolateViabilityInfoDto { Nomenclature = "NULL/Congo Peafowl/Ascension Island/Ref 2/2025" } };
             var mappedResult = new List<IsolateViabilityModel> { new IsolateViabilityModel { Nomenclature = "NULL/Congo Peafowl/Ascension Island/Ref 2/2025" } };
 
-            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolateGuid).Returns(Task.FromResult((IEnumerable<IsolateViabilityInfoDTO>)serviceResult));
+            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolateGuid).Returns(Task.FromResult((IEnumerable<IsolateViabilityInfoDto>)serviceResult));
             _mapper.Map<IEnumerable<IsolateViabilityModel>>(serviceResult).Returns(mappedResult);
 
             // Act
@@ -82,7 +82,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var avNumber = "AV001";
             var isolate = Guid.NewGuid();
 
-            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(Task.FromResult<IEnumerable<IsolateViabilityInfoDTO>>(null!));
+            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(Task.FromResult<IEnumerable<IsolateViabilityInfoDto>>(null!));
 
             // Act
             var result = _controller.History(avNumber, isolate) as ViewResult;
@@ -101,9 +101,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             // Arrange
             var avNumber = "AV001";
             var isolate = Guid.NewGuid();
-            var serviceResult = new List<IsolateViabilityInfoDTO> { new IsolateViabilityInfoDTO { Nomenclature = "Test" } };
+            var serviceResult = new List<IsolateViabilityInfoDto> { new IsolateViabilityInfoDto { Nomenclature = "Test" } };
 
-            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(Task.FromResult<IEnumerable<IsolateViabilityInfoDTO>>(serviceResult));
+            _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(Task.FromResult<IEnumerable<IsolateViabilityInfoDto>>(serviceResult));
 
             _mapper.Map<IEnumerable<IsolateViabilityModel>>(serviceResult).Returns((IEnumerable<IsolateViabilityModel>)null!);
 
@@ -119,7 +119,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var isolateGuid = Guid.NewGuid();
 
             _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolateGuid)
-                .Returns(Task.FromException<IEnumerable<IsolateViabilityInfoDTO>>(new Exception("Test exception")));
+                .Returns(Task.FromException<IEnumerable<IsolateViabilityInfoDto>>(new Exception("Test exception")));
 
             // Act
             var exception = Assert.ThrowsAny<AggregateException>(() => _controller.History(avNumber, isolateGuid));

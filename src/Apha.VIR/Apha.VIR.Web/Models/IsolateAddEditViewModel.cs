@@ -14,6 +14,7 @@ namespace Apha.VIR.Web.Models
         public Guid? Type { get; set; }
 
         [Display(Name = "Year Of Isolation")]
+        [Range(1000, 9999, ErrorMessage = "Year of Isolation must be entered in the correct format: yyyy, eg. 2000")]
         public int? YearOfIsolation { get; set; }
         public bool IsMixedIsolate { get; set; } = false;
         public Guid? IsolationMethod { get; set; }
@@ -37,6 +38,7 @@ namespace Apha.VIR.Web.Models
         [RegularExpression(@"^\d+$", ErrorMessage = "First Viable Passage Number must be an numeric value")]
         public int? FirstViablePassageNumber { get; set; }
         public string? SmsreferenceNumber { get; set; }
+        public string? IsoSMSReferenceNumber { get; set; }
         public string? PhylogeneticFileName { get; set; }
         public string? Nomenclature { get; set; }
         public string? IsolateNomenclature { get; set; }
@@ -44,7 +46,7 @@ namespace Apha.VIR.Web.Models
         public DateTime? DateChecked { get; set; }
         public Guid? CheckedBy { get; set; }
         public string? ActionType { get; set; }
-        public bool IsDetection { get; set; } = false;
+        public bool IsChkDetection { get; set; } = false;
         public bool IsViabilityInsert { get; set; } = false;
         public string? CreatedBy { get; set; }
         public Guid? PreviousViable { get; set; }

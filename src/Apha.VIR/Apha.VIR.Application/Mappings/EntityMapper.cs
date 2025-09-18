@@ -10,17 +10,17 @@ namespace Apha.VIR.Application.Mappings
     {
         public EntityMapper()
         {
-            CreateMap<Lookup, LookupDTO>().ReverseMap();
-            CreateMap<LookupItem, LookupItemDTO>().ReverseMap();
-            CreateMap<PagedData<LookupItem>, PaginatedResult<LookupItemDTO>>();
-            CreateMap<VirusCharacteristic, VirusCharacteristicDTO>().ReverseMap();
-            CreateMap<VirusCharacteristicListEntry, VirusCharacteristicListEntryDTO>().ReverseMap();
+            CreateMap<Lookup, LookupDto>().ReverseMap();
+            CreateMap<LookupItem, LookupItemDto>().ReverseMap();
+            CreateMap<PagedData<LookupItem>, PaginatedResult<LookupItemDto>>();
+            CreateMap<VirusCharacteristic, VirusCharacteristicDto>().ReverseMap();
+            CreateMap<VirusCharacteristicListEntry, VirusCharacteristicListEntryDto>().ReverseMap();
             CreateMap<SearchCriteriaDTO, SearchCriteria>();
-            CreateMap<CharacteristicCriteriaDTO, CharacteristicCriteria>();
-            CreateMap<IsolateSearchResult, IsolateSearchResultDTO>();
+            CreateMap<CharacteristicCriteriaDto, CharacteristicCriteria>();
+            CreateMap<IsolateSearchResult, IsolateSearchResultDto>();
             CreateMap<QueryParameters<SearchCriteriaDTO>, PaginationParameters<SearchCriteria>>();
-            CreateMap<PagedData<IsolateSearchResult>, PaginatedResult<IsolateSearchResultDTO>>();
-            CreateMap<IsolateInfoDTO, IsolateSearchExportDto>()
+            CreateMap<PagedData<IsolateSearchResult>, PaginatedResult<IsolateSearchResultDto>>();
+            CreateMap<IsolateInfoDto, IsolateSearchExportDto>()
              .ForMember(dest => dest.VirusFamily, opt => opt.MapFrom(src => src.FamilyName))
              .ForMember(dest => dest.VirusType, opt => opt.MapFrom(src => src.TypeName))
              .ForMember(dest => dest.HostPurpose, opt => opt.MapFrom(src => src.HostPurposeName))
@@ -39,33 +39,36 @@ namespace Apha.VIR.Application.Mappings
              .ForMember(dest => dest.AntigenProduced, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.AntigenProduced)))
              .ForMember(dest => dest.MTA, opt => opt.MapFrom(src => MappingHelper.ToYesNo(src.MaterialTransferAgreement)))
              .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => MappingHelper.ToDateStringFormat(src.ReceivedDate)));
-            CreateMap<IsolateFullDetail, IsolateFullDetailDTO>().ReverseMap();
-            CreateMap<IsolateInfoDTO, IsolateInfo>().ReverseMap();
-            CreateMap<IsolateDispatchInfoDTO, IsolateDispatchInfo>()
+            CreateMap<IsolateFullDetail, IsolateFullDetailDto>().ReverseMap();
+            CreateMap<IsolateInfoDto, IsolateInfo>().ReverseMap();
+            CreateMap<IsolateDispatchInfoDto, IsolateDispatchInfo>()
              .ForMember(dest => dest.NoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquotsToBeDispatched))
              .ForMember(dest => dest.IsolateNoOfAliquots, opt => opt.MapFrom(src => src.NoOfAliquots)).ReverseMap();
-            CreateMap<IsolateCharacteristicDTO, IsolateCharacteristicInfo>().ReverseMap();
-            CreateMap<IsolateCharacteristicInfoDTO, IsolateCharacteristicInfo>().ReverseMap();
-            CreateMap<IsolateViabilityInfoDTO, IsolateViabilityInfo>().ReverseMap();
+            CreateMap<IsolateCharacteristicDto, IsolateCharacteristicInfo>().ReverseMap();
+            CreateMap<IsolateCharacteristicInfoDto, IsolateCharacteristicInfo>().ReverseMap();
+            CreateMap<IsolateViabilityInfoDto, IsolateViabilityInfo>().ReverseMap();
             CreateMap<IsolateViabilityInfo, IsolateViability>().ReverseMap();
-            CreateMap<IsolateViability, IsolateViabilityDTO>().ReverseMap();
-            CreateMap<IsolateViabilityInfoDTO, IsolateViability>().ReverseMap();
-            CreateMap<IsolateDispatchReportDTO, IsolateDispatchInfo>().ReverseMap();
-            CreateMap<AuditCharacteristicLogDTO, AuditCharacteristicLog>().ReverseMap();
-            CreateMap<AuditDispatchLogDTO, AuditDispatchLog>().ReverseMap();
-            CreateMap<AuditIsolateLogDTO, AuditIsolateLog>().ReverseMap();
-            CreateMap<AuditSampleLogDTO, AuditSampleLog>().ReverseMap();
-            CreateMap<AuditSubmissionLogDTO, AuditSubmissionLog>().ReverseMap();
-            CreateMap<AuditViabilityLogDTO, AuditViabilityLog>().ReverseMap();
-            CreateMap<AuditIsolateLogDetailDTO, AuditIsolateLogDetail>().ReverseMap();
-            CreateMap<SenderDTO, Sender>().ReverseMap();
-            CreateMap<SubmissionDTO, Submission>().ReverseMap();
-            CreateMap<Sample, SampleDTO>().ReverseMap();
-            CreateMap<SampleDTO, Sample>().ReverseMap();
-            CreateMap<SystemInfo, SystemInfoDTO>().ReverseMap();
-            CreateMap<IsolateDTO, Isolate>().ReverseMap();
-            CreateMap<PagedData<Sender>, PaginatedResult<SenderDTO>>();
-            CreateMap<PagedData<VirusCharacteristicListEntry>, PaginatedResult<VirusCharacteristicListEntryDTO>>();
+            CreateMap<IsolateViability, IsolateViabilityDto>().ReverseMap();
+            CreateMap<IsolateViabilityInfoDto, IsolateViability>().ReverseMap();
+            CreateMap<IsolateDispatchReportDto, IsolateDispatchInfo>().ReverseMap();
+            CreateMap<AuditCharacteristicLogDto, AuditCharacteristicLog>().ReverseMap();
+            CreateMap<AuditDispatchLogDto, AuditDispatchLog>().ReverseMap();
+            CreateMap<AuditIsolateLogDto, AuditIsolateLog>().ReverseMap();
+            CreateMap<AuditSampleLogDto, AuditSampleLog>().ReverseMap();
+            CreateMap<AuditSubmissionLogDto, AuditSubmissionLog>().ReverseMap();
+            CreateMap<AuditViabilityLogDto, AuditViabilityLog>().ReverseMap();
+            CreateMap<AuditIsolateLogDetailDto, AuditIsolateLogDetail>().ReverseMap();
+            CreateMap<SenderDto, Sender>().ReverseMap();
+            CreateMap<SubmissionDto, Submission>().ReverseMap();
+            CreateMap<Sample, SampleDto>().ReverseMap();
+            CreateMap<SampleDto, Sample>().ReverseMap();
+            CreateMap<SystemInfo, SystemInfoDto>().ReverseMap();
+            CreateMap<IsolateDto, Isolate>().ReverseMap();
+            CreateMap<VirusCharacteristicDataTypeDto, VirusCharacteristicDataType>().ReverseMap();
+            CreateMap<PagedData<Sender>, PaginatedResult<SenderDto>>();
+            CreateMap<PagedData<VirusCharacteristicListEntry>, PaginatedResult<VirusCharacteristicListEntryDto>>();
+            CreateMap<IsolateRelocate, IsolateRelocateDto>().ReverseMap();
+            CreateMap<PagedData<VirusCharacteristic>, PaginatedResult<VirusCharacteristicDto>>();
         }
     }
 }

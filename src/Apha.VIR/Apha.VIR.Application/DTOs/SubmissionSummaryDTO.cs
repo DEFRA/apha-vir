@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class SubmissionSummaryDTO
+public class SubmissionSummaryDto
 {
     public string? SendersReferenceNumber { get; set; }
     public string? SenderOrganisation { get; set; }

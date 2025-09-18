@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateSearchResultDTO
+public class IsolateSearchResultDto
 {
     public string Avnumber { get; set; } = null!;
     public Guid IsolateId { get; set; }

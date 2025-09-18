@@ -5,9 +5,10 @@ namespace Apha.VIR.Application.Interfaces
 {
     public interface ISampleService
     {
-        Task<SampleDTO> GetSampleAsync(string avNumber, Guid? sampleId);
-        Task AddSample(SampleDTO sampleDto, string avNumber, string userName);
-        Task UpdateSample(SampleDTO sampleDto, string userName);
-        Task<IEnumerable<SampleDTO>> GetSamplesBySubmissionIdAsync(Guid submissionId);
+        Task<SampleDto> GetSampleAsync(string avNumber, Guid? sampleId);
+        Task AddSample(SampleDto SampleDto, string avNumber, string userName);
+        Task UpdateSample(SampleDto SampleDto, string userName);
+        Task DeleteSampleAsync(Guid sampleId, string userId, byte[] lastModified);
+        Task<IEnumerable<SampleDto>> GetSamplesBySubmissionIdAsync(Guid submissionId);
     }
 }

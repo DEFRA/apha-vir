@@ -21,16 +21,16 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetLookupItemAsync_ShouldReturnLookupItemDTOList_WhenLookupItemExists()
+        public async Task GetLookupItemAsync_ShouldReturnLookupItemDtoList_WhenLookupItemExists()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
             var lookupItemId = Guid.NewGuid();
             var lookupItem = new LookupItem { Id = lookupItemId, Name = "Test Item" };
-            var expectedDto = new LookupItemDTO { Id = lookupItemId, Name = "Test Item" };
+            var expectedDto = new LookupItemDto { Id = lookupItemId, Name = "Test Item" };
 
             _mockLookupRepository.GetLookupItemAsync(lookupId, lookupItemId).Returns(lookupItem);
-            _mockMapper.Map<LookupItemDTO>(lookupItem).Returns(expectedDto);
+            _mockMapper.Map<LookupItemDto>(lookupItem).Returns(expectedDto);
 
             // Act
             var result = await _lookupService.GetLookupItemAsync(lookupId, lookupItemId);
@@ -40,22 +40,22 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         }
 
         [Fact]
-        public async Task GetLookupItemAsync_ShouldCorrectlyMap_FromLookupItemToLookupItemDTO()
+        public async Task GetLookupItemAsync_ShouldCorrectlyMap_FromLookupItemToLookupItemDto()
         {
             // Arrange
             var lookupId = Guid.NewGuid();
             var lookupItemId = Guid.NewGuid();
             var lookupItem = new LookupItem { Id = lookupItemId, Name = "Test Item" };
-            var expectedDto = new LookupItemDTO { Id = lookupItemId, Name = "Test Item" };
+            var expectedDto = new LookupItemDto { Id = lookupItemId, Name = "Test Item" };
 
             _mockLookupRepository.GetLookupItemAsync(lookupId, lookupItemId).Returns(lookupItem);
-            _mockMapper.Map<LookupItemDTO>(lookupItem).Returns(expectedDto);
+            _mockMapper.Map<LookupItemDto>(lookupItem).Returns(expectedDto);
 
             // Act
             var result = await _lookupService.GetLookupItemAsync(lookupId, lookupItemId);
 
             // Assert
-            _mockMapper.Received(1).Map<LookupItemDTO>(lookupItem);
+            _mockMapper.Received(1).Map<LookupItemDto>(lookupItem);
             Assert.Equal(expectedDto.Id, result.Id);
             Assert.Equal(expectedDto.Name, result.Name);
         }

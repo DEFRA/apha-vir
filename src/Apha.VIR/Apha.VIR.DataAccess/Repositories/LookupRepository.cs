@@ -10,23 +10,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories
 {
-    public class LookupRepository : ILookupRepository
+    public class LookupRepository : RepositoryBase<Lookup>, ILookupRepository
     {
-        private readonly VIRDbContext _context;
-
-        public LookupRepository(VIRDbContext context)
+        public LookupRepository(VIRDbContext context) : base(context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<IEnumerable<Lookup>> GetAllLookupsAsync()
         {
-            return await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
+            return await GetQueryableInterpolatedFor<Lookup>($"EXEC spLookupGetAll").ToListAsync();
         }
 
         public async Task<Lookup> GetLookupByIdAsync(Guid lookupId)
         {
-            var result = await _context.Lookups.FromSqlInterpolated($"EXEC spLookupGetAll").ToListAsync();
+            var result = await GetQueryableInterpolatedFor<Lookup>($"EXEC spLookupGetAll").ToListAsync();
             var lookup = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupId);
 
             return lookup ?? new Lookup();
@@ -34,11 +31,10 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<LookupItem> GetLookupItemAsync(Guid lookupId, Guid lookupItemId)
         {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            Lookup? lookup = await GetDbSetFor<Lookup>().FirstOrDefaultAsync(l => l.Id == lookupId);
             if (lookup != null)
             {
-                var result = await _context.Set<LookupItem>()
-                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+                var result = await GetQueryableInterpolatedFor<LookupItem>($"EXEC {lookup.SelectCommand}").ToListAsync();
 
                 var item = result.AsEnumerable().FirstOrDefault(x => x.Id == lookupItemId);
 
@@ -49,12 +45,11 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<PagedData<LookupItem>> GetAllLookupItemsAsync(Guid lookupId, int pageNo, int pageSize)
         {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            Lookup? lookup = await GetDbSetFor<Lookup>().FirstOrDefaultAsync(l => l.Id == lookupId);
             if (lookup != null)
             {
                 //stored procedure is non-composable SQL and EF does support AsQueryable to get performance of skip. 
-                var result = await _context.Set<LookupItem>()
-                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+                var result = await GetQueryableInterpolatedFor<LookupItem>($"EXEC {lookup.SelectCommand}").ToListAsync();
 
                 var totalRecords = result.Count;
                 var lookupitems = result.Skip((pageNo - 1) * pageSize)
@@ -67,11 +62,10 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<LookupItem>> GetAllLookupItemsAsync(Guid lookupId)
         {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            Lookup? lookup = await GetDbSetFor<Lookup>().FirstOrDefaultAsync(l => l.Id == lookupId);
             if (lookup != null)
             {
-                var result = await _context.Set<LookupItem>()
-                   .FromSqlInterpolated($"EXEC {lookup.SelectCommand}").ToListAsync();
+                var result = await GetQueryableInterpolatedFor<LookupItem>($"EXEC {lookup.SelectCommand}").ToListAsync();
 
                 return result;
             }
@@ -87,7 +81,7 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             bool result = false;
 
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == lookupId).FirstOrDefaultAsync();
+            Lookup? lookup = await GetDbSetFor<Lookup>().FirstOrDefaultAsync(l => l.Id == lookupId);
             try
             {
                 if (lookup != null)
@@ -100,7 +94,7 @@ namespace Apha.VIR.DataAccess.Repositories
                         { Value = lookupItemId ==Guid.Empty  ? DBNull.Value: lookupItemId}
                     };
 
-                    await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+                    await ExecuteSqlAsync(sql, parameters);
                 }
             }
             catch (Exception ex)
@@ -118,9 +112,9 @@ namespace Apha.VIR.DataAccess.Repositories
          Justification = "Stored procedure name is validated against a whitelist from the database.")]
         public async Task InsertLookupItemAsync(Guid LookupId, LookupItem Item)
         {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+            Lookup? lookup = await GetDbSetFor<Lookup>().FirstOrDefaultAsync(l => l.Id == LookupId);
 
-            var allowedProcedures = (await _context.Lookups.ToListAsync())
+            var allowedProcedures = (await GetDbSetFor<Lookup>().ToListAsync())
                                 .Select(l => l.InsertCommand)
                                 .Where(cmd => !string.IsNullOrWhiteSpace(cmd))
                                 .Distinct()
@@ -149,16 +143,16 @@ namespace Apha.VIR.DataAccess.Repositories
                 }
             };
 
-            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+            await ExecuteSqlAsync(sql, parameters);
         }
 
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
          Justification = "Stored procedure name is validated against a whitelist from the database.")]
         public async Task UpdateLookupItemAsync(Guid LookupId, LookupItem Item)
         {
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+            Lookup? lookup = await GetDbSetFor<Lookup>().FirstOrDefaultAsync(l => l.Id == LookupId);
 
-            var allowedProcedures = (await _context.Lookups.ToListAsync())
+            var allowedProcedures = (await GetDbSetFor<Lookup>().ToListAsync())
                                 .Select(l => l.UpdateCommand)
                                 .Where(cmd => !string.IsNullOrWhiteSpace(cmd))
                                 .Distinct()
@@ -188,7 +182,7 @@ namespace Apha.VIR.DataAccess.Repositories
                 }
             };
 
-            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+            await ExecuteSqlAsync(sql, parameters);
         }
 
         [SuppressMessage("Security", "S3649:SQL queries should not be dynamically built from user input",
@@ -196,20 +190,19 @@ namespace Apha.VIR.DataAccess.Repositories
         public async Task DeleteLookupItemAsync(Guid LookupId, LookupItem Item)
         {
 
-            var allowedProcedures = (await _context.Lookups.ToListAsync())
+            var allowedProcedures = (await GetDbSetFor<Lookup>().ToListAsync())
                                     .Select(l => l.DeleteCommand)
                                     .Where(cmd => !string.IsNullOrWhiteSpace(cmd))
                                     .Distinct()
                                     .ToList();
 
-            Lookup? lookup = await _context.Lookups.Where(l => l.Id == LookupId).FirstOrDefaultAsync();
+            Lookup? lookup = await GetDbSetFor<Lookup>().FirstOrDefaultAsync(l => l.Id == LookupId);
 
             if (string.IsNullOrWhiteSpace(lookup?.DeleteCommand))
                 throw new ArgumentException("Lookup delete Stored procedure name is required.");
 
             if (!allowedProcedures.Contains(lookup.DeleteCommand))
                 throw new SecurityException($"Stored procedure '{lookup.UpdateCommand}' is not allowed.");
-
 
             var sql = $"EXEC [{lookup.DeleteCommand}] @ID, @LastModified OUT";
 
@@ -223,20 +216,18 @@ namespace Apha.VIR.DataAccess.Repositories
                     Value = Item.LastModified
                 }
             };
-            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+            await ExecuteSqlAsync(sql, parameters);
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllVirusFamiliesAsync()
         {
-            return (await _context.Set<LookupItem>()
-                .FromSqlRaw($"EXEC spVirusFamilyGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spVirusFamilyGetAll").ToListAsync())
                 .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllVirusTypesAsync()
         {
-            return (await _context.Set<LookupItem>()
-                   .FromSqlRaw($"EXEC spVirusTypeGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spVirusTypeGetAll").ToListAsync())
                    .Where(vt => vt.Active).ToList();
         }
 
@@ -247,15 +238,13 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<LookupItem>> GetAllHostSpeciesAsync()
         {
-            return (await _context.Set<LookupItem>()
-                .FromSqlRaw($"EXEC spHostSpeciesGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spHostSpeciesGetAll").ToListAsync())
                 .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllHostBreedsAsync()
         {
-            return (await _context.Set<LookupItem>()
-             .FromSqlRaw($"EXEC spHostBreedGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spHostBreedGetAll").ToListAsync())
              .Where(vf => vf.Active).ToList();
         }
 
@@ -266,8 +255,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<LookupItem>> GetAllHostBreedsAltNameAsync()
         {
-            return (await _context.Set<LookupItem>()
-             .FromSqlRaw($"EXEC spHostBreedGetAllAltName").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spHostBreedGetAllAltName").ToListAsync())
              .Where(vf => vf.Active).ToList();
         }
 
@@ -329,80 +317,70 @@ namespace Apha.VIR.DataAccess.Repositories
 
         public async Task<IEnumerable<LookupItem>> GetAllCountriesAsync()
         {
-            return (await _context.Set<LookupItem>()
-             .FromSqlRaw($"EXEC spCountryGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spCountryGetAll").ToListAsync())
              .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllHostPurposesAsync()
         {
-            return (await _context.Set<LookupItem>()
-               .FromSqlRaw($"EXEC spHostPurposeGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spHostPurposeGetAll").ToListAsync())
                .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllSampleTypesAsync()
         {
-            return (await _context.Set<LookupItem>()
-                .FromSqlRaw($"EXEC spSampleTypeGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spSampleTypeGetAll").ToListAsync())
                 .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllWorkGroupsAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spWorkgroupsGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spWorkgroupsGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllStaffAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spStaffGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spStaffGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllViabilityAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spViabilityGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spViabilityGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllSubmittingLabAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spSubmittingLabGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spSubmittingLabGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllSubmissionReasonAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spSubmissionReasonGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spSubmissionReasonGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllIsolationMethodsAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spIsolationMethodGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spIsolationMethodGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllFreezerAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spFreezerGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spFreezerGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
 
         public async Task<IEnumerable<LookupItem>> GetAllTraysAsync()
         {
-            return (await _context.Set<LookupItem>()
-            .FromSqlRaw($"EXEC spTrayGetAll").ToListAsync())
+            return (await GetQueryableResultFor<LookupItem>($"EXEC spTrayGetAll").ToListAsync())
             .Where(vf => vf.Active).ToList();
         }
+       
 
         public async Task<IEnumerable<LookupItem>> GetAllTraysByParentAsync(Guid? freezer)
         {

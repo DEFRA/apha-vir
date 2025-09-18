@@ -1,9 +1,11 @@
 ﻿@model CharacteristicSearchViewModel
-<div id="characteristicSearch" class="characteristic-block">
+<div class="characteristic-block">
     <div>
-        <table cellpadding="0" cellspacing="0" class="p-0 m-0">
+        <table  class="p-0 m-0 ">
+            <thead><tr><th></th></tr></thead>
             <tbody>
                 <tr>
+                    <td colspan="5">
                     <select asp-for="Characteristic" tabindex="2" class="select-dropdown characteristic-ddl">
                         <option value=""></option>
                         @foreach (var item in Model.CharacteristicList)
@@ -12,24 +14,25 @@
                         }                                             
                     </select>
                     <input type="hidden" asp-for="CharacteristicType" class="characteristic-ddl-type" />
+                    </td>
                 </tr>
                 <tr>
                     <td class="p-0 m-0">
-                        <select class="p-0 m-0 comparator-ddl" asp-for="Comparator" hidden>
+                        <select class="p-0 m-0 comparator-ddl" asp-for="Comparator" asp-items="Model.ComparatorList" hidden>
                         </select>
                     </td>
                     <td class="p-0 m-0">
-                        <select asp-for="CharacteristicListValue" class="p-0 m-0 char-list-values-ddl" hidden>
+                        <select asp-for="CharacteristicListValue" asp-items="Model.CharacteristicValues" class="p-0 m-0 char-list-values-ddl" style="display:none;">
                         </select>
                     </td>
                     <td class="p-0 m-0">
-                        <input type="text" asp-for="CharacteristicValue1" class="width-90 char-value1" hidden>
+                        <input type="text" asp-for="CharacteristicValue1" class="width-90 char-value1" style="display:none;" />
                     </td>
                     <td class="p-0 m-0">
-                        <label class="mx-3 width-90 char-and-label" hidden>and</label>
+                        <span class="mx-3 width-90 char-and-label" style="display:none;">and</span>
                     </td>
                     <td class="p-0 m-0 ">
-                        <input type="text" asp-for="CharacteristicValue2" class="width-90 char-value2" hidden>
+                        <input type="text" asp-for="CharacteristicValue2" class="width-90 char-value2" style="display:none;" />
                     </td>
                 </tr>
             </tbody>

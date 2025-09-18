@@ -35,25 +35,25 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
 
             var pagedRepoResult = new PagedData<LookupItem>(lookupItems, 10);
 
-            var expectedDtos = new List<LookupItemDTO>
+            var expectedDtos = new List<LookupItemDto>
             {
-            new LookupItemDTO { Id = lookupItems[0].Id, Name = lookupItems[0].Name },
-            new LookupItemDTO { Id = lookupItems[1].Id, Name = lookupItems[1].Name }
+            new LookupItemDto { Id = lookupItems[0].Id, Name = lookupItems[0].Name },
+            new LookupItemDto { Id = lookupItems[1].Id, Name = lookupItems[1].Name }
             };
 
-            var pagedexpectedResult = new PaginatedResult<LookupItemDTO>(expectedDtos, 10);
+            var pagedexpectedResult = new PaginatedResult<LookupItemDto>(expectedDtos, 10);
 
 
             _mockLookupRepository.GetAllLookupItemsAsync(lookupId, 1, 10).Returns(pagedRepoResult);
 
-            _mockMapper.Map<PaginatedResult<LookupItemDTO>>(Arg.Any<PagedData<LookupItem>>()).Returns(pagedexpectedResult);
+            _mockMapper.Map<PaginatedResult<LookupItemDto>>(Arg.Any<PagedData<LookupItem>>()).Returns(pagedexpectedResult);
 
             // Act
             var result = await _mockLookupService.GetAllLookupItemsAsync(lookupId, 1, 10);
 
             // Assert
             await _mockLookupRepository.Received(1).GetAllLookupItemsAsync(lookupId, 1, 10);
-            _mockMapper.Received(1).Map<PaginatedResult<LookupItemDTO>>(Arg.Any<PagedData<LookupItem>>());
+            _mockMapper.Received(1).Map<PaginatedResult<LookupItemDto>>(Arg.Any<PagedData<LookupItem>>());
             Assert.Equal(pagedexpectedResult, result);
         }
 
@@ -70,7 +70,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             var exception = await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllLookupItemsAsync(lookupId, 1, 10));
             Assert.Same(expectedException, exception);
             await _mockLookupRepository.Received(1).GetAllLookupItemsAsync(lookupId, 1, 10);
-            _mockMapper.DidNotReceive().Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
+            _mockMapper.DidNotReceive().Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>());
         }
 
         [Fact]
@@ -79,17 +79,17 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Arrange
             var lookupId = Guid.NewGuid();
             var lookupItems = new List<LookupItem> { new LookupItem(), new LookupItem() };
-            var expectedDtos = new List<LookupItemDTO> { new LookupItemDTO(), new LookupItemDTO() };
+            var expectedDtos = new List<LookupItemDto> { new LookupItemDto(), new LookupItemDto() };
 
             _mockLookupRepository.GetAllLookupItemsAsync(lookupId).Returns(lookupItems);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(lookupItems).Returns(expectedDtos);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(lookupItems).Returns(expectedDtos);
 
             // Act
             var result = await _mockLookupService.GetAllLookupItemsAsync(lookupId);
 
             // Assert
             await _mockLookupRepository.Received(1).GetAllLookupItemsAsync(lookupId);
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(lookupItems);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(lookupItems);
             Assert.Equal(expectedDtos, result);
         }
 
@@ -99,17 +99,17 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Arrange
             var lookupId = Guid.NewGuid();
             var emptyList = new List<LookupItem>();
-            var emptyDtoList = new List<LookupItemDTO>();
+            var emptyDtoList = new List<LookupItemDto>();
 
             _mockLookupRepository.GetAllLookupItemsAsync(lookupId).Returns(emptyList);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(emptyList).Returns(emptyDtoList);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(emptyList).Returns(emptyDtoList);
 
             // Act
             var result = await _mockLookupService.GetAllLookupItemsAsync(lookupId);
 
             // Assert
             await _mockLookupRepository.Received(1).GetAllLookupItemsAsync(lookupId);
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(emptyList);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(emptyList);
             Assert.Empty(result);
         }
     }

@@ -1,0 +1,283 @@
+﻿@model SubmissionSamplesViewModel
+@{
+	ViewData["Title"] = "Submission, Samples & Isolates | Virus Isolates Repository";
+}
+
+<style>
+
+</style>
+
+<span style="font-weight:bold">
+	@Model.AVNumber
+</span>
+<input asp-for="AVNumber" type="hidden" />
+<input asp-for="SubmissionId" type="hidden" />
+<input asp-for="LastModified" type="hidden" />
+<nav>
+	<ul class="linklist" style="list-style: none; padding-left: 0;">
+		<li>
+			<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
+			<img src="~/Images/spacer.gif" width="3" height="9" alt="">
+			<a asp-controller="Submission" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)">Edit this Submission</a>
+		</li>
+		<li>
+			<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
+			<img src="~/Images/spacer.gif" width="3" height="9" alt="">
+			<a asp-controller="Sample" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)">Add a new Sample</a>
+		</li>
+		<li>
+			<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
+			<img src="~/Images/spacer.gif" width="3" height="9" alt="">
+			<a asp-controller="Submission" asp-action="SubmissionLetter" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)">Missing Details Letter</a>
+			@if (Model.IsLetterRequired)
+			{
+				<span style="display: inline-block; color: red;">Required</span>
+			}
+		</li>
+		@if (Model.ShowDeleteLink)
+		{
+			<li>
+				<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
+				<img src="~/Images/spacer.gif" width="3" height="9" alt="">
+				<a href="javascript:void(0);" id="btnSubmissionDelete">Delete this Submission</a>
+			</li>
+		}
+		<li>
+			<img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="">
+			<img src="~/Images/spacer.gif" width="3" height="9" alt="">
+			<a asp-controller="Home" asp-action="Index">Finish editing this Submission</a>
+		</li>		
+	</ul>	
+</nav>
+<span id="submissionValidation" class="text-danger" hidden></span>
+
+<div class=" mt-1">
+	<h3 class="submission-h3">Submission Summary</h3>
+	<br />
+	<table class="VIRtable">
+		<thead>
+			<tr>
+				<th>Submission Sender Ref</th>
+				<th>Sender Organisation</th>
+				<th>Country Of Origin</th>
+			</tr>
+		
+		</thead>
+		<tbody>
+			<tr>
+				<td>@Model.SendersReferenceNumber</td>
+				<td>@Model.SenderOrganisation</td>
+				<td>@Model.CountryOfOriginName</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<h3 class="submission-h3">Samples for this submission</h3>
+	<br />
+	@if (Model.Samples != null && Model.Samples.Any())
+	{
+		<table class="VIRtable">
+			<thead>
+				<tr>
+					<th>Sample Number</th>
+					<th>SMS Ref</th>
+					<th>Sample Sender Ref</th>
+					<th>Group</th>
+					<th>Species</th>
+					<th colspan="3">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var sample in Model.Samples!)
+				{
+					<tr>
+						<td>@sample.SampleNumber</td>
+						<td>@sample.SMSReferenceNumber</td>
+						<td>@sample.SenderReferenceNumber</td>
+						<td>@sample.HostSpeciesName</td>
+						<td>@sample.HostBreedName</td>
+						<td><a asp-controller="Sample" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-Sample="@sample.SampleId">Edit</a></td>
+						<td>
+							@if (sample.IsDeleteEnabled)
+							{
+								<a class="delete-sample-link" data-sampleid="@sample.SampleId" data-lastmodified="@Convert.ToBase64String(@sample.LastModified)">Delete</a>
+							}
+							else
+							{
+								<a href="#">Delete</a>
+							}
+						</td>
+						@if (@sample.IsDetection)
+						{
+							<td><a asp-controller="Isolates" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-SampleId="@sample.SampleId">Add Detection</a></td>
+						}
+						else
+						{
+							<td><a asp-controller="Isolates" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" asp-route-SampleId="@sample.SampleId">Add Isolate</a></td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+		<span id="sampleValidation" class="text-danger" hidden></span>
+	}
+	else
+	{
+		<div class="no_record">
+			No isolates recorded for this submission.
+		</div>
+		<br />
+	}
+	<br />
+	<h3 class="submission-h3">@Model.IsolatesGridHeader</h3>
+	<br />
+	@if (Model.Isolates != null && Model.Isolates.Any())
+	{
+		<table class="VIRtable">
+			<thead>
+				<tr>
+					<th>Sample Number</th>
+					<th>SMS Ref</th>
+					<th>Sample Sender Ref</th>
+					<th>Virus Type</th>
+					<th>Year Of Isolation</th>
+					<th>Characteristics</th>
+					<th>Nomenclature</th>
+					<th colspan="3"></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var isolate in Model.Isolates)
+				{
+					<tr>
+						<td>@isolate.SampleNumber</td>
+						<td>@isolate.IsoSMSReferenceNumber</td>
+						<td>@isolate.SenderReferenceNumber</td>
+						<td>@isolate.TypeName</td>
+						<td>@isolate.YearOfIsolation</td>
+						<td>@isolate.Characteristics</td>
+						<td>
+							@if (isolate.IsUniqueNomenclature)
+							{
+								<span style="font-weight:bold; color:green;">Unique</span>
+							}
+							else
+							{
+								<span style="font-weight:bold; color:red;">Not Unique</span>
+							}
+						</td>
+						<td><a asp-controller="Isolates" asp-action="Edit" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
+							asp-route-SampleId="@isolate.IsolateSampleId" asp-route-IsolateId="@isolate.IsolateId">Edit</a>
+						</td>
+						<td>
+							@if (isolate.IsDeleteEnabled)
+							{
+								<a class="delete-isolate-link" data-isolateid="@isolate.IsolateId" data-lastmodified="@Convert.ToBase64String(@isolate.LastModified)">Delete</a>
+							}
+							else
+							{
+								<a href="#">Delete</a>
+							}
+						</td>
+						<td>
+							@if (isolate.IsDispatchEnabled)
+							{
+								<a asp-controller="IsolateDispatch" asp-action="Create" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)"
+								   asp-route-IsolateId="@isolate.IsolateId" asp-route-Source="Summary">Dispatch</a>
+							}
+							else
+							{
+								<a href="#">Dispatch</a>
+							}
+
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<span id="isolateValidation" class="text-danger" hidden></span>
+	}
+	else
+	{
+		<div class="no_record">
+			There are no isolates matching the criteria specified
+		</div>
+	}
+	<br />
+</div>
+
+@section Scripts {
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			document.querySelectorAll('[data-confirm]').forEach(function (element) {
+				element.addEventListener('click', function (e) {
+					if (!confirm(this.getAttribute('data-confirm'))) {
+						e.preventDefault();
+					}
+				});
+			});
+		});
+
+		$("#btnSubmissionDelete").on("click", function (e) {
+			e.preventDefault();
+
+			if (confirm("Are you sure you want to Delete this submission?")){
+				$.post('@Url.Action("SubmissionDelete", "SubmissionSamples")',
+					{ AVNumber: $("#AVNumber").val(), SubmissionId: $("#SubmissionId").val(), LastModified: $("#LastModified").val() },
+					function (response) {
+						if (response.success) {
+							window.location.href = '@Url.Action("Index", "Home")';
+						} else {
+							$("#submissionValidation").text(response.message).show();
+							$("#isolateValidation").hide();
+							$("#sampleValidation").hide();
+						}
+				});
+			}
+		});
+
+		$(document).on("click", ".delete-sample-link", function (e) {
+			e.preventDefault();
+
+			var sampleId = $(this).data("sampleid");
+			var lastModified = $(this).data("lastmodified");
+
+			if (confirm("Are you sure that you want to delete this Sample?")) {
+				$.post('@Url.Action("SampleDelete", "SubmissionSamples")',
+					{ AVNumber: $("#AVNumber").val(), SampleId: sampleId, LastModified: lastModified },
+					function (response) {
+						if (response.success) {
+							var avNumber = $("#AVNumber").val();
+							window.location.href = '@Url.Action("Index", "SubmissionSamples")' + '?AVNumber=' + encodeURIComponent(avNumber);
+						} else {
+							$("#sampleValidation").html(response.message).show();
+							$("#isolateValidation").hide();
+							$("#submissionValidation").hide();
+						}
+					});
+			}
+		});
+
+		$(document).on("click", ".delete-isolate-link", function (e) {
+			e.preventDefault();
+
+			var isolateId = $(this).data("isolateid");
+			var lastModified = $(this).data("lastmodified");
+
+			if (confirm("Are you sure that you want to delete this Isolate?")) {
+				$.post('@Url.Action("IsolateDelete", "SubmissionSamples")',
+					{ AVNumber: $("#AVNumber").val(), IsolateId: isolateId, LastModified: lastModified },
+					function (response) {
+						if (response.success) {
+							var avNumber = $("#AVNumber").val();
+							window.location.href = '@Url.Action("Index", "SubmissionSamples")' + '?AVNumber=' + encodeURIComponent(avNumber);
+						} else {
+							$("#isolateValidation").html(response.message).show();
+							$("#submissionValidation").hide();
+							$("#sampleValidation").hide();
+						}
+					});
+			}
+		});
+	</script>
+}

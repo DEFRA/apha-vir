@@ -15,6 +15,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         private readonly ISubmissionRepository _mockSubmissionRepository;
         private readonly ISampleRepository _mockSampleRepository;
         private readonly ICharacteristicRepository _mockCharacteristicRepository;
+        private readonly ILookupRepository _mockLookupRepository;
         private readonly IMapper _mockMapper;
         private readonly IsolatesService _mockIsolatesService;
 
@@ -24,35 +25,41 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             _mockSubmissionRepository = Substitute.For<ISubmissionRepository>();
             _mockSampleRepository = Substitute.For<ISampleRepository>();
             _mockCharacteristicRepository = Substitute.For<ICharacteristicRepository>();
+            _mockLookupRepository = Substitute.For<ILookupRepository>();
             _mockMapper = Substitute.For<IMapper>();
-            _mockIsolatesService = new IsolatesService(_mockIsolateRepository, _mockSubmissionRepository, _mockSampleRepository, _mockCharacteristicRepository, _mockMapper);
+            _mockIsolatesService = new IsolatesService(_mockIsolateRepository, 
+                _mockSubmissionRepository, 
+                _mockSampleRepository, 
+                _mockCharacteristicRepository,
+                _mockLookupRepository,
+                _mockMapper);
         }
 
         [Fact]
         public async Task Test_UpdateIsolateDetailsAsync_Success()
         {
             // Arrange
-            var isolateDto = new IsolateDTO { IsolateId = Guid.NewGuid() };
-            var isolateEntity = new Isolate { IsolateId = isolateDto.IsolateId };
+            var IsolateDto = new IsolateDto { IsolateId = Guid.NewGuid() };
+            var isolateEntity = new Isolate { IsolateId = IsolateDto.IsolateId };
 
-            _mockMapper.Map<Isolate>(isolateDto).Returns(isolateEntity);
+            _mockMapper.Map<Isolate>(IsolateDto).Returns(isolateEntity);
 
             // Act
-            await _mockIsolatesService.UpdateIsolateDetailsAsync(isolateDto);
+            await _mockIsolatesService.UpdateIsolateDetailsAsync(IsolateDto);
 
             // Assert
-            await _mockIsolateRepository.Received(1).UpdateIsolateDetailsAsync(Arg.Is<Isolate>(i => i.IsolateId == isolateDto.IsolateId));
+            await _mockIsolateRepository.Received(1).UpdateIsolateDetailsAsync(Arg.Is<Isolate>(i => i.IsolateId == IsolateDto.IsolateId));
         }
 
         [Fact]
         public async Task Test_UpdateIsolateDetailsAsync_MappingFailure()
         {
             // Arrange
-            var isolateDto = new IsolateDTO { IsolateId = Guid.NewGuid() };
-            _mockMapper.Map<Isolate>(isolateDto).Throws(new AutoMapperMappingException("Mapping failed"));
+            var IsolateDto = new IsolateDto { IsolateId = Guid.NewGuid() };
+            _mockMapper.Map<Isolate>(IsolateDto).Throws(new AutoMapperMappingException("Mapping failed"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<AutoMapperMappingException>(() => _mockIsolatesService.UpdateIsolateDetailsAsync(isolateDto));
+            await Assert.ThrowsAsync<AutoMapperMappingException>(() => _mockIsolatesService.UpdateIsolateDetailsAsync(IsolateDto));
         }
 
         [Fact]
@@ -65,7 +72,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var yearOfIsolation = "2023";
 
             var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };
-            var sample = new Sample { SampleId = sampleId, HostBreedName = "Chicken", SenderReferenceNumber = "SRN001" };
+            var sample = new Sample { SampleId = sampleId, SenderReferenceNumber = "SRN001" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample> { sample });
@@ -74,7 +81,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var result = await _mockIsolatesService.GenerateNomenclature(avNumber, sampleId, virusType, yearOfIsolation);
 
             // Assert
-            Assert.Equal("H5N1/Chicken/UK/SRN001/2023", result);
+            Assert.Equal("H5N1//UK/SRN001/2023", result);
         }
 
         [Fact]
@@ -87,7 +94,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var yearOfIsolation = "2023";
 
             var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };
-            var sample = new Sample { SampleId = sampleId, HostBreedName = "Chicken", SenderReferenceNumber = "SRN001" };
+            var sample = new Sample { SampleId = sampleId, SenderReferenceNumber = "SRN001" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample> { sample });
@@ -96,7 +103,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var result = await _mockIsolatesService.GenerateNomenclature(avNumber, sampleId, virusType!, yearOfIsolation);
 
             // Assert
-            Assert.Equal("[Virus Type]/Chicken/UK/SRN001/2023", result);
+            Assert.Equal("[Virus Type]//UK/SRN001/2023", result);
         }
 
         [Fact]
@@ -109,7 +116,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             string? yearOfIsolation = null;
 
             var submission = new Submission { SubmissionId = Guid.NewGuid(), CountryOfOriginName = "UK" };
-            var sample = new Sample { SampleId = sampleId, HostBreedName = "Chicken", SenderReferenceNumber = "SRN001" };
+            var sample = new Sample { SampleId = sampleId, SenderReferenceNumber = "SRN001" };
 
             _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(new List<Sample> { sample });
@@ -118,7 +125,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var result = await _mockIsolatesService.GenerateNomenclature(avNumber, sampleId, virusType, yearOfIsolation!);
 
             // Assert
-            Assert.Equal("H5N1/Chicken/UK/SRN001/[Year of Isolation]", result);
+            Assert.Equal("H5N1//UK/SRN001/[Year of Isolation]", result);
         }
 
         [Fact]

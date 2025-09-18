@@ -6,6 +6,7 @@ public class IsolateInfo
     public Guid IsolateSampleId { get; set; }
     public string? AvNumber { get; set; } = null!;
     public string? FamilyName { get; set; }
+    public Guid Type {  get; set; }
     public string? TypeName { get; set; }
     public string? GroupSpeciesName { get; set; }
     public string? BreedName { get; set; }
@@ -31,7 +32,11 @@ public class IsolateInfo
     public int? FirstViablePassageNumber { get; set; }
     public bool IsMixedIsolate { get; set; }
     public string? Nomenclature { get; set; }
+    public string? IsolateNomenclature { get; set; }
     public string? SmsreferenceNumber { get; set; }
+    public string? IsoSMSReferenceNumber { get; set; }
     public string? HostPurposeName { get; set; }
     public string? SampleTypeName { get; set; }
+    public int? SampleNumber { get; set; }
+    public byte[] LastModified { get; set; } = null!;
 }

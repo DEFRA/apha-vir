@@ -1,28 +1,38 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.VirusCharacteristic;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
+namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class ListEntriesTests
     {
+        private readonly object _lock;
         private readonly IVirusCharacteristicService _service;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
         private readonly IMapper _mapper;
         private readonly VirusCharacteristicsListEntryController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public ListEntriesTests()
+        public ListEntriesTests(AppRolesFixture fixture)
         {
             _service = Substitute.For<IVirusCharacteristicService>();
             _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
+
         [Fact]
         public async Task ListEntries_Valid_ReturnsViewWithViewModel_AllPropertiesSet()
         {
@@ -33,17 +43,17 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var entryId = Guid.NewGuid();
             var lastModified = new byte[] { 1, 2, 3, 4 };
             var entryName = "Test Entry";
-            var characteristic = new VirusCharacteristicDTO { Id = charId, Name = "Test" };
-            var entryDto = new VirusCharacteristicListEntryDTO
+            var characteristic = new VirusCharacteristicDto { Id = charId, Name = "Test" };
+            var entryDto = new VirusCharacteristicListEntryDto
             {
                 Id = entryId,
                 VirusCharacteristicId = charId,
                 Name = entryName,
                 LastModified = lastModified
             };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO> { entryDto },
+                data = new List<VirusCharacteristicListEntryDto> { entryDto },
                 TotalCount = 1
             };
             var entryViewModel = new VirusCharacteristicListEntryModel
@@ -54,10 +64,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
                 LastModified = lastModified
             };
 
-            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO> { characteristic });
+            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto> { characteristic });
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data)
                 .Returns(new List<VirusCharacteristicListEntryModel> { entryViewModel });
+
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.ListEntries(charId, pageNo, pageSize);
@@ -82,6 +94,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             Assert.Equal(pageSize, model.Entries.Pagination.PageSize);
             Assert.Equal(1, model.Entries.Pagination.TotalCount);
         }
+
         [Fact]
         public async Task ListEntries_CharacteristicNotFound_ReturnsViewWithEmptyName()
         {
@@ -89,16 +102,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             int pageNo = 1;
             int pageSize = 10;
             var charId = Guid.NewGuid();
-            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
-            var PaginatedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto>());
+            var PaginatedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 0
             };
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(PaginatedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(PaginatedResult.data)
                 .Returns(new List<VirusCharacteristicListEntryModel>());
 
+            SetupMockUserAndRoles();
+            
             //Act
             var result = await _controller.ListEntries(charId, pageNo, pageSize);
 
@@ -118,11 +133,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             Assert.Equal(0, model.Entries.Pagination.TotalCount);
         }
 
-
         [Fact]
         public async Task BindCharacteristicEntriesGridOnPagination_InvalidModelState_ReturnsBadRequest()
         {
             _controller.ModelState.AddModelError("error", "some error");
+            SetupMockUserAndRoles();
+
             var result = await _controller.BindCharacteristicEntriesGridOnPagination(Guid.NewGuid(), 1, 10);
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -130,6 +146,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         [Fact]
         public async Task BindCharacteristicEntriesGridOnPagination_NullCharacteristic_ReturnsBadRequest()
         {
+            SetupMockUserAndRoles();
             var result = await _controller.BindCharacteristicEntriesGridOnPagination(null, 1, 10);
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -137,6 +154,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         [Fact]
         public async Task BindCharacteristicEntriesGridOnPagination_EmptyCharacteristic_ReturnsBadRequest()
         {
+            SetupMockUserAndRoles();
             var result = await _controller.BindCharacteristicEntriesGridOnPagination(Guid.Empty, 1, 10);
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -149,15 +167,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             int pageSize = 5;
             var charId = Guid.NewGuid();
             var entryId = Guid.NewGuid();
-            var entryDto = new VirusCharacteristicListEntryDTO
+            var entryDto = new VirusCharacteristicListEntryDto
             {
                 Id = entryId,
                 VirusCharacteristicId = charId,
                 Name = "Test Entry"
             };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO> { entryDto },
+                data = new List<VirusCharacteristicListEntryDto> { entryDto },
                 TotalCount = 1
             };
             var entryViewModel = new VirusCharacteristicListEntryModel
@@ -170,6 +188,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data)
                 .Returns(new List<VirusCharacteristicListEntryModel> { entryViewModel });
+            
+            SetupMockUserAndRoles();
 
             //Act
             var result = await _controller.BindCharacteristicEntriesGridOnPagination(charId, pageNo, pageSize);
@@ -186,21 +206,24 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             Assert.Equal(pageSize, model.Pagination.PageSize);
             Assert.Equal(1, model.Pagination.TotalCount);
         }
+
         [Fact]
         public async Task BindCharacteristicEntriesGridOnPagination_ReturnsPartialViewWithEmptyList_WhenEmptyEntryList()
         {
             int pageNo = 1;
             int pageSize = 10;
             var charId = Guid.NewGuid();
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 0
             };
             var entryViewModels = new List<VirusCharacteristicListEntryModel>();
 
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data).Returns(entryViewModels);
+
+            SetupMockUserAndRoles();
 
             var result = await _controller.BindCharacteristicEntriesGridOnPagination(charId, pageNo, pageSize);
 
@@ -212,21 +235,24 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             Assert.Equal(pageSize, model.Pagination.PageSize);
             Assert.Equal(0, model.Pagination.TotalCount);
         }
+
         [Fact]
         public async Task BindCharacteristicEntriesGridOnPagination_ReturnsCorrectPagination_WhenDifferentPageSizes()
         {
             int pageNo = 3;
             int pageSize = 15;
             var charId = Guid.NewGuid();
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 30
             };
             var entryViewModels = new List<VirusCharacteristicListEntryModel>();
 
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data).Returns(entryViewModels);
+            
+            SetupMockUserAndRoles();
 
             var result = await _controller.BindCharacteristicEntriesGridOnPagination(charId, pageNo, pageSize);
 
@@ -243,11 +269,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             int pageNo = 1;
             int pageSize = 10;
             var charId = Guid.NewGuid();
-            var entryDTOs = new List<VirusCharacteristicListEntryDTO>
+            var entryDTOs = new List<VirusCharacteristicListEntryDto>
             {
-                new VirusCharacteristicListEntryDTO { Id = Guid.NewGuid(), Name = "Test Entry" }
+                new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Test Entry" }
             };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
                 data = entryDTOs,
                 TotalCount = 1
@@ -264,6 +290,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
 
             _listEntryService.GetVirusCharacteristicListEntries(charId, pageNo, pageSize).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data).Returns(entryViewModels);
+            
+            SetupMockUserAndRoles();
 
             var result = await _controller.BindCharacteristicEntriesGridOnPagination(charId, pageNo, pageSize);
 
@@ -280,7 +308,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
-
+            SetupMockUserAndRoles();
+            
             // Act
             var result = await _controller.ListEntries(Guid.NewGuid());
 
@@ -291,6 +320,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         [Fact]
         public async Task ListEntries_NullCharacteristic_ReturnsBadRequest()
         {
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.ListEntries(null);
 
@@ -300,6 +330,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         [Fact]
         public async Task ListEntries_EmptyCharacteristic_ReturnsBadRequest()
         {
+            SetupMockUserAndRoles();
             var result = await _controller.ListEntries(Guid.Empty);
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -309,17 +340,19 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
         {
             // Arrange
             var charId = Guid.NewGuid();
-            var characteristic = new VirusCharacteristicDTO { Id = charId, Name = "Test" };
-            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var characteristic = new VirusCharacteristicDto { Id = charId, Name = "Test" };
+            var pagedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>(),
+                data = new List<VirusCharacteristicListEntryDto>(),
                 TotalCount = 0
             };
-            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO> { characteristic });
+            _service.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto> { characteristic });
             _listEntryService.GetVirusCharacteristicListEntries(charId, 1, 10).Returns(pagedResult);
             _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(pagedResult.data)
                 .Returns(new List<VirusCharacteristicListEntryModel>());
-
+            
+            SetupMockUserAndRoles();
+            
             // Act
             var result = await _controller.ListEntries(charId);
 
@@ -327,6 +360,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("VirusCharacteristicListEntries", viewResult.ViewName);
             Assert.IsType<VirusCharacteristicListEntriesViewModel>(viewResult.Model);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }
