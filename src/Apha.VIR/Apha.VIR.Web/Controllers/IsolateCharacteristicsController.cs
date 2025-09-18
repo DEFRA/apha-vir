@@ -113,7 +113,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 foreach (var characteristic in characteristics)
                 {
-                    var dto = _mapper.Map<IsolateCharacteristicDTO>(characteristic);
+                    var dto = _mapper.Map<IsolateCharacteristicDto>(characteristic);
                     await _isolatesService.UpdateIsolateCharacteristicsAsync(dto, AuthorisationUtil.GetUserId());
                 }
             }
