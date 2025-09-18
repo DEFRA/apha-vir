@@ -296,6 +296,56 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         }
 
         [Fact]
+        public async Task Edit_TooManyCharacteristics_ReturnsViewWithModelError()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            var characteristics = Enumerable.Range(0, 6)
+                .Select(i => new IsolateCharacteristicViewModel { AVNumber = $"AV00{i}", VirusCharacteristicId = Guid.NewGuid() })
+                .ToList();
+
+            // Act
+            var result = await _controller.Edit(characteristics);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.False(_controller.ModelState.IsValid);            
+            Assert.Contains(_controller.ModelState, kvp => kvp.Value?.Errors.Any(e => e.ErrorMessage.Contains("You can only submit up to 5 characteristics at a time.")) == true);
+        }
+
+        [Fact]
+        public async Task Edit_NullCharacteristics_ReturnsViewWithModelError()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+
+            // Act
+            var result = await _controller.Edit((List<IsolateCharacteristicViewModel>?)null!); // Added null-forgiving operator to suppress CS8625
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.False(_controller.ModelState.IsValid);
+
+            // Fix for CS8602: Ensure `kvp.Value` is not null before accessing `Errors`
+            Assert.Contains(_controller.ModelState, kvp => kvp.Value?.Errors.Any(e => e.ErrorMessage.Contains("No characteristics data was provided.")) == true);
+        }
+
+        [Fact]
+        public async Task Edit_CannotEditItem_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var characteristics = new List<IsolateCharacteristicViewModel>
+    {
+        new IsolateCharacteristicViewModel { AVNumber = "AV001", VirusCharacteristicId = Guid.NewGuid() }
+    };
+            // Simulate user not authorized
+            AuthorisationUtil.AppRoles = new List<string>(); // Remove all roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(characteristics));
+        }
+
+        [Fact]
         public void ValidateCharacteristic_ValidTextInput_ReturnsEmptyString()
         {
             var characteristicViewModel = new IsolateCharacteristicViewModel
@@ -457,6 +507,23 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Contains("Id not specified for this item", result);
+        }
+
+        [Fact]
+        public void ValidateCharacteristic_UnknownCharacteristicType_ReturnsEmptyString()
+        {
+            var characteristicViewModel = new IsolateCharacteristicViewModel
+            {
+                VirusCharacteristicId = Guid.NewGuid(),
+                CharacteristicType = "UnknownType",
+                CharacteristicName = "TestCharacteristic",
+                CharacteristicValue = "SomeValue"
+            };
+            var virusCharacteristicDto = new VirusCharacteristicDto();
+
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
+
+            Assert.Equal(string.Empty, result);
         }
 
         private void SetupMockUserAndRoles()

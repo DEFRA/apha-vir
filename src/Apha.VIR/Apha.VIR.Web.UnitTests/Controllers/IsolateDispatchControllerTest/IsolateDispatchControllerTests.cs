@@ -409,6 +409,53 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             await Assert.ThrowsAsync<Exception>(() => _controller.Edit(model));
         }
 
+        [Fact]
+        public async Task Edit_Post_Unauthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new IsolateDispatchEditViewModel();
+            // Remove Administrator role
+            AuthorisationUtil.AppRoles = new List<string> { AppRoleConstant.IsolateManager };
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(model));
+        }
+
+        [Fact]
+        public async Task Edit_Get_ModelStateInvalid_ReturnsBadRequest()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "invalid");
+            // Act
+            var result = await _controller.Edit("AV001", Guid.NewGuid(), Guid.NewGuid());
+            // Assert
+            var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.NotNull(badRequest.Value);
+        }
+
+        [Fact]
+        public async Task History_ModelStateInvalid_ReturnsView()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "invalid");
+            // Act
+            var result = await _controller.History(null, Guid.Empty);
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Null(viewResult.Model);
+        }
+
+        [Fact]
+        public async Task History_BothParametersEmpty_ReturnsView()
+        {
+            // Arrange
+            // ModelState is valid by default
+            // Act
+            var result = await _controller.History(null, Guid.Empty);
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Null(viewResult.Model);
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)
