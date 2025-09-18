@@ -157,7 +157,7 @@ namespace Apha.VIR.Application.Services
 
             var matchIsolate = isolationList.Where(x => x.IsolateId == DispatchIsolateId).ToList();
 
-            if (!matchIsolate.Any())
+            if (matchIsolate.Count == 0)
                 return _mapper.Map<IsolateDispatchInfoDto>(null);
 
             var matchIsolateId = matchIsolate.First().IsolateId;
