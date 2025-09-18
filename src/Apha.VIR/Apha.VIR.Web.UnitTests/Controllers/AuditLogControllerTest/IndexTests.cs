@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -9,13 +10,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 {
     public class IndexTests
     {
+
         [Fact]
         public void Index_ReturnsAuditLogViewWithDefaultModel()
         {
             // Arrange
             var auditLogService = Substitute.For<IAuditLogService>();
+            var cacheService = Substitute.For<ICacheService>();
             var mapper = Substitute.For<IMapper>();
-            var controller = new AuditLogController(auditLogService, mapper);
+            var controller = new AuditLogController(auditLogService, cacheService, mapper);
 
             // Act
             var result = controller.Index();

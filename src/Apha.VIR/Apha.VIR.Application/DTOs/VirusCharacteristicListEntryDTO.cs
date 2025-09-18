@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class VirusCharacteristicListEntryDTO
+public class VirusCharacteristicListEntryDto
 {
     public Guid Id { get; set; }
     public Guid VirusCharacteristicId { get; set; }

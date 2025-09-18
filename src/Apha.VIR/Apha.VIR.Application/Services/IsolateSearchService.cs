@@ -29,13 +29,13 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Tuple<List<string>, List<VirusCharacteristicListEntryDTO>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId)
+        public async Task<Tuple<List<string>, List<VirusCharacteristicListEntryDto>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId)
         {
             List<string> compartaors = new List<string>();
-            List<VirusCharacteristicListEntryDTO> listValues = new List<VirusCharacteristicListEntryDTO>();
+            List<VirusCharacteristicListEntryDto> listValues = new List<VirusCharacteristicListEntryDto>();
 
-            var virusCharacteristics = _mapper.Map<IEnumerable<VirusCharacteristicDTO>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync());
-            VirusCharacteristicDTO? characteristic = virusCharacteristics.FirstOrDefault(c => c.Id == virusCharateristicId);
+            var virusCharacteristics = _mapper.Map<IEnumerable<VirusCharacteristicDto>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync());
+            VirusCharacteristicDto? characteristic = virusCharacteristics.FirstOrDefault(c => c.Id == virusCharateristicId);
             if (characteristic != null)
             {
                 switch (characteristic.DataType)
@@ -45,7 +45,7 @@ namespace Apha.VIR.Application.Services
                         break;
                     case "SingleList":
                         compartaors.AddRange(new List<string> { "=", "not equal to", "begins with" });
-                        listValues = _mapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(await _virusCharacteristicListEntryRepository.GetEntriesByCharacteristicIdAsync(characteristic.Id)).ToList();
+                        listValues = _mapper.Map<IEnumerable<VirusCharacteristicListEntryDto>>(await _virusCharacteristicListEntryRepository.GetEntriesByCharacteristicIdAsync(characteristic.Id)).ToList();
                         break;
                     case "Yes/No":
                         compartaors.AddRange(new List<string> { "=" });
@@ -58,20 +58,20 @@ namespace Apha.VIR.Application.Services
             return Tuple.Create(compartaors, listValues);
         }
 
-        public async Task<PaginatedResult<IsolateSearchResultDTO>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)
+        public async Task<PaginatedResult<IsolateSearchResultDto>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)
         {
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
-            return _mapper.Map<PaginatedResult<IsolateSearchResultDTO>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
+            return _mapper.Map<PaginatedResult<IsolateSearchResultDto>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
         }
 
         public async Task<List<IsolateSearchExportDto>> GetIsolateSearchExportResultAsync(QueryParameters<SearchCriteriaDTO> criteria)
         {
             List<IsolateSearchExportDto> isolateSearchExportData = new List<IsolateSearchExportDto>();
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
-            List<IsolateSearchResultDTO> isolateRecords = _mapper.Map<List<IsolateSearchResultDTO>>(await _isolateSearchRepository.GetIsolateSearchExportResultAsync(criteriaData));
+            List<IsolateSearchResultDto> isolateRecords = _mapper.Map<List<IsolateSearchResultDto>>(await _isolateSearchRepository.GetIsolateSearchExportResultAsync(criteriaData));
             foreach (var record in isolateRecords)
             {
-                IsolateFullDetailDTO data = _mapper.Map<IsolateFullDetailDTO>(await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(record.IsolateId));
+                IsolateFullDetailDto data = _mapper.Map<IsolateFullDetailDto>(await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(record.IsolateId));
                 IsolateSearchExportDto isolateInfo = _mapper.Map<IsolateSearchExportDto>(data.IsolateDetails);
                 isolateInfo.ViabilityChecks = string.Join(", ", data.IsolateViabilityDetails
                     .Select(v => $"{v.ViabilityStatus}: checked by {v.CheckedByName} on {v.DateChecked.ToString("dd/MM/yyyy")}"));

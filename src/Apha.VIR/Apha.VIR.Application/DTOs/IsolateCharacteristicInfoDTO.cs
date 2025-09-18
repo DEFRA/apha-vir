@@ -1,7 +1,7 @@
 ﻿
 namespace Apha.VIR.Application.DTOs
 {
-    public class IsolateCharacteristicInfoDTO
+    public class IsolateCharacteristicInfoDto
     {
         public string? CharacteristicValue { get; set; }
         public string CharacteristicName { get; set; } = null!;

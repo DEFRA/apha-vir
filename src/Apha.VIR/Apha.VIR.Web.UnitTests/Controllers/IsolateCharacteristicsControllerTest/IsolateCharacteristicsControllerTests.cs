@@ -50,8 +50,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         {
             // Arrange
             var isolate = Guid.NewGuid();
-            _isolatesService.GetIsolateCharacteristicInfoAsync(isolate).Returns(new List<IsolateCharacteristicDTO>());
-            _mapper.Map<List<IsolateCharacteristicViewModel>>(Arg.Any<List<IsolateCharacteristicDTO>>()).Returns(new List<IsolateCharacteristicViewModel>());
+            _isolatesService.GetIsolateCharacteristicInfoAsync(isolate).Returns(new List<IsolateCharacteristicDto>());
+            _mapper.Map<List<IsolateCharacteristicViewModel>>(Arg.Any<List<IsolateCharacteristicDto>>()).Returns(new List<IsolateCharacteristicViewModel>());
 
             // Act
             var result = await _controller.Edit("AVNumber", isolate) as ViewResult;
@@ -67,10 +67,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         {
             // Arrange
             var isolate = Guid.NewGuid();
-            var dtoList = new List<IsolateCharacteristicDTO>
+            var dtoList = new List<IsolateCharacteristicDto>
             {
-                new IsolateCharacteristicDTO { CharacteristicType = "Text" },
-                new IsolateCharacteristicDTO { CharacteristicType = "SingleList", VirusCharacteristicId = Guid.NewGuid(), CharacteristicValue = "Value" }
+                new IsolateCharacteristicDto { CharacteristicType = "Text" },
+                new IsolateCharacteristicDto { CharacteristicType = "SingleList", VirusCharacteristicId = Guid.NewGuid(), CharacteristicValue = "Value" }
             };
             var modelList = new List<IsolateCharacteristicViewModel>
             {
@@ -79,7 +79,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             };
 
             _isolatesService.GetIsolateCharacteristicInfoAsync(isolate).Returns(dtoList);
-            _mapper.Map<List<IsolateCharacteristicViewModel>>(Arg.Any<List<IsolateCharacteristicDTO>>()).Returns(modelList);
+            _mapper.Map<List<IsolateCharacteristicViewModel>>(Arg.Any<List<IsolateCharacteristicDto>>()).Returns(modelList);
 
             // Act
             var result = await _controller.Edit("AVNumber", isolate) as ViewResult;
@@ -96,7 +96,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             // Arrange
             var isolate = Guid.NewGuid();
             _isolatesService.GetIsolateCharacteristicInfoAsync(isolate)
-                .Returns(callInfo => Task.FromException<IEnumerable<IsolateCharacteristicDTO>>(new Exception("Test exception")));
+                .Returns(callInfo => Task.FromException<IEnumerable<IsolateCharacteristicDto>>(new Exception("Test exception")));
 
             // Act & Assert
             Assert.ThrowsAsync<Exception>(() => _controller.Edit("AVNumber", isolate));
@@ -110,8 +110,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             {
                 new IsolateCharacteristicViewModel { AVNumber = "AV001", VirusCharacteristicId = Guid.NewGuid() }
             };
-            _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
-            _mapper.Map<IsolateCharacteristicDTO>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDTO());
+            _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto>());
+            _mapper.Map<IsolateCharacteristicDto>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDto());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(characteristics);
@@ -152,9 +152,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                     CharacteristicValue = "Invalid"
                 }
             };
-            var virusCharacteristics = new List<VirusCharacteristicDTO>
+            var virusCharacteristics = new List<VirusCharacteristicDto>
             {
-                new VirusCharacteristicDTO
+                new VirusCharacteristicDto
                 {
                     Id = characteristics[0].VirusCharacteristicId!.Value, // Use the null-forgiving operator (!) to suppress the nullable warning
                     Length = 5
@@ -179,18 +179,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 new IsolateCharacteristicViewModel { VirusCharacteristicId = Guid.NewGuid(), CharacteristicType = "Text", CharacteristicValue = "Test" }
             };
             // Updated the code to handle the nullable value type warning (CS8629) by using the null-coalescing operator.
-            var existingCharacteristics = new List<VirusCharacteristicDTO>
+            var existingCharacteristics = new List<VirusCharacteristicDto>
             {
-                new VirusCharacteristicDTO { Id = characteristics[0].VirusCharacteristicId ?? Guid.Empty }
+                new VirusCharacteristicDto { Id = characteristics[0].VirusCharacteristicId ?? Guid.Empty }
             };
             _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(existingCharacteristics);
-            _mapper.Map<IsolateCharacteristicDTO>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDTO());
+            _mapper.Map<IsolateCharacteristicDto>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDto());
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(characteristics);
 
             // Assert
-            await _isolatesService.Received(1).UpdateIsolateCharacteristicsAsync(Arg.Any<IsolateCharacteristicDTO>(), Arg.Any<string>());
+            await _isolatesService.Received(1).UpdateIsolateCharacteristicsAsync(Arg.Any<IsolateCharacteristicDto>(), Arg.Any<string>());
             Assert.IsType<RedirectToActionResult>(result);
         }
 
@@ -203,9 +203,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 new IsolateCharacteristicViewModel { VirusCharacteristicId = Guid.NewGuid(), CharacteristicType = "Numeric", CharacteristicValue = "InvalidNumber" }
             };
             // Updated the code to handle the nullable value type warning (CS8629) by using the null-coalescing operator.
-            var existingCharacteristics = new List<VirusCharacteristicDTO>
+            var existingCharacteristics = new List<VirusCharacteristicDto>
             {
-                new VirusCharacteristicDTO { Id = characteristics[0].VirusCharacteristicId ?? Guid.Empty }
+                new VirusCharacteristicDto { Id = characteristics[0].VirusCharacteristicId ?? Guid.Empty }
             };
             _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(existingCharacteristics);
             _controller.ModelState.AddModelError("Error", "Invalid input");
@@ -226,10 +226,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var characteristicValue = "TestValue";
-            var options = new List<VirusCharacteristicListEntryDTO>
+            var options = new List<VirusCharacteristicListEntryDto>
             {
-            new VirusCharacteristicListEntryDTO { Name = "TestValue" },
-            new VirusCharacteristicListEntryDTO { Name = "OtherValue" }
+            new VirusCharacteristicListEntryDto { Name = "TestValue" },
+            new VirusCharacteristicListEntryDto { Name = "OtherValue" }
             };
             _virusCharacteristicListEntryService.GetEntriesByCharacteristicIdAsync(virusCharacteristicId).Returns(options);
 
@@ -262,7 +262,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         {
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
-            _virusCharacteristicListEntryService.GetEntriesByCharacteristicIdAsync(virusCharacteristicId).Returns(new List<VirusCharacteristicListEntryDTO>());
+            _virusCharacteristicListEntryService.GetEntriesByCharacteristicIdAsync(virusCharacteristicId).Returns(new List<VirusCharacteristicListEntryDto>());
 
             // Act
             var result = await _controller.GetDropDownList(virusCharacteristicId, "TestValue");
@@ -278,10 +278,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var characteristicValue = "SelectedValue";
-            var options = new List<VirusCharacteristicListEntryDTO>
+            var options = new List<VirusCharacteristicListEntryDto>
                  {
-                 new VirusCharacteristicListEntryDTO { Name = "SelectedValue" },
-                 new VirusCharacteristicListEntryDTO { Name = "OtherValue" }
+                 new VirusCharacteristicListEntryDto { Name = "SelectedValue" },
+                 new VirusCharacteristicListEntryDto { Name = "OtherValue" }
                  };
             _virusCharacteristicListEntryService.GetEntriesByCharacteristicIdAsync(virusCharacteristicId).Returns(options);
 
@@ -305,12 +305,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestCharacteristic",
                 CharacteristicValue = "ValidText"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            var virusCharacteristicDto = new VirusCharacteristicDto
             {
                 Length = 10
             };
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Empty(result);
         }
@@ -325,12 +325,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestCharacteristic",
                 CharacteristicValue = "ThisTextIsTooLong"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            var virusCharacteristicDto = new VirusCharacteristicDto
             {
                 Length = 10
             };
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Contains("exceeds maximum length requirement", result);
         }
@@ -345,14 +345,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestNumeric",
                 CharacteristicValue = "5.00"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            var virusCharacteristicDto = new VirusCharacteristicDto
             {
                 MinValue = 0,
                 MaxValue = 10,
                 DecimalPlaces = 2
             };
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Empty(result);
         }
@@ -367,13 +367,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestNumeric",
                 CharacteristicValue = "-1"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            var virusCharacteristicDto = new VirusCharacteristicDto
             {
                 MinValue = 0,
                 MaxValue = 10
             };
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Contains("below the minimum value requirement", result);
         }
@@ -388,13 +388,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestNumeric",
                 CharacteristicValue = "11"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            var virusCharacteristicDto = new VirusCharacteristicDto
             {
                 MinValue = 0,
                 MaxValue = 10
             };
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Contains("exceeds the maximum value requirement", result);
         }
@@ -409,14 +409,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestNumeric",
                 CharacteristicValue = "5.1"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            var virusCharacteristicDto = new VirusCharacteristicDto
             {
                 MinValue = 0,
                 MaxValue = 10,
                 DecimalPlaces = 2
             };
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Contains("does not include the required number of decimal places", result);
         }
@@ -431,13 +431,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestNumeric",
                 CharacteristicValue = "NotANumber"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO
+            var virusCharacteristicDto = new VirusCharacteristicDto
             {
                 MinValue = 0,
                 MaxValue = 10
             };
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Contains("is not a valid number", result);
         }
@@ -452,9 +452,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
                 CharacteristicName = "TestCharacteristic",
                 CharacteristicValue = "ValidText"
             };
-            var virusCharacteristicDTO = new VirusCharacteristicDTO();
+            var virusCharacteristicDto = new VirusCharacteristicDto();
 
-            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDTO);
+            var result = IsolateCharacteristicsController.ValidateCharacteristic(characteristicViewModel, virusCharacteristicDto);
 
             Assert.Contains("Id not specified for this item", result);
         }

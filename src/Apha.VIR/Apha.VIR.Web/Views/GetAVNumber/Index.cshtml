@@ -3,14 +3,14 @@
     ViewData["Title"] = "Virus Isolates Repository";
 }
 
-<div id="contentbox" style="width: 95%">
-    <div class="box_title">Enter the AV Number of the submission</div>
-    <div class="av-number-box_body">
+<div class="contentbox" style="width: 95%">
+    <div class="contentbox_title">Enter the AV Number of the submission</div>
+    <div class="contentbox_body">
         <br />
         <form method="post">
             <div>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; align-items: center;">
+                <div class="d-flex flex-column " style=" gap: 10px;">
+                    <div class="d-flex   align-items-center">
                         <div style="min-width: 90px;">AV Number</div>
                         <div><img src="~/images/spacer.gif" width="10" height="5" alt="" /></div>
                         <div>
@@ -19,7 +19,7 @@
                             <span asp-validation-for="AVNumber" class="text-danger"></span>
                         </div>
                     </div>
-                    <div style="display: flex; align-items: center;">
+                    <div class="d-flex   align-items-center">
                         <div><img src="~/images/spacer.gif" width="200" height="5" alt="" /></div>
                         <div>
                             <button type="submit" class="btn btn-link" style="padding:0; border:none; background:none; color:#0b2677; text-decoration:underline; font-size:1em;">
@@ -34,13 +34,13 @@
 </div>
 
 <br />
-<div class="isolate-grid-table mt-1">
+<div class=" mt-1">
     @if (Model.LastAVNumbers != null && Model.LastAVNumbers.Any())
     {
-        <table class="table table-striped" style="width: 180px;">
+        <table class="VIRtable table-striped" style="width: 180px;">
             <thead class=".av-number-thead">
                 <tr>
-                    <th class=".av-number-th"> Select a recently used AV Number</th>
+                    <th > Select a recently used AV Number</th>
                 </tr>
             </thead>
             <tbody>

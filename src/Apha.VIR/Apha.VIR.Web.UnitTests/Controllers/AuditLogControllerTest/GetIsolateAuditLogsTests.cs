@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.AuditLog;
+using Apha.VIR.Web.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,28 +15,26 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
     public class GetIsolateAuditLogsTests
     {
         private readonly IAuditLogService _auditLogService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly AuditLogController _controller;
 
         public GetIsolateAuditLogsTests()
         {
             _auditLogService = Substitute.For<IAuditLogService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new AuditLogController(_auditLogService, _mapper);
+            _controller = new AuditLogController(_auditLogService, _cacheService, _mapper);
         }
 
         [Fact]
         public async Task GetIsolateAuditLogs_WithCriteria_ReturnsPartialView()
         {
-            var criteria = new AuditLogSearchModel { AVNumber = "AV123", UserId = "test" };
-            var httpContext = new DefaultHttpContext();
-            var tempDataProvider = Substitute.For<ITempDataProvider>();
-            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
-            tempData["SearchCriteria"] = JsonConvert.SerializeObject(criteria);
-            _controller.TempData = tempData;
+            var criteria = new AuditLogSearchModel { AVNumber = "AV123", UserId = "test" };            
+            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(criteria));           
 
             _auditLogService.GetIsolatLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
-                .Returns(new[] { new AuditIsolateLogDTO() });
+                .Returns(new[] { new AuditIsolateLogDto() });
 
             _mapper.Map<IEnumerable<AuditIsolateLogModel>>(Arg.Any<object>())
                 .Returns(new[] { new AuditIsolateLogModel() });
@@ -44,7 +43,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
-            Assert.IsAssignableFrom<IEnumerable<AuditIsolateLogModel>>(partial.Model);
+            Assert.IsAssignableFrom<AuditIsolateLogModel>(partial.Model);
         }
 
         [Fact]

@@ -17,17 +17,17 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<AuditCharacteristicLogDTO>> GetCharacteristicsLogsAsync(string avNumber,
+        public async Task<IEnumerable<AuditCharacteristicLogDto>> GetCharacteristicsLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {
             ArgumentNullException.ThrowIfNull(avNumber);
             ArgumentNullException.ThrowIfNull(userid);
 
             var result = await _auditRepository.GetCharacteristicsLogsAsync(avNumber, dateFrom, dateTo, userid);
-            return _mapper.Map<IEnumerable<AuditCharacteristicLogDTO>>(result);
+            return _mapper.Map<IEnumerable<AuditCharacteristicLogDto>>(result);
         }
 
-        public async Task<IEnumerable<AuditDispatchLogDTO>> GetDispatchLogsAsync(string avNumber,
+        public async Task<IEnumerable<AuditDispatchLogDto>> GetDispatchLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {
             ArgumentNullException.ThrowIfNull(avNumber);
@@ -35,10 +35,10 @@ namespace Apha.VIR.Application.Services
 
             var result = await _auditRepository.GetDispatchLogsAsync(avNumber, dateFrom, dateTo, userid);
 
-            return _mapper.Map<IEnumerable<AuditDispatchLogDTO>>(result);
+            return _mapper.Map<IEnumerable<AuditDispatchLogDto>>(result);
         }
 
-        public async Task<IEnumerable<AuditViabilityLogDTO>> GetIsolateViabilityLogsAsync(string avNumber,
+        public async Task<IEnumerable<AuditViabilityLogDto>> GetIsolateViabilityLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {
             ArgumentNullException.ThrowIfNull(avNumber);
@@ -46,19 +46,19 @@ namespace Apha.VIR.Application.Services
 
             var result = await _auditRepository.GetIsolateViabilityLogsAsync(avNumber, dateFrom, dateTo, userid);
 
-            return _mapper.Map<IEnumerable<AuditViabilityLogDTO>>(result);
+            return _mapper.Map<IEnumerable<AuditViabilityLogDto>>(result);
         }
 
-        public async Task<AuditIsolateLogDetailDTO> GetIsolatLogDetailAsync(Guid logid)
+        public async Task<AuditIsolateLogDetailDto> GetIsolatLogDetailAsync(Guid logid)
         {
             ArgumentNullException.ThrowIfNull(logid);
 
             var result = await _auditRepository.GetIsolatLogDetailAsync(logid);
 
-            return _mapper.Map<AuditIsolateLogDetailDTO>(result.FirstOrDefault()); ;
+            return _mapper.Map<AuditIsolateLogDetailDto>(result.FirstOrDefault()); ;
         }
 
-        public async Task<IEnumerable<AuditIsolateLogDTO>> GetIsolatLogsAsync(string avNumber,
+        public async Task<IEnumerable<AuditIsolateLogDto>> GetIsolatLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {
             ArgumentNullException.ThrowIfNull(avNumber);
@@ -66,10 +66,10 @@ namespace Apha.VIR.Application.Services
 
             var result = await _auditRepository.GetIsolatLogsAsync(avNumber, dateFrom, dateTo, userid);
 
-            return _mapper.Map<IEnumerable<AuditIsolateLogDTO>>(result); ;
+            return _mapper.Map<IEnumerable<AuditIsolateLogDto>>(result); ;
         }
 
-        public async Task<IEnumerable<AuditSampleLogDTO>> GetSamplLogsAsync(string avNumber,
+        public async Task<IEnumerable<AuditSampleLogDto>> GetSamplLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {
             ArgumentNullException.ThrowIfNull(avNumber);
@@ -77,10 +77,10 @@ namespace Apha.VIR.Application.Services
 
             var result = await _auditRepository.GetSamplLogsAsync(avNumber, dateFrom, dateTo, userid);
 
-            return _mapper.Map<IEnumerable<AuditSampleLogDTO>>(result);
+            return _mapper.Map<IEnumerable<AuditSampleLogDto>>(result);
         }
 
-        public async Task<IEnumerable<AuditSubmissionLogDTO>> GetSubmissionLogsAsync(string avNumber,
+        public async Task<IEnumerable<AuditSubmissionLogDto>> GetSubmissionLogsAsync(string avNumber,
             DateTime? dateFrom, DateTime? dateTo, string userid)
         {
             ArgumentNullException.ThrowIfNull(avNumber);
@@ -88,7 +88,7 @@ namespace Apha.VIR.Application.Services
 
             var result = await _auditRepository.GetSubmissionLogsAsync(avNumber, dateFrom, dateTo, userid);
 
-            return _mapper.Map<IEnumerable<AuditSubmissionLogDTO>>(result);
+            return _mapper.Map<IEnumerable<AuditSubmissionLogDto>>(result);
         }
     }
 }

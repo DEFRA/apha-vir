@@ -35,7 +35,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         }
 
         [Fact]
-        public async Task GetIsolateFullDetailsAsync_SuccessfulRetrieval_ReturnsIsolateFullDetailDTO()
+        public async Task GetIsolateFullDetailsAsync_SuccessfulRetrieval_ReturnsIsolateFullDetailDto()
         {
             // Arrange
             var isolateId = Guid.NewGuid();
@@ -46,16 +46,16 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
                 IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
                 IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
             };
-            var expectedDto = new IsolateFullDetailDTO
+            var expectedDto = new IsolateFullDetailDto
             {
-                IsolateDetails = new IsolateInfoDTO { IsolateId = isolateId },
-                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
-                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
-                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
+                IsolateDetails = new IsolateInfoDto { IsolateId = isolateId },
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDto>(),
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDto>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDto>()
             };
 
             _mockIsolateRepository.GetIsolateFullDetailsByIdAsync(isolateId).Returns(isolateFullDetail);
-            _mockMapper.Map<IsolateFullDetailDTO>(isolateFullDetail).Returns(expectedDto);
+            _mockMapper.Map<IsolateFullDetailDto>(isolateFullDetail).Returns(expectedDto);
 
             // Act
             var result = await _isolatesService.GetIsolateFullDetailsAsync(isolateId);
@@ -63,7 +63,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             // Assert
             Assert.Equal(expectedDto, result);
             await _mockIsolateRepository.Received(1).GetIsolateFullDetailsByIdAsync(isolateId);
-            _mockMapper.Received(1).Map<IsolateFullDetailDTO>(isolateFullDetail);
+            _mockMapper.Received(1).Map<IsolateFullDetailDto>(isolateFullDetail);
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _isolatesService.GetIsolateFullDetailsAsync(isolateId));
             await _mockIsolateRepository.Received(1).GetIsolateFullDetailsByIdAsync(isolateId);
-            _mockMapper.DidNotReceive().Map<IsolateFullDetailDTO>(Arg.Any<IsolateFullDetail>());
+            _mockMapper.DidNotReceive().Map<IsolateFullDetailDto>(Arg.Any<IsolateFullDetail>());
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var isolateId = Guid.NewGuid();
             var isolate = new Isolate { FamilyName = "Paramyxoviridae", Nomenclature = "Test", TypeName = "Type1" };
             _mockIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
-            _mockMapper.Map<IsolateDTO>(Arg.Any<Isolate>()).Returns(new IsolateDTO { Nomenclature = isolate.Nomenclature + " (" + isolate.TypeName + ")" });
+            _mockMapper.Map<IsolateDto>(Arg.Any<Isolate>()).Returns(new IsolateDto { Nomenclature = isolate.Nomenclature + " (" + isolate.TypeName + ")" });
 
             // Act
             var result = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
@@ -106,7 +106,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var isolateId = Guid.NewGuid();
             var isolate = new Isolate { FamilyName = "OtherFamily", Nomenclature = "Test", IsolateNomenclature = "IsolateNomenclature" };
             _mockIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
-            _mockMapper.Map<IsolateDTO>(Arg.Any<Isolate>()).Returns(new IsolateDTO { Nomenclature = isolate.Nomenclature });
+            _mockMapper.Map<IsolateDto>(Arg.Any<Isolate>()).Returns(new IsolateDto { Nomenclature = isolate.Nomenclature });
 
             // Act
             var result = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
@@ -126,7 +126,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
             var characteristics = new List<IsolateCharacteristicInfo> { new IsolateCharacteristicInfo { CharacteristicName = "Char1" } };
             _mockIsolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
             _mockCharacteristicRepository.GetIsolateCharacteristicInfoAsync(isolateId).Returns(characteristics);
-            _mockMapper.Map<IsolateDTO>(Arg.Any<Isolate>()).Returns(new IsolateDTO { Nomenclature = isolate.Nomenclature + " Char1" });
+            _mockMapper.Map<IsolateDto>(Arg.Any<Isolate>()).Returns(new IsolateDto { Nomenclature = isolate.Nomenclature + " Char1" });
 
             // Act
             var result = await _isolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
@@ -154,15 +154,15 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task UpdateIsolateCharacteristicsAsync_SuccessfulUpdate_ReturnsCompletedTask()
         {
             // Arrange
-            var isolateCharacteristicInfoDTO = new IsolateCharacteristicDTO();
+            var IsolateCharacteristicInfoDto = new IsolateCharacteristicDto();
             var isolateCharacteristicInfo = new IsolateCharacteristicInfo();
             var user = "TestUser";
 
-            _mockMapper.Map<IsolateCharacteristicInfo>(isolateCharacteristicInfoDTO).Returns(isolateCharacteristicInfo);
+            _mockMapper.Map<IsolateCharacteristicInfo>(IsolateCharacteristicInfoDto).Returns(isolateCharacteristicInfo);
             _mockCharacteristicRepository.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfo, user).Returns(Task.CompletedTask);
 
             // Act
-            await _isolatesService.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfoDTO, user);
+            await _isolatesService.UpdateIsolateCharacteristicsAsync(IsolateCharacteristicInfoDto, user);
 
             // Assert
             await _mockCharacteristicRepository.Received(1).UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfo, user);
@@ -172,16 +172,16 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task UpdateIsolateCharacteristicsAsync_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var isolateCharacteristicInfoDTO = new IsolateCharacteristicDTO();
+            var IsolateCharacteristicInfoDto = new IsolateCharacteristicDto();
             var isolateCharacteristicInfo = new IsolateCharacteristicInfo();
             var user = "TestUser";
             var expectedException = new Exception("Test exception");
 
-            _mockMapper.Map<IsolateCharacteristicInfo>(isolateCharacteristicInfoDTO).Returns(isolateCharacteristicInfo);
+            _mockMapper.Map<IsolateCharacteristicInfo>(IsolateCharacteristicInfoDto).Returns(isolateCharacteristicInfo);
             _mockCharacteristicRepository.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfo, user).Throws(expectedException);
 
             // Act & Assert
-            var actualException = await Assert.ThrowsAsync<Exception>(() => _isolatesService.UpdateIsolateCharacteristicsAsync(isolateCharacteristicInfoDTO, user));
+            var actualException = await Assert.ThrowsAsync<Exception>(() => _isolatesService.UpdateIsolateCharacteristicsAsync(IsolateCharacteristicInfoDto, user));
             Assert.Same(expectedException, actualException);
         }
     }

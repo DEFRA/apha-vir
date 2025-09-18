@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateViabilityInfoDTO
+public class IsolateViabilityInfoDto
 {
     public Guid IsolateViabilityId { get; set; }
     public Guid IsolateViabilityIsolateId { get; set; }

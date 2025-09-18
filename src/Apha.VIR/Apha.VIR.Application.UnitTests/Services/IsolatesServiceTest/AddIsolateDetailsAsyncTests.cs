@@ -34,16 +34,16 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task Test_AddIsolateDetailsAsync_Success()
         {
             // Arrange
-            var isolateDto = new IsolateDTO { IsolateId = Guid.NewGuid() };
+            var IsolateDto = new IsolateDto { IsolateId = Guid.NewGuid() };
             var isolateEntity = new Isolate();
-            _mockMapper.Map<Isolate>(isolateDto).Returns(isolateEntity);
-            _mockIsolateRepository.AddIsolateDetailsAsync(isolateEntity).Returns(isolateDto.IsolateId);
+            _mockMapper.Map<Isolate>(IsolateDto).Returns(isolateEntity);
+            _mockIsolateRepository.AddIsolateDetailsAsync(isolateEntity).Returns(IsolateDto.IsolateId);
 
             // Act
-            var result = await _mockIsolatesService.AddIsolateDetailsAsync(isolateDto);
+            var result = await _mockIsolatesService.AddIsolateDetailsAsync(IsolateDto);
 
             // Assert
-            Assert.Equal(isolateDto.IsolateId, result);
+            Assert.Equal(IsolateDto.IsolateId, result);
             await _mockIsolateRepository.Received(1).AddIsolateDetailsAsync(isolateEntity);
         }
 
@@ -51,13 +51,13 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolatesServiceTest
         public async Task Test_AddIsolateDetailsAsync_RepositoryException()
         {
             // Arrange
-            var isolateDto = new IsolateDTO();
+            var IsolateDto = new IsolateDto();
             var isolateEntity = new Isolate();
-            _mockMapper.Map<Isolate>(isolateDto).Returns(isolateEntity);
+            _mockMapper.Map<Isolate>(IsolateDto).Returns(isolateEntity);
             _mockIsolateRepository.AddIsolateDetailsAsync(isolateEntity).Throws(new Exception("Repository error"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _mockIsolatesService.AddIsolateDetailsAsync(isolateDto));
+            await Assert.ThrowsAsync<Exception>(() => _mockIsolatesService.AddIsolateDetailsAsync(IsolateDto));
         }
     }
 }

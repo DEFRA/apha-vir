@@ -11,6 +11,8 @@ using Apha.VIR.Web.Models;
 using Apha.VIR.Application.Pagination;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Apha.VIR.Web.Services;
+using Microsoft.OpenApi.Services;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 {
@@ -19,9 +21,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         private readonly IVirusCharacteristicService _mockVirusCharacteristicService;
         private readonly IIsolateSearchService _mockIsolateSearchService;
         private readonly ILookupService _mockLookupService;
+        private readonly ICacheService _mockCacheService;
         private readonly IMapper _mockMapper;
-        private readonly SearchRepositoryController _controller;
-        private readonly ITempDataDictionary _tempData;
+        private readonly SearchRepositoryController _controller;       
 
         private readonly QueryParameters<SearchCriteriaDTO> queryParameters = new QueryParameters<SearchCriteriaDTO>
         {
@@ -29,7 +31,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             {
                 AVNumber = "AV000000-01",
                 YearOfIsolation = 0,
-                CharacteristicSearch = new List<CharacteristicCriteriaDTO>()
+                CharacteristicSearch = new List<CharacteristicCriteriaDto>()
             },
             Page = 1,
             PageSize = 10
@@ -40,28 +42,24 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             _mockVirusCharacteristicService = Substitute.For<IVirusCharacteristicService>();
             _mockIsolateSearchService = Substitute.For<IIsolateSearchService>();
             _mockLookupService = Substitute.For<ILookupService>();
+            _mockCacheService = Substitute.For<ICacheService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockMapper);
-            _tempData = new TempDataDictionary(new DefaultHttpContext(), Substitute.For<ITempDataProvider>())
-            {
-                ["SearchCriteria"] = JsonConvert.SerializeObject(queryParameters)
-            };
-            _controller.TempData = _tempData;
+            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockCacheService, _mockMapper);           
         }
 
         [Fact]
         public async Task Index_ReturnsViewResultWithCorrectModelType()
         {
             // Arrange            
-            _mockLookupService.GetAllVirusFamiliesAsync().Returns(new List<LookupItemDTO>());
-            _mockLookupService.GetAllVirusTypesAsync().Returns(new List<LookupItemDTO>());
-            _mockLookupService.GetAllHostSpeciesAsync().Returns(new List<LookupItemDTO>());
-            _mockLookupService.GetAllHostBreedsAsync().Returns(new List<LookupItemDTO>());
+            _mockLookupService.GetAllVirusFamiliesAsync().Returns(new List<LookupItemDto>());
+            _mockLookupService.GetAllVirusTypesAsync().Returns(new List<LookupItemDto>());
+            _mockLookupService.GetAllHostSpeciesAsync().Returns(new List<LookupItemDto>());
+            _mockLookupService.GetAllHostBreedsAsync().Returns(new List<LookupItemDto>());
 
-            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
-            _mockLookupService.GetAllHostPurposesAsync().Returns(new List<LookupItemDTO>());
-            _mockLookupService.GetAllSampleTypesAsync().Returns(new List<LookupItemDTO>());
-            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDTO>());
+            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>());
+            _mockLookupService.GetAllHostPurposesAsync().Returns(new List<LookupItemDto>());
+            _mockLookupService.GetAllSampleTypesAsync().Returns(new List<LookupItemDto>());
+            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(new List<VirusCharacteristicDto>());
 
             // Act
             var result = await _controller.Index();
@@ -94,10 +92,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 CreatedFromDate = DateTime.Today.AddDays(-30),
                 CreatedToDate = DateTime.Today
             };
-            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(new SearchCriteria());
-            var searchResults = new PaginatedResult<IsolateSearchResultDTO>
+            var inputSearchCriteria = new SearchCriteria()
             {
-                data = new List<IsolateSearchResultDTO>(),
+                CharacteristicSearch = new List<CharacteristicCriteria>() {
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null}
+                }
+            };
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(inputSearchCriteria);
+            var searchResults = new PaginatedResult<IsolateSearchResultDto>
+            {
+                data = new List<IsolateSearchResultDto>(),
                 TotalCount = 10
             };
 
@@ -117,16 +123,24 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task Search_WithInvalidModelState_ReturnsViewWithEmptyResults()
         {
             // Arrange
-            _controller.ModelState.AddModelError("Error", "Model state is invalid");
-            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(new SearchCriteria());
-            var searchResults = new PaginatedResult<IsolateSearchResultDTO>
+            var inputSearchCriteria = new SearchCriteria()
             {
-                data = new List<IsolateSearchResultDTO>(),
+                CharacteristicSearch = new List<CharacteristicCriteria>() {
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null},
+                    new CharacteristicCriteria { Characteristic = null}
+                }
+            };
+            _controller.ModelState.AddModelError("Error", "Model state is invalid");
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(inputSearchCriteria);
+            var searchResults = new PaginatedResult<IsolateSearchResultDto>
+            {
+                data = new List<IsolateSearchResultDto>(),
                 TotalCount = 10
             };
             _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>()).Returns(searchResults);
 
-            // Act
+            // Act            
             var result = await _controller.Search(new SearchCriteria()) as ViewResult;
 
             // Assert
@@ -140,9 +154,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         [Fact]
         public async Task Search_WhenTempDataIsNull_ReturnsViewWithEmptyResults()
         {
-            // Arrange
-            _tempData.Remove("SearchCriteria");
-            _controller.TempData = _tempData;
+            // Arrange            
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string?)null);
             // Act
             var result = await _controller.BindIsolateGridOnPaginationAndSort(1, "CreatedDate", true) as PartialViewResult;
 
@@ -157,19 +170,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         [Fact]
         public async Task Search_WhenTempDataIsNotEmpty_ReturnsViewWithResults()
         {
-            // Arrange           
-            _tempData["SearchCriteria"] = JsonConvert.SerializeObject(queryParameters);
-            _controller.TempData = _tempData;
+            // Arrange                       
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
 
-            var searchResults = new PaginatedResult<IsolateSearchResultDTO>
+            var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
-                data = new List<IsolateSearchResultDTO> { new IsolateSearchResultDTO() },
+                data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
 
             _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
             .Returns(searchResults);
-            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDTO>>())
+            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
             .Returns(new List<IsolateSearchResult> { new IsolateSearchResult() });
 
             // Act
@@ -187,10 +199,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task GetVirusTypesByVirusFamily_NullOrEmptyVirusFamilyId_ReturnsAllVirusTypes()
         {
             // Arrange
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 2" }
             };
             _mockLookupService.GetAllVirusTypesAsync().Returns(virusTypes);
 
@@ -214,9 +226,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             Guid virusFamilyId = Guid.NewGuid();
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" }
             };
             _mockLookupService.GetAllVirusTypesByParentAsync(virusFamilyId).Returns(virusTypes);
 
@@ -238,10 +250,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             Guid hostSpicyId = Guid.NewGuid();
-            var hostBreeds = new List<LookupItemDTO>
+            var hostBreeds = new List<LookupItemDto>
             {
-            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed1" },
-            new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed2" }
+            new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed1" },
+            new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed2" }
             };
             _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(hostBreeds);
 
@@ -262,11 +274,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task GetHostBreedsByGroup_WithNullHostSpicyId_ReturnsAllHostBreeds()
         {
             // Arrange
-            var allHostBreeds = new List<LookupItemDTO>
+            var allHostBreeds = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed2" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed3" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed2" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed3" }
             };
             _mockLookupService.GetAllHostBreedsAsync().Returns(allHostBreeds);
 
@@ -289,10 +301,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task GetHostBreedsByGroup_WithEmptyHostSpicyId_ReturnsAllHostBreeds()
         {
             // Arrange
-            var allHostBreeds = new List<LookupItemDTO>
+            var allHostBreeds = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed2" }
             };
             _mockLookupService.GetAllHostBreedsAsync().Returns(allHostBreeds);
 
@@ -314,7 +326,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             Guid hostSpicyId = Guid.NewGuid();
-            _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDTO>());
+            _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDto>());
 
             // Act
             await _controller.GetHostBreedsByGroup(hostSpicyId);
@@ -328,7 +340,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task GetHostBreedsByGroup_WithNullHostSpicyId_CallsCorrectMethod()
         {
             // Arrange
-            _mockLookupService.GetAllHostBreedsAsync().Returns(new List<LookupItemDTO>());
+            _mockLookupService.GetAllHostBreedsAsync().Returns(new List<LookupItemDto>());
 
             // Act
             await _controller.GetHostBreedsByGroup(null);
@@ -343,7 +355,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             Guid hostSpicyId = Guid.NewGuid();
-            _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDTO>());
+            _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _controller.GetHostBreedsByGroup(hostSpicyId);
@@ -359,10 +371,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             Guid virusTypeId = Guid.NewGuid();
-            var expectedCharacteristics = new List<VirusCharacteristicDTO>
+            var expectedCharacteristics = new List<VirusCharacteristicDto>
             {
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" }
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(virusTypeId, false)
@@ -389,11 +401,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             Guid? virusTypeId = null;
-            var expectedCharacteristics = new List<VirusCharacteristicDTO>
+            var expectedCharacteristics = new List<VirusCharacteristicDto>
             {
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 3", DataType = "Type 3" }
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" },
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 3", DataType = "Type 3" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
@@ -420,11 +432,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             Guid? virusTypeId = null;
-            var expectedCharacteristics = new List<VirusCharacteristicDTO>
+            var expectedCharacteristics = new List<VirusCharacteristicDto>
             {
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" },
-                new VirusCharacteristicDTO { Id = Guid.NewGuid(), Name = "Characteristic 3", DataType = "Type 3" }
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" },
+                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 3", DataType = "Type 3" }
             };
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
@@ -452,10 +464,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var comparators = new List<string> { "Equal", "NotEqual" };
-            var listValues = new List<VirusCharacteristicListEntryDTO>
+            var listValues = new List<VirusCharacteristicListEntryDto>
             {
-                new VirusCharacteristicListEntryDTO { Id = Guid.NewGuid(), Name = "Value1" },
-                new VirusCharacteristicListEntryDTO { Id = Guid.NewGuid(), Name = "Value2" }
+                new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Value1" },
+                new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Value2" }
             };
 
             _mockIsolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId)
@@ -484,7 +496,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var comparators = new List<string>();
-            var listValues = new List<VirusCharacteristicListEntryDTO>();
+            var listValues = new List<VirusCharacteristicListEntryDto>();
 
             _mockIsolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId)
             .Returns(Task.FromResult(Tuple.Create(comparators, listValues)));
@@ -513,20 +525,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 SortBy = "Avnumber",
                 Descending = false,
                 Filter = new SearchCriteriaDTO()
-            };
-            var criteriaString = JsonConvert.SerializeObject(criteriaDto);
-            _tempData["SearchCriteria"] = criteriaString;
-            _controller.TempData = _tempData;
+            };            
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
-            var searchResults = new PaginatedResult<IsolateSearchResultDTO>
+            var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
-                data = new List<IsolateSearchResultDTO> { new IsolateSearchResultDTO() },
+                data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
             _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
             .Returns(searchResults);
 
-            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDTO>>())
+            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
             .Returns(new List<IsolateSearchResult> { new IsolateSearchResult() });
 
             // Act
@@ -554,20 +564,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 SortBy = "FreezerName",
                 Descending = true,
                 Filter = new SearchCriteriaDTO { AVNumber = "XWERWE" }
-            };
-            var criteriaString = JsonConvert.SerializeObject(criteriaDto);
-            _tempData["SearchCriteria"] = criteriaString;
-            _controller.TempData = _tempData;
+            };            
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
-            var searchResults = new PaginatedResult<IsolateSearchResultDTO>
+            var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
-                data = new List<IsolateSearchResultDTO> { new IsolateSearchResultDTO() },
+                data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
             _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
             .Returns(searchResults);
 
-            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDTO>>())
+            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
             .Returns(new List<IsolateSearchResult> { });
 
             // Act
@@ -594,21 +602,18 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 SortBy = "FreezerName",
                 Descending = false,
                 Filter = new SearchCriteriaDTO()
-            };
-            var criteriaString = JsonConvert.SerializeObject(criteriaDto);
+            };           
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
-            _tempData["SearchCriteria"] = criteriaString;
-            _controller.TempData = _tempData;
-
-            var searchResults = new PaginatedResult<IsolateSearchResultDTO>
+            var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
-                data = new List<IsolateSearchResultDTO> { new IsolateSearchResultDTO() },
+                data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
             _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
             .Returns(searchResults);
 
-            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDTO>>())
+            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
             .Returns(new List<IsolateSearchResult> { new IsolateSearchResult() });
 
             // Act
@@ -682,9 +687,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         [Fact]
         public async Task ExportToExcel_ValidSearchCriteria_ReturnsFileContentResult()
         {
-            // Arrange         
-            _tempData["SearchCriteria"] = JsonConvert.SerializeObject(queryParameters);
-            _controller.TempData = _tempData;
+            // Arrange                    
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
 
             var exportResults = SetupValidSearchCriteriaExportResult();
             _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
@@ -729,6 +733,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             var exportResults = SetupValidSearchCriteriaExportResult();
+            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
             _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
            .Returns(Task.FromResult(exportResults));
             var mappedResults = SetupValidSearchCriteriaExportMappedResult();
