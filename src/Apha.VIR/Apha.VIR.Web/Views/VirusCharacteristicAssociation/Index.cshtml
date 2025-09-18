@@ -4,14 +4,14 @@
 }
 
 <div>
-    <label for="ddlVirusFamily">Select the Virus Family</label><br />
-    <select id="ddlVirusFamily" asp-for="SelectedFamilyId" asp-items="@(new SelectList(Model.VirusFamilies, "Id", "Name", Model.SelectedFamilyId))" style="margin-top: 12px;margin-bottom: 12px;">
+    <span for="ddlVirusFamily">Select the Virus Family</span><br />
+    <select id="ddlVirusFamily" asp-for="SelectedFamilyId" asp-items="@(new SelectList(Model.VirusFamilies, "Id", "Name", Model.SelectedFamilyId))" class="my-3">
     </select>
 </div>
 
 <div>
-    <label for="ddlVirusType">Select the Virus Type</label><br />
-    <select id="ddlVirusType" asp-for="SelectedVirusTypeId" asp-items="@(new SelectList(Model.VirusTypes, "Id", "Name", Model.SelectedVirusTypeId))" style="margin-top: 12px;margin-bottom: 12px;">
+    <span for="ddlVirusType">Select the Virus Type</span><br />
+    <select id="ddlVirusType" asp-for="SelectedVirusTypeId" asp-items="@(new SelectList(Model.VirusTypes, "Id", "Name", Model.SelectedVirusTypeId))" class="my-3">
     </select>
 </div>
 

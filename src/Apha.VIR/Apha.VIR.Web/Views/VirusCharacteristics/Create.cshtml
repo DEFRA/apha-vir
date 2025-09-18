@@ -6,52 +6,52 @@
 	<input asp-for="Id" type="hidden" />
 	<input asp-for="LastModified" type="hidden" />
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="Name" style="min-width: 150px; margin: 0; margin-right: 12px;">Name *</label>
-		<input asp-for="Name" class="form-control" style="width: 200px;" />
+		<span for="Name" class="virusform_label">Name *</span>
+		<input asp-for="Name" class="form-control w-200" />
 		<br /><span asp-validation-for="Name" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="CharacteristicType" style="min-width: 150px; margin: 0; margin-right: 12px;">CharacteristicType *</label>
+		<span for="CharacteristicType" class="virusform_label">CharacteristicType *</span>
 		<select asp-for="CharacteristicType" asp-items="Model.CharacteristicTypeNameList" class="form-control"></select>
 		<br /><span asp-validation-for="CharacteristicType" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="NumericSort" style="min-width: 150px; margin: 0; margin-right: 12px;">NumericSort</label>
+		<span for="NumericSort" class="virusform_label">NumericSort</span>
 		<input asp-for="NumericSort" type="checkbox" />
 		<br /><span asp-validation-for="NumericSort" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="DisplayOnSearch" style="min-width: 150px; margin: 0; margin-right: 12px;">Display In Nomenclature</label>
+		<span for="DisplayOnSearch" class="virusform_label">Display In Nomenclature</span>
 		<input asp-for="DisplayOnSearch" type="checkbox" />
 		<br /><span asp-validation-for="DisplayOnSearch" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="Prefix" style="min-width: 150px; margin: 0; margin-right: 12px;">Prefix</label>
+		<span for="Prefix" class="virusform_label">Prefix</span>
 		<input asp-for="Prefix" maxlength="50" />
 		<br /><span asp-validation-for="Prefix" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="MinValue" style="min-width: 150px; margin: 0; margin-right: 12px;">MinValue</label>
+		<span for="MinValue" class="virusform_label">MinValue</span>
 		<input asp-for="MinValue" />
 		<br /><span asp-validation-for="MinValue" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="MaxValue" style="min-width: 150px; margin: 0; margin-right: 12px;">MaxValue</label>
+		<span for="MaxValue" class="virusform_label">MaxValue</span>
 		<input asp-for="MaxValue" />
 		<span asp-validation-for="MaxValue" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="DecimalPlaces" style="min-width: 150px; margin: 0; margin-right: 12px;">DecimalPlaces *</label>
+		<span for="DecimalPlaces" class="virusform_label">DecimalPlaces *</span>
 		<input asp-for="DecimalPlaces" />
 		<br /><span asp-validation-for="DecimalPlaces" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="Length" style="min-width: 150px; margin: 0; margin-right: 12px;">Length</label>
+		<span for="Length" class="virusform_label">Length</span>
 		<input asp-for="Length" />
 		<br /><span asp-validation-for="Length" class="text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
-		<label for="CharacteristicIndex" style="min-width: 150px; margin: 0; margin-right: 12px;">Display Order *</label>
+		<span for="CharacteristicIndex" class="virusform_label">Display Order *</span>
 		<input asp-for="CharacteristicIndex" />
 		<br /><span asp-validation-for="CharacteristicIndex" class="text-danger"></span>
 	</div>

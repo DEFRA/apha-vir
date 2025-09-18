@@ -81,9 +81,9 @@
 					<td><label for="Smscode">SMS Code</label></td>
 					<td><span class="spacer"></span></td>
 					<td>
-						<input id="Smscode"
+						<input id="Smscode" class="form-control w-200"
 							   asp-for="@Model.LookupItem.Smscode"
-							   class="form-control" disabled />
+							   disabled />
 
 						<input type="hidden" asp-for="@Model.LookupItem.Smscode" />
 					</td>
@@ -91,7 +91,7 @@
 			}
 			<tr class="spacer-row"><td colspan="3"></td></tr>
 			<tr>
-				<td colspan="3" style="text-align: right;">
+				<td colspan="3" class="text-right">
 					<button type="submit" asp-action="Create" class="btn-as-link me-3">Insert</button>
 					<img src="Images\spacer.gif" width="10" height="5" alt="" />
 					<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
