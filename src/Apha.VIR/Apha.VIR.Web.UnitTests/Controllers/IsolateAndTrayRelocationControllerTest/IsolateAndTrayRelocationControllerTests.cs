@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Apha.VIR.Application.DTOs;
@@ -8,6 +9,7 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -553,5 +555,139 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.RelocateTray(model));
         }
+
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonData_PopulatesModelFromCache()
+        {
+            // Arrange
+            var cachedModel = new IsolateRelocateViewModel { Freezer = Guid.NewGuid(), Tray = Guid.NewGuid() };
+            var jsonData = JsonConvert.SerializeObject(cachedModel);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Session = new TestSession();
+            _controller.HttpContext.Session.SetString("isolateRelocateSessionModel", jsonData);
+
+            _isolateRelocateService.GetIsolatesByCriteria(
+                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(new List<IsolateRelocateDTO>());
+
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDTO>>())
+                .Returns(new List<IsolateRelocateViewModel>());
+
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Edit_WhenSessionIsNull_ReturnsViewWithModelAndLists()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Session = new TestSession();
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+            Assert.NotNull(_controller.ViewBag.FreezersList);
+            Assert.NotNull(_controller.ViewBag.TrayList);
+        }
+
+        [Fact]
+        public async Task Update_WhenCalled_LoadsFreezersAndTraysAndReturnsEditView()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();
+
+            // Act
+            var result = await _controller.Update(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+            Assert.Equal(model, viewResult.Model);
+        }
+
+        private static void InvokeValidateIsolatedFields(IsolateRelocationViewModel model, ModelStateDictionary modelState)
+        {
+            var method = typeof(IsolateAndTrayRelocationController)
+                .GetMethod("ValidateIsolatedFields", BindingFlags.NonPublic | BindingFlags.Static);
+
+            method!.Invoke(null, new object[] { model, modelState });
+        }
+
+        [Fact]
+        public void ValidateIsolatedFields_WhenInvalidAvNumbers_AddsModelErrors()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                MinAVNumber = "invalid",
+                MaxAVNumber = "invalid"
+            };
+            var modelState = new ModelStateDictionary();
+
+            // Act
+            InvokeValidateIsolatedFields(model, modelState);
+
+            // Assert
+            Assert.True(modelState.ErrorCount >= 2);
+        }
+
+        [Fact]
+        public void ValidateIsolatedFields_WhenValidAvNumbers_NoModelErrors()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+            var modelState = new ModelStateDictionary();
+
+            // Act
+            InvokeValidateIsolatedFields(model, modelState);
+
+            // Assert
+            Assert.Empty(modelState);
+        }
     }
+
+    public class TestSession : ISession
+    {
+        private readonly Dictionary<string, byte[]> _sessionStorage = new();
+
+        public IEnumerable<string> Keys => _sessionStorage.Keys;
+        public string Id => Guid.NewGuid().ToString();
+        public bool IsAvailable => true;
+
+        public void Clear() => _sessionStorage.Clear();
+        public Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task LoadAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public void Remove(string key) => _sessionStorage.Remove(key);
+
+        public void Set(string key, byte[] value) => _sessionStorage[key] = value;
+        public bool TryGetValue(string key, out byte[] value) => _sessionStorage.TryGetValue(key, out value!);
+
+        public void SetString(string key, string value) => Set(key, System.Text.Encoding.UTF8.GetBytes(value));
+        public string? GetString(string key) => TryGetValue(key, out var value) ? System.Text.Encoding.UTF8.GetString(value) : null;
+    }
+
 }
