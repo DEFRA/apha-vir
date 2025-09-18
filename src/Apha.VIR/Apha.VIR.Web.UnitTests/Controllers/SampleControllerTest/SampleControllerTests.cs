@@ -153,7 +153,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var result = await _controller.Create(model);
 
             // Assert
-            await _sampleService.Received(1).AddSample(Arg.Any<SampleDTO>(), "TEST123", "Test");
+            await _sampleService.Received(1).AddSample(Arg.Any<SampleDTO>(), "TEST123", "TestUser");
             Assert.IsType<RedirectToActionResult>(result);
             var redirectResult = (RedirectToActionResult)result;
 
@@ -201,7 +201,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var result = await _controller.Edit(model);
 
             // Assert
-            await _sampleService.Received(1).UpdateSample(sampleDto, "Test");
+            await _sampleService.Received(1).UpdateSample(sampleDto, "TestUser");
             Assert.IsType<RedirectToActionResult>(result);
             var redirectResult = (RedirectToActionResult)result;
 
@@ -242,7 +242,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             await _controller.Edit(model);
 
             // Assert
-            await _sampleService.Received(1).UpdateSample(sampleDto, "Test");
+            await _sampleService.Received(1).UpdateSample(sampleDto, "TestUser");
         }
 
         [Fact]
@@ -374,6 +374,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             {
                 var claims = new List<Claim>
                 {
+                    new Claim(ClaimTypes.Name, "TestUser"),
                     new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));

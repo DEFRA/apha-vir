@@ -63,7 +63,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             await _mockIsolateDispatchService.Received(1).DeleteDispatchAsync(
             dispatchId,
             Arg.Is<byte[]>(b => Convert.ToBase64String(b) == lastModified),
-            "Test User"
+            "TestUser"
             );
         }
 
@@ -137,7 +137,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             await _mockIsolateDispatchService.Received(1).DeleteDispatchAsync(
             dispatchId,
             Arg.Is<byte[]>(b => Convert.ToBase64String(b) == lastModified),
-            "Test User"
+            "TestUser"
             );
         }
 
@@ -191,8 +191,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             lock (_lock)
             {
                 var claims = new List<Claim>
-                {
+                {   new Claim(ClaimTypes.Name, "TestUser"),
                     new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                    
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
