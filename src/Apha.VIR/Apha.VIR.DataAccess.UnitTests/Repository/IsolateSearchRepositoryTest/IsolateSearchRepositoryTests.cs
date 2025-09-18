@@ -63,6 +63,19 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             => (IQueryable<IsolateSearchResult>)typeof(IsolateSearchRepository)
                 .GetMethod("ApplySortingByProperty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
                 .Invoke(null, [query, property, desc])!;
+
+        public IQueryable<IsolateSearchResult> PublicApplyAllCharacteristicFilters(
+    IQueryable<IsolateSearchResult> query,
+    List<CharacteristicCriteria> criteria)
+        {
+            var method = typeof(IsolateSearchRepository)
+                .GetMethod("ApplyAllCharacteristicFilters",
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Instance)!;
+
+            return (IQueryable<IsolateSearchResult>)method.Invoke(this, new object[] { query, criteria })!;
+        }
+
     }
     public class IsolateSearchRepositoryTests
     {
@@ -239,6 +252,189 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
             var result = TestIsolateSearchRepository.PublicApplySortingByProperty(data, "unknown", false);
             Assert.Equal(data, result);
+        }
+
+        [Fact]
+        public void ApplyStringFilter_ValidMatch_ReturnsFilteredResults()
+        {
+            // Arrange
+            var data = new List<IsolateSearchResult>
+            {
+                new IsolateSearchResult { Avnumber = "ABC" },
+                new IsolateSearchResult { Avnumber = "XYZ" }
+            }.AsQueryable();
+
+            // Act
+            var result = TestIsolateSearchRepository.PublicApplyStringFilter(data, "ABC", i => i.Avnumber);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("ABC", result.First().Avnumber);
+        }
+
+        [Fact]
+        public void ApplyGuidFilter_ValidGuid_ReturnsFilteredResults()
+        {
+            // Arrange
+            var g1 = Guid.NewGuid();
+            var g2 = Guid.NewGuid();
+            var data = new List<IsolateSearchResult>
+            {
+                new IsolateSearchResult { Family = g1 },
+                new IsolateSearchResult { Family = g2 }
+            }.AsQueryable();
+
+            // Act
+            var result = TestIsolateSearchRepository.PublicApplyGuidFilter(data, g1, i => i.Family);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(g1, result.First().Family);
+        }
+
+        [Fact]
+        public void ApplyDateFilters_ReceivedDateRange_FiltersCorrectly()
+        {
+            // Arrange
+            var data = new List<IsolateSearchResult>
+            {
+                new IsolateSearchResult { ReceivedDate = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new IsolateSearchResult { ReceivedDate = new DateTime(2023, 5, 1, 0, 0, 0, DateTimeKind.Utc) }
+            }.AsQueryable();
+
+            var criteria = new SearchCriteria
+            {
+                ReceivedFromDate = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                ReceivedToDate = new DateTime(2023, 3, 1, 0, 0, 0, DateTimeKind.Utc)
+            };
+
+            // Act
+            var result = TestIsolateSearchRepository.PublicApplyDateFilters(data, criteria);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc), result.First().ReceivedDate);
+        }
+
+        [Fact]
+        public void ApplyDateFilters_CreatedDateRange_FiltersCorrectly()
+        {
+            // Arrange
+            var data = new List<IsolateSearchResult>
+            {
+                new IsolateSearchResult { DateCreated = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new IsolateSearchResult { DateCreated = new DateTime(2022, 6, 1, 0, 0, 0, DateTimeKind.Utc) }
+            }.AsQueryable();
+
+            var criteria = new SearchCriteria
+            {
+                CreatedFromDate = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                CreatedToDate = new DateTime(2022, 3, 1, 0, 0, 0, DateTimeKind.Utc)
+            };
+
+            // Act
+            var result = TestIsolateSearchRepository.PublicApplyDateFilters(data, criteria);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc), result.First().DateCreated);
+        }
+
+        [Fact]
+        public void ApplySortingByProperty_SortsByAvnumberAscending()
+        {
+            // Arrange
+            var data = new List<IsolateSearchResult>
+            {
+                new IsolateSearchResult { Avnumber = "B" },
+                new IsolateSearchResult { Avnumber = "A" }
+            }.AsQueryable();
+
+            // Act
+            var result = TestIsolateSearchRepository.PublicApplySortingByProperty(data, "avnumber", false);
+
+            // Assert
+            Assert.Equal("A", result.First().Avnumber);
+        }
+
+        [Fact]
+        public void ApplySortingByProperty_SortsByAvnumberDescending()
+        {
+            // Arrange
+            var data = new List<IsolateSearchResult>
+            {
+                new IsolateSearchResult { Avnumber = "A" },
+                new IsolateSearchResult { Avnumber = "B" }
+            }.AsQueryable();
+
+            // Act
+            var result = TestIsolateSearchRepository.PublicApplySortingByProperty(data, "avnumber", true);
+
+            // Assert
+            Assert.Equal("B", result.First().Avnumber);
+        }
+
+        [Fact]
+        public void ApplyAllCharacteristicFilters_WithValidGuid_ReturnsQuery()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var data = new List<IsolateSearchResult>
+    {
+        new IsolateSearchResult { IsolateId = isolateId }
+    }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(mockContext.Object, data);
+
+            var criteria = new List<CharacteristicCriteria>
+    {
+        new CharacteristicCriteria
+        {
+            Characteristic = Guid.NewGuid(), // valid Guid
+            CharacteristicType = "Yes/No",
+            CharacteristicValue1 = "Yes"
+        }
+    };
+
+            // Act
+            var result = repo.PublicApplyAllCharacteristicFilters(data, criteria);
+
+            // Assert
+            Assert.NotNull(result);
+            // Since EF mocks won’t actually apply filters, 
+            // just assert that query is returned and same type.
+            Assert.IsAssignableFrom<IQueryable<IsolateSearchResult>>(result);
+        }
+
+
+        [Fact]
+        public void ApplyAllCharacteristicFilters_WithInvalidGuid_ReturnsSameQuery()
+        {
+            // Arrange
+            var data = new List<IsolateSearchResult>
+            {
+                new IsolateSearchResult { IsolateId = Guid.NewGuid() }
+            }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(mockContext.Object, data);
+
+            var criteria = new List<CharacteristicCriteria>
+            {
+                new CharacteristicCriteria
+                {
+                    Characteristic = Guid.Empty, // invalid Guid
+                    CharacteristicType = "Text",
+                    CharacteristicValue1 = "ABC"
+                }
+            };
+
+            // Act
+            var result = repo.PublicApplyAllCharacteristicFilters(data, criteria);
+
+            // Assert
+            Assert.Equal(data, result); // unchanged because Guid was invalid
         }
     }
 }
