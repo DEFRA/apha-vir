@@ -36,7 +36,7 @@ public class IsolateRelocateRepository : IIsolateRelocateRepository
         {
             await _context.Database.ExecuteSqlRawAsync(
                 "EXEC spIsolateRelocateByIsolate @UserID, @IsolateId, @Freezer, @Tray, @Well, @LastModified OUTPUT, @FreezerName OUTPUT, @TrayName OUTPUT",
-                       new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = item.UserID },
+                       new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = item.UserID },
                        new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = item.IsolateId },
                        new SqlParameter("@Freezer", SqlDbType.UniqueIdentifier) { Value = item.Freezer },
                        new SqlParameter("@Tray", SqlDbType.UniqueIdentifier) { Value = item.Tray },

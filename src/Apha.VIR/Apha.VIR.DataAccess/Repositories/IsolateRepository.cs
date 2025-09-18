@@ -170,7 +170,7 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
     {
         await ExecuteSqlAsync(
           "EXEC spIsolateDelete @UserID, @IsolateId, @LastModified OUTPUT",
-          new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+          new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = userId },
           new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolateId },
           new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified, Direction = ParameterDirection.InputOutput }
        );
@@ -193,7 +193,7 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
     {
         var parameters = new[]
         {
-            new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = User },
+            new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = User },
             new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolateId },
             new SqlParameter("@Type", SqlDbType.UniqueIdentifier) { Value = type }
         };
@@ -310,7 +310,7 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
     {
         return new[]
         {
-            new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = isolate.CreatedBy },
+            new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = isolate.CreatedBy },
             new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolate.IsolateId },
             new SqlParameter("@IsolateSampleId", SqlDbType.UniqueIdentifier) { Value = isolate.IsolateSampleId },
             new SqlParameter("@IsolateNumber", SqlDbType.Int) { Value = (object?)isolate.IsolateNumber ?? DBNull.Value },
