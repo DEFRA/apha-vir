@@ -1,4 +1,4 @@
-CREATE VIEW [dbo].[vwCharacteristicInfo]
+CREATE OR ALTER VIEW [dbo].[vwCharacteristicInfo]
 AS
 SELECT dbo.tblCharacteristic.CharacteristicValue
 	,dbo.tlkpVirusCharacteristic.Name AS CharacteristicName
@@ -7,11 +7,11 @@ SELECT dbo.tblCharacteristic.CharacteristicValue
 	,dbo.tblCharacteristic.CharacteristicId
 FROM dbo.tlkpVirusCharacteristic
 INNER JOIN dbo.tblIsolate
-INNER JOIN dbo.tblCharacteristic ON dbo.tblIsolate.IsolateId = dbo.tblCharacteristic.CharacteristicIsolateId ON dbo.tlkpVirusCharacteristic.Id = dbo.tblCharacteristic.VirusCharacteristicId ORDER BY dbo.tlkpVirusCharacteristic.CharacteristicIndex
+INNER JOIN dbo.tblCharacteristic ON dbo.tblIsolate.IsolateId = dbo.tblCharacteristic.CharacteristicIsolateId ON dbo.tlkpVirusCharacteristic.Id = dbo.tblCharacteristic.VirusCharacteristicId
 
 GO
 
-CREATE VIEW [dbo].[vwCharacteristicsGetAll]
+CREATE OR ALTER VIEW [dbo].[vwCharacteristicsGetAll]
 AS
 SELECT  dbo.tblCharacteristic.CharacteristicValue
 	,dbo.tlkpVirusCharacteristic.Name AS CharacteristicName
@@ -20,11 +20,11 @@ SELECT  dbo.tblCharacteristic.CharacteristicValue
 FROM dbo.tlkpVirusCharacteristic
 INNER JOIN dbo.tblCharacteristic ON dbo.tlkpVirusCharacteristic.Id = dbo.tblCharacteristic.VirusCharacteristicId
 INNER JOIN dbo.tlkpVirusCharacteristicDataType ON dbo.tlkpVirusCharacteristic.CharacteristicType = dbo.tlkpVirusCharacteristicDataType.Id
-ORDER BY dbo.tlkpVirusCharacteristic.Name
+
 
 GO
 
-CREATE VIEW [dbo].[vwDispatchInfo]
+CREATE OR ALTER VIEW [dbo].[vwDispatchInfo]
 AS
 SELECT  dbo.tblDispatch.NoOfAliquots
 	,dbo.tblDispatch.PassageNumber
@@ -36,11 +36,12 @@ SELECT  dbo.tblDispatch.NoOfAliquots
 	,dbo.tblDispatch.DispatchIsolateID
 FROM dbo.tblDispatch
 INNER JOIN dbo.tlkpStaff ON dbo.tblDispatch.DispatchedBy = dbo.tlkpStaff.Id
-ORDER BY dbo.tblDispatch.DispatchedDate DESC
+
 
 GO
 
-CREATE VIEW [dbo].[vwViabilityInfo]
+
+CREATE OR ALTER VIEW [dbo].[vwViabilityInfo]
 AS
 SELECT  dbo.tblIsolateViability.DateChecked
 	,dbo.tlkpViability.Name AS ViabilityStatus
@@ -49,6 +50,6 @@ SELECT  dbo.tblIsolateViability.DateChecked
 FROM dbo.tblIsolateViability
 INNER JOIN dbo.tlkpStaff ON dbo.tblIsolateViability.CheckedByID = dbo.tlkpStaff.Id
 INNER JOIN dbo.tlkpViability ON dbo.tblIsolateViability.Viable = dbo.tlkpViability.Id
-ORDER BY dbo.tblIsolateViability.DateChecked DESC
+
 
 GO
