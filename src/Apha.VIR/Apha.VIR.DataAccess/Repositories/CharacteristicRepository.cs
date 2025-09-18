@@ -66,7 +66,7 @@ public class CharacteristicRepository : RepositoryBase<IsolateCharacteristicInfo
     {
         await ExecuteSqlAsync(
            "EXEC spCharacteristicUpdate @UserID, @CharacteristicId, @CharacteristicIsolateId, @VirusCharacteristicId, @CharacteristicValue, @LastModified OUTPUT",
-                new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
+                new SqlParameter("@UserId", SqlDbType.VarChar, 120) { Value = User },
                 new SqlParameter("@CharacteristicId", SqlDbType.UniqueIdentifier) { Value = item.CharacteristicId },
                 new SqlParameter("@CharacteristicIsolateId", SqlDbType.UniqueIdentifier) { Value = item.CharacteristicIsolateId },
                 new SqlParameter("@VirusCharacteristicId", SqlDbType.UniqueIdentifier) { Value = item.VirusCharacteristicId },

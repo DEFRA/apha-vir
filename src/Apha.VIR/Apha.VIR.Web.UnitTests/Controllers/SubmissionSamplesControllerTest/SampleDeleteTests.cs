@@ -102,7 +102,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             string? message = jsonElement.GetProperty("message").GetString();
             Assert.True(success);
             Assert.Equal("Sample deleted successfully.", message);
-            await _mockSampleService.Received(1).DeleteSampleAsync(sampleId, "testUser", lastModified);
+            await _mockSampleService.Received(1).DeleteSampleAsync(sampleId, "TestUser", lastModified);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             var sampleId = Guid.NewGuid();
             var lastModified = Array.Empty<byte>();
             _mockIsolatesService.GetIsolateInfoByAVNumberAsync(avNumber).Returns(new List<IsolateInfoDto>());
-            _mockSampleService.DeleteSampleAsync(sampleId, "testUser", lastModified).Returns(Task.CompletedTask);
+            _mockSampleService.DeleteSampleAsync(sampleId, "TestUser", lastModified).Returns(Task.CompletedTask);
             SetupMockUserAndRoles();
 
             // Act
@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             string? message = jsonElement.GetProperty("message").GetString();
             Assert.True(success);
             Assert.Equal("Sample deleted successfully.", message);
-            await _mockSampleService.Received(1).DeleteSampleAsync(sampleId, "testUser", lastModified);
+            await _mockSampleService.Received(1).DeleteSampleAsync(sampleId, "TestUser", lastModified);
         }
 
         private void SetupMockUserAndRoles()
@@ -137,7 +137,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateDeleter)
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateDeleter),
+                    new Claim(ClaimTypes.Name, "TestUser"),
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 _mockHttpContextAccessor?.HttpContext?.User.Returns(user);

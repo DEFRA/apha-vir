@@ -68,7 +68,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(submission);
             }
             var submissionDto = _mapper.Map<SubmissionDto>(submission);
-            await _submissionService.AddSubmissionAsync(submissionDto, "TestUser");
+            await _submissionService.AddSubmissionAsync(submissionDto, AuthorisationUtil.GetUserId());
 
             return RedirectToAction("Index", "SubmissionSamples");
         }
@@ -117,7 +117,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(submission);
             }
             var submissionDto = _mapper.Map<SubmissionDto>(submission);
-            await _submissionService.UpdateSubmissionAsync(submissionDto, "TestUser");
+            await _submissionService.UpdateSubmissionAsync(submissionDto,AuthorisationUtil.GetUserId());
 
             return RedirectToAction("Index", "SubmissionSamples");
         }
@@ -212,7 +212,7 @@ namespace Apha.VIR.Web.Controllers
 
             var viewModel = new SubmissionLetterViewModel
             {
-                LetterContent = await _submissionService.SubmissionLetter(AVNumber, "TestUser"),
+                LetterContent = await _submissionService.SubmissionLetter(AVNumber, AuthorisationUtil.GetUserId()),
                 AVNumber = AVNumber
             };
             return View(viewModel);

@@ -113,7 +113,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager),
+                    new Claim(ClaimTypes.Name, "TestUser")
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 _mockHttpContextAccessor?.HttpContext?.User.Returns(user);

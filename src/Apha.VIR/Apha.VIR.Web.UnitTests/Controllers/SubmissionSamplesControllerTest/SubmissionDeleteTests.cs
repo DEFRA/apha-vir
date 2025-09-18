@@ -65,7 +65,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             Assert.True(success);
             Assert.Equal("Submission deleted successfully.", message);         
 
-            await _mockSubmissionService.Received(1).DeleteSubmissionAsync(submissionId, "testUser", lastModified);
+            await _mockSubmissionService.Received(1).DeleteSubmissionAsync(submissionId, "TestUser", lastModified);
         }
 
         [Fact]
@@ -144,7 +144,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateDeleter)
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateDeleter),
+                    new Claim(ClaimTypes.Name, "TestUser")
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 _mockHttpContextAccessor?.HttpContext?.User.Returns(user);

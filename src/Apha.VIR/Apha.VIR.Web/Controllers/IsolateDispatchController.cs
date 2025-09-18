@@ -134,7 +134,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(dispatchModel);
             }
             var dispatchRecord = _mapper.Map<IsolateDispatchInfoDto>(dispatchModel);
-            await _isolateDispatchService.AddDispatchAsync(dispatchRecord, "TestUser");
+            await _isolateDispatchService.AddDispatchAsync(dispatchRecord, AuthorisationUtil.GetUserId());
             string fromSource = dispatchModel!.Source!.ToLower();
             return fromSource switch
             {
@@ -221,7 +221,7 @@ namespace Apha.VIR.Web.Controllers
 
             await _isolateDispatchService.UpdateDispatchAsync(
             dispatchRecord,
-            "TestUser"
+           AuthorisationUtil.GetUserId()
             );
 
             return RedirectToAction("History", new { AVNumber = model.Avnumber, IsolateId = model.DispatchIsolateId });
@@ -230,7 +230,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid DispatchId, string LastModified, Guid IsolateId, string AVNumber)
         {
-            string UserName = "Test User";
+            string UserName = AuthorisationUtil.GetUserId();
 
             if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
             {

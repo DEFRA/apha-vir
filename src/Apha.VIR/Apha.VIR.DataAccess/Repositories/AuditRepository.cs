@@ -82,7 +82,7 @@ public class AuditRepository : RepositoryBase<object>, IAuditRepository
             new SqlParameter("@AVNumber", SqlDbType.VarChar, 20) { Value = avNumber == null ? DBNull.Value: avNumber},
             new SqlParameter("@DateFrom",SqlDbType.DateTime){ Value = dateFrom == null ? DBNull.Value: dateFrom},
             new SqlParameter("@DateTo",SqlDbType.DateTime){ Value = dateTo == null ? DBNull.Value: dateTo},
-            new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value =  userid == null ? DBNull.Value: userid}
+            new SqlParameter("@UserId", SqlDbType.VarChar, 120) { Value =  userid == null ? DBNull.Value: userid}
         };
     }
 }
