@@ -183,7 +183,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             // Assert
             Assert.IsType<RedirectToActionResult>(result);
             var redirectResult = (RedirectToActionResult)result;
-            Assert.Equal("Index", redirectResult.ActionName);
+            Assert.Equal("Edit", redirectResult.ActionName);
             Assert.Equal("IsolateCharacteristics", redirectResult.ControllerName);
         }
 

@@ -7,6 +7,7 @@
         @if (Model != null && Model.Any())
         {
             <form method="post">
+                <input type="hidden" name="SampleId" value="@ViewBag.SampleId" />
                 <div class="isolate_characteristics-grid" style="border: none;">
                     @for (int i = 0; i < Math.Min(Model.Count(), 5); i++)
                     {                        
@@ -35,7 +36,7 @@
                                     break;
                                 case "SingleList":
                                     <select asp-for="@Model[i].CharacteristicValue" asp-items="Model[i].CharacteristicValueDropDownList" class="form-control">
-                                        <option value="">Select an option</option>                                      
+                                        <option value=""></option>                                      
                                     </select>                                   
                                     break;
                             }
@@ -49,7 +50,7 @@
                     <br />
                     <img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" />
                     <img src="~/Images/spacer.gif" width="2" height="5" alt="" />
-                    <a href="~/IsolateDetails?AVNumber=@Model[0].AVNumber&Isolate=@Model[0].CharacteristicIsolateId" class="btn btn-secondary">Discard changes and return to the previous page</a>
+                    <a asp-controller="Isolates" asp-action="Edit" asp-route-AVNumber="@Html.Encode(Model[0].AVNumber)" asp-route-SampleId="@ViewBag.SampleId" asp-route-IsolateId="@Html.Encode(Model[0].CharacteristicIsolateId)" class="btn btn-secondary">Discard changes and return to the previous page</a>
                 </div>
             </form>
         }

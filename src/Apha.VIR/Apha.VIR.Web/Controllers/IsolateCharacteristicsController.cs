@@ -29,7 +29,7 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = AppRoleConstant.IsolateManager)]
-        public async Task<IActionResult> Edit(string AVNumber, Guid Isolate)
+        public async Task<IActionResult> Edit(string AVNumber, Guid Isolate, Guid SampleId)
         {
             if (!ModelState.IsValid)
             {
@@ -40,20 +40,21 @@ namespace Apha.VIR.Web.Controllers
             var model = _mapper.Map<List<IsolateCharacteristicViewModel>>(isolateCharacteristicInfoList);
             foreach (var item in model)
             {
-                if (item.CharacteristicType == "SingleList" && item.VirusCharacteristicId.HasValue && item.CharacteristicValue != null)
+                if (item.CharacteristicType == "SingleList" && item.VirusCharacteristicId.HasValue)
                 {
                     item.CharacteristicValueDropDownList = await GetDropDownList(item.VirusCharacteristicId.Value, item.CharacteristicValue);
                 }
                 item.AVNumber = AVNumber;
             }
-
+            ViewBag.SampleId = SampleId;
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(List<IsolateCharacteristicViewModel> characteristics)
+        public async Task<IActionResult> Edit(List<IsolateCharacteristicViewModel> characteristics, Guid SampleId)
         {
+            ViewBag.SampleId = SampleId;
             if (!AuthorisationUtil.CanEditItem(AppRoleConstant.IsolateManager))
             {
                 throw new UnauthorizedAccessException("User not authorised to update isolate characteristics.");
@@ -85,8 +86,8 @@ namespace Apha.VIR.Web.Controllers
                 return View(characteristics);
             }
 
-            var avNumbers = characteristics.Select(c => c.AVNumber).Distinct();
-            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = avNumbers });
+            var avNumber = characteristics.Select(c => c.AVNumber).First();
+            return RedirectToAction(nameof(SubmissionSamplesController.Index), "SubmissionSamples", new { AVNumber = avNumber });
         }
 
         private async Task<List<string>> ProcessCharacteristics(List<IsolateCharacteristicViewModel> characteristics)
@@ -142,7 +143,7 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        public async Task<List<SelectListItem>> GetDropDownList(Guid virusCharacteristicId, string characteristicValue)
+        public async Task<List<SelectListItem>> GetDropDownList(Guid virusCharacteristicId, string? characteristicValue)
         {
             if (!ModelState.IsValid || virusCharacteristicId == Guid.Empty)
             {
@@ -185,10 +186,13 @@ namespace Apha.VIR.Web.Controllers
         {
             if (string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue)) return "";
 
-            if (characteristicViewModel.CharacteristicValue.Length > virusCharacteristicDto.Length)
+            if(virusCharacteristicDto.Length.HasValue && virusCharacteristicDto.Length.Value != 0)
             {
-                return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds maximum length requirement (Maximum Length: {virusCharacteristicDto.Length})";
-            }
+                if (characteristicViewModel.CharacteristicValue.Length > virusCharacteristicDto.Length)
+                {
+                    return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds maximum length requirement (Maximum Length: {virusCharacteristicDto.Length})";
+                }
+            }            
 
             return "";
         }
