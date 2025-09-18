@@ -20,14 +20,14 @@
 			<div class="form-group row mt-4">
 				<label for="DateTimeFrom" class="col-sm-3 col-form-label">Date/Time From</label>
 				<div class="col-sm-9">
-					<input id="DateTimeFrom" asp-for="DateTimeFrom" class="form-control datepicker" title="Date format is dd/mm/yyyy hh:mm:ss" />
+					<input id="DateTimeFrom" asp-for="DateTimeFrom" style="width:180px;" />
 					<br><span asp-validation-for="DateTimeFrom" class="Validation"></span>
 				</div>
 			</div>
 			<div class="form-group row mt-4">
 				<label for="DateTimeTo" class="col-sm-3 col-form-label">Date/Time To</label>
 				<div class="col-sm-9">
-					<input id="DateTimeTo" asp-for="DateTimeTo" class="form-control datepicker" title="Date format is dd/mm/yyyy hh:mm:ss" />
+					<input id="DateTimeTo" asp-for="DateTimeTo" style="width:180px;" />
 					<br><span asp-validation-for="DateTimeTo" class="Validation"></span>
 				</div>
 			</div>
@@ -110,7 +110,7 @@ else
 		};
 
 		function ClearSearchFilter() {
-			window.location.href = '/AuditLog/Index';
+			window.location.href = '/AuditLog';
 		};
 	</script>
 }

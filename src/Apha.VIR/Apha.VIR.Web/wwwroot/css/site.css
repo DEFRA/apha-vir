@@ -598,6 +598,7 @@
     }
 
     .isolatereporttable th {
+        border: 1px solid white;
         background-color: #0b2677;
         color: #fff;
         font-weight: bold;

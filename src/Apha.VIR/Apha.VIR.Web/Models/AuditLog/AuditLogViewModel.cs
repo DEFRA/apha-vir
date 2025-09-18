@@ -6,7 +6,9 @@ public class AuditLogViewModel
 {
     [Required(ErrorMessage = "AVNumber must be entered")]
     public string AVNumber { get; set; } = null!;
+    [DataType(DataType.Date)]
     public DateTime? DateTimeFrom { get; set; }
+    [DataType(DataType.Date)]
     public DateTime? DateTimeTo { get; set; }
     public string? UserId { get; set; }
     public bool ShowErrorSummary { get; set; }
