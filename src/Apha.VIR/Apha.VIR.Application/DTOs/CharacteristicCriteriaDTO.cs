@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class CharacteristicCriteriaDTO
+public class CharacteristicCriteriaDto
 {
     public Guid? Characteristic { get; set; }
     public string? Comparator { get; set; }

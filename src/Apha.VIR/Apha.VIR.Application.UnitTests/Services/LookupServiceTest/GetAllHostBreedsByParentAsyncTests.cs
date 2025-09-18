@@ -21,43 +21,43 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             _mockLookupService = new LookupService(_mockLookupRepository, _mockMapper);
         }
         [Fact]
-        public async Task GetAllHostBreedsByParentAsyncs_ReturnsLookupItemDTOsList_WhenValidHostSpecie()
+        public async Task GetAllHostBreedsByParentAsyncs_ReturnsLookupItemDtosList_WhenValidHostSpecie()
         {
             // Arrange
             Guid hostSpecies = Guid.NewGuid();
             var lookupItems = new List<LookupItem> { new LookupItem { Id = Guid.NewGuid(), Name = "Labrador" } };
-            var lookupItemDTOs = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Labrador" } };
+            var LookupItemDtos = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Labrador" } };
 
             _mockLookupRepository.GetAllHostBreedsByParentAsync(hostSpecies).Returns(lookupItems);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(lookupItems).Returns(lookupItemDTOs);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(lookupItems).Returns(LookupItemDtos);
 
             // Act
             var result = await _mockLookupService.GetAllHostBreedsByParentAsync(hostSpecies);
 
             // Assert
             await _mockLookupRepository.Received(1).GetAllHostBreedsByParentAsync(hostSpecies);
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(lookupItems);
-            Assert.Equal(lookupItemDTOs, result);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(lookupItems);
+            Assert.Equal(LookupItemDtos, result);
         }
 
         [Fact]
-        public async Task GetAllHostBreedsByParentAsync_ReturnsLookupItemDTOsList_WhenNullHostSpecies()
+        public async Task GetAllHostBreedsByParentAsync_ReturnsLookupItemDtosList_WhenNullHostSpecies()
         {
             // Arrange
             Guid? hostSpecies = null;
             var lookupItems = new List<LookupItem> { new LookupItem { Id = Guid.NewGuid(), Name = "All Breeds" } };
-            var lookupItemDTOs = new List<LookupItemDTO> { new LookupItemDTO { Id = Guid.NewGuid(), Name = "All Breeds" } };
+            var LookupItemDtos = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "All Breeds" } };
 
             _mockLookupRepository.GetAllHostBreedsByParentAsync(hostSpecies).Returns(lookupItems);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(lookupItems).Returns(lookupItemDTOs);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(lookupItems).Returns(LookupItemDtos);
 
             // Act
             var result = await _mockLookupService.GetAllHostBreedsByParentAsync(hostSpecies);
 
             // Assert
             await _mockLookupRepository.Received(1).GetAllHostBreedsByParentAsync(hostSpecies);
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(lookupItems);
-            Assert.Equal(lookupItemDTOs, result);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(lookupItems);
+            Assert.Equal(LookupItemDtos, result);
         }
 
         [Fact]
@@ -66,17 +66,17 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Arrange
             Guid hostSpecies = Guid.NewGuid();
             var emptyList = new List<LookupItem>();
-            var emptyDTOList = new List<LookupItemDTO>();
+            var emptyDTOList = new List<LookupItemDto>();
 
             _mockLookupRepository.GetAllHostBreedsByParentAsync(hostSpecies).Returns(emptyList);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(emptyList).Returns(emptyDTOList);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(emptyList).Returns(emptyDTOList);
 
             // Act
             var result = await _mockLookupService.GetAllHostBreedsByParentAsync(hostSpecies);
 
             // Assert
             await _mockLookupRepository.Received(1).GetAllHostBreedsByParentAsync(hostSpecies);
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(emptyList);
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(emptyList);
             Assert.Empty(result);
         }
 

@@ -2,39 +2,39 @@
 @{
 	ViewData["Title"] = "Isolate Dispatch Report | Virus Isolates Repository";
 }
-<div class="isolatereport-contentbox">
-	<div class="isolatereport-box_title">Report Criteria</div>
-	<div class="isolatereport-box_body">
+<div class="contentbox">
+	<div class="contentbox_title">Report Criteria</div>
+	<div class="contentbox_body">
 		<form asp-action="GenerateReport" method="post">
-			<div class="form-criteria">
-				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
-					<div style="min-width: 120px;">
-						<label  for="DateFrom" style="padding-left:15px;">Date From</label>
+			<div class="pt-2">
+				<div class="form-row report_date">
+					<div class="minwidth-120">
+						<span for="DateFrom" class="paddingLeft15">Date From</span>
 					</div>
-					<div style="width: 50px;">
+					<div class="width-50">
 						<img src="~/Images/spacer.gif" width="50" height="5" alt="" />
 					</div>
 					<div style="flex: 1;">
-						<input id="DateFrom" asp-for="DateFrom" style="width:180px;" />
-						<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+						<input id="DateFrom" asp-for="DateFrom" class="width-180 " />
+						@* <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" /> *@
 						<span asp-validation-for="DateFrom" class="text-danger"></span>
 					</div>
 				</div>
-				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
-					<div style="min-width: 120px;">
-						<label for="DateTo" style="padding-left:15px;">Date To</label>
+				<div class="form-row report_date">
+					<div class="minwidth-120">
+						<span for="DateTo" class="paddingLeft15">Date To</span>
 					</div>
-					<div style="width: 50px;">
+					<div class="width-50">
 						<img src="~/Images/spacer.gif" width="50" height="5" alt="" />
 					</div>
-					<div style="flex: 1;">
-						<input id="DateTo" asp-for="DateTo" class="datepicker" style="width:180px;" />
-						<img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" />
+					<div >
+						<input id="DateTo" asp-for="DateTo" class="datepicker width-180 " />
+						@* <img src="~/Images/calendar.png" alt="calender" width="15px" height="18px" /> *@
 						<span asp-validation-for="DateTo" class="text-danger"></span>
 					</div>
 				</div>
-				<div class="form-row" style="display: flex; align-items: center; margin-bottom: 10px;">
-					<div style="min-width: 50px;padding-left:15px">
+				<div class="form-row report_date">
+					<div class="paddingLeft15" style="min-width: 50px;">
 						@if (Model.ReportData.Any())
 						{
 							<a id="RepolinkExport"
@@ -49,7 +49,7 @@
 					</div>
 					<div style="width: 155px;">
 					</div>
-					<div style="flex: 1;">
+					<div>
 						<button type="submit" class="btn btn-as-link">Generate Report</button>
 					</div>
 				</div>
@@ -63,10 +63,10 @@
 
 @if (Model.ReportData != null && Model.ReportData.Any())
 {
-	<table class="isolatereporttable">
+	<table class="VIRtable">
 
 		<thead>
-			<tr class=".isolatereport-header">
+			<tr>
 				<th>AV Number</th>
 				<th>Nomenclature</th>
 				<th>No Of Aliquots</th>
@@ -100,7 +100,7 @@
 }
 else
 {
-	<div style="border: 1px solid gray; padding: 5px; display: inline-block;">
+	<div class="no_record">
 		No results to display.
 	</div>
 }

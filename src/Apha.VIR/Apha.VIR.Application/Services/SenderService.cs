@@ -20,40 +20,40 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<SenderDTO>> GetAllSenderOrderByOrganisationAsync(Guid? countryId)
+        public async Task<IEnumerable<SenderDto>> GetAllSenderOrderByOrganisationAsync(Guid? countryId)
         {
             var senders = await _senderRepository.GetAllSenderOrderByOrganisationAsync(countryId);
 
-            return _mapper.Map<IEnumerable<SenderDTO>>(senders);
+            return _mapper.Map<IEnumerable<SenderDto>>(senders);
         }
 
-        public async Task<IEnumerable<SenderDTO>> GetAllSenderOrderBySenderAsync(Guid? countryId)
+        public async Task<IEnumerable<SenderDto>> GetAllSenderOrderBySenderAsync(Guid? countryId)
         {
             var senders = await _senderRepository.GetAllSenderOrderBySenderAsync(countryId);
 
-            return _mapper.Map<IEnumerable<SenderDTO>>(senders);
+            return _mapper.Map<IEnumerable<SenderDto>>(senders);
         }
 
-        public async Task<PaginatedResult<SenderDTO>> GetAllSenderAsync(int pageNo, int pageSize)
+        public async Task<PaginatedResult<SenderDto>> GetAllSenderAsync(int pageNo, int pageSize)
         {
-            return _mapper.Map<PaginatedResult<SenderDTO>>(
+            return _mapper.Map<PaginatedResult<SenderDto>>(
                 await _senderRepository.GetAllSenderAsync(pageNo, pageSize));
         }
 
-        public async Task<SenderDTO> GetSenderAsync(Guid senderId)
+        public async Task<SenderDto> GetSenderAsync(Guid senderId)
         {
-            return _mapper.Map<SenderDTO>(
+            return _mapper.Map<SenderDto>(
                 await _senderRepository.GetSenderAsync(senderId));
         }
 
-        public async Task AddSenderAsync(SenderDTO sender)
+        public async Task AddSenderAsync(SenderDto sender)
         {
             var senderData = _mapper.Map<Sender>(sender);
 
             await _senderRepository.AddSenderAsync(senderData);
         }
 
-        public async Task UpdateSenderAsync(SenderDTO sender)
+        public async Task UpdateSenderAsync(SenderDto sender)
         {
             var senderData = _mapper.Map<Sender>(sender);
 

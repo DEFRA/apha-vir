@@ -96,8 +96,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
         {
             // Arrange
             var model = new VirusCharacteristicListEntryModel { Id = Guid.Empty, VirusCharacteristicId = Guid.NewGuid(), Name = "Test" };
-            var dto = new VirusCharacteristicListEntryDTO();
-            _mapper.Map<VirusCharacteristicListEntryDTO>(model).Returns(dto);
+            var dto = new VirusCharacteristicListEntryDto();
+            _mapper.Map<VirusCharacteristicListEntryDto>(model).Returns(dto);
 
             SetupMockUserAndRoles();
 
@@ -109,7 +109,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("ListEntries", redirect.ActionName);
             Assert.NotNull(redirect.RouteValues);
-            Assert.Equal(model.VirusCharacteristicId, redirect.RouteValues["characteristic"]);
+            Assert.Equal(model.VirusCharacteristicId, redirect.RouteValues["characteristicId"]);
         }
 
         private void SetupMockUserAndRoles()

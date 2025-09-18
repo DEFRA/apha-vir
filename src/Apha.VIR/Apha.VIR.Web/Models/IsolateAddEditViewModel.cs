@@ -14,6 +14,7 @@ namespace Apha.VIR.Web.Models
         public Guid? Type { get; set; }
 
         [Display(Name = "Year Of Isolation")]
+        [Range(1000, 9999, ErrorMessage = "Year of Isolation must be entered in the correct format: yyyy, eg. 2000")]
         public int? YearOfIsolation { get; set; }
         public bool IsMixedIsolate { get; set; } = false;
         public Guid? IsolationMethod { get; set; }

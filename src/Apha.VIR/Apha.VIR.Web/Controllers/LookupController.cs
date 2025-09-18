@@ -174,7 +174,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("CreateLookupItem", model);
             }
 
-            var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
+            var dto = _mapper.Map<LookupItemDto>(model.LookupItem);
 
             await _lookupService.InsertLookupItemAsync(model.LookupId, dto);
 
@@ -253,7 +253,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("EditLookupItem", model);
             }
 
-            var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
+            var dto = _mapper.Map<LookupItemDto>(model.LookupItem);
 
             await _lookupService.UpdateLookupItemAsync(model.LookupId, dto);
 
@@ -296,7 +296,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("EditLookupItem", model);
             }
 
-            var dto = _mapper.Map<LookupItemDTO>(model.LookupItem);
+            var dto = _mapper.Map<LookupItemDto>(model.LookupItem);
 
             await _lookupService.DeleteLookupItemAsync(model.LookupId, dto);
 

@@ -30,7 +30,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var pageNo = 1;
             var pageSize = 10;
 
-            var lookupResult = new LookupDTO
+            var lookupResult = new LookupDto
             {
                 Id = lookupId,
                 Parent = Guid.NewGuid(),
@@ -44,8 +44,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 AlternateName = lookupResult.AlternateName,
                 Smsrelated = lookupResult.Smsrelated
             }; ;
-            var lookupEntries = new PaginatedResult<LookupItemDTO>
-            { data = new List<LookupItemDTO> { new LookupItemDTO() }, TotalCount = 0 };
+            var lookupEntries = new PaginatedResult<LookupItemDto>
+            { data = new List<LookupItemDto> { new LookupItemDto() }, TotalCount = 0 };
             var lookupItems = new List<LookupItemModel>();
 
             _mockLookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);

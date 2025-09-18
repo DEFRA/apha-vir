@@ -2,7 +2,7 @@
 
 @if (Model.Any())
 {
-    <table id="isolatesTable" class="IsolateRelocatetable">
+    <table id="isolatesTable" class="VIRtable">
         <thead>
             <tr>
                 <th>AV Number</th>
@@ -28,7 +28,7 @@
 }
 else
 {
-    <div style="border: 1px solid gray; padding: 5px; display: inline-block;">
+    <div class="no_record">
         There are no isolates matching the criteria specified
     </div>
 }

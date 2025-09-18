@@ -133,10 +133,10 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 return View("CreateVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.AddEntryAsync(dto);
 
-            return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
+            return RedirectToAction("ListEntries", new { characteristicId = model.VirusCharacteristicId });
         }
 
         [HttpGet]
@@ -171,10 +171,10 @@ namespace Apha.VIR.Web.Controllers
             if (!ModelState.IsValid)
                 return View("EditVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.UpdateEntryAsync(dto);
 
-            return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
+            return RedirectToAction("ListEntries", new { characteristicId = model.VirusCharacteristicId });
         }
 
         [HttpPost]
@@ -190,7 +190,7 @@ namespace Apha.VIR.Web.Controllers
 
             var lastModifiedBytes = Convert.FromBase64String(lastModified);
             await _listEntryService.DeleteEntryAsync(id, lastModifiedBytes);
-            return RedirectToAction("ListEntries", "VirusCharacteristicsListEntry", new { characteristic });
+            return RedirectToAction("ListEntries", "VirusCharacteristicsListEntry", new { characteristicId = characteristic });
         }
     }
 }

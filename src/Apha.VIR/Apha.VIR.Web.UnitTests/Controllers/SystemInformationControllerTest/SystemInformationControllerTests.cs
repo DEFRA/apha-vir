@@ -36,7 +36,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
         public async Task SystemInfo_ReturnsViewWithCorrectModel()
         {
             // Arrange
-            var sysInfoDTO = new SystemInfoDTO
+            var sysInfoDTO = new SystemInfoDto
             {
                 Id = Guid.NewGuid(),
                 SystemName = "VIRLocal",
@@ -91,8 +91,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
         public async Task SystemInfo_HandlesNullIdentity()
         {
             // Arrange
-            _mockSysInfoService.GetLatestSysInfo().Returns(new SystemInfoDTO());
-            _mockMapper.Map<SystemInformationViewModel>(Arg.Any<SystemInfoDTO>()).Returns(new SystemInformationViewModel());
+            _mockSysInfoService.GetLatestSysInfo().Returns(new SystemInfoDto());
+            _mockMapper.Map<SystemInformationViewModel>(Arg.Any<SystemInfoDto>()).Returns(new SystemInformationViewModel());
             _mockConfiguration["URL:LogMonitor"].Returns("http://example.com/logs");
 
             _controller.ControllerContext = new ControllerContext
@@ -115,8 +115,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
         public async Task SystemInfo_HandlesNullRemoteIpAddress()
         {
             // Arrange
-            _mockSysInfoService.GetLatestSysInfo().Returns(new SystemInfoDTO());
-            _mockMapper.Map<SystemInformationViewModel>(Arg.Any<SystemInfoDTO>()).Returns(new SystemInformationViewModel());
+            _mockSysInfoService.GetLatestSysInfo().Returns(new SystemInfoDto());
+            _mockMapper.Map<SystemInformationViewModel>(Arg.Any<SystemInfoDto>()).Returns(new SystemInformationViewModel());
             _mockConfiguration["URL:LogMonitor"].Returns("http://example.com/logs");
 
             _controller.ControllerContext = new ControllerContext
@@ -137,8 +137,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
         public async Task SystemInfo_ThrowsExceptionForMissingConfiguration()
         {
             // Arrange
-            _mockSysInfoService.GetLatestSysInfo().Returns(new SystemInfoDTO());
-            _mockMapper.Map<SystemInformationViewModel>(Arg.Any<SystemInfoDTO>()).Returns(new SystemInformationViewModel());
+            _mockSysInfoService.GetLatestSysInfo().Returns(new SystemInfoDto());
+            _mockMapper.Map<SystemInformationViewModel>(Arg.Any<SystemInfoDto>()).Returns(new SystemInformationViewModel());
             _mockConfiguration["URL:LogMonitor"].Returns((string?)null);
             _controller.ControllerContext = new ControllerContext
             {

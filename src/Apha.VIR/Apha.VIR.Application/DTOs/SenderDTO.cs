@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class SenderDTO
+public class SenderDto
 {
     public Guid SenderId { get; set; }
     public string? SenderName { get; set; }

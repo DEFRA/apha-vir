@@ -156,7 +156,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task UpdateIsolateViabilityAsync_ValidInput_CallsRepository()
         {
             // Arrange
-            var dto = new IsolateViabilityInfoDTO
+            var dto = new IsolateViabilityInfoDto
             {
                 IsolateViabilityId = Guid.NewGuid(),
                 IsolateViabilityIsolateId = Guid.NewGuid(),
@@ -199,7 +199,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task UpdateIsolateViabilityAsync_InvalidUserId_ThrowsArgumentException(string invalidUserId)
         {
             // Arrange
-            var dto = new IsolateViabilityInfoDTO();
+            var dto = new IsolateViabilityInfoDto();
             var mappedEntity = new IsolateViability();
 
             _mockMapper.Map<IsolateViability>(dto).Returns(mappedEntity);
@@ -213,7 +213,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task UpdateIsolateViabilityAsync_RepositoryThrows_ExceptionPropagates()
         {
             // Arrange
-            var dto = new IsolateViabilityInfoDTO();
+            var dto = new IsolateViabilityInfoDto();
             var mappedEntity = new IsolateViability();
             var userId = "user123";
 
@@ -231,7 +231,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
         public async Task UpdateIsolateViabilityAsync_MapperThrows_ExceptionPropagates()
         {
             // Arrange
-            var dto = new IsolateViabilityInfoDTO();
+            var dto = new IsolateViabilityInfoDto();
             _mockMapper.When(m => m.Map<IsolateViability>(dto))
                    .Do(_ => throw new InvalidOperationException("Mapping failed"));
 
@@ -249,13 +249,13 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             {
                 new IsolateViability { IsolateViabilityIsolateId = isolateId, DateChecked = DateTime.Now }
             };
-            var expectedDtos = new List<IsolateViabilityInfoDTO>
+            var expectedDtos = new List<IsolateViabilityInfoDto>
             {
-                new IsolateViabilityInfoDTO { IsolateViabilityIsolateId = isolateId, DateChecked = DateTime.Now }
+                new IsolateViabilityInfoDto { IsolateViabilityIsolateId = isolateId, DateChecked = DateTime.Now }
             };
 
             _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(isolateViabilities);
-            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(isolateViabilities).Returns(expectedDtos);
+            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDto>>(isolateViabilities).Returns(expectedDtos);
 
             // Act
             var result = await _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId);
@@ -272,7 +272,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             var emptyList = new List<IsolateViability>();
 
             _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(emptyList);
-            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDTO>>(emptyList).Returns(new List<IsolateViabilityInfoDTO>());
+            _mockMapper.Map<IEnumerable<IsolateViabilityInfoDto>>(emptyList).Returns(new List<IsolateViabilityInfoDto>());
 
             // Act
             var result = await _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId);
@@ -304,7 +304,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
                 new IsolateViability { DateChecked = DateTime.Now }
             };
             _mockIsolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId).Returns(viabilityList);
-            _mockMapper.Map<IsolateViabilityDTO>(Arg.Any<IsolateViability>()).Returns(new IsolateViabilityDTO());
+            _mockMapper.Map<IsolateViabilityDto>(Arg.Any<IsolateViability>()).Returns(new IsolateViabilityDto());
 
             // Act
             var result = await _isolateViabilityService.GetLastViabilityByIsolateAsync(isolateId);
@@ -312,7 +312,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             // Assert
             Assert.NotNull(result);
             await _mockIsolateViabilityRepository.Received(1).GetViabilityByIsolateIdAsync(isolateId);
-            _mockMapper.Received(1).Map<IsolateViabilityDTO>(Arg.Is<IsolateViability>(v => v.DateChecked == viabilityList.Max(x => x.DateChecked)));
+            _mockMapper.Received(1).Map<IsolateViabilityDto>(Arg.Is<IsolateViability>(v => v.DateChecked == viabilityList.Max(x => x.DateChecked)));
         }
 
         [Fact]
@@ -328,7 +328,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             // Assert
             Assert.Null(result);
             await _mockIsolateViabilityRepository.Received(1).GetViabilityByIsolateIdAsync(isolateId);
-            _mockMapper.DidNotReceive().Map<IsolateViabilityDTO>(Arg.Any<IsolateViability>());
+            _mockMapper.DidNotReceive().Map<IsolateViabilityDto>(Arg.Any<IsolateViability>());
         }
 
         [Fact]

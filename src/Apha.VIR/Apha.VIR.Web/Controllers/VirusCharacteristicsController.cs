@@ -161,7 +161,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(viewmodel);
             }
 
-            var dto = _mapper.Map<VirusCharacteristicDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicDto>(model);
             await _virusCharacteristicService.AddEntryAsync(dto);
 
             return RedirectToAction("List");
@@ -238,7 +238,7 @@ namespace Apha.VIR.Web.Controllers
                 return View("Edit", model);
             }
 
-            var dto = _mapper.Map<VirusCharacteristicDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicDto>(model);
             await _virusCharacteristicService.UpdateEntryAsync(dto);
 
             return RedirectToAction("List");
@@ -341,11 +341,6 @@ namespace Apha.VIR.Web.Controllers
             if (!model.CharacteristicIndex.HasValue)
             {
                 errors.Add("Display Order not specified for this item.");
-            }
-
-            if (model.Length.HasValue && model.Length.Value > 100)
-            {
-                errors.Add("Maximum length must be no more than 100 characters.");
             }
 
             return errors;

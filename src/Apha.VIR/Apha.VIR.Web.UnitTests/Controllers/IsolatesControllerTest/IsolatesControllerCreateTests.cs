@@ -49,8 +49,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(new SubmissionDTO { DateSubmissionReceived = DateTime.Now });
-            _mockSampleService.GetSamplesBySubmissionIdAsync(Arg.Any<Guid>()).Returns(new List<SampleDTO> { new SampleDTO { SampleId = sampleId, SampleTypeName = "Normal" } });
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(new SubmissionDto { DateSubmissionReceived = DateTime.Now });
+            _mockSampleService.GetSamplesBySubmissionIdAsync(Arg.Any<Guid>()).Returns(new List<SampleDto> { new SampleDto { SampleId = sampleId, SampleTypeName = "Normal" } });
 
             // Act
             var result = await _controller.Create(avNumber, sampleId) as ViewResult;
@@ -87,7 +87,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns((SubmissionDTO)null!);
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns((SubmissionDto)null!);
 
             // Act
             var result = await _controller.Create(avNumber, sampleId) as ViewResult;
@@ -117,7 +117,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            var isolateDto = new IsolateDTO
+            var IsolateDto = new IsolateDto
             {
                 Family = Guid.NewGuid(),
                 Type = Guid.NewGuid(),
@@ -127,7 +127,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns(isolateDto.IsolateId);
+            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns(IsolateDto.IsolateId);
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(isolateModel) as RedirectToActionResult;
@@ -177,13 +177,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns((Guid)isolateModel.IsolateId);
+            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns((Guid)isolateModel.IsolateId);
             SetupMockUserAndRoles();
             // Act
             await _controller.Create(isolateModel);
 
             // Assert
-            await _mockIsolateViabilityService.Received(1).AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDTO>(), Arg.Any<string>());
+            await _mockIsolateViabilityService.Received(1).AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDto>(), Arg.Any<string>());
         }
 
         [Fact]
@@ -202,7 +202,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns((Guid)isolateModel.IsolateId);
+            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns((Guid)isolateModel.IsolateId);
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(isolateModel) as RedirectToActionResult;
