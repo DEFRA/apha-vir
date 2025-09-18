@@ -792,7 +792,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             var data = new List<IsolateRelocateDto>
     {
-        new IsolateRelocateDto { IsolateId = Guid.NewGuid(), Tray = Guid.NewGuid(), Well = "A1", LastModified = new byte[0] }
+        new IsolateRelocateDto { IsolateId = Guid.NewGuid(), Tray = Guid.NewGuid(), Well = "A1", LastModified = Array.Empty<byte>() }
     };
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
                 .Returns(data);
