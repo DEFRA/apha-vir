@@ -76,15 +76,15 @@ public class DispatchRepository : RepositoryBase<IsolateDispatchInfo>, IIsolateD
         var parameters = new[]
         {
            new SqlParameter("@DispatchId", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid() },
-           new SqlParameter("@DispatchIsolateId", SqlDbType.UniqueIdentifier) { Value = DispatchInfo.DispatchIsolateId ?? Guid.Empty },
-           new SqlParameter("@NoOfAliquots", SqlDbType.Int) { Value = DispatchInfo.NoOfAliquots },
+           new SqlParameter("@DispatchIsolateId", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.DispatchIsolateId ?? DBNull.Value },
+           new SqlParameter("@NoOfAliquots", SqlDbType.Int) { Value = (object?)DispatchInfo.NoOfAliquots ?? DBNull.Value },
            new SqlParameter("@PassageNumber", SqlDbType.Int) { Value = (object?)DispatchInfo.PassageNumber ?? DBNull.Value },
-           new SqlParameter("@Recipient", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.RecipientId ?? Guid.Empty },
+           new SqlParameter("@Recipient", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.RecipientId ?? DBNull.Value },
            new SqlParameter("@RecipientName", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.RecipientName ?? DBNull.Value },
            new SqlParameter("@RecipientAddress", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.RecipientAddress ?? DBNull.Value },
            new SqlParameter("@ReasonForDispatch", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.ReasonForDispatch ?? DBNull.Value },
            new SqlParameter("@DispatchedDate", SqlDbType.DateTime, 20) { Value = (object?)DispatchInfo.DispatchedDate ?? DBNull.Value },
-           new SqlParameter("@DispatchedBy", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.DispatchedById ?? Guid.Empty },
+           new SqlParameter("@DispatchedBy", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.DispatchedById ?? DBNull.Value },
            new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)DispatchInfo.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput }
         };
@@ -111,10 +111,10 @@ public class DispatchRepository : RepositoryBase<IsolateDispatchInfo>, IIsolateD
         await ExecuteSqlAsync(
             "EXEC spDispatchUpdate @UserId, @DispatchId, @DispatchIsolateId, @NoOfAliquots, @PassageNumber, @Recipient, @RecipientName, @RecipientAddress, @ReasonForDispatch, @DispatchedDate, @DispatchedById, @LastModified OUTPUT",
             new SqlParameter("@UserId", SqlDbType.VarChar, 20) { Value = User },
-            new SqlParameter("@DispatchId", SqlDbType.UniqueIdentifier) { Value = DispatchInfo.DispatchId ?? Guid.Empty },
-            new SqlParameter("@DispatchIsolateId", SqlDbType.UniqueIdentifier) { Value = DispatchInfo.DispatchIsolateId ?? Guid.Empty },
-            new SqlParameter("@NoOfAliquots", SqlDbType.Int) { Value = DispatchInfo.NoOfAliquots },
-            new SqlParameter("@PassageNumber", SqlDbType.Int) { Value = (object?)DispatchInfo.PassageNumber ?? DBNull.Value },
+            new SqlParameter("@DispatchId", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.DispatchId ?? DBNull.Value },
+            new SqlParameter("@DispatchIsolateId", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.DispatchIsolateId ?? DBNull.Value },
+            new SqlParameter("@NoOfAliquots", SqlDbType.Int) { Value = (object?)DispatchInfo.NoOfAliquots ?? DBNull.Value },
+            new SqlParameter("@PassageNumber", SqlDbType.Int) { Value = (object?)DispatchInfo.PassageNumber ?? DBNull.Value  },
             new SqlParameter("@Recipient", SqlDbType.UniqueIdentifier) { Value = (object?)DispatchInfo.RecipientId ?? DBNull.Value },
             new SqlParameter("@RecipientName", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.RecipientName ?? DBNull.Value },
             new SqlParameter("@RecipientAddress", SqlDbType.VarChar, 255) { Value = (object?)DispatchInfo.RecipientAddress ?? DBNull.Value },
