@@ -2,11 +2,11 @@
 @{
 	ViewData["Title"] = "Search Audit Log | Virus Isolates Repository";
 }
-<div class="isolatereport-contentbox w-600">
-	<div class="isolatereport-box_title">
+<div class="contentbox w-600">
+	<div class="contentbox_title">
 		Enter search selection criteria
 	</div>
-	<div class="isolatereport-box_body ms-3">
+	<div class="contentbox_body ms-3">
 		<br />
 		<form asp-action="SearchAudit" method="post">
 			<input type="hidden" name="IsNewSearch" value="true" />
@@ -40,9 +40,9 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-9 offset-sm-3 mb-3" style="text-align: right; padding-right: 55px;">
-					<button type="submit" class="btn-as-link me-3">Search</button>
+					<button type="submit" class="btnLink me-3">Search</button>
 					<button id="searchRepoClearSearch"
-							type="button" class="btn-as-link"
+							type="button" class="btnLink"
 							onclick="ClearSearchFilter()">
 						Clear Search
 					</button>
@@ -66,12 +66,12 @@ else
 			<span class="para-darkblue-small">Select the audit log that you wish to view</span>
 			<fieldset style="border: none; padding: 0; margin: 0;">
 				<br />
-				<button type="button" class="btn btn-as-link" id="btnSubmission" data-id="Submission" onclick="GetAuditLogs(this)">Submission</button>
-				<button type="button" class="btn btn-as-link" id="btnSample" data-id="Sample" onclick="GetAuditLogs(this)">Sample</button>
-				<button type="button" class="btn btn-as-link" id="btnIsolate" data-id="Isolate" onclick="GetAuditLogs(this)">Isolate</button>
-				<button type="button" class="btn btn-as-link" id="btnCharacteristics" data-id="Characteristics" onclick="GetAuditLogs(this)">Characteristics</button>
-				<button type="button" class="btn btn-as-link" id="btnDispatch" data-id="Dispatch" onclick="GetAuditLogs(this)">Dispatch</button>
-				<button type="button" class="btn btn-as-link" id="btnIsolateViability" data-id="Viability" onclick="GetAuditLogs(this)">Isolate Viability</button>
+				<button type="button" class="btnLink" id="btnSubmission" data-id="Submission" onclick="GetAuditLogs(this)">Submission</button>
+				<button type="button" class="btnLink" id="btnSample" data-id="Sample" onclick="GetAuditLogs(this)">Sample</button>
+				<button type="button" class="btnLink" id="btnIsolate" data-id="Isolate" onclick="GetAuditLogs(this)">Isolate</button>
+				<button type="button" class="btnLink" id="btnCharacteristics" data-id="Characteristics" onclick="GetAuditLogs(this)">Characteristics</button>
+				<button type="button" class="btnLink" id="btnDispatch" data-id="Dispatch" onclick="GetAuditLogs(this)">Dispatch</button>
+				<button type="button" class="btnLink" id="btnIsolateViability" data-id="Viability" onclick="GetAuditLogs(this)">Isolate Viability</button>
 			</fieldset>
 		</div>
 
