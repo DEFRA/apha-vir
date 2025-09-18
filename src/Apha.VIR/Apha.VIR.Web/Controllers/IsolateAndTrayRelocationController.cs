@@ -1,9 +1,11 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Models.Lookup;
 using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,6 +34,7 @@ namespace Apha.VIR.Web.Controllers
 
         [HttpGet]
         [Route("")]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public IActionResult Index()
         {
             return View();
@@ -40,6 +43,7 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         [Route("Isolate")]
         [Route("Tray")]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<IActionResult> Relocation()
         {
             var model = new IsolateRelocationViewModel();
@@ -81,6 +85,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost("Search")]
         public async Task<IActionResult> Search([FromBody] IsolateRelocationViewModel model)
         {
+            if (!AuthorisationUtil.CanGetItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list.");
+            }
+
             ValidateIsolatedFields(model!, ModelState);
 
             if (!ModelState.IsValid)
@@ -100,6 +109,11 @@ namespace Apha.VIR.Web.Controllers
         [Route("Save")]
         public async Task<IActionResult> Save(IsolateRelocationViewModel model)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to relocate isolates.");
+            }
+
             ValidateIsolatedSaveFields(model, ModelState);
             if (!ModelState.IsValid)
             {
@@ -144,7 +158,12 @@ namespace Apha.VIR.Web.Controllers
 
         [Route("Update")]
         public async Task<IActionResult> Update(IsolateRelocateViewModel model)
-        {            
+        {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to modify isolates.");
+            }
+
             if (ModelState.IsValid)
             {
                 await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
@@ -170,6 +189,11 @@ namespace Apha.VIR.Web.Controllers
         [Route("GetTray")]
         public async Task<IActionResult> GetTraysByFreezerId(Guid? freezerId)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -190,6 +214,10 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SearchIsolates(IsolateRelocationViewModel model)
         {
+            if (!AuthorisationUtil.CanGetItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("User not authorised to retrieve this list.");
+            }
             if (model.SelectedFreezer == null || model.SelectedTray == null)
             {
                 ModelState.AddModelError(string.Empty, "You must select both a freezer and tray.");                
@@ -212,6 +240,11 @@ namespace Apha.VIR.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RelocateTray(IsolateRelocationViewModel model)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to relocate isolates.");
+            }
+
             if (model.SelectedNewFreezer == null)
             {
                 ModelState.AddModelError(string.Empty, "You must select a Freezer for the Tray to be relocated into.");
@@ -239,13 +272,12 @@ namespace Apha.VIR.Web.Controllers
                     Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
                     Tray = isolate.Tray,
                     Well = isolate.Well,
-                    UserID = AuthorisationUtil.GetUserId(), 
+                    UserID = AuthorisationUtil.GetUserId(),
                     LastModified = isolate.LastModified,
                     UpdateType = RelocationType.Isolate.ToString()
                 });
             }
 
-            return Json(new { success = true });
             return Json(new { success = true });
         }
 
