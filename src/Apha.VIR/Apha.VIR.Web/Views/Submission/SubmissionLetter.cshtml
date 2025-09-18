@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Submission Letter | Virus Isolates Repository";
 }
-<div class="submission-letter-container" style="display: flex; flex-direction: row; align-items: flex-end;">
+<div class="submission-letter-container d-flex flex-row align-items-end " >
     <textarea id="txtLetter" class="submission-letter-text" rows="40" cols="80" style="border: none; background-color: #fff; color: #222; font-family: verdana, arial, helvetica, sans-serif; height: 24cm; width: 18cm;">@Model.LetterContent</textarea>
     <div class="back-link-container" style="margin-left: 16px; align-self: flex-end;">
         <a asp-controller="SubmissionSamples" asp-action="Index" asp-route-AVNumber="@Html.Encode(@Model.AVNumber)" class="back-link">Back</a>

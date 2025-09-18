@@ -4,40 +4,40 @@
 }
 <p>Please specify the criteria you wish to use to search for isolates:</p>
 <div class="d-flex" style="font-size:small">
-    <div class="search-criteria flex-grow-1 me-3" style="width: 500px;">
+    <div class="search-criteria flex-grow-1 me-3 w-500" >
 
-        <div class="form-group row mb-0" style="width:85%;">
+        <div class="form-group row mb-0 width-85PC">
             <div class="col-sm-3">
-                <label for="MinimumAVNumber" style="white-space: nowrap;">AV Number or AV Number Range</label>
+                <span for="MinimumAVNumber" style="white-space: nowrap;">AV Number or AV Number Range</span>
             </div>
             <div class="col-sm-3">
-                <label for="MinimumAVNumber">Min AV Number or Single:</label>
+                <span for="MinimumAVNumber">Min AV Number or Single:</span>
                 <input type="text" id="MinimumAVNumber" asp-for="MinAVNumber" class="d-block w-250" />
             </div>
         </div>
-        <div class="form-group row mb-0" style="width:85%;">
+        <div class="form-group row mb-0 width-85PC">
             <div class="col-sm-3">
             </div>
             <div class="col-sm-3">
-                <label for="MinimumAVNumber">Max AV Number:</label>
+                <span for="MinimumAVNumber">Max AV Number:</span>
                 <input type="text" id="MaximumAVNumber" asp-for="MaxAVNumber" class="d-block w-250" />
             </div>
         </div>
-        <div class="form-group row mb-0 mt-2" style="width:85%;">
+        <div class="form-group row mb-0 mt-2 width-85PC" >
             <div class="col-sm-3">
-                <label for="Freezer&Tray" style="white-space: nowrap;">Freezer & Tray</label>
+                <span for="Freezer&Tray" style="white-space: nowrap;">Freezer & Tray</span>
             </div>
             <div class="col-sm-3">
-                <label for="SelectedFreezer">Freezer</label>
-                <select id="FreezerSearch" asp-for="SelectedFreezer" asp-items="Model.FreezersList" class="d-block w-250" asp-option-label="Select Freezer">
+                <span for="SelectedFreezer">Freezer</span>
+                <select id="FreezerSearch" asp-for="SelectedFreezer" asp-items="Model.FreezersList" class="d-block width-258" asp-option-label="Select Freezer">
                     <option value=""></option>
                 </select>
             </div>
             <div class="col-sm-3" style="width:60px"></div>
-            <div id="divNewFreezer" class="col-sm-3" style="width:400px; display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
-                <label for="NewlocationfortheselectedIsolates" style="white-space: nowrap;"> New location for the selected Isolates </label>
+            <div id="divNewFreezer" class="col-sm-3 width-400" style="display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
+                <span for="NewlocationfortheselectedIsolates" style="margin-bottom:5px;white-space: nowrap;display:inline-block;"> New location for the selected Isolates </span>
                 <div class="d-flex align-items-center">
-                    <label for="NewFreezer" class="me-2 mb-0">Freezer</label>
+                    <span for="NewFreezer" class="me-2 mb-0">Freezer</span>
                     <img src="~\Images\spacer.gif" width="31px" height="5" alt="">
                     <select id="NewFreezer" asp-for="SelectedNewFreezer" asp-items="Model.FreezersList" class="w-250 d-inline-block align-middle me-3" asp-option-label="Select Freezer">
                         <option value=""></option>
@@ -46,20 +46,20 @@
             </div>
         </div>
 
-        <div class="form-group row mb-0" style="width:85%;">
+        <div class="form-group row mb-0 width-85PC">
             <div class="col-sm-3">
             </div>
             <div class="col-sm-3">
-                <label for="FreezerSearch">Tray</label>
-                <select id="TraySearch" asp-for="SelectedTray" asp-items="Model.TraysList" class="d-block w-250">
+                <span for="FreezerSearch">Tray</span>
+                <select id="TraySearch" asp-for="SelectedTray" asp-items="Model.TraysList" class="d-block width-258">
                     <option value=""></option>
                 </select>
             </div>
             <div class="col-sm-3" style="width:60px"></div>
-            <div id="divNewTray" class="col-sm-3" style="width:400px; display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
+            <div id="divNewTray" class="col-sm-3 width-400" style="display: @((Model.SearchResults != null && Model.SearchResults.Count > 0) ? "block" : "none");">
                 <img src="~\Images\spacer.gif" width="200px" height="5" alt="">
                 <div class="d-flex align-items-center">
-                    <label for="NewTray">Tray</label>
+                    <span for="NewTray">Tray</span>
                     <img src="~\Images\spacer.gif" width="60px" height="5" alt="">
                     <select id="NewTray" asp-for="SelectedNewTray" asp-items="Model.TraysList" class="w-250 d-inline-block align-middle me-3">
                         <option value=""></option>
@@ -72,7 +72,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row mb-0 mt-4" style="width:85%;">
+        <div class="form-group row mb-0 mt-4 width-85PC">
             <div class="col-sm-3 offset-sm-5">
                 <button id="searchButton" class="btn  btn-link isolaterelocate-btn-link-custom">Search</button>
             </div>
@@ -94,14 +94,14 @@
         Search Results
     </div>
     <div class="col-sm-12">
-        <div class="col-sm-6">           
+        <div class="col-sm-7">           
             <div style="text-align: right;margin-bottom: 5px;">
                 <button id="selectAllButton" class="btn btn-link isolaterelocate-btn-link-custom" style="margin-right:10px">Select All</button>
                 <button id="unselectAllButton" class="btn btn-link isolaterelocate-btn-link-custom">Unselect All</button>
-            </div>            
+            </div>
             <div id="isolatesGrid">
                 @await Html.PartialAsync("_SearchResults",
-                         (Model.SearchResults != null && Model.SearchResults.Count > 0) ? Model.SearchResults : new List<IsolateRelocateViewModel>())
+                                (Model.SearchResults != null && Model.SearchResults.Count > 0) ? Model.SearchResults : new List<IsolateRelocateViewModel>())
             </div>
         </div>      
         <form id="editForm" method="post" action="/Relocation/Edit">
@@ -117,7 +117,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () { 
-            $('#searchButton').click(function () {               
+            $('#searchButton').click(function () {
                 performSearch();
             });
 
@@ -178,7 +178,7 @@
             });
         });
 
-        function performSearch() {             
+        function performSearch() {            
                 $.ajax({
                     url: '/Relocation/Search',
                     type: 'POST',
@@ -190,16 +190,16 @@
                         SelectedTray: $('#TraySearch').val() || null
                     }),
                     success: function (data) {
-                        $('#isolatesGrid').html(data);
+                       $('#isolatesGrid').html(data);
                         $('#validationPanel').hide();
                         if ($.trim(data).length == 0) {
                             $('#divNewFreezer').hide();
-                            $('#divNewTray').hide();                           
-                        } else {
+                            $('#divNewTray').hide();
+                         } else {
                             $('#divNewFreezer').show();
-                            $('#divNewTray').show();                            
-                            $('#NewFreezer').val('');
-                            $('#NewTray').val('');
+                            $('#divNewTray').show();
+                          $('#NewFreezer').val('');
+                             $('#NewTray').val('');
                         }
                     },
                     error: function (xhr) {
@@ -223,7 +223,7 @@
 
                         // Optionally, you can hide/show specific divs based on the error state
                         $('#divNewFreezer').hide();
-                        $('#divNewTray').hide();                        
+                        $('#divNewTray').hide();
                       }
                     }
                 });
@@ -240,7 +240,7 @@
                     LastModified: $(this).data('lastmodified') || null
                   });
             });
-            
+
             $.ajax({
                 url: '/Relocation/Save',
                 type: 'POST',

@@ -1,8 +1,8 @@
 ﻿@model IsolateRelocateViewModel
 
-<div id="contentbox" class="w-600">
-    <div class="box_title">Edit Isolate Relocation</div>
-    <div class="editisolate-box_body">
+<div class="contentbox" class="w-600">
+    <div class="contentbox_title">Edit Isolate Relocation</div>
+    <div class="contentbox_body">
 
         <form asp-action="Update" method="post">
             <div class="isolate-form ms-2">
@@ -41,14 +41,14 @@
                         <span class="col-form-label">Well</span>
                     </div>
                     <div class="col-sm-9">
-                        <input asp-for="@Model.Well" class="form-control" style="width:226px" />
+                        <input asp-for="@Model.Well" class="form-control" style="width:219px" />
                         <span asp-validation-for="@Model.Well" style="color:red;"></span>
                     </div>
                 </div>
 
                 <!-- Buttons -->
                 <div class="row mt-3 mb-3">
-                    <div class="col-sm-8 d-flex justify-content-end">
+                    <div class="col-sm-6 d-flex justify-content-end">
                         <button type="submit" class="btn btn-link isolaterelocate-btn-link-custom">Update</button>
                         <a asp-action="Isolate" asp-controller="Relocation" class="btn btn-link ms-2">Cancel</a>
                     </div>
