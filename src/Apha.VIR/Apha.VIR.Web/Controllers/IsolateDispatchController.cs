@@ -1,7 +1,5 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
-using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
@@ -50,7 +48,7 @@ namespace Apha.VIR.Web.Controllers
                 return View();
             }
 
-            IEnumerable<IsolateDispatchInfoDTO> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(
+            IEnumerable<IsolateDispatchInfoDto> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(
                 AVNumber,
                 IsolateId
             );
@@ -115,7 +113,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 throw new UnauthorizedAccessException("Not authorised to create dispatch.");
             }
-            ValidateIsolateDispatch(dispatchModel, ModelState);
+            ValidateAddIsolateDispatch(dispatchModel, ModelState);
             dispatchModel.ViabilityList = await GetViabilityDropdownList();
             dispatchModel.RecipientList = await GetWorkGroupsDropdownList();
             dispatchModel.DispatchedByList = await GetStaffsDropdownList();
@@ -135,8 +133,8 @@ namespace Apha.VIR.Web.Controllers
             {
                 return View(dispatchModel);
             }
-            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDTO>(dispatchModel);
-            await _isolateDispatchService.AddDispatchAsync(dispatchRecord, AuthorisationUtil.GetUserId());
+            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDto>(dispatchModel);
+            await _isolateDispatchService.AddDispatchAsync(dispatchRecord, "TestUser");
             string fromSource = dispatchModel!.Source!.ToLower();
             return fromSource switch
             {
@@ -163,34 +161,29 @@ namespace Apha.VIR.Web.Controllers
                 return View();
             }
 
-            IsolateDispatchInfoDTO isolateDispatchInfoDTO =
+            IsolateDispatchInfoDto isolateDispatchInfoDto =
                 await _isolateDispatchService.GetDispatchForIsolateAsync(
                 AVNumber,
                 DispatchId,
                 DispatchIsolateId
             );
 
-            recepientLocation = isolateDispatchInfoDTO.RecipientId == null ? "External" : "Internal";
+            recepientLocation = isolateDispatchInfoDto.RecipientId == null ? "External" : "Internal";
 
-            IEnumerable<LookupItemDTO> viabilityLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllViabilityAsync());
-            IEnumerable<LookupItemDTO> recepientLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllWorkGroupsAsync());
-            IEnumerable<LookupItemDTO> dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllStaffAsync());
+            IEnumerable<LookupItemDto> viabilityLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllViabilityAsync());
+            IEnumerable<LookupItemDto> recepientLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllWorkGroupsAsync());
+            IEnumerable<LookupItemDto> dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllStaffAsync());
 
-            var model = _mapper.Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDTO);
+            var model = _mapper.Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDto);
 
-            model.ViabilityList = viabilityLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDTO.ViabilityId }).ToList();
-            model.RecipientList = recepientLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDTO.RecipientId }).ToList();
+            model.ViabilityList = viabilityLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDto.ViabilityId }).ToList();
+            model.RecipientList = recepientLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == isolateDispatchInfoDto.RecipientId }).ToList();
             model.DispatchedByList = dispatchedByLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToList();
-            model.DispatchedById = isolateDispatchInfoDTO.DispatchedById ?? Guid.Empty;
-            model.LastModified = isolateDispatchInfoDTO.LastModified ?? Array.Empty<byte>();
+            model.DispatchedById = isolateDispatchInfoDto.DispatchedById ?? Guid.Empty;
+            model.LastModified = isolateDispatchInfoDto.LastModified ?? Array.Empty<byte>();
             model.DispatchIsolateId = DispatchIsolateId;
             model.DispatchId = DispatchId;
             model.RecipientLocation = recepientLocation;
-
-            if (!await CheckFieldsVisibility(AVNumber, DispatchIsolateId))
-            {
-                model.IsFieldInVisible = true;
-            }
 
             return View(model);
         }
@@ -208,24 +201,27 @@ namespace Apha.VIR.Web.Controllers
             ModelState.Remove(nameof(model.RecipientList));
             ModelState.Remove(nameof(model.RecipientAddress));
 
-            var viabilityLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllViabilityAsync());
-            var recepientLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllWorkGroupsAsync());
-            var dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupService.GetAllStaffAsync());
+            await ValidateEditIsolateDispatch(model, ModelState);
 
-            model.ViabilityList = viabilityLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.ViabilityId }).ToList();
-            model.RecipientList = recepientLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.RecipientId }).ToList();
-            model.DispatchedByList = dispatchedByLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.DispatchedById }).ToList();
 
             if (!ModelState.IsValid)
             {
+                var viabilityLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllViabilityAsync());
+                var recepientLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllWorkGroupsAsync());
+                var dispatchedByLookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupService.GetAllStaffAsync());
+
+                model.ViabilityList = viabilityLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.ViabilityId }).ToList();
+                model.RecipientList = recepientLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.RecipientId }).ToList();
+                model.DispatchedByList = dispatchedByLookup.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name, Selected = x.Id == model.DispatchedById }).ToList();
+
                 return View(model);
             }
 
-            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDTO>(model);
+            var dispatchRecord = _mapper.Map<IsolateDispatchInfoDto>(model);
 
             await _isolateDispatchService.UpdateDispatchAsync(
             dispatchRecord,
-            AuthorisationUtil.GetUserId()
+            "TestUser"
             );
 
             return RedirectToAction("History", new { AVNumber = model.Avnumber, IsolateId = model.DispatchIsolateId });
@@ -234,26 +230,35 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid DispatchId, string LastModified, Guid IsolateId, string AVNumber)
         {
+            string UserName = "Test User";
+
             if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.Administrator))
             {
                 throw new UnauthorizedAccessException("Not authorised to delete dispatch.");
             }
+            
+            await ValidateDeleteIsolateDispatch(DispatchId, IsolateId, AVNumber, ModelState);
 
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
-            }
+                IEnumerable<IsolateDispatchInfoDto> isolateDispatchInfoDTOs = await _isolateDispatchService.GetDispatchesHistoryAsync(AVNumber, IsolateId);
 
-            if (DispatchId == Guid.Empty)
-            {
-                return BadRequest("Invalid Dispatch ID.");
-            }
-            if (string.IsNullOrWhiteSpace(LastModified))
-            {
-                return BadRequest("Last Modified cannot be empty.");
-            }
+                var dispatchHistoryRecords = _mapper.Map<IEnumerable<IsolateDispatchHistory>>(isolateDispatchInfoDTOs);
 
-            string UserName = AuthorisationUtil.GetUserId();
+                IsolateDispatchHistoryViewModel? viewModel = null;
+                if (dispatchHistoryRecords != null && dispatchHistoryRecords.Any())
+                {
+                    viewModel = new IsolateDispatchHistoryViewModel
+                    {
+                        IsolateId = IsolateId,
+                        Nomenclature = dispatchHistoryRecords.First().Nomenclature,
+                        DispatchHistoryRecords = dispatchHistoryRecords
+                    };
+                }
+
+                return View("History",viewModel);
+            }
+            
             await _isolateDispatchService.DeleteDispatchAsync(
                 DispatchId,
                 Convert.FromBase64String(LastModified),
@@ -317,7 +322,7 @@ namespace Apha.VIR.Web.Controllers
             return warningsMsgs;
         }
 
-        private static void ValidateIsolateDispatch(IsolateDispatchCreateViewModel dispatchModel, ModelStateDictionary modelState)
+        private static void ValidateAddIsolateDispatch(IsolateDispatchCreateViewModel dispatchModel, ModelStateDictionary modelState)
         {
             List<string> validationErrors = new List<string>();
             if (dispatchModel.NoOfAliquots.HasValue)
@@ -380,6 +385,83 @@ namespace Apha.VIR.Web.Controllers
                 }
             }
             return isFieldVisible;
+        }
+
+        private async Task ValidateEditIsolateDispatch(IsolateDispatchEditViewModel dispatchModel, ModelStateDictionary modelState)
+        {
+            List<string> validationErrors = new List<string>();
+            Guid isolateId = Guid.Empty;
+
+            if (dispatchModel.NoOfAliquots>=0)
+            {
+                if (dispatchModel.NoOfAliquotsToBeDispatched >= dispatchModel.NoOfAliquots)
+                {
+                    validationErrors.Add("Attempting to dispatch too many aliquots, must leave at least one aliquot in storage.");
+                }
+            }
+            else
+            {
+                validationErrors.Add("Isolate cannot be dispatched as there are no aliquots available.");
+            }
+
+            if (dispatchModel.DispatchedDate > DateTime.Now.Date)
+            {
+                validationErrors.Add("Dispatched Date cannot be in the future.");
+            }
+
+            if (dispatchModel.DispatchId == Guid.Empty)
+            {
+                validationErrors.Add("ID is required.");
+            }
+  
+            if (dispatchModel.DispatchIsolateId.HasValue)
+            {
+                isolateId = (Guid)dispatchModel.DispatchIsolateId;
+            }
+
+            var dispatches = await _isolateDispatchService.GetDispatchesHistoryAsync(dispatchModel.Avnumber!, isolateId);
+
+            int count = dispatches.Count(u => u.DispatchId == dispatchModel.DispatchId);
+
+            if (count == 0)
+            {
+                ModelState.AddModelError(string.Empty, "The item does not exist");
+            }
+
+            if (validationErrors.Count > 0)
+            {
+                foreach (var error in validationErrors)
+                {
+                    modelState.AddModelError(string.Empty, error);
+                }
+            }
+        }
+
+        private async Task ValidateDeleteIsolateDispatch(Guid dispatchId, Guid IsolateId, string AVNumber, ModelStateDictionary modelState)
+        {
+            List<string> validationErrors = new List<string>();
+             
+            if (dispatchId == Guid.Empty)
+            {
+                validationErrors.Add("ID is required.");
+            }
+
+            var dispatches = await _isolateDispatchService.GetDispatchesHistoryAsync(AVNumber!, IsolateId);
+
+            int count = dispatches.Count(u => u.DispatchId == dispatchId);
+
+            if (count == 0)
+            {
+                ModelState.AddModelError(string.Empty, "The item does not exist");
+            }
+
+            if (validationErrors.Count > 0)
+            {
+                foreach (var error in validationErrors)
+                {
+                    modelState.AddModelError(string.Empty, error);
+                }
+            }
         }
     }
 }

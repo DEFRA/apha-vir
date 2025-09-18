@@ -29,10 +29,10 @@ namespace Apha.VIR.Application.UnitTests.Services.ReportServiceTest
             var dateFrom = new DateTime(2023, 1, 1);
             var dateTo = new DateTime(2023, 12, 31);
             var repoResult = new List<IsolateDispatchInfo> { new IsolateDispatchInfo() };
-            var expectedResult = new List<IsolateDispatchReportDTO> { new IsolateDispatchReportDTO() };
+            var expectedResult = new List<IsolateDispatchReportDto> { new IsolateDispatchReportDto() };
 
             _mockReportRepository.GetDispatchesReportAsync(dateFrom, dateTo).Returns(repoResult);
-            _mockMapper.Map<IEnumerable<IsolateDispatchReportDTO>>(repoResult).Returns(expectedResult);
+            _mockMapper.Map<IEnumerable<IsolateDispatchReportDto>>(repoResult).Returns(expectedResult);
 
             // Act
             var result = await _reportService.GetDispatchesReportAsync(dateFrom, dateTo);
@@ -60,8 +60,8 @@ namespace Apha.VIR.Application.UnitTests.Services.ReportServiceTest
             // Arrange
             _mockReportRepository.GetDispatchesReportAsync(Arg.Any<DateTime?>(), Arg.Any<DateTime?>())
             .Returns(new List<IsolateDispatchInfo>());
-            _mockMapper.Map<IEnumerable<IsolateDispatchReportDTO>>(Arg.Any<IEnumerable<IsolateDispatchReport>>())
-            .Returns(new List<IsolateDispatchReportDTO>());
+            _mockMapper.Map<IEnumerable<IsolateDispatchReportDto>>(Arg.Any<IEnumerable<IsolateDispatchReport>>())
+            .Returns(new List<IsolateDispatchReportDto>());
 
             // Act
             var result = await _reportService.GetDispatchesReportAsync(null, null);

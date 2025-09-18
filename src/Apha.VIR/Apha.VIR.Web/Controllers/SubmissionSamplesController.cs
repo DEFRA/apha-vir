@@ -61,6 +61,11 @@ namespace Apha.VIR.Web.Controllers
                 submissionIsolates.ForEach(i => i.IsDeleteEnabled = true);
             }
 
+            if (AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+            {
+                submissionIsolates.ForEach(i => i.IsDispatchEnabled = true);
+            }
+
             var viewModel = new SubmissionSamplesViewModel
             {
                 SubmissionId = submission.SubmissionId,

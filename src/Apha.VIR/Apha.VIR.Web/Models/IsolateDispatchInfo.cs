@@ -9,7 +9,10 @@ namespace Apha.VIR.Web.Models
         public Guid IsolateId { get; set; }
 
         public Guid DispatchId { get; set; }
+        //Isolate NoOfAliquots
         public int NoOfAliquots { get; set; }
+        //Dispatch NoOfAliquots
+        public int NoOfAliquotsToBeDispatched { get; set; }
 
         public int PassageNumber { get; set; }
 

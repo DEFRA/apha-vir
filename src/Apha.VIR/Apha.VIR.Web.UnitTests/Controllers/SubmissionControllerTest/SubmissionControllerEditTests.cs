@@ -50,19 +50,19 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             // Arrange
             var avNumber = "TEST123";
             _mockSubmissionService.AVNumberExistsInVirAsync(avNumber).Returns(true);
-            var submissionDto = new SubmissionDTO();
-            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submissionDto);
+            var SubmissionDto = new SubmissionDto();
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(SubmissionDto);
             var submissionEditViewModel = new SubmissionEditViewModel();
-            _mockMapper.Map<SubmissionEditViewModel>(submissionDto).Returns(submissionEditViewModel);
+            _mockMapper.Map<SubmissionEditViewModel>(SubmissionDto).Returns(submissionEditViewModel);
 
             var countryList = new List<SelectListItem>();
             var submittingLabList = new List<SelectListItem>();
             var submissionReasonList = new List<SelectListItem>();
 
-            var ddldata = new List<LookupItemDTO>
+            var ddldata = new List<LookupItemDto>
             {
-                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_1" },
-                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_2" }
+                new LookupItemDto{ Id = Guid.NewGuid(), Name = "lookitem_1" },
+                new LookupItemDto{ Id = Guid.NewGuid(), Name = "lookitem_2" }
             };
 
             _mockLookupService.GetAllCountriesAsync().Returns(ddldata.AsEnumerable());
@@ -114,15 +114,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             var submission = new SubmissionEditViewModel();
-            var submissionDto = new SubmissionDTO();
-            _mockMapper.Map<SubmissionDTO>(submission).Returns(submissionDto);
+            var SubmissionDto = new SubmissionDto();
+            _mockMapper.Map<SubmissionDto>(submission).Returns(SubmissionDto);
             SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Edit(submission) as RedirectToActionResult;
 
             // Assert
-            await _mockSubmissionService.Received(1).UpdateSubmissionAsync(Arg.Any<SubmissionDTO>(), Arg.Any<string>());
+            await _mockSubmissionService.Received(1).UpdateSubmissionAsync(Arg.Any<SubmissionDto>(), Arg.Any<string>());
             Assert.NotNull(result);
             Assert.Equal("Index", result.ActionName);
             Assert.Equal("SubmissionSamples", result.ControllerName);
@@ -135,10 +135,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             var submission = new SubmissionEditViewModel();
             _controller.ModelState.AddModelError("Error", "Model error");
 
-            var ddldata = new List<LookupItemDTO>
+            var ddldata = new List<LookupItemDto>
             {
-                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_1" },
-                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_2" }
+                new LookupItemDto{ Id = Guid.NewGuid(), Name = "lookitem_1" },
+                new LookupItemDto{ Id = Guid.NewGuid(), Name = "lookitem_2" }
             };
 
             _mockLookupService.GetAllCountriesAsync().Returns(ddldata.AsEnumerable());
@@ -164,8 +164,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             var submission = new SubmissionEditViewModel();
-            _mockMapper.Map<SubmissionDTO>(submission).Returns(new SubmissionDTO());
-            _mockSubmissionService.When(x => x.UpdateSubmissionAsync(Arg.Any<SubmissionDTO>(), Arg.Any<string>()))
+            _mockMapper.Map<SubmissionDto>(submission).Returns(new SubmissionDto());
+            _mockSubmissionService.When(x => x.UpdateSubmissionAsync(Arg.Any<SubmissionDto>(), Arg.Any<string>()))
             .Do(x => { throw new Exception("Test exception"); });
             SetupMockUserAndRoles();
 

@@ -5,7 +5,7 @@ namespace Apha.VIR.Application.Interfaces
 {
     public interface ISystemInfoService
     {
-        Task<SystemInfoDTO> GetLatestSysInfo();
+        Task<SystemInfoDto> GetLatestSysInfo();
 
         Task<string> GetEnvironmentName();
     }

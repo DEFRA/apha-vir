@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Virus Characteristic Management | Virus Isolates Repository";
+}
+
+<p>
+    This page allows you to manage the virus characteristic information held within the system. Please select one of the options below to begin:
+</p>
+
+
+<div class="page_links">
+    <ul class="ps-1">
+        <li>
+       <a asp-controller="VirusCharacteristics" asp-action="List">Manage the list of available Virus Characteristics</a>
+        </li>
+        <li>
+            <a asp-controller="VirusCharacteristicAssociation" asp-action="Index">Associate Virus Characteristic to a Virus Family and Type</a>
+        </li>
+    </ul>
+</div>
+

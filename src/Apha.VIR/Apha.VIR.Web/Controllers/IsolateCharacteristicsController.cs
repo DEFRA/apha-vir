@@ -58,7 +58,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 throw new UnauthorizedAccessException("User not authorised to update isolate characteristics.");
             }
-            if (characteristics == null || !characteristics.Any())
+            if (characteristics == null || characteristics.Count==0)
             {  
                 ModelState.AddModelError("", "No characteristics data was provided.");
                 return View(characteristics); // return back with the error
@@ -159,20 +159,20 @@ namespace Apha.VIR.Web.Controllers
             return characteristicValueDropDownList;
         }
 
-        public static string ValidateCharacteristic(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        public static string ValidateCharacteristic(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDto virusCharacteristicDto)
         {
             if (characteristicViewModel.VirusCharacteristicId == Guid.Empty)
                 return "- Id not specified for this item.";
 
-            if (virusCharacteristicDTO == null)
+            if (virusCharacteristicDto == null)
                 return "- Item does not exist.";
 
             switch (characteristicViewModel.CharacteristicType)
             {
                 case "Text":
-                    return ValidateText(characteristicViewModel, virusCharacteristicDTO);
+                    return ValidateText(characteristicViewModel, virusCharacteristicDto);
                 case "Numeric":
-                    return ValidateNumeric(characteristicViewModel, virusCharacteristicDTO);
+                    return ValidateNumeric(characteristicViewModel, virusCharacteristicDto);
                 case "Yes/No":
                 case "SingleList":
                     return ""; // Implement validation if needed
@@ -181,19 +181,19 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        private static string ValidateText(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        private static string ValidateText(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDto virusCharacteristicDto)
         {
             if (string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue)) return "";
 
-            if (characteristicViewModel.CharacteristicValue.Length > virusCharacteristicDTO.Length)
+            if (characteristicViewModel.CharacteristicValue.Length > virusCharacteristicDto.Length)
             {
-                return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds maximum length requirement (Maximum Length: {virusCharacteristicDTO.Length})";
+                return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds maximum length requirement (Maximum Length: {virusCharacteristicDto.Length})";
             }
 
             return "";
         }
 
-        private static string ValidateNumeric(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        private static string ValidateNumeric(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDto virusCharacteristicDto)
         {
             if (string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue)) return "";
 
@@ -202,37 +202,37 @@ namespace Apha.VIR.Web.Controllers
                 return $"- Value entered for {characteristicViewModel.CharacteristicName} is not a valid number.";
             }
 
-            var rangeReturn = ValidateNumericRange(characteristicViewModel, virusCharacteristicDTO, itemValue);
+            var rangeReturn = ValidateNumericRange(characteristicViewModel, virusCharacteristicDto, itemValue);
 
             return string.IsNullOrEmpty(rangeReturn)
-                ? ValidateNumericDecimalPlaces(characteristicViewModel, virusCharacteristicDTO): rangeReturn;
+                ? ValidateNumericDecimalPlaces(characteristicViewModel, virusCharacteristicDto): rangeReturn;
         }
 
-        private static string ValidateNumericRange(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO, double itemValue)
+        private static string ValidateNumericRange(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDto virusCharacteristicDto, double itemValue)
         {
-            if (virusCharacteristicDTO.MinValue.HasValue && itemValue < virusCharacteristicDTO.MinValue)
+            if (virusCharacteristicDto.MinValue.HasValue && itemValue < virusCharacteristicDto.MinValue)
             {
-                return $"- Value entered for {characteristicViewModel.CharacteristicName} is below the minimum value requirement (Range: {virusCharacteristicDTO.MinValue} to {virusCharacteristicDTO.MaxValue}).";
+                return $"- Value entered for {characteristicViewModel.CharacteristicName} is below the minimum value requirement (Range: {virusCharacteristicDto.MinValue} to {virusCharacteristicDto.MaxValue}).";
             }
 
-            if (virusCharacteristicDTO.MaxValue.HasValue && itemValue > virusCharacteristicDTO.MaxValue)
+            if (virusCharacteristicDto.MaxValue.HasValue && itemValue > virusCharacteristicDto.MaxValue)
             {
-                return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds the maximum value requirement (Range: {virusCharacteristicDTO.MinValue} to {virusCharacteristicDTO.MaxValue}).";
+                return $"- Value entered for {characteristicViewModel.CharacteristicName} exceeds the maximum value requirement (Range: {virusCharacteristicDto.MinValue} to {virusCharacteristicDto.MaxValue}).";
             }
 
             return "";
         }
 
-        private static string ValidateNumericDecimalPlaces(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDTO virusCharacteristicDTO)
+        private static string ValidateNumericDecimalPlaces(IsolateCharacteristicViewModel characteristicViewModel, VirusCharacteristicDto virusCharacteristicDto)
         {
-            if (!virusCharacteristicDTO.DecimalPlaces.HasValue || virusCharacteristicDTO.DecimalPlaces == 0) return "";
+            if (!virusCharacteristicDto.DecimalPlaces.HasValue || virusCharacteristicDto.DecimalPlaces == 0) return "";
             if (!string.IsNullOrEmpty(characteristicViewModel.CharacteristicValue))
             {
                 var parts = characteristicViewModel.CharacteristicValue.Split('.');
-                if (parts.Length > 1 && parts[1].Length >= virusCharacteristicDTO.DecimalPlaces.Value)
+                if (parts.Length > 1 && parts[1].Length >= virusCharacteristicDto.DecimalPlaces.Value)
                     return "";
             }
-            return $"- Value entered for {characteristicViewModel.CharacteristicName} does not include the required number of decimal places (Decimal Places: {virusCharacteristicDTO.DecimalPlaces}).";
+            return $"- Value entered for {characteristicViewModel.CharacteristicName} does not include the required number of decimal places (Decimal Places: {virusCharacteristicDto.DecimalPlaces}).";
         }       
     }
 }

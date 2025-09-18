@@ -11,4 +11,5 @@ public interface IVirusCharacteristicListEntryRepository
     Task AddEntryAsync(VirusCharacteristicListEntry entry);
     Task UpdateEntryAsync(VirusCharacteristicListEntry entry);
     Task DeleteEntryAsync(Guid id, byte[] lastModified);
+
 }

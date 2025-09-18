@@ -4,12 +4,14 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.Web.Controllers
@@ -19,14 +21,17 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly ILookupService _lookupService;
         private readonly IIsolateRelocateService _isolateRelocateService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public IsolateAndTrayRelocationController(IIsolateRelocateService isolateRelocateService,
             ILookupService lookupService,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _isolateRelocateService = isolateRelocateService;
             _lookupService = lookupService;
+            _cacheService = cacheService;   
             _mapper = mapper;
         }
 
@@ -44,10 +49,27 @@ namespace Apha.VIR.Web.Controllers
         {
             var model = new IsolateRelocationViewModel();
             await LoadIsolateAndTrayData(model);
-            model.TraysList = new List<SelectListItem>();
-            model.SearchResults = [];
 
-            var path = HttpContext.Request.Path.Value?.ToLower();
+            var jsonData = _cacheService.GetSessionValue("isolateRelocateSessionModel");
+            if (!string.IsNullOrEmpty(jsonData))
+            {
+                var data = JsonConvert.DeserializeObject<IsolateRelocateViewModel>(jsonData);
+                _cacheService.RemoveSessionValue("isolateRelocateSessionModel");
+                if (data != null && data.Freezer != null)
+                    model.SelectedFreezer = data.Freezer;
+                if (data != null && data.Tray != null)
+                    model.SelectedTray = data.Tray;                
+                var searchModel = await _isolateRelocateService.GetIsolatesByCriteria(model.MinAVNumber!,
+                    model.MaxAVNumber!, model.SelectedFreezer ?? Guid.Empty, model.SelectedTray ?? Guid.Empty);
+                model.SearchResults = _mapper.Map<List<IsolateRelocateViewModel>>(searchModel);
+            }
+            else
+            {
+                model.TraysList = new List<SelectListItem>();
+                model.SearchResults = [];
+            }
+
+            var path = HttpContext?.Request.Path.Value?.ToLower();
 
             if (path!.Contains("/isolate"))
             {
@@ -91,11 +113,11 @@ namespace Apha.VIR.Web.Controllers
 
             foreach (var isolate in model.SelectedNewIsolatedList!)
             {
-                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
                 {
-                    IsolateId = isolate.IsolatedId!.Value,
-                    Freezer = model.SelectedNewFreezer!.Value,
-                    Tray = model.SelectedNewTray!.Value,
+                    IsolateId = isolate.IsolatedId.GetValueOrDefault(),
+                    Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
+                    Tray = model.SelectedNewTray.GetValueOrDefault(),
                     Well = isolate.Well!,
                     UserID = "Test",
                     LastModified = isolate.LastModified,
@@ -113,6 +135,11 @@ namespace Apha.VIR.Web.Controllers
             {
                 return BadRequest();
             }
+            if (_cacheService.GetSessionValue("isolateRelocateSessionModel") == null)
+            {
+                string jsonString = JsonConvert.SerializeObject(model);
+                _cacheService.SetSessionValue("isolateRelocateSessionModel", jsonString);
+            }
             var data = new IsolateRelocationViewModel();
             await LoadIsolateAndTrayData(data);
             ViewBag.FreezersList = data.FreezersList;
@@ -122,15 +149,10 @@ namespace Apha.VIR.Web.Controllers
 
         [Route("Update")]
         public async Task<IActionResult> Update(IsolateRelocateViewModel model)
-        {
-            if (string.IsNullOrWhiteSpace(model.Well))
-            {
-                ModelState.AddModelError(nameof(model.Well), "Well is required.");
-            }
-
+        {            
             if (ModelState.IsValid)
             {
-                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
                 {
                     IsolateId = model.IsolateId,
                     Freezer = model.Freezer,
@@ -204,10 +226,10 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+            await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
             {
-                Freezer = model.SelectedNewFreezer!.Value,
-                Tray = model.SelectedTray!.Value,
+                Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
+                Tray = model.SelectedTray.GetValueOrDefault(),
                 UpdateType = RelocationType.Tray.ToString()
             });
 
@@ -216,10 +238,10 @@ namespace Apha.VIR.Web.Controllers
 
             foreach (var isolate in data!)
             {
-                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDTO
+                await _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(new IsolateRelocateDto
                 {
                     IsolateId = isolate.IsolateId,
-                    Freezer = model.SelectedNewFreezer!.Value,
+                    Freezer = model.SelectedNewFreezer.GetValueOrDefault(),
                     Tray = isolate.Tray,
                     Well = isolate.Well,
                     UserID = "Test",

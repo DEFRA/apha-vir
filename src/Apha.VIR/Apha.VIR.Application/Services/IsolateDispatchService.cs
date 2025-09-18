@@ -33,14 +33,14 @@ namespace Apha.VIR.Application.Services
             _isolateViabilityRepository = isolateViabilityRepository;
         }
 
-        public async Task<IsolateInfoDTO> GetIsolateInfoByAVNumberAndIsolateIdAsync(string AVNumber, Guid IsolateId)
+        public async Task<IsolateInfoDto> GetIsolateInfoByAVNumberAndIsolateIdAsync(string AVNumber, Guid IsolateId)
         {
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
             var isolateInfo = isolationList.FirstOrDefault(x => x.IsolateId == IsolateId);
-            return _mapper.Map<IsolateInfoDTO>(isolateInfo);
+            return _mapper.Map<IsolateInfoDto>(isolateInfo);
         }
 
-        public async Task<IEnumerable<IsolateDispatchInfoDTO>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId)
+        public async Task<IEnumerable<IsolateDispatchInfoDto>> GetDispatchesHistoryAsync(string AVNumber, Guid IsolateId)
         {
             string nomenclature;
 
@@ -50,7 +50,7 @@ namespace Apha.VIR.Application.Services
 
             if ((matchIsolate.Count == 0))
             {
-                return _mapper.Map<IEnumerable<IsolateDispatchInfoDTO>>(Enumerable.Empty<IsolateDispatchInfoDTO>());
+                return _mapper.Map<IEnumerable<IsolateDispatchInfoDto>>(Enumerable.Empty<IsolateDispatchInfoDto>());
             }
 
             var matchIsolateId = matchIsolate.First()?.IsolateId ?? Guid.Empty;
@@ -59,16 +59,9 @@ namespace Apha.VIR.Application.Services
 
             var characteristicList = await _iCharacteristicRepository.GetIsolateCharacteristicInfoAsync(matchIsolateId);
 
-            var charNomenclature = GetCharacteristicNomenclature(characteristicList.ToList());
+            var charNomenclature = ServiceHelper.GetCharacteristicNomenclature(characteristicList.ToList());
 
-            if (string.IsNullOrEmpty(charNomenclature))
-            {
-                nomenclature = matchIsolate.First().Nomenclature ?? string.Empty;
-            }
-            else
-            {
-                nomenclature = charNomenclature!;
-            }
+            nomenclature = GetFullNomenclature(matchIsolate[0].Nomenclature, matchIsolate[0].IsolateNomenclature, matchIsolate[0].FamilyName, matchIsolate[0].TypeName, charNomenclature);
 
             foreach (var item in dispatchHistList)
             {
@@ -95,10 +88,10 @@ namespace Apha.VIR.Application.Services
                 }
             }
 
-            return _mapper.Map<IEnumerable<IsolateDispatchInfoDTO>>(dispatchHistList);
+            return _mapper.Map<IEnumerable<IsolateDispatchInfoDto>>(dispatchHistList);
         }
 
-        public async Task<IsolateFullDetailDTO> GetDispatcheConfirmationAsync(Guid IsolateId)
+        public async Task<IsolateFullDetailDto> GetDispatcheConfirmationAsync(Guid IsolateId)
         {
             var isolateFullDetail = await _iIsolateRepository.GetIsolateFullDetailsByIdAsync(IsolateId);
 
@@ -113,16 +106,16 @@ namespace Apha.VIR.Application.Services
                 throw errorResponse;
             }
 
-            return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
+            return _mapper.Map<IsolateFullDetailDto>(isolateFullDetail);
         }
 
-        public async Task AddDispatchAsync(IsolateDispatchInfoDTO DispatchInfo, string User)
+        public async Task AddDispatchAsync(IsolateDispatchInfoDto DispatchInfo, string User)
         {
             var dispatchData = _mapper.Map<IsolateDispatchInfo>(DispatchInfo);
             await _isolateDispatchRepository.AddDispatchAsync(dispatchData, User);
         }
 
-        public async Task UpdateDispatchAsync(IsolateDispatchInfoDTO DispatchInfoDto, string User)
+        public async Task UpdateDispatchAsync(IsolateDispatchInfoDto DispatchInfoDto, string User)
         {
             if (DispatchInfoDto == null)
                 throw new ArgumentNullException(nameof(DispatchInfoDto), "DispatchInfoDto cannot be null.");
@@ -147,7 +140,7 @@ namespace Apha.VIR.Application.Services
             await _isolateDispatchRepository.DeleteDispatchAsync(DispatchId, LastModified, User);
         }
 
-        public async Task<IsolateDispatchInfoDTO> GetDispatchForIsolateAsync(string AVNumber, Guid DispatchId, Guid DispatchIsolateId)
+        public async Task<IsolateDispatchInfoDto> GetDispatchForIsolateAsync(string AVNumber, Guid DispatchId, Guid DispatchIsolateId)
         {
             // Defensive checks for empty GUIDs and null/empty AVNumber
             if (DispatchId == Guid.Empty)
@@ -160,26 +153,26 @@ namespace Apha.VIR.Application.Services
             var isolationList = await _iIsolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);
 
             if (!(isolationList?.Any() ?? false))
-                return _mapper.Map<IsolateDispatchInfoDTO>(null);
+                return _mapper.Map<IsolateDispatchInfoDto>(null);
 
             var matchIsolate = isolationList.Where(x => x.IsolateId == DispatchIsolateId).ToList();
 
-            if (!matchIsolate.Any())
-                return _mapper.Map<IsolateDispatchInfoDTO>(null);
+            if (matchIsolate.Count == 0)
+                return _mapper.Map<IsolateDispatchInfoDto>(null);
 
             var matchIsolateId = matchIsolate.First().IsolateId;
 
             var dispatchHistList = await _isolateDispatchRepository.GetDispatchesHistoryAsync(matchIsolateId);
 
             if (!(dispatchHistList?.Any() ?? false))
-                return _mapper.Map<IsolateDispatchInfoDTO>(null);
+                return _mapper.Map<IsolateDispatchInfoDto>(null);
 
             var staffs = await _lookupRepository.GetAllStaffAsync();
             var workgroups = await _lookupRepository.GetAllWorkGroupsAsync();
 
             var dispatch = dispatchHistList.FirstOrDefault(d => d.DispatchId == DispatchId);
             if (dispatch == null)
-                return _mapper.Map<IsolateDispatchInfoDTO>(null);
+                return _mapper.Map<IsolateDispatchInfoDto>(null);
 
             if (dispatch.RecipientId.HasValue)
             {
@@ -191,7 +184,7 @@ namespace Apha.VIR.Application.Services
                 dispatch.DispatchedByName = staffs?.FirstOrDefault(s => s.Id == dispatch.DispatchedById)?.Name;
             }
 
-            IEnumerable<LookupItemDTO> lookup = _mapper.Map<IEnumerable<LookupItemDTO>>(await _lookupRepository.GetAllViabilityAsync());
+            IEnumerable<LookupItemDto> lookup = _mapper.Map<IEnumerable<LookupItemDto>>(await _lookupRepository.GetAllViabilityAsync());
             if (dispatch.ViabilityId.HasValue)
             {
                 dispatch.ViabilityName = lookup.FirstOrDefault(x => x.Id == dispatch.ViabilityId)?.Name;
@@ -199,29 +192,12 @@ namespace Apha.VIR.Application.Services
 
             var lastViability = await GetLastViabilityByIsolateAsync(matchIsolateId);
             dispatch.ViabilityId = lastViability?.Viable;
+            dispatch.IsolateNoOfAliquots = matchIsolate.First().NoOfAliquots;
 
-            return _mapper.Map<IsolateDispatchInfoDTO>(dispatch);
-        }
+            return _mapper.Map<IsolateDispatchInfoDto>(dispatch);
+        }        
 
-        private static string GetCharacteristicNomenclature(IList<IsolateCharacteristicInfo> characteristicList)
-        {
-            var characteristicNomenclatureList = new StringBuilder();
-
-            // Build nomenclature string from characteristics
-            foreach (IsolateCharacteristicInfo item in characteristicList)
-            {
-                if ((item.CharacteristicDisplay == true) && (!string.IsNullOrEmpty(item.CharacteristicValue)))
-                {
-                    characteristicNomenclatureList.Append(item.CharacteristicPrefix + item.CharacteristicValue + " ");
-                }
-            }
-
-            var characteristicNomenclature = characteristicNomenclatureList.ToString().Trim();
-
-            return characteristicNomenclature;
-        }
-
-        public async Task<IsolateViabilityDTO?> GetLastViabilityByIsolateAsync(Guid IsolateId)
+        public async Task<IsolateViabilityDto?> GetLastViabilityByIsolateAsync(Guid IsolateId)
         {
             if (IsolateId == Guid.Empty)
                 throw new ArgumentException("ViabilityId cannot be empty.", nameof(IsolateId));
@@ -232,12 +208,25 @@ namespace Apha.VIR.Application.Services
                 .OrderByDescending(v => v.DateChecked)
                 .FirstOrDefault();
 
-            return lastViability == null ? null : _mapper.Map<IsolateViabilityDTO>(lastViability);
+            return lastViability == null ? null : _mapper.Map<IsolateViabilityDto>(lastViability);
         }
 
         public async Task<int> GetIsolateDispatchRecordCountAsync(Guid isolateId)
         {
             return await _isolateDispatchRepository.GetIsolateDispatchRecordCountAsync(isolateId);            
+        }
+
+        private static string GetFullNomenclature(string? nomenclature, string? isolateNomenclature, string? familyName, string? typeName, string charNomenclature)
+        {
+            if (familyName == "Paramyxoviridae")
+                return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature) + " (" + (string.IsNullOrEmpty(typeName) ? "" : typeName) + ")";
+            else
+            {
+                if (string.IsNullOrEmpty(isolateNomenclature))
+                    return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature) + " " + charNomenclature;
+                else
+                    return (string.IsNullOrEmpty(nomenclature) ? "" : nomenclature);
+            }
         }
     }
 }

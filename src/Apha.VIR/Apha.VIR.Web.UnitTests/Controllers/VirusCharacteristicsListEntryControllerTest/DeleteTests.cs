@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
-namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
+namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryControllerTest
 {
     [Collection("UserAppRolesValidationTests")]
     public class DeleteTests
@@ -65,7 +65,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             Assert.Equal("VirusCharacteristicsListEntry", redirect.ControllerName);
 
             Assert.NotNull(redirect.RouteValues);
-            Assert.Equal(characteristic, redirect.RouteValues["characteristic"]);
+            Assert.Equal(characteristic, redirect.RouteValues["characteristicId"]);
         }
 
         private void SetupMockUserAndRoles()

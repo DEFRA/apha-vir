@@ -1,7 +1,7 @@
 ﻿@model SampleViewModel
 
-<div id="contentbox">
-	<div class="box_title">Update the Sample details</div>
+<div class="contentbox">
+	<div class="contentbox_title">Update the Sample details</div>
 	<div class="row p-2">
 		<div class="col-md-10 ms-3">
 			<h4 class="mb-4">@Model.AVNumber</h4>
@@ -21,13 +21,13 @@
 					</div>
 				</div>
 
-				<div class="form-group row mt-1">
+				<div class="form-group row mt-3">
 					<div class="col-sm-3">
 						<label for="SenderReferenceNumber" class="form-control col-form-label">Senders Sample Reference</label>
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="SenderReferenceNumber" class="form-control addeditsample-input" />
-						<span asp-validation-for="SenderReferenceNumber" style="color:red;font-weight: bold;"></span>
+						<span asp-validation-for="SenderReferenceNumber"class="error_msg"></span>
 					</div>
 				</div>
 

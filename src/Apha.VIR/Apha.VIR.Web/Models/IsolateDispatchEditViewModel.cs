@@ -58,7 +58,6 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? DispatchedByList { get; set; }
         [Display(Name = "Last Modified")]
         public byte[]? LastModified { get; set; }
-        public string? RecipientLocation { get; set; }
-        public bool IsFieldInVisible { get; set; } = false;
+        public string? RecipientLocation { get; set; }        
     }
 }

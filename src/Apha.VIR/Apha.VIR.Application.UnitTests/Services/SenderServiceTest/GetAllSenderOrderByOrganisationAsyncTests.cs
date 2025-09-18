@@ -27,18 +27,18 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             // Arrange
             var countryId = Guid.NewGuid();
             var senders = new List<Sender> { new Sender(), new Sender() };
-            var senderDTOs = new List<SenderDTO> { new SenderDTO(), new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto(), new SenderDto() };
 
             _mockSenderRepository.GetAllSenderOrderByOrganisationAsync(countryId).Returns(senders);
-            _mockMapper.Map<IEnumerable<SenderDTO>>(senders).Returns(senderDTOs);
+            _mockMapper.Map<IEnumerable<SenderDto>>(senders).Returns(SenderDtos);
 
             // Act
             var result = await _senderService.GetAllSenderOrderByOrganisationAsync(countryId);
 
             // Assert
-            Assert.Equal(senderDTOs, result);
+            Assert.Equal(SenderDtos, result);
             await _mockSenderRepository.Received(1).GetAllSenderOrderByOrganisationAsync(countryId);
-            _mockMapper.Received(1).Map<IEnumerable<SenderDTO>>(senders);
+            _mockMapper.Received(1).Map<IEnumerable<SenderDto>>(senders);
         }
 
         [Fact]
@@ -46,18 +46,18 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
         {
             // Arrange
             var senders = new List<Sender> { new Sender(), new Sender() };
-            var senderDTOs = new List<SenderDTO> { new SenderDTO(), new SenderDTO() };
+            var SenderDtos = new List<SenderDto> { new SenderDto(), new SenderDto() };
 
             _mockSenderRepository.GetAllSenderOrderByOrganisationAsync(null).Returns(senders);
-            _mockMapper.Map<IEnumerable<SenderDTO>>(senders).Returns(senderDTOs);
+            _mockMapper.Map<IEnumerable<SenderDto>>(senders).Returns(SenderDtos);
 
             // Act
             var result = await _senderService.GetAllSenderOrderByOrganisationAsync(null);
 
             // Assert
-            Assert.Equal(senderDTOs, result);
+            Assert.Equal(SenderDtos, result);
             await _mockSenderRepository.Received(1).GetAllSenderOrderByOrganisationAsync(null);
-            _mockMapper.Received(1).Map<IEnumerable<SenderDTO>>(senders);
+            _mockMapper.Received(1).Map<IEnumerable<SenderDto>>(senders);
         }
 
         [Fact]
@@ -66,10 +66,10 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             // Arrange
             var countryId = Guid.NewGuid();
             var emptySenders = new List<Sender>();
-            var emptySenderDTOs = new List<SenderDTO>();
+            var emptySenderDtos = new List<SenderDto>();
 
             _mockSenderRepository.GetAllSenderOrderByOrganisationAsync(countryId).Returns(emptySenders);
-            _mockMapper.Map<IEnumerable<SenderDTO>>(emptySenders).Returns(emptySenderDTOs);
+            _mockMapper.Map<IEnumerable<SenderDto>>(emptySenders).Returns(emptySenderDtos);
 
             // Act
             var result = await _senderService.GetAllSenderOrderByOrganisationAsync(countryId);
@@ -77,7 +77,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SenderServiceTest
             // Assert
             Assert.Empty(result);
             await _mockSenderRepository.Received(1).GetAllSenderOrderByOrganisationAsync(countryId);
-            _mockMapper.Received(1).Map<IEnumerable<SenderDTO>>(emptySenders);
+            _mockMapper.Received(1).Map<IEnumerable<SenderDto>>(emptySenders);
         }
 
         [Fact]

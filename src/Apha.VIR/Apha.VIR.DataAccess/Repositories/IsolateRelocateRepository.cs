@@ -40,7 +40,7 @@ public class IsolateRelocateRepository : IIsolateRelocateRepository
                        new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = item.IsolateId },
                        new SqlParameter("@Freezer", SqlDbType.UniqueIdentifier) { Value = item.Freezer },
                        new SqlParameter("@Tray", SqlDbType.UniqueIdentifier) { Value = item.Tray },
-                       new SqlParameter("@Well", SqlDbType.VarChar, 10) { Value = item.Well },
+                       new SqlParameter("@Well", SqlDbType.VarChar, 10) { Value = (object?)item.Well ?? DBNull.Value },
                        new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = (object?)item.LastModified ?? DBNull.Value, Direction = ParameterDirection.InputOutput },
                        new SqlParameter("@FreezerName", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output },
                        new SqlParameter("@TrayName", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });

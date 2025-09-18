@@ -31,13 +31,13 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IsolateFullDetailDTO> GetIsolateFullDetailsAsync(Guid IsolateId)
+        public async Task<IsolateFullDetailDto> GetIsolateFullDetailsAsync(Guid IsolateId)
         {
             var isolateFullDetail = await _isolateRepository.GetIsolateFullDetailsByIdAsync(IsolateId);
-            return _mapper.Map<IsolateFullDetailDTO>(isolateFullDetail);
+            return _mapper.Map<IsolateFullDetailDto>(isolateFullDetail);
         }
 
-        public async Task<IsolateDTO> GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId)
+        public async Task<IsolateDto> GetIsolateByIsolateAndAVNumberAsync(string avNumber, Guid isolateId)
         {
             var isolate = await _isolateRepository.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId);
 
@@ -55,16 +55,16 @@ namespace Apha.VIR.Application.Services
                 }
             }
 
-            return _mapper.Map<IsolateDTO>(isolate);
+            return _mapper.Map<IsolateDto>(isolate);
         }
 
-        public async Task<Guid> AddIsolateDetailsAsync(IsolateDTO isolate)
+        public async Task<Guid> AddIsolateDetailsAsync(IsolateDto isolate)
         {
             var isolateData = _mapper.Map<Isolate>(isolate);
             return await _isolateRepository.AddIsolateDetailsAsync(isolateData);
         }
 
-        public async Task UpdateIsolateDetailsAsync(IsolateDTO isolate)
+        public async Task UpdateIsolateDetailsAsync(IsolateDto isolate)
         {
             var isolateData = _mapper.Map<Isolate>(isolate);
             await _isolateRepository.UpdateIsolateDetailsAsync(isolateData);
@@ -86,7 +86,7 @@ namespace Apha.VIR.Application.Services
             var samples = await _sampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId);
             var sample = samples.FirstOrDefault(s => s.SampleId == sampleId);
             var hostBreeds = await _lookupRepository.GetAllHostBreedsAsync();           
-            var hostBreedName = hostBreeds?.FirstOrDefault(wg => wg.Id == sample?.HostBreed!.Value)?.Name;           
+            var hostBreedName = hostBreeds?.FirstOrDefault(wg => wg.Id == sample?.HostBreed.GetValueOrDefault())?.Name;           
 
             nomenclature.Append(!string.IsNullOrEmpty(virusType) ? virusType : "[Virus Type]");
             nomenclature.Append('/');
@@ -97,7 +97,7 @@ namespace Apha.VIR.Application.Services
             else
             {
                 var hostSpecies = await _lookupRepository.GetAllHostSpeciesAsync();
-                var hostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies!.Value)?.Name;
+                var hostSpeciesName = hostSpecies?.FirstOrDefault(wg => wg.Id == sample?.HostSpecies.GetValueOrDefault())?.Name;
                 nomenclature.Append(hostSpeciesName);
             }
                
@@ -111,27 +111,27 @@ namespace Apha.VIR.Application.Services
             return nomenclature.ToString();
         }
 
-        public async Task<IEnumerable<IsolateCharacteristicDTO>> GetIsolateCharacteristicInfoAsync(Guid IsolateId)
+        public async Task<IEnumerable<IsolateCharacteristicDto>> GetIsolateCharacteristicInfoAsync(Guid IsolateId)
         {
             var characteristicList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(IsolateId);
-            return _mapper.Map<IEnumerable<IsolateCharacteristicDTO>>(characteristicList);
+            return _mapper.Map<IEnumerable<IsolateCharacteristicDto>>(characteristicList);
         }
 
-        public async Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicDTO item, string User)
+        public async Task UpdateIsolateCharacteristicsAsync(IsolateCharacteristicDto item, string User)
         {
             var data = _mapper.Map<IsolateCharacteristicInfo>(item);
             await _characteristicRepository.UpdateIsolateCharacteristicsAsync(data, User);
         }
 
-        public async Task<IEnumerable<IsolateInfoDTO>> GetIsolateInfoByAVNumberAsync(string AVNumber)
+        public async Task<IEnumerable<IsolateInfoDto>> GetIsolateInfoByAVNumberAsync(string AVNumber)
         {
             var isolates = await _isolateRepository.GetIsolateInfoByAVNumberAsync(AVNumber);            
-            var isolatesDto = _mapper.Map<IEnumerable<IsolateInfoDTO>>(isolates);
+            var isolatesDto = _mapper.Map<IEnumerable<IsolateInfoDto>>(isolates);
             foreach (var isolate in isolatesDto)
             {
                 var isolatecharList = await _characteristicRepository.GetIsolateCharacteristicInfoAsync(isolate.IsolateId);
                 var isolateCharNomenclature = ServiceHelper.GetCharacteristicNomenclature(isolatecharList.ToList());
-                isolate.Characteristics = string.IsNullOrEmpty(isolateCharNomenclature) ? "" : "(" + isolateCharNomenclature + ")";
+                isolate.Characteristics = isolateCharNomenclature;
             }
             return isolatesDto;
         }

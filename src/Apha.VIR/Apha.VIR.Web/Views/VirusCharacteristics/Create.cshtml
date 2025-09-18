@@ -1,0 +1,117 @@
+﻿@model VirusCharacteristicsModel
+@{
+}
+
+<form asp-action="Create" method="post">
+	<input asp-for="Id" type="hidden" />
+	<input asp-for="LastModified" type="hidden" />
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="Name" class="virusform_label">Name *</span>
+		<input asp-for="Name" class="form-control w-200" />
+		<br /><span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="CharacteristicType" class="virusform_label">CharacteristicType *</span>
+		<select asp-for="CharacteristicType" asp-items="Model.CharacteristicTypeNameList" class="form-control"></select>
+		<br /><span asp-validation-for="CharacteristicType" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="NumericSort" class="virusform_label">NumericSort</span>
+		<input asp-for="NumericSort" type="checkbox" />
+		<br /><span asp-validation-for="NumericSort" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="DisplayOnSearch" class="virusform_label">Display In Nomenclature</span>
+		<input asp-for="DisplayOnSearch" type="checkbox" />
+		<br /><span asp-validation-for="DisplayOnSearch" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="Prefix" class="virusform_label">Prefix</span>
+		<input asp-for="Prefix" maxlength="50" />
+		<br /><span asp-validation-for="Prefix" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="MinValue" class="virusform_label">MinValue</span>
+		<input asp-for="MinValue" />
+		<br /><span asp-validation-for="MinValue" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="MaxValue" class="virusform_label">MaxValue</span>
+		<input asp-for="MaxValue" />
+		<span asp-validation-for="MaxValue" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="DecimalPlaces" class="virusform_label">DecimalPlaces *</span>
+		<input asp-for="DecimalPlaces" />
+		<br /><span asp-validation-for="DecimalPlaces" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="Length" class="virusform_label">Length</span>
+		<input asp-for="Length" />
+		<br /><span asp-validation-for="Length" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-center mb-3">
+		<span for="CharacteristicIndex" class="virusform_label">Display Order *</span>
+		<input asp-for="CharacteristicIndex" />
+		<br /><span asp-validation-for="CharacteristicIndex" class="text-danger"></span>
+	</div>
+	<div class="form-group d-flex align-items-lg-end mb-3">
+		<img src="Images\spacer.gif" width="300" height="5" alt="" />
+		<button type="submit" class="btn-as-link me-3">Insert</button>
+		<a asp-action="List" class="btn btn-secondary">Cancel</a>
+	</div>
+
+</form>
+
+@if (ViewBag.showsummary == true)
+{
+	<div class="validation">
+		<p>There are validation messages requiring your attention.</p>
+		<div asp-validation-summary="All" class="validation"></div>
+	</div>
+}
+
+@section Scripts {
+	<script>
+		function updateFields() {
+			var typeText = $("#CharacteristicType option:selected").text();
+			var numericSort = $("#NumericSort");
+			var minValue = $("#MinValue");
+			var maxValue = $("#MaxValue");
+			var decimalPlaces = $("#DecimalPlaces");
+			var length = $("#Length");
+
+			if (typeText === "Text") {
+				numericSort.prop("disabled", true);
+				minValue.prop("disabled", true);
+				maxValue.prop("disabled", true);
+				decimalPlaces.prop("disabled", true);
+				length.prop("disabled", false);
+			} else if (typeText === "Numeric") {
+				numericSort.prop("disabled", true);
+				minValue.prop("disabled", false);
+				maxValue.prop("disabled", false);
+				decimalPlaces.prop("disabled", false);
+				length.prop("disabled", true);
+			} else if (typeText === "Yes/No") {
+				numericSort.prop("disabled", true);
+				minValue.prop("disabled", true);
+				maxValue.prop("disabled", true);
+				decimalPlaces.prop("disabled", true);
+				length.prop("disabled", true);
+			} else if (typeText === "SingleList") {
+				numericSort.prop("disabled", false);
+				minValue.prop("disabled", true);
+				maxValue.prop("disabled", true);
+				decimalPlaces.prop("disabled", true);
+				length.prop("disabled", true);
+			}
+		}
+
+		$(document).ready(function () {
+			$("#CharacteristicType").change(updateFields);
+			updateFields(); // Initial call
+		});
+	</script>
+}
+
