@@ -83,7 +83,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 throw new UnauthorizedAccessException("Not authorised to modify viability.");
             }
-            string userid = "TestUser";
+            string userid = AuthorisationUtil.GetUserId();
 
             if (!ModelState.IsValid)
             {
@@ -109,7 +109,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 throw new UnauthorizedAccessException("Not authorised to delete viability.");
             }
-            string userid = "TestUser";
+            string userid = AuthorisationUtil.GetUserId();
 
             if (!ModelState.IsValid)
             {
