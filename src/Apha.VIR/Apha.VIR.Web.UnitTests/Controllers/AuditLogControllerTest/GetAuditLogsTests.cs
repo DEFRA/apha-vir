@@ -114,7 +114,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             cacheService.GetCacheValueAsync<string>("SearchCriteria").Returns(searchCriteriaJson!);
 
             auditLogService.GetSubmissionLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
-            .Returns(Task.FromResult<IEnumerable<AuditSubmissionLogDTO>>(new[] { new AuditSubmissionLogDTO() }));
+            .Returns(Task.FromResult<IEnumerable<AuditSubmissionLogDto>>(new[] { new AuditSubmissionLogDto() }));
 
             var controller = new AuditLogController(auditLogService, cacheService, mapper);
 

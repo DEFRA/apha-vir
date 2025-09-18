@@ -38,7 +38,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         {
             // Arrange
             var senderId = Guid.NewGuid();
-            var senderDto = new SenderDTO { SenderId = senderId, SenderName = "Test Sender" };
+            var SenderDto = new SenderDto { SenderId = senderId, SenderName = "Test Sender" };
             var senderViewModel = new SenderViewModel
             {
                 SenderId = senderId,
@@ -48,11 +48,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             };
             var countryList = new List<SelectListItem> { new SelectListItem("Country", "1") };
 
-            _senderService.GetSenderAsync(senderId).Returns(senderDto);
-            _mapper.Map<SenderViewModel>(senderDto).Returns(senderViewModel);
+            _senderService.GetSenderAsync(senderId).Returns(SenderDto);
+            _mapper.Map<SenderViewModel>(SenderDto).Returns(senderViewModel);
 
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>
-            { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Country" } });
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>
+            { new LookupItemDto { Id = Guid.NewGuid(), Name = "Country" } });
 
             // Act
             var result = await _controller.Edit(senderId);
@@ -102,7 +102,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         {
             // Arrange
             var senderId = Guid.NewGuid();
-            _senderService.GetSenderAsync(senderId).Returns(new SenderDTO { SenderId = Guid.Empty });
+            _senderService.GetSenderAsync(senderId).Returns(new SenderDto { SenderId = Guid.Empty });
 
             // Act
             var result = await _controller.Edit(senderId);
@@ -123,14 +123,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
                 SenderAddress = "India",
                 SenderOrganisation = "India"
             };
-            var senderDto = new SenderDTO();
-            _mapper.Map<SenderDTO>(model).Returns(senderDto);
+            var SenderDto = new SenderDto();
+            _mapper.Map<SenderDto>(model).Returns(SenderDto);
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model);
 
             // Assert
-            await _senderService.Received(1).UpdateSenderAsync(Arg.Is<SenderDTO>(dto => dto == senderDto));
+            await _senderService.Received(1).UpdateSenderAsync(Arg.Is<SenderDto>(dto => dto == SenderDto));
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectResult.ActionName);
         }
@@ -149,8 +149,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 
             _controller.ModelState.AddModelError("SenderName", "Required");
             var countryList = new List<SelectListItem>();
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
-            _mapper.Map<List<SelectListItem>>(Arg.Any<List<LookupItemDTO>>()).Returns(countryList);
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>());
+            _mapper.Map<List<SelectListItem>>(Arg.Any<List<LookupItemDto>>()).Returns(countryList);
             SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model);

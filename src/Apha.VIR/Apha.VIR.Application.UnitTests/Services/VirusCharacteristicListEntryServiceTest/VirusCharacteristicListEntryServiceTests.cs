@@ -57,16 +57,16 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
             LastModified = lastModified2
         }
     };
-            var dtos = new List<VirusCharacteristicListEntryDTO>
+            var dtos = new List<VirusCharacteristicListEntryDto>
     {
-        new VirusCharacteristicListEntryDTO
+        new VirusCharacteristicListEntryDto
         {
             Id = entities[0].Id,
             VirusCharacteristicId = virusCharacteristicId1,
             Name = "Entry1",
             LastModified = lastModified1
         },
-        new VirusCharacteristicListEntryDTO
+        new VirusCharacteristicListEntryDto
         {
             Id = entities[1].Id,
             VirusCharacteristicId = virusCharacteristicId2,
@@ -76,14 +76,14 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
     };
 
             _mockRepository.GetEntriesByCharacteristicIdAsync(characteristicId).Returns(entities);
-            _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities).Returns(dtos);
+            _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDto>>(entities).Returns(dtos);
 
             // Act
             var result = await _service.GetEntriesByCharacteristicIdAsync(characteristicId);
 
             // Assert
             await _mockRepository.Received(1).GetEntriesByCharacteristicIdAsync(characteristicId);
-            _mockMapper.Received(1).Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities);
+            _mockMapper.Received(1).Map<IEnumerable<VirusCharacteristicListEntryDto>>(entities);
             Assert.Equal(dtos, result);
         }
 
@@ -105,17 +105,17 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
             // Arrange
             var characteristicId = Guid.NewGuid();
             var entities = new List<VirusCharacteristicListEntry>();
-            var dtos = new List<VirusCharacteristicListEntryDTO>();
+            var dtos = new List<VirusCharacteristicListEntryDto>();
 
             _mockRepository.GetEntriesByCharacteristicIdAsync(characteristicId).Returns(entities);
-            _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities).Returns(dtos);
+            _mockMapper.Map<IEnumerable<VirusCharacteristicListEntryDto>>(entities).Returns(dtos);
 
             // Act
             var result = await _service.GetEntriesByCharacteristicIdAsync(characteristicId);
 
             // Assert
             await _mockRepository.Received(1).GetEntriesByCharacteristicIdAsync(characteristicId);
-            _mockMapper.Received(1).Map<IEnumerable<VirusCharacteristicListEntryDTO>>(entities);
+            _mockMapper.Received(1).Map<IEnumerable<VirusCharacteristicListEntryDto>>(entities);
             Assert.Empty(result);
         }
 
@@ -147,24 +147,24 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
 
             var mockPaginatedResult = new PagedData<VirusCharacteristicListEntry>(entries, 1);
 
-            var expectedPaginatedResult = new PaginatedResult<VirusCharacteristicListEntryDTO>
+            var expectedPaginatedResult = new PaginatedResult<VirusCharacteristicListEntryDto>
             {
-                data = new List<VirusCharacteristicListEntryDTO>
+                data = new List<VirusCharacteristicListEntryDto>
         {
-            new VirusCharacteristicListEntryDTO { Id = entryId, VirusCharacteristicId = characteristicId, Name = "Entry1" }
+            new VirusCharacteristicListEntryDto { Id = entryId, VirusCharacteristicId = characteristicId, Name = "Entry1" }
         },
                 TotalCount = 1
             };
 
             _mockRepository.GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize).Returns(mockPaginatedResult);
-            _mockMapper.Map<PaginatedResult<VirusCharacteristicListEntryDTO>>(Arg.Any<PagedData<VirusCharacteristicListEntry>>()).Returns(expectedPaginatedResult);
+            _mockMapper.Map<PaginatedResult<VirusCharacteristicListEntryDto>>(Arg.Any<PagedData<VirusCharacteristicListEntry>>()).Returns(expectedPaginatedResult);
 
             // Act
             var result = await _service.GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize);
 
             // Assert
             await _mockRepository.Received(1).GetVirusCharacteristicListEntries(characteristicId, pageNo, pageSize);
-            _mockMapper.Received(1).Map<PaginatedResult<VirusCharacteristicListEntryDTO>>(Arg.Any<PagedData<VirusCharacteristicListEntry>>());
+            _mockMapper.Received(1).Map<PaginatedResult<VirusCharacteristicListEntryDto>>(Arg.Any<PagedData<VirusCharacteristicListEntry>>());
             Assert.Equal(expectedPaginatedResult, result);
         }
 
@@ -174,17 +174,17 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
             // Arrange
             var id = Guid.NewGuid();
             var entity = new VirusCharacteristicListEntry { Id = id, Name = "Entry" };
-            var dto = new VirusCharacteristicListEntryDTO { Id = id, Name = "Entry" };
+            var dto = new VirusCharacteristicListEntryDto { Id = id, Name = "Entry" };
 
             _mockRepository.GetByIdAsync(id).Returns(entity);
-            _mockMapper.Map<VirusCharacteristicListEntryDTO>(entity).Returns(dto);
+            _mockMapper.Map<VirusCharacteristicListEntryDto>(entity).Returns(dto);
 
             // Act
             var result = await _service.GetEntryByIdAsync(id);
 
             // Assert
             await _mockRepository.Received(1).GetByIdAsync(id);
-            _mockMapper.Received(1).Map<VirusCharacteristicListEntryDTO>(entity);
+            _mockMapper.Received(1).Map<VirusCharacteristicListEntryDto>(entity);
             Assert.Equal(dto, result);
         }
 
@@ -200,7 +200,7 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
 
             // Assert
             await _mockRepository.Received(1).GetByIdAsync(id);
-            _mockMapper.DidNotReceive().Map<VirusCharacteristicListEntryDTO>(Arg.Any<VirusCharacteristicListEntry>());
+            _mockMapper.DidNotReceive().Map<VirusCharacteristicListEntryDto>(Arg.Any<VirusCharacteristicListEntry>());
             Assert.Null(result);
         }
 
@@ -220,16 +220,16 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
         public async Task AddEntryAsync_MapsAndCallsRepository()
         {
             // Arrange
-            var dto = new VirusCharacteristicListEntryDTO { Name = "Entry" };
+            var dto = new VirusCharacteristicListEntryDto { Name = "Entry" };
             var mappedEntity = new VirusCharacteristicListEntry { Name = "Entry" };
 
-            _mockMapper.Map<VirusCharacteristicListEntry>(Arg.Any<VirusCharacteristicListEntryDTO>()).Returns(mappedEntity);
+            _mockMapper.Map<VirusCharacteristicListEntry>(Arg.Any<VirusCharacteristicListEntryDto>()).Returns(mappedEntity);
 
             // Act
             await _service.AddEntryAsync(dto);
 
             // Assert
-            _mockMapper.Received(1).Map<VirusCharacteristicListEntry>(Arg.Is<VirusCharacteristicListEntryDTO>(d => d.Name == "Entry" && d.Id != Guid.Empty));
+            _mockMapper.Received(1).Map<VirusCharacteristicListEntry>(Arg.Is<VirusCharacteristicListEntryDto>(d => d.Name == "Entry" && d.Id != Guid.Empty));
             await _mockRepository.Received(1).AddEntryAsync(mappedEntity);
         }
 
@@ -237,10 +237,10 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
         public async Task AddEntryAsync_RepositoryThrows_PropagatesException()
         {
             // Arrange
-            var dto = new VirusCharacteristicListEntryDTO { Name = "Entry" };
+            var dto = new VirusCharacteristicListEntryDto { Name = "Entry" };
             var mappedEntity = new VirusCharacteristicListEntry { Name = "Entry" };
 
-            _mockMapper.Map<VirusCharacteristicListEntry>(Arg.Any<VirusCharacteristicListEntryDTO>()).Returns(mappedEntity);
+            _mockMapper.Map<VirusCharacteristicListEntry>(Arg.Any<VirusCharacteristicListEntryDto>()).Returns(mappedEntity);
             _mockRepository.AddEntryAsync(mappedEntity).Throws(new Exception("Test exception"));
 
             // Act & Assert
@@ -252,7 +252,7 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
         public async Task UpdateEntryAsync_MapsAndCallsRepository()
         {
             // Arrange
-            var dto = new VirusCharacteristicListEntryDTO { Id = Guid.NewGuid(), Name = "Entry" };
+            var dto = new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Entry" };
             var mappedEntity = new VirusCharacteristicListEntry { Id = dto.Id, Name = "Entry" };
 
             _mockMapper.Map<VirusCharacteristicListEntry>(dto).Returns(mappedEntity);
@@ -269,7 +269,7 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicListEntrySe
         public async Task UpdateEntryAsync_RepositoryThrows_PropagatesException()
         {
             // Arrange
-            var dto = new VirusCharacteristicListEntryDTO { Id = Guid.NewGuid(), Name = "Entry" };
+            var dto = new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Entry" };
             var mappedEntity = new VirusCharacteristicListEntry { Id = dto.Id, Name = "Entry" };
 
             _mockMapper.Map<VirusCharacteristicListEntry>(dto).Returns(mappedEntity);

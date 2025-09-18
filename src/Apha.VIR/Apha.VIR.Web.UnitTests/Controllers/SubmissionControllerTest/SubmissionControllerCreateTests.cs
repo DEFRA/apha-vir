@@ -46,10 +46,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             const string avNumber = "TEST123";
-            var ddldata = new List<LookupItemDTO>
+            var ddldata = new List<LookupItemDto>
             {
-                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_1" },
-                new LookupItemDTO{ Id = Guid.NewGuid(), Name = "lookitem_2" }
+                new LookupItemDto{ Id = Guid.NewGuid(), Name = "lookitem_1" },
+                new LookupItemDto{ Id = Guid.NewGuid(), Name = "lookitem_2" }
             };
 
             _mockLookupService.GetAllCountriesAsync().Returns(ddldata.AsEnumerable());
@@ -94,8 +94,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
         {
             // Arrange
             var submission = new SubmissionCreateViewModel();
-            var submissionDto = new SubmissionDTO();
-            _mockMapper.Map<SubmissionCreateViewModel>(submissionDto).Returns(submission);
+            var SubmissionDto = new SubmissionDto();
+            _mockMapper.Map<SubmissionCreateViewModel>(SubmissionDto).Returns(submission);
             SetupMockUserAndRoles();
 
             // Act

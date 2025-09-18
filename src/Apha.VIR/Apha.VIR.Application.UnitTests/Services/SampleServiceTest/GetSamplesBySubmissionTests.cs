@@ -31,18 +31,18 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             // Arrange
             var submissionId = Guid.NewGuid();
             var samples = new List<Sample> { new Sample(), new Sample() };
-            var sampleDTOs = new List<SampleDTO> { new SampleDTO(), new SampleDTO() };
+            var SampleDtos = new List<SampleDto> { new SampleDto(), new SampleDto() };
 
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submissionId).Returns(samples);
-            _mockMapper.Map<IEnumerable<SampleDTO>>(samples).Returns(sampleDTOs);
+            _mockMapper.Map<IEnumerable<SampleDto>>(samples).Returns(SampleDtos);
 
             // Act
             var result = await _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId);
 
             // Assert
-            Assert.Equal(sampleDTOs, result);
+            Assert.Equal(SampleDtos, result);
             await _mockSampleRepository.Received(1).GetSamplesBySubmissionIdAsync(submissionId);
-            _mockMapper.Received(1).Map<IEnumerable<SampleDTO>>(samples);
+            _mockMapper.Received(1).Map<IEnumerable<SampleDto>>(samples);
         }
 
         [Fact]
@@ -51,10 +51,10 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             // Arrange
             var submissionId = Guid.NewGuid();
             var emptySamples = new List<Sample>();
-            var emptySampleDTOs = new List<SampleDTO>();
+            var emptySampleDtos = new List<SampleDto>();
 
             _mockSampleRepository.GetSamplesBySubmissionIdAsync(submissionId).Returns(emptySamples);
-            _mockMapper.Map<IEnumerable<SampleDTO>>(emptySamples).Returns(emptySampleDTOs);
+            _mockMapper.Map<IEnumerable<SampleDto>>(emptySamples).Returns(emptySampleDtos);
 
             // Act
             var result = await _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId);
@@ -62,7 +62,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             // Assert
             Assert.Empty(result);
             await _mockSampleRepository.Received(1).GetSamplesBySubmissionIdAsync(submissionId);
-            _mockMapper.Received(1).Map<IEnumerable<SampleDTO>>(emptySamples);
+            _mockMapper.Received(1).Map<IEnumerable<SampleDto>>(emptySamples);
         }
 
         [Fact]

@@ -24,24 +24,24 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
         }
 
         [Fact]
-        public async Task GetSampleAsync_WithValidParameters_ReturnsSampleDTO()
+        public async Task GetSampleAsync_WithValidParameters_ReturnsSampleDto()
         {
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
             var sample = new Sample { SampleId = sampleId };
-            var sampleDto = new SampleDTO { SampleId = sampleId };
+            var SampleDto = new SampleDto { SampleId = sampleId };
 
             _mockSampleRepository.GetSampleAsync(avNumber, sampleId).Returns(sample);
-            _mockMapper.Map<SampleDTO>(sample).Returns(sampleDto);
+            _mockMapper.Map<SampleDto>(sample).Returns(SampleDto);
 
             // Act
             var result = await _sampleService.GetSampleAsync(avNumber, sampleId);
 
             // Assert
             await _mockSampleRepository.Received(1).GetSampleAsync(avNumber, sampleId);
-            _mockMapper.Received(1).Map<SampleDTO>(sample);
-            Assert.Equal(sampleDto, result);
+            _mockMapper.Received(1).Map<SampleDto>(sample);
+            Assert.Equal(SampleDto, result);
         }
 
         [Fact]
@@ -52,14 +52,14 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
             var sampleId = Guid.NewGuid();
 
             _mockSampleRepository.GetSampleAsync(avNumber, sampleId).Returns((Sample?)null);
-            _mockMapper.Map<SampleDTO>(null).Returns((SampleDTO?)null);
+            _mockMapper.Map<SampleDto>(null).Returns((SampleDto?)null);
 
             // Act
             var result = await _sampleService.GetSampleAsync(avNumber, sampleId);
 
             // Assert
             await _mockSampleRepository.Received(1).GetSampleAsync(avNumber, sampleId);
-            _mockMapper.Received(1).Map<SampleDTO>(null);
+            _mockMapper.Received(1).Map<SampleDto>(null);
             Assert.Null(result);
         }
 
@@ -78,15 +78,15 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
         public async Task AddSample_ValidInput_SuccessfullyAddsSample()
         {
             // Arrange
-            var sampleDto = new SampleDTO();
+            var SampleDto = new SampleDto();
             var sample = new Sample();
             var avNumber = "AV123";
             var userName = "TestUser";
 
-            _mockMapper.Map<Sample>(sampleDto).Returns(sample);
+            _mockMapper.Map<Sample>(SampleDto).Returns(sample);
 
             // Act
-            await _sampleService.AddSample(sampleDto, avNumber, userName);
+            await _sampleService.AddSample(SampleDto, avNumber, userName);
 
             // Assert
             await _mockSampleRepository.Received(1).AddSampleAsync(sample, avNumber, userName);
@@ -96,45 +96,45 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
         public async Task AddSample_NullInput_ThrowsArgumentNullException()
         {
             // Arrange
-            SampleDTO? sampleDto = null; // Fix: Mark sampleDto as nullable
+            SampleDto? SampleDto = null; // Fix: Mark SampleDto as nullable
             var avNumber = "AV123";
             var userName = "TestUser";
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _sampleService.AddSample(sampleDto!, avNumber, userName)); // Fix: Use null-forgiving operator
+                _sampleService.AddSample(SampleDto!, avNumber, userName)); // Fix: Use null-forgiving operator
         }
 
         [Fact]
         public async Task AddSample_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var sampleDto = new SampleDTO();
+            var SampleDto = new SampleDto();
             var sample = new Sample();
             var avNumber = "AV123";
             var userName = "TestUser";
 
-            _mockMapper.Map<Sample>(sampleDto).Returns(sample);
+            _mockMapper.Map<Sample>(SampleDto).Returns(sample);
             _mockSampleRepository.AddSampleAsync(sample, avNumber, userName)
             .Returns(Task.FromException(new Exception("Repository error"))); // Fix: Replace ThrowsAsync with Returns(Task.FromException(...))
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() =>
-            _sampleService.AddSample(sampleDto, avNumber, userName));
+            _sampleService.AddSample(SampleDto, avNumber, userName));
         }
 
         [Fact]
         public async Task UpdateSample_SuccessfulUpdate_CallsRepositoryAndReturns()
         {
             // Arrange
-            var sampleDto = new SampleDTO { SampleId = Guid.NewGuid() };
+            var SampleDto = new SampleDto { SampleId = Guid.NewGuid() };
             var sample = new Sample();
             var userName = "testUser";
 
-            _mockMapper.Map<Sample>(sampleDto).Returns(sample);
+            _mockMapper.Map<Sample>(SampleDto).Returns(sample);
 
             // Act
-            await _sampleService.UpdateSample(sampleDto, userName);
+            await _sampleService.UpdateSample(SampleDto, userName);
 
             // Assert
             await _mockSampleRepository.Received(1).UpdateSampleAsync(sample, userName);
@@ -144,26 +144,26 @@ namespace Apha.VIR.Application.UnitTests.Services.SampleServiceTest
         public async Task UpdateSample_NullSampleDto_ThrowsArgumentNullException()
         {
             // Arrange
-            SampleDTO? sampleDto = null;
+            SampleDto? SampleDto = null;
             var userName = "testUser";
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _sampleService.UpdateSample(sampleDto!, userName));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _sampleService.UpdateSample(SampleDto!, userName));
         }
 
         [Fact]
         public async Task UpdateSample_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var sampleDto = new SampleDTO { SampleId = Guid.NewGuid() };
+            var SampleDto = new SampleDto { SampleId = Guid.NewGuid() };
             var sample = new Sample();
             var userName = "testUser";
 
-            _mockMapper.Map<Sample>(sampleDto).Returns(sample);
+            _mockMapper.Map<Sample>(SampleDto).Returns(sample);
             _mockSampleRepository.UpdateSampleAsync(sample, userName).ThrowsAsync(new Exception("Repository error"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _sampleService.UpdateSample(sampleDto, userName));
+            await Assert.ThrowsAsync<Exception>(() => _sampleService.UpdateSample(SampleDto, userName));
         }
     }
 }

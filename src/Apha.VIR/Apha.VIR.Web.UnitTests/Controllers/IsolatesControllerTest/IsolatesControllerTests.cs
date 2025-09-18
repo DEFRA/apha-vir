@@ -64,12 +64,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         {
             // Arrange
             var isolateId = Guid.NewGuid();
-            var isolateDetails = new IsolateFullDetailDTO
+            var isolateDetails = new IsolateFullDetailDto
             {
-                IsolateDetails = new IsolateInfoDTO(),
-                IsolateViabilityDetails = new List<IsolateViabilityInfoDTO>(),
-                IsolateDispatchDetails = new List<IsolateDispatchInfoDTO>(),
-                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDTO>()
+                IsolateDetails = new IsolateInfoDto(),
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDto>(),
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDto>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDto>()
             };
             var isolateViewModel = new IsolateDetailsViewModel
             {
@@ -109,10 +109,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         public async Task GetVirusTypesByVirusFamily_NullOrEmptyVirusFamilyId_ReturnsAllVirusTypes()
         {
             // Arrange
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 2" }
             };
             _mockLookupService.GetAllVirusTypesAsync().Returns(virusTypes);
             SetupMockUserAndRoles();
@@ -137,9 +137,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         {
             // Arrange
             Guid virusFamilyId = Guid.NewGuid();
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" }
             };
             _mockLookupService.GetAllVirusTypesByParentAsync(virusFamilyId).Returns(virusTypes);
             SetupMockUserAndRoles();
@@ -161,10 +161,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         public async Task GetTraysByFeezer_NullOrEmptyVirusFamilyId_ReturnsAllVirusTypes()
         {
             // Arrange
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 2" }
             };
             _mockLookupService.GetAllTraysAsync().Returns(virusTypes);
             SetupMockUserAndRoles();
@@ -189,9 +189,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         {
             // Arrange
             Guid virusFamilyId = Guid.NewGuid();
-            var virusTypes = new List<LookupItemDTO>
+            var virusTypes = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type 1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" }
             };
             _mockLookupService.GetAllTraysByParentAsync(virusFamilyId).Returns(virusTypes);
             SetupMockUserAndRoles();

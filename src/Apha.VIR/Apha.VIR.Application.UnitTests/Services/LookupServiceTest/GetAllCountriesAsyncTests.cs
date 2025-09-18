@@ -30,14 +30,14 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
                 new LookupItem { Id = Guid.NewGuid(), Name = "Country 2" }
             };
 
-            var expectedDTOs = new List<LookupItemDTO>
+            var expectedDTOs = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = countries[0].Id, Name = countries[0].Name },
-                new LookupItemDTO { Id = countries[1].Id, Name = countries[1].Name }
+                new LookupItemDto { Id = countries[0].Id, Name = countries[0].Name },
+                new LookupItemDto { Id = countries[1].Id, Name = countries[1].Name }
             };
 
             _mockLookupRepository.GetAllCountriesAsync().Returns(countries);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDTOs);
 
             // Act
             var result = await _mockLookupService.GetAllCountriesAsync();
@@ -45,7 +45,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(expectedDTOs, result);
             await _mockLookupRepository.Received(1).GetAllCountriesAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == countries));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == countries));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange            
             _mockLookupRepository.GetAllCountriesAsync().Returns(new List<LookupItem>());
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _mockLookupService.GetAllCountriesAsync();
@@ -61,7 +61,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Empty(result);
             await _mockLookupRepository.Received(1).GetAllCountriesAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => !x.Any()));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => !x.Any()));
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _mockLookupService.GetAllCountriesAsync());
             await _mockLookupRepository.Received(1).GetAllCountriesAsync();
-            _mockMapper.DidNotReceive().Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>());
+            _mockMapper.DidNotReceive().Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>());
         }
     }
 }
