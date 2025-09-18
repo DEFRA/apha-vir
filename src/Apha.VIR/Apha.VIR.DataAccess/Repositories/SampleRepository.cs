@@ -94,8 +94,8 @@ public class SampleRepository : RepositoryBase<Sample>,ISampleRepository
     {
         await ExecuteSqlAsync(
            "EXEC spSampleDelete @UserID, @SampleId, @LastModified",
-           new SqlParameter("@UserID", SqlDbType.UniqueIdentifier) { Value = userId },
-           new SqlParameter("@SampleId", SqlDbType.VarChar, 20) { Value = sampleId },           
+           new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+           new SqlParameter("@SampleId", SqlDbType.UniqueIdentifier) { Value = sampleId },           
            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified }
         );
     }
