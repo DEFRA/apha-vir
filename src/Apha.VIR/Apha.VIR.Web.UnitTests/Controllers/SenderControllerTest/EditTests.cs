@@ -1,27 +1,36 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class EditTests
     {
+        private readonly object _lock;
         private readonly ISenderService _senderService;
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
         private readonly SenderController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public EditTests()
+        public EditTests(AppRolesFixture fixture)
         {
             _senderService = Substitute.For<ISenderService>();
             _lookupService = Substitute.For<ILookupService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new SenderController(_senderService, _lookupService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -29,7 +38,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         {
             // Arrange
             var senderId = Guid.NewGuid();
-            var senderDto = new SenderDTO { SenderId = senderId, SenderName = "Test Sender" };
+            var SenderDto = new SenderDto { SenderId = senderId, SenderName = "Test Sender" };
             var senderViewModel = new SenderViewModel
             {
                 SenderId = senderId,
@@ -39,11 +48,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             };
             var countryList = new List<SelectListItem> { new SelectListItem("Country", "1") };
 
-            _senderService.GetSenderAsync(senderId).Returns(senderDto);
-            _mapper.Map<SenderViewModel>(senderDto).Returns(senderViewModel);
+            _senderService.GetSenderAsync(senderId).Returns(SenderDto);
+            _mapper.Map<SenderViewModel>(SenderDto).Returns(senderViewModel);
 
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>
-            { new LookupItemDTO { Id = Guid.NewGuid(), Name = "Country" } });
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>
+            { new LookupItemDto { Id = Guid.NewGuid(), Name = "Country" } });
 
             // Act
             var result = await _controller.Edit(senderId);
@@ -93,7 +102,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         {
             // Arrange
             var senderId = Guid.NewGuid();
-            _senderService.GetSenderAsync(senderId).Returns(new SenderDTO { SenderId = Guid.Empty });
+            _senderService.GetSenderAsync(senderId).Returns(new SenderDto { SenderId = Guid.Empty });
 
             // Act
             var result = await _controller.Edit(senderId);
@@ -114,14 +123,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
                 SenderAddress = "India",
                 SenderOrganisation = "India"
             };
-            var senderDto = new SenderDTO();
-            _mapper.Map<SenderDTO>(model).Returns(senderDto);
-
+            var SenderDto = new SenderDto();
+            _mapper.Map<SenderDto>(model).Returns(SenderDto);
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model);
 
             // Assert
-            await _senderService.Received(1).UpdateSenderAsync(Arg.Is<SenderDTO>(dto => dto == senderDto));
+            await _senderService.Received(1).UpdateSenderAsync(Arg.Is<SenderDto>(dto => dto == SenderDto));
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectResult.ActionName);
         }
@@ -140,9 +149,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
 
             _controller.ModelState.AddModelError("SenderName", "Required");
             var countryList = new List<SelectListItem>();
-            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDTO>());
-            _mapper.Map<List<SelectListItem>>(Arg.Any<List<LookupItemDTO>>()).Returns(countryList);
-
+            _lookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto>());
+            _mapper.Map<List<SelectListItem>>(Arg.Any<List<LookupItemDto>>()).Returns(countryList);
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model);
 
@@ -152,6 +161,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             var returnedModel = Assert.IsType<SenderViewModel>(viewResult.Model);
             Assert.Equal(model, returnedModel);
             Assert.Equal(countryList, returnedModel.CountryList);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.LookupDataManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

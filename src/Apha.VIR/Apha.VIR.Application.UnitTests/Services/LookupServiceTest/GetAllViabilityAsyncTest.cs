@@ -30,10 +30,10 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var viabilityEntities = new List<LookupItem> { new LookupItem(), new LookupItem() };
-            var expectedDtos = new List<LookupItemDTO> { new LookupItemDTO(), new LookupItemDTO() };
+            var expectedDtos = new List<LookupItemDto> { new LookupItemDto(), new LookupItemDto() };
 
             _mockLookupRepository.GetAllViabilityAsync().Returns(viabilityEntities);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(viabilityEntities).Returns(expectedDtos);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(viabilityEntities).Returns(expectedDtos);
 
             // Act
             var result = await _mockLookupService.GetAllViabilityAsync();
@@ -60,7 +60,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             _mockLookupRepository.GetAllViabilityAsync().Returns(new List<LookupItem>());
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _mockLookupService.GetAllViabilityAsync();

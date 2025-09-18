@@ -30,10 +30,10 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
         {
             // Arrange
             var mockReasons = new List<LookupItem> { new LookupItem(), new LookupItem() };
-            var expectedDtos = new List<LookupItemDTO> { new LookupItemDTO(), new LookupItemDTO() };
+            var expectedDtos = new List<LookupItemDto> { new LookupItemDto(), new LookupItemDto() };
 
             _mockLookupRepository.GetAllSubmissionReasonAsync().Returns(mockReasons);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(expectedDtos);
 
             // Act
             var result = await _mockLookupService.GetAllSubmissionReasonAsync();
@@ -41,7 +41,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Equal(expectedDtos, result);
             await _mockLookupRepository.Received(1).GetAllSubmissionReasonAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == mockReasons));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == mockReasons));
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Arrange
             var emptyList = new List<LookupItem>();
             _mockLookupRepository.GetAllSubmissionReasonAsync().Returns(emptyList);
-            _mockMapper.Map<IEnumerable<LookupItemDTO>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDTO>());
+            _mockMapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>()).Returns(new List<LookupItemDto>());
 
             // Act
             var result = await _mockLookupService.GetAllSubmissionReasonAsync();
@@ -58,7 +58,7 @@ namespace Apha.VIR.Application.UnitTests.Services.LookupServiceTest
             // Assert
             Assert.Empty(result);
             await _mockLookupRepository.Received(1).GetAllSubmissionReasonAsync();
-            _mockMapper.Received(1).Map<IEnumerable<LookupItemDTO>>(Arg.Is<IEnumerable<LookupItem>>(x => x == emptyList));
+            _mockMapper.Received(1).Map<IEnumerable<LookupItemDto>>(Arg.Is<IEnumerable<LookupItem>>(x => x == emptyList));
         }
 
         [Fact]

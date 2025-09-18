@@ -16,9 +16,7 @@ post-deploy:
 	@echo "Running post-deploy scripts..."
 	
 	@$(SQLCMD) -d $(DB_NAME) -i 01-tables/modify-tables-post-restore.sql
-	
 	@$(SQLCMD) -d $(DB_NAME) -i 02-views/modify-views-post-restore.sql
-	
 	@$(SQLCMD) -d $(DB_NAME) -i 04-procedures/spCharacteristicDelete.sql
 	@$(SQLCMD) -d $(DB_NAME) -i 04-procedures/spCharacteristicInsert.sql
 	@$(SQLCMD) -d $(DB_NAME) -i 04-procedures/spCharacteristicUpdate.sql
@@ -45,7 +43,6 @@ post-deploy:
 	@$(SQLCMD) -d $(DB_NAME) -i 04-procedures/spSubmissionDelete.sql
 	@$(SQLCMD) -d $(DB_NAME) -i 04-procedures/spSubmissionInsert.sql
 	@$(SQLCMD) -d $(DB_NAME) -i 04-procedures/spSubmissionUpdate.sql
-
 	@$(SQLCMD) -d $(DB_NAME) -i 99-direct-scripts/data_tblSysInfo.sql -v environment=$(ENVIRONMENT)
 	@echo "Post-deploy scripts completed."
 

@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.VirusCharacteristic;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,31 +23,31 @@ namespace Apha.VIR.Web.Controllers
             _listEntryService = listEntryService;
             _mapper = mapper;
         }
-
-        public IActionResult Index()
-        {
-            return View("VirusCharacteristic");
-        }
-
+   
         [HttpGet]
-        public async Task<IActionResult> ListEntries(Guid? characteristic, int pageNo = 1, int pageSize = 10)
+        public async Task<IActionResult> ListEntries(Guid? characteristicId, int pageNo = 1, int pageSize = 10)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if (characteristic == null || characteristic == Guid.Empty)
+            if (characteristicId == null || characteristicId == Guid.Empty)
                 return BadRequest("Characteristic id is required");
 
             // reuse existing service that returns all and pick by id
             var all = await _virusCharacteristicService.GetAllVirusCharacteristicsAsync();
-            var characteristicDto = all.FirstOrDefault(c => c.Id == characteristic.Value);
+            var characteristicDto = all.FirstOrDefault(c => c.Id == characteristicId.Value);
 
             var name = characteristicDto?.Name ?? string.Empty;
-            var listDtos = await _listEntryService.GetVirusCharacteristicListEntries(characteristic.Value, pageNo, pageSize);
+            var listDtos = await _listEntryService.GetVirusCharacteristicListEntries(characteristicId.Value, pageNo, pageSize);
             var vcEntries = _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(listDtos.data);
 
             var vm = new VirusCharacteristicListEntriesViewModel
             {
-                CharacteristicId = characteristic.Value,
+                CharacteristicId = characteristicId.Value,
                 CharacteristicName = name,
                 Entries = new VirusCharacteristicListEntryViewModel
                 {
@@ -64,14 +65,19 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BindCharacteristicEntriesGridOnPagination(Guid? characteristic, int pageNo, int pageSize)
+        public async Task<IActionResult> BindCharacteristicEntriesGridOnPagination(Guid? characteristicId, int pageNo, int pageSize)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if (characteristic == null || characteristic == Guid.Empty)
+            if (characteristicId == null || characteristicId == Guid.Empty)
                 return BadRequest("Characteristic id is required");
 
-            var listDtos = await _listEntryService.GetVirusCharacteristicListEntries(characteristic.Value, pageNo, pageSize);
+            var listDtos = await _listEntryService.GetVirusCharacteristicListEntries(characteristicId.Value, pageNo, pageSize);
             var vcEntries = _mapper.Map<IEnumerable<VirusCharacteristicListEntryModel>>(listDtos.data);
 
 
@@ -93,13 +99,18 @@ namespace Apha.VIR.Web.Controllers
         public IActionResult Back()
         {
             // redirect to virus characteristics list page
-            return RedirectToAction("Index", "VirusCharacteristicsListEntry");
+            return RedirectToAction("List", "VirusCharacteristics");
         }
 
 
         [HttpGet]
         public IActionResult Create(Guid? characteristic)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), " Account");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -114,10 +125,15 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(VirusCharacteristicListEntryModel model)
         {
+            if (!AuthorisationUtil.CanAddItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to insert entry in VirusCharacteristicListEntry list.");
+            }
+
             if (!ModelState.IsValid)
                 return View("CreateVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.AddEntryAsync(dto);
 
             return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
@@ -126,6 +142,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid? characteristic, Guid? entry)
         {
+            if (!AuthorisationUtil.IsUserInAnyRole())
+            {
+                return RedirectToAction(nameof(AccountController.AccessDenied), " Account");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -142,10 +163,15 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(VirusCharacteristicListEntryModel model)
         {
+            if (!AuthorisationUtil.CanEditItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to update entry in VirusCharacteristicListEntry list.");
+            }
+
             if (!ModelState.IsValid)
                 return View("EditVirusCharacteristicEntry", model);
 
-            var dto = _mapper.Map<VirusCharacteristicListEntryDTO>(model);
+            var dto = _mapper.Map<VirusCharacteristicListEntryDto>(model);
             await _listEntryService.UpdateEntryAsync(dto);
 
             return RedirectToAction("ListEntries", new { characteristic = model.VirusCharacteristicId });
@@ -154,6 +180,11 @@ namespace Apha.VIR.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id, Guid characteristic, string lastModified)
         {
+            if (!AuthorisationUtil.CanDeleteItem(AppRoleConstant.LookupDataManager))
+            {
+                throw new UnauthorizedAccessException("Not authorised to delete entry in VirusCharacteristicListEntry list.");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

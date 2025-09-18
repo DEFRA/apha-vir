@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Apha.VIR.Web.Models.IsolateRelocateViewModel>
+
+@if (Model.Any())
+{
+	<table id="isolatesTable" class="IsolateRelocatetable">
+		<thead>
+			<tr>
+				<th>AV Number</th>
+				<th>Nomenclature</th>
+				<th>Freezer</th>
+				<th>Tray</th>
+				<th>Well</th>
+				<th>Select</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var isolate in Model)
+			{
+				<tr>
+					<td>@isolate.AVNumber</td>
+					<td>@isolate.Nomenclature</td>
+					<td>@isolate.FreezerName</td>
+					<td>@isolate.TrayName</td>
+					<td>@isolate.Well</td>
+					<td>
+						<input type="checkbox" class="select-isolate" data-id="@isolate.IsolateId" data-well="@isolate.Well"
+							   data-lastmodified="@Convert.ToBase64String(isolate.LastModified ?? new byte[0])" />
+					</td>
+					<td>
+						<button class="btn btn-link isolaterelocate-btn-link-custom edit-isolate"
+								data-id="@isolate.IsolateId"
+								data-well="@isolate.Well"
+								data-freezer="@isolate.Freezer"
+								data-tray="@isolate.Tray"
+								data-lastmodified="@Convert.ToBase64String(isolate.LastModified ?? new byte[0])">
+							Edit
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<div id="noIsolatesMessage" style="margin: 20px 0; border: 1px solid #ccc; border-spacing: 2px; width: fit-content;">
+		There are no isolates matching the criteria specified
+	</div>
+
+}

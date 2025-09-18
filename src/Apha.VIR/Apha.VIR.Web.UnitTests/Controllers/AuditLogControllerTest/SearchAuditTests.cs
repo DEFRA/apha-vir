@@ -9,20 +9,23 @@ using Apha.VIR.Application.DTOs;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Apha.VIR.Web.Services;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 {
     public class SearchAuditTests
     {
         private readonly IAuditLogService _auditLogService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly AuditLogController _controller;
 
         public SearchAuditTests()
         {
             _auditLogService = Substitute.For<IAuditLogService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new AuditLogController(_auditLogService, _mapper);
+            _controller = new AuditLogController(_auditLogService, _cacheService, _mapper);
         }
 
         [Fact]
@@ -37,7 +40,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
                 UserId = "user123"
             };
 
-            var submissionLogs = new List<AuditSubmissionLogDTO> { new AuditSubmissionLogDTO(), new AuditSubmissionLogDTO() };
+            var submissionLogs = new List<AuditSubmissionLogDto> { new AuditSubmissionLogDto(), new AuditSubmissionLogDto() };
 
             _auditLogService.GetSubmissionLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Returns(submissionLogs);
@@ -45,13 +48,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var mappedLogs = new List<AuditSubmissionLogModel> { new AuditSubmissionLogModel(), new AuditSubmissionLogModel() };
             _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(Arg.Any<IEnumerable<object>>()).Returns(mappedLogs);
 
-            var httpContext = new DefaultHttpContext();
-            var tempDataProvider = Substitute.For<ITempDataProvider>();
-            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
-
-            tempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
-
-            _controller.TempData = tempData;
+            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(searchCriteria));   
 
             // Act
             ValidateModel(searchCriteria, _controller);
@@ -99,16 +96,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
                 UserId = "user123"
             };
 
-            // Use real TempDataDictionary
-            var httpContext = new DefaultHttpContext();
-            var tempDataProvider = Substitute.For<ITempDataProvider>();
-            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
+            var searchCriteriaJson = System.Text.Json.JsonSerializer.Serialize(searchCriteria);
 
-            tempData["SearchCriteria"] = JsonConvert.SerializeObject(searchCriteria);
+            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(searchCriteria));
+           _cacheService.GetCacheValueAsync<string>("SearchCriteria").Returns(searchCriteriaJson!);
 
-            _controller.TempData = tempData;
-
-            var isolateLogs = new List<AuditIsolateLogDTO> { new AuditIsolateLogDTO(), new AuditIsolateLogDTO() };
+            var isolateLogs = new List<AuditIsolateLogDto> { new AuditIsolateLogDto(), new AuditIsolateLogDto() };
             _auditLogService.GetIsolatLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Returns(isolateLogs);
 
@@ -134,13 +127,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task SearchAudit_NotNewSearch_InvalidTempData_ReturnsDefaultView()
         {
-            // Arrange
-            // Use real TempDataDictionary
-            var httpContext = new DefaultHttpContext();
-            var tempDataProvider = Substitute.For<ITempDataProvider>();
-            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
-            tempData["SearchCriteria"] = null;
-            _controller.TempData = tempData;
+            // Arrange           
+            await _cacheService.SetCacheValueAsync("SearchCriteria", (string?)null);
 
             // Act
             var result = await _controller.SearchAudit(new AuditLogSearchModel(), false);
@@ -153,7 +141,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             Assert.True(model.ShowDefaultView);
         }
 
-        private void ValidateModel(object model, Controller controller)
+        private static void ValidateModel(object model, Controller controller)
         {
             var validationContext = new ValidationContext(model, null, null);
             var validationResults = new List<ValidationResult>();

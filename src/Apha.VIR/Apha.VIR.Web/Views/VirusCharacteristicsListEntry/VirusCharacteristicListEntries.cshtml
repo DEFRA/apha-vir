@@ -13,27 +13,19 @@
 
 	<div>
 		<br />
-		<table>
-			<thead class="sr-only"><tr><th scope="col"></th></tr></thead>
-			<tbody>
-				<tr>
-					<td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
-					<td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
-					<td>
-						<a asp-action="Create" asp-route-characteristic="@Model.CharacteristicId">
-							Add a new list entry
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td><img src="~/Images/chevron-rt-dkblue.gif" width="3" height="9" alt="" /></td>
-					<td><img src="~/Images/spacer.gif" width="10" height="5" alt="" /></td>
-					<td>
-						<a asp-action="Back">Return to Virus Characteristics Page</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="page_links">
+			<ul class="ps-1">
+				<li>
+					<a asp-action="Create" asp-route-characteristic="@Model.CharacteristicId">
+						Add a new list entry
+					</a>
+				</li>
+				<li>
+					<a asp-action="Back">Return to Virus Characteristics Page</a>
+				</li>
+			</ul>
+		</div>
+		
 
 		<br />
 		<span>
@@ -50,7 +42,7 @@
 			e.preventDefault();
 			var id = "@Model.CharacteristicId";
 			var pageNo=$(this).data('pageno');
-			$.get('BindCharacteristicEntriesGridOnPagination', {characteristic: id, pageNo: pageNo, pageSize:10}, function (htmlData) {
+			$.get('BindCharacteristicEntriesGridOnPagination', {characteristicId: id, pageNo: pageNo, pageSize:10}, function (htmlData) {
 			$('#listEntries').html(htmlData);
 			});
 			});

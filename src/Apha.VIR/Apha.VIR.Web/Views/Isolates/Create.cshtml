@@ -5,12 +5,12 @@
 
 <div class="contentbox w-95">
 	<form method="post">
-		<input type="hidden" asp-for="@Model.AVNumber"/>
+		<input type="hidden" asp-for="@Model.AVNumber" />
 		<input type="hidden" asp-for="@Model.IsolateSampleId" />
-		<div class="id-box-title">
-			<span id="lblBoxTitle">Enter the Isolate Details</span>
+		<div class="contentbox_title">
+			<span id="lblBoxTitle">@(Model.IsChkDetection ? "Enter the Detection Details" : "Enter the Isolate Details")</span>
 		</div>
-		<div class="id-box_body">
+		<div class="contentbox_body">
 			<br>
 			<div class="container mt-3" id="IsolateDetails">
 
@@ -20,7 +20,7 @@
 					</div>
 					<div class="col-sm-9">
 						<select id="ddlVirusFamily" asp-for="Family" asp-items="@Model.VirusFamilyList" class="form-select small-select-dropdown w-210">
-							<option value=""></option>							
+							<option value=""></option>
 						</select>
 						<span asp-validation-for="Family" class="text-danger"></span>
 					</div>
@@ -44,56 +44,56 @@
 
 				<div class="row mb-3">
 					<div class="col-sm-3">
-						Year Of Isolation
+						@(Model.IsChkDetection ? "Year of FTA Absorption" : "Year Of Isolation")
 					</div>
 					<div class="col-sm-9">
-						<input asp-for="YearOfIsolation" class="form-control w-75" />
+						<input asp-for="YearOfIsolation" class="form-control" style="   width: 202px;" />
 						<span asp-validation-for="YearOfIsolation" class="text-danger"></span>
 					</div>
 				</div>
 
 				<div class="row mb-3">
 					<div class="col-sm-3">
-						Is Mixed Isolate
+						@(Model.IsChkDetection ? "Is Mixed Detection" : "Is Mixed Isolate")
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="IsMixedIsolate" type="checkbox" />
 						<span asp-validation-for="IsMixedIsolate" class="text-danger"></span>
 					</div>
 				</div>
-
-				<div class="row mb-3">
-					<div class="col-sm-3">
-						Isolation Method
+				@if (!Model.IsChkDetection)
+				{
+					<div class="row mb-3">
+						<div class="col-sm-3">
+							Isolation Method
+						</div>
+						<div class="col-sm-9">
+							<select asp-for="IsolationMethod" asp-items="@Model.IsolationMethodList" class="form-select small-select-dropdown w-80">
+								<option value=""></option>
+							</select>
+							<span asp-validation-for="IsolationMethod" class="text-danger"></span>
+						</div>
 					</div>
-					<div class="col-sm-9">
-						<select asp-for="IsolationMethod" asp-items="@Model.IsolationMethodList" class="form-select small-select-dropdown w-80">
-							<option value=""></option>
-						</select>
-						<span asp-validation-for="IsolationMethod" class="text-danger"></span>
+					<div class="row mb-3">
+						<div class="col-sm-3">Antiserum Produced</div>
+						<div class="col-sm-9">
+							<input asp-for="AntiserumProduced" type="checkbox" />
+							<span asp-validation-for="AntiserumProduced" class="text-danger"></span>
+						</div>
 					</div>
-				</div>
-
-				<div class="row mb-3">
-					<div class="col-sm-3">Antiserum Produced</div>
-					<div class="col-sm-9">
-						<input asp-for="AntiserumProduced" type="checkbox" />
-						<span asp-validation-for="AntiserumProduced" class="text-danger"></span>
+					<div class="row mb-3">
+						<div class="col-sm-3">Antigen Produced</div>
+						<div class="col-sm-9">
+							<input asp-for="AntigenProduced" type="checkbox" />
+							<span asp-validation-for="AntigenProduced" class="text-danger"></span>
+						</div>
 					</div>
-				</div>
-
-				<div class="row mb-3">
-					<div class="col-sm-3">Antigen Produced</div>
-					<div class="col-sm-9">
-						<input asp-for="AntigenProduced" type="checkbox" />
-						<span asp-validation-for="AntigenProduced" class="text-danger"></span>
-					</div>
-				</div>
+				}
 
 				<div class="row mb-3">
 					<div class="col-sm-3">Phylogenetic Analysis</div>
 					<div class="col-sm-9">
-						<textarea asp-for="PhylogeneticAnalysis" rows="5" class="form-control w-500" style="height:166px"></textarea>
+						<textarea asp-for="PhylogeneticAnalysis" rows="5" class="form-control w-500 height-166"></textarea>
 						<span asp-validation-for="PhylogeneticAnalysis" class="text-danger"></span>
 					</div>
 				</div>
@@ -117,7 +117,7 @@
 				<div class="row mb-3">
 					<div class="col-sm-3">Comment</div>
 					<div class="col-sm-9">
-						<textarea asp-for="Comment" rows="5" class="form-control w-500" style="height:166px"></textarea>
+						<textarea asp-for="Comment" rows="5" class="form-control w-500 height-166"></textarea>
 						<span asp-validation-for="Comment" class="text-danger"></span>
 					</div>
 				</div>
@@ -139,25 +139,28 @@
 				</div>
 
 				<div class="row mb-3">
-					<div class="col-sm-3">Original Sample Available</div>
+					<div class="col-sm-3">
+						@(Model.IsChkDetection ? "Original RNA Sample Available" : "Original Sample Available")
+					</div>
 					<div class="col-sm-9">
 						<input asp-for="OriginalSampleAvailable" type="checkbox" />
 						<span asp-validation-for="OriginalSampleAvailable" class="text-danger"></span>
 					</div>
 				</div>
-
-				<div class="row mb-3">
-					<div class="col-sm-3">First Viable Passage Number</div>
-					<div class="col-sm-9">
-						<input asp-for="FirstViablePassageNumber" type="text" class="form-control w-170" />
-						<span asp-validation-for="FirstViablePassageNumber" class="text-danger"></span>
+				@if (!Model.IsChkDetection)
+				{
+					<div class="row mb-3">
+						<div class="col-sm-3">First Viable Passage Number</div>
+						<div class="col-sm-9">
+							<input asp-for="FirstViablePassageNumber" type="text" class="form-control w-210" />
+							<span asp-validation-for="FirstViablePassageNumber" class="text-danger"></span>
+						</div>
 					</div>
-				</div>
-
+				}
 				<div class="row mb-3">
 					<div class="col-sm-3">No. Of Aliquots</div>
 					<div class="col-sm-9">
-						<input asp-for="NoOfAliquots" type="text" class="form-control w-170" />
+						<input asp-for="NoOfAliquots" type="text" class="form-control w-210" />
 						<span asp-validation-for="NoOfAliquots" class="text-danger"></span>					
 					</div>
 				</div>
@@ -165,7 +168,7 @@
 				<div class="row mb-3">
 					<div class="col-sm-3">Freezer</div>
 					<div class="col-sm-9">
-						<select id="ddlFreezer" asp-for="Freezer" asp-items="@Model.FreezerList" class="form-select small-select-dropdown w-210">
+						<select id="ddlFreezer" asp-for="Freezer" asp-items="@Model.FreezerList" class="form-select small-select-dropdown width-218">
 							<option value=""></option>
 						</select>
 						<span asp-validation-for="Freezer" class="text-danger"></span>
@@ -175,7 +178,7 @@
 				<div class="row mb-3">
 					<div class="col-sm-3">Tray</div>
 					<div class="col-sm-9">
-						<select id="ddlTray" asp-for="Tray" asp-items="@Model.TrayList" class="form-select small-select-dropdown w-210">
+						<select id="ddlTray" asp-for="Tray" asp-items="@Model.TrayList" class="form-select small-select-dropdown" style=" width: auto;">
 							<option value=""></option>
 						</select>
 						<span asp-validation-for="Tray" class="text-danger"></span>
@@ -185,41 +188,43 @@
 				<div class="row mb-3">
 					<div class="col-sm-3">Well</div>
 					<div class="col-sm-9">
-						<input asp-for="Well" type="text" class="form-control w-170" />
+						<input asp-for="Well" type="text" class="form-control w-210" />
 						<span asp-validation-for="Well" class="text-danger"></span>
 					</div>
 				</div>
-
-				<div class="row mb-3">
-					<div class="col-sm-3">Current Nomenclature</div>
-					<div class="col-sm-9">
-						<span id="spnCurrentNomenclature">@Model.Nomenclature</span>
-						<input type="hidden" asp-for="Nomenclature" />
+				@if (!Model.IsChkDetection)
+				{
+					<div class="row mb-3">
+						<div class="col-sm-3">Current Nomenclature</div>
+						<div class="col-sm-9">
+							<span id="spnCurrentNomenclature">@Model.Nomenclature</span>
+							<input type="hidden" asp-for="Nomenclature" />
+						</div>
 					</div>
-				</div>
 
-				<div class="row mb-3">
-					<div class="col-sm-3">Amended Nomenclature</div>
-					<div class="col-sm-9">
-						<input asp-for="IsolateNomenclature" type="text" class="form-control w-600" />
-						<span asp-validation-for="IsolateNomenclature" class="text-danger"></span>
+					<div class="row mb-3">
+						<div class="col-sm-3">Amended Nomenclature</div>
+						<div class="col-sm-9">
+							<input asp-for="IsolateNomenclature" type="text" class="form-control w-600" />
+							<span asp-validation-for="IsolateNomenclature" class="text-danger"></span>
+						</div>
 					</div>
-				</div>
-
+				}
 			</div>
 
 			<br>
-
-			<div id="h3ViabilityStatus" class="help-section">Record new viability status</div>
-			<br>
-			<div class="w-100">
-				<div id="Viability" class="container-fluid">
+			@if (!Model.IsChkDetection)
+			{
+				<div id="h3ViabilityStatus" class="help-section">Record new viability status</div>
+				<br>
+				<div class="w-100">
+					<div id="Viability" class="container-fluid">
 					<div class="row mb-3">
 						<div class="col-sm-3">
 							Viability
 						</div>
 						<div class="col-sm-9">
-							<select asp-for="Viable" asp-items="@Model.ViabilityList" class="form-select w-200">
+							<select asp-for="Viable" asp-items="@Model.ViabilityList" class="form-select width-218">
 								<option value=""></option>
 							</select>
 							<span asp-validation-for="Viable" class="text-danger"></span>
@@ -231,10 +236,10 @@
 							Date Checked
 						</div>
 						<div class="col-sm-9 d-flex align-items-center">
-							<input asp-for="DateChecked" type="date" 
-								   class="form-control d-inline-block w-200"
+							<input asp-for="DateChecked" type="date" style=" width: 214px;"
+								   class="form-control d-inline-block "
 								   title="Date format is dd/mm/yyyy" />
-							<img id="imgCalender" src="~/Images/calendar.png" class="ms-2" alt="" />
+							
 							<span asp-validation-for="DateChecked" class="text-danger ms-2"></span>
 						</div>
 					</div>
@@ -244,7 +249,7 @@
 							Checked By
 						</div>
 						<div class="col-sm-9">
-							<select asp-for="CheckedBy" asp-items="@Model.StaffList" class="form-select w-200">
+							<select asp-for="CheckedBy" asp-items="@Model.StaffList" class="form-select width-218">
 								<option value=""></option>
 							</select>
 							<span asp-validation-for="CheckedBy" class="text-danger"></span>
@@ -253,10 +258,15 @@
 				</div>
 
 			</div>
+			}
 			<p style="text-align: right;">
-				<button id="lnkSave" class="btn-as-link" name="ActionType" value="SaveAndContinue">Save Isolate and Continue to Characteristics</button>
+				<button id="lnkSave" class="btn-as-link" name="ActionType" value="SaveAndContinue">
+					@(Model.IsChkDetection ? "Save Detection and Continue to Characteristics" : "Save Isolate and Continue to Characteristics")
+					</button>
 				<img src="~\Images\spacer.gif" width="10" height="5" alt="">
-				<button id="lnkSaveImmediate" class="btn-as-link" name="ActionType" value="SaveOnly">Save Isolate and return to summary screen</button>
+				<button id="lnkSaveImmediate" class="btn-as-link" name="ActionType" value="SaveOnly">
+					@(Model.IsChkDetection ? "Save Detection and return to summary screen" : "Save Isolate and return to summary screen")
+				</button>
 				<img src="~\Images\spacer.gif" width="10" height="5" alt="">
 				<a id="lnkCancel" asp-action="Index" asp-controller="SubmissionSamples" asp-route-AVNumber="@Model.AVNumber">Cancel</a>
 			</p>

@@ -1,6 +1,6 @@
 ﻿namespace Apha.VIR.Application.DTOs;
 
-public class IsolateDTO
+public class IsolateDto
 {
     public Guid IsolateId { get; set; }
     public Guid IsolateSampleId { get; set; }
@@ -32,5 +32,6 @@ public class IsolateDTO
     public DateTime? DateCreated { get; set; }
     public string? CreatedBy { get; set; }
     public string? SmsreferenceNumber { get; set; }
+    public string? IsoSMSReferenceNumber { get; set; }
     public string? PhylogeneticFileName { get; set; }
 }

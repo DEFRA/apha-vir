@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class SampleControllerTests
     {
+        private readonly object _lock;
         private readonly SampleController _controller;
         private readonly ISampleService _sampleService;
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public SampleControllerTests()
+        public SampleControllerTests(AppRolesFixture fixture)
         {
             _sampleService = Substitute.For<ISampleService>();
             _lookupService = Substitute.For<ILookupService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new SampleController(_sampleService, _lookupService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -35,11 +39,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            var sampleDto = new SampleDTO { SampleId = sampleId };
+            var SampleDto = new SampleDto { SampleId = sampleId };
             var viewModel = new SampleViewModel { SampleId = sampleId };
 
-            _sampleService.GetSampleAsync(avNumber, sampleId).Returns(sampleDto);
-            _mapper.Map<SampleViewModel>(sampleDto).Returns(viewModel);
+            _sampleService.GetSampleAsync(avNumber, sampleId).Returns(SampleDto);
+            _mapper.Map<SampleViewModel>(SampleDto).Returns(viewModel);
 
             // Act
             var result = await _controller.Create(avNumber) as ViewResult;
@@ -90,7 +94,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            var sampleDto = new SampleDTO { SampleId = sampleId };
+            var SampleDto = new SampleDto { SampleId = sampleId };
             var viewModel = new SampleViewModel
             {
                 SampleId = sampleId,
@@ -100,24 +104,24 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
                 HostPurposeList = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>() // Initialize to avoid null
             };
 
-            _sampleService.GetSampleAsync(avNumber, sampleId).Returns(sampleDto);
-            _mapper.Map<SampleViewModel>(sampleDto).Returns(viewModel);
+            _sampleService.GetSampleAsync(avNumber, sampleId).Returns(SampleDto);
+            _mapper.Map<SampleViewModel>(SampleDto).Returns(viewModel);
 
-            _lookupService.GetAllSampleTypesAsync().Returns(Task.FromResult<IEnumerable<LookupItemDTO>>(new List<LookupItemDTO>
+            _lookupService.GetAllSampleTypesAsync().Returns(Task.FromResult<IEnumerable<LookupItemDto>>(new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Type1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Type1" }
             }));
-            _lookupService.GetAllHostSpeciesAsync().Returns(Task.FromResult<IEnumerable<LookupItemDTO>>(new List<LookupItemDTO>
+            _lookupService.GetAllHostSpeciesAsync().Returns(Task.FromResult<IEnumerable<LookupItemDto>>(new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Species1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Species1" }
             }));
-            _lookupService.GetAllHostPurposesAsync().Returns(Task.FromResult<IEnumerable<LookupItemDTO>>(new List<LookupItemDTO>
+            _lookupService.GetAllHostPurposesAsync().Returns(Task.FromResult<IEnumerable<LookupItemDto>>(new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Purpose1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Purpose1" }
             }));
-            _lookupService.GetAllHostBreedsAsync().Returns(Task.FromResult<IEnumerable<LookupItemDTO>>(new List<LookupItemDTO>
+            _lookupService.GetAllHostBreedsAsync().Returns(Task.FromResult<IEnumerable<LookupItemDto>>(new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed1" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed1" }
             }));
 
             // Act
@@ -143,13 +147,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         {
             // Arrange
             var model = new SampleViewModel { AVNumber = "TEST123" };
-            _mapper.Map<SampleDTO>(model).Returns(new SampleDTO());
-
+            _mapper.Map<SampleDto>(model).Returns(new SampleDto());
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);
 
             // Assert
-            await _sampleService.Received(1).AddSample(Arg.Any<SampleDTO>(), "TEST123", "Test");
+            await _sampleService.Received(1).AddSample(Arg.Any<SampleDto>(), "TEST123", "Test");
             Assert.IsType<RedirectToActionResult>(result);
             var redirectResult = (RedirectToActionResult)result;
 
@@ -166,7 +170,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             // Arrange
             var model = new SampleViewModel();
             _controller.ModelState.AddModelError("Error", "Test error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(model);
 
@@ -190,14 +194,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         {
             // Arrange
             var model = new SampleViewModel { AVNumber = "TEST123" };
-            var sampleDto = new SampleDTO();
-            _mapper.Map<SampleDTO>(model).Returns(sampleDto);
-
+            var SampleDto = new SampleDto();
+            _mapper.Map<SampleDto>(model).Returns(SampleDto);
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model);
 
             // Assert
-            await _sampleService.Received(1).UpdateSample(sampleDto, "Test");
+            await _sampleService.Received(1).UpdateSample(SampleDto, "Test");
             Assert.IsType<RedirectToActionResult>(result);
             var redirectResult = (RedirectToActionResult)result;
 
@@ -214,7 +218,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             // Arrange
             var model = new SampleViewModel();
             _controller.ModelState.AddModelError("Error", "Model error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Edit(model);
 
@@ -231,14 +235,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         {
             // Arrange
             var model = new SampleViewModel();
-            var sampleDto = new SampleDTO();
-            _mapper.Map<SampleDTO>(model).Returns(sampleDto);
-
+            var SampleDto = new SampleDto();
+            _mapper.Map<SampleDto>(model).Returns(SampleDto);
+            SetupMockUserAndRoles();
             // Act
             await _controller.Edit(model);
 
             // Assert
-            await _sampleService.Received(1).UpdateSample(sampleDto, "Test");
+            await _sampleService.Received(1).UpdateSample(SampleDto, "Test");
         }
 
         [Fact]
@@ -246,12 +250,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         {
             // Arrange
             var model = new SampleViewModel();
-            var sampleDto = new SampleDTO();
-            _mapper.Map<SampleDTO>(model).Returns(sampleDto);
+            var SampleDto = new SampleDto();
+            _mapper.Map<SampleDto>(model).Returns(SampleDto);
             _sampleService
-                .UpdateSample(sampleDto, "Test")
+                .UpdateSample(SampleDto, "Test")
                 .Returns(Task.FromException(new Exception("Test exception")));
-
+            SetupMockUserAndRoles();
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.Edit(model));
         }
@@ -261,13 +265,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         {
             // Arrange
             var speciesId = Guid.NewGuid();
-            var breeds = new List<LookupItemDTO>
+            var breeds = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed1" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Breed2" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed1" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed2" }
             };
             _lookupService.GetAllHostBreedsByParentAsync(speciesId).Returns(breeds);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetBreedsBySpecies(speciesId);
 
@@ -283,8 +287,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         public async Task Test_GetBreedsBySpecies_NullSpeciesId_ReturnsEmptyList()
         {
             // Arrange
-            _lookupService.GetAllHostBreedsByParentAsync(null).Returns(new List<LookupItemDTO>());
-
+            _lookupService.GetAllHostBreedsByParentAsync(null).Returns(new List<LookupItemDto>());
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetBreedsBySpecies(null);
 
@@ -299,7 +303,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "Some error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetBreedsBySpecies(Guid.NewGuid());
 
@@ -311,12 +315,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         public async Task Test_GetLatinBreadList_ReturnsPartialView_WhenModelStateIsValid()
         {
             // Arrange
-            var latinBreedDtos = new List<LookupItemDTO>
+            var latinBreedDtos = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed", ParentName = "Test Species", AlternateName = "Test Alt", Active = true, Sms = true, Smscode = "123" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Breed", ParentName = "Test Species", AlternateName = "Test Alt", Active = true, Sms = true, Smscode = "123" }
             };
             _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetLatinBreadList();
 
@@ -332,7 +336,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         {
             // Arrange
             _controller.ModelState.AddModelError("Error", "Test error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetLatinBreadList();
 
@@ -344,13 +348,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
         public async Task Test_GetLatinBreadList_ReturnsCorrectData()
         {
             // Arrange
-            var latinBreedDtos = new List<LookupItemDTO>
+            var latinBreedDtos = new List<LookupItemDto>
             {
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 1", ParentName = "Test Species 1", AlternateName = "Test Alt 1", Active = true, Sms = true, Smscode = "123" },
-                new LookupItemDTO { Id = Guid.NewGuid(), Name = "Test Breed 2", ParentName = "Test Species 2", AlternateName = "Test Alt 2", Active = false, Sms = false, Smscode = "456" }
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Breed 1", ParentName = "Test Species 1", AlternateName = "Test Alt 1", Active = true, Sms = true, Smscode = "123" },
+                new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Breed 2", ParentName = "Test Species 2", AlternateName = "Test Alt 2", Active = false, Sms = false, Smscode = "456" }
             };
             _lookupService.GetAllHostBreedsAltNameAsync().Returns(latinBreedDtos);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetLatinBreadList();
 
@@ -362,6 +366,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             Assert.Equal("Test Breed 2", model[1].Name);
             Assert.True(model[0].Active);
             Assert.False(model[1].Active);
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

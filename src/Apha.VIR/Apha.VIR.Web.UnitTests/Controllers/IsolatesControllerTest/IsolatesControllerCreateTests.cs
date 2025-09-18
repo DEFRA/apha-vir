@@ -1,16 +1,20 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Security.Claims;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
-using Apha.VIR.Application.Services;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolatesControllerCreateTests
     {
+        private readonly object _lock;
         private readonly IIsolatesService _mockIsolatesService;
         private readonly ILookupService _mockLookupService;
         private readonly IIsolateViabilityService _mockIsolateViabilityService;
@@ -18,8 +22,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         private readonly ISampleService _mockSampleService;
         private readonly IMapper _mockMapper;
         private readonly IsolatesController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolatesControllerCreateTests()
+        public IsolatesControllerCreateTests(AppRolesFixture fixture)
         {
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockLookupService = Substitute.For<ILookupService>();
@@ -33,6 +38,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 _mockSubmissionService,
                 _mockSampleService,
                 _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -41,8 +49,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(new SubmissionDTO { DateSubmissionReceived = DateTime.Now });
-            _mockSampleService.GetSamplesBySubmissionIdAsync(Arg.Any<Guid>()).Returns(new List<SampleDTO> { new SampleDTO { SampleId = sampleId, SampleTypeName = "Normal" } });
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(new SubmissionDto { DateSubmissionReceived = DateTime.Now });
+            _mockSampleService.GetSamplesBySubmissionIdAsync(Arg.Any<Guid>()).Returns(new List<SampleDto> { new SampleDto { SampleId = sampleId, SampleTypeName = "Normal" } });
 
             // Act
             var result = await _controller.Create(avNumber, sampleId) as ViewResult;
@@ -79,7 +87,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             // Arrange
             var avNumber = "AV123";
             var sampleId = Guid.NewGuid();
-            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns((SubmissionDTO)null!);
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns((SubmissionDto)null!);
 
             // Act
             var result = await _controller.Create(avNumber, sampleId) as ViewResult;
@@ -109,7 +117,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            var isolateDto = new IsolateDTO
+            var IsolateDto = new IsolateDto
             {
                 Family = Guid.NewGuid(),
                 Type = Guid.NewGuid(),
@@ -119,14 +127,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns(isolateDto.IsolateId);
-
+            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns(IsolateDto.IsolateId);
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(isolateModel) as RedirectToActionResult;
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Edit", result.ActionName);
             Assert.Equal("IsolateCharacteristics", result.ControllerName);
             Assert.Equal(isolateModel.AVNumber, result!.RouteValues!["AVNumber"]);
             Assert.Equal(isolateModel.IsolateId, result!.RouteValues["IsolateId"]);
@@ -138,6 +146,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             // Arrange
             var isolateModel = new IsolateAddEditViewModel();
             _controller.ModelState.AddModelError("Family", "Family is required");
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.Create(isolateModel) as ViewResult;
@@ -168,13 +177,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns((Guid)isolateModel.IsolateId);
-
+            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns((Guid)isolateModel.IsolateId);
+            SetupMockUserAndRoles();
             // Act
             await _controller.Create(isolateModel);
 
             // Assert
-            await _mockIsolateViabilityService.Received(1).AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDTO>(), Arg.Any<string>());
+            await _mockIsolateViabilityService.Received(1).AddIsolateViabilityAsync(Arg.Any<IsolateViabilityInfoDto>(), Arg.Any<string>());
         }
 
         [Fact]
@@ -193,8 +202,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 IsolateId = Guid.NewGuid()
             };
 
-            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDTO>()).Returns((Guid)isolateModel.IsolateId);
-
+            _mockIsolatesService.AddIsolateDetailsAsync(Arg.Any<IsolateDto>()).Returns((Guid)isolateModel.IsolateId);
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(isolateModel) as RedirectToActionResult;
 
@@ -217,7 +226,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 Freezer = Guid.NewGuid(),
                 Tray = Guid.NewGuid()
             };
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(isolateModel) as ViewResult;
 
@@ -232,7 +241,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         {
             // Arrange
             var isolateModel = new IsolateAddEditViewModel();
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Create(isolateModel) as ViewResult;
 
@@ -243,6 +252,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage.Contains("Virus Type")));
             Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage.Contains("Freezer")));
             Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage.Contains("Freezer Tray")));
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

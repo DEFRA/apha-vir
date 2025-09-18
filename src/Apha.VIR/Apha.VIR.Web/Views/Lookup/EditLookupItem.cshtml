@@ -124,16 +124,16 @@
 			}
 			<tr class="spacer-row"><td colspan="3"></td></tr>
 			<tr>
-				<td colspan="3" style="text-align: right;">
+				<td colspan="3" class="text-right">
 					<button type="submit" asp-action="Edit" class="btn-as-link me-3">Update</button>
 					<img src="Images\spacer.gif" width="5" height="5" alt="" />
 					<a asp-action="LookupList" asp-route-lookupid="@Model.LookupId" class="btn btn-secondary">Cancel</a>
-					<img src="Images\spacer.gif" width="10" height="5" alt="" />
+					<img src="Images\spacer.gif" width="20" height="5" alt="" />
 					@if (Model.LookupItem.Id != Guid.Empty)
 					{
 						<button type="submit"
 								asp-action="Delete"
-								class="btn-as-link me-3"
+								class="btn-as-link"
 								data-toggle="modal"
 								disabled="@(Model.LookupItem.Sms ? "disabled" : null)"
 								onclick="return confirm('Please confirm that you want to delete this viability record');">

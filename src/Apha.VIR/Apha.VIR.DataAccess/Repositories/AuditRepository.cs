@@ -7,22 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class AuditRepository : IAuditRepository
+public class AuditRepository : RepositoryBase<object>, IAuditRepository
 {
-    private readonly VIRDbContext _context;
-
-    public AuditRepository(VIRDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    public AuditRepository(VIRDbContext context) : base(context) { }
 
     public async Task<IEnumerable<AuditSubmissionLog>> GetSubmissionLogsAsync(string avNumber,
         DateTime? dateFrom, DateTime? dateTo, string userid)
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
-        return await _context.Set<AuditSubmissionLog>()
-           .FromSqlRaw("EXEC spLogSubmissionGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+        return await GetQueryableResultFor<AuditSubmissionLog>("EXEC spLogSubmissionGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
            parameters).ToListAsync();
     }
 
@@ -31,8 +25,7 @@ public class AuditRepository : IAuditRepository
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
-        return await _context.Set<AuditCharacteristicLog>()
-            .FromSqlRaw("EXEC spLogCharacteristicsGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+        return await GetQueryableResultFor<AuditCharacteristicLog>("EXEC spLogCharacteristicsGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
             parameters).ToListAsync();
     }
 
@@ -41,8 +34,7 @@ public class AuditRepository : IAuditRepository
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
-        return await _context.Set<AuditDispatchLog>()
-           .FromSqlRaw("EXEC spLogDispatchGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+        return await GetQueryableResultFor<AuditDispatchLog>("EXEC spLogDispatchGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
            parameters).ToListAsync();
     }
 
@@ -51,8 +43,7 @@ public class AuditRepository : IAuditRepository
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
-        return await _context.Set<AuditViabilityLog>()
-           .FromSqlRaw("EXEC spLogisolateViabilityGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+        return await GetQueryableResultFor<AuditViabilityLog>("EXEC spLogisolateViabilityGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
            parameters).ToListAsync();
     }
 
@@ -61,8 +52,7 @@ public class AuditRepository : IAuditRepository
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
-        return await _context.Set<AuditIsolateLog>()
-           .FromSqlRaw("EXEC spLogIsolateGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+        return await GetQueryableResultFor<AuditIsolateLog>("EXEC spLogIsolateGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
            parameters).ToListAsync();
     }
 
@@ -71,8 +61,7 @@ public class AuditRepository : IAuditRepository
     {
         SqlParameter[] parameters = GetSqlParameters(avNumber, dateFrom, dateTo, userid);
 
-        return await _context.Set<AuditSampleLog>()
-           .FromSqlRaw("EXEC spLogSampleGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
+        return await GetQueryableResultFor<AuditSampleLog>("EXEC spLogSampleGetBySearch @AVNumber,@DateFrom,@DateTo,@UserId",
            parameters).ToListAsync();
     }
 
@@ -83,8 +72,7 @@ public class AuditRepository : IAuditRepository
              new SqlParameter("@LogID", SqlDbType.UniqueIdentifier, 20) { Value = logid}
         };
 
-        return await _context.Set<AuditIsolateLogDetail>()
-          .FromSqlRaw("EXEC spLogIsolateGetbyID @LogID", parameters).ToListAsync();
+        return await GetQueryableResultFor<AuditIsolateLogDetail>("EXEC spLogIsolateGetbyID @LogID", parameters).ToListAsync();
     }
     private static SqlParameter[] GetSqlParameters(string avNumber,
         DateTime? dateFrom, DateTime? dateTo, string userid)
