@@ -7,13 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class ReportRepository : IReportRepository
+public class ReportRepository : RepositoryBase<IsolateDispatchInfo>, IReportRepository
 {
-    private readonly VIRDbContext _context;
-
-    public ReportRepository(VIRDbContext context)
+    public ReportRepository(VIRDbContext context) : base(context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
     public async Task<IEnumerable<IsolateDispatchInfo>> GetDispatchesReportAsync(DateTime? dateFrom, DateTime? dateTo)
     {

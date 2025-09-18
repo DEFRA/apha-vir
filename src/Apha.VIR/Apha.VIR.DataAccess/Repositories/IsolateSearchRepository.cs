@@ -8,14 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories
 {
-    public class IsolateSearchRepository : IIsolateSearchRepository
+    public class IsolateSearchRepository : RepositoryBase<IsolateSearchResult>, IIsolateSearchRepository
     {
-        private readonly VIRDbContext _context;
-
-        public IsolateSearchRepository(VIRDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+        public IsolateSearchRepository(VIRDbContext context): base(context) { }
 
         public async Task<PagedData<IsolateSearchResult>> PerformSearchAsync(PaginationParameters<SearchCriteria> criteria)
         {
@@ -29,7 +24,7 @@ namespace Apha.VIR.DataAccess.Repositories
 
         private IQueryable<IsolateSearchResult> FetchIsolateSearchRecordsAsync(PaginationParameters<SearchCriteria> criteria)
         {
-            var query = _context.VwIsolates.AsQueryable();
+            var query = GetDbSetFor<IsolateSearchResult>();
 
             query = (IQueryable<IsolateSearchResult>)ApplyBasicFilters(query, criteria.Filter);
 
