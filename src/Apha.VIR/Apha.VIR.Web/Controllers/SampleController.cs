@@ -59,7 +59,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var sample = _mapper.Map<SampleDto>(model);
-            await _sampleService.AddSample(sample, model.AVNumber!, "Test");
+            await _sampleService.AddSample(sample, model.AVNumber!, AuthorisationUtil.GetUserId());
             return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber });
         }
 
@@ -102,7 +102,7 @@ namespace Apha.VIR.Web.Controllers
             }
 
             var sample = _mapper.Map<SampleDto>(model);
-            await _sampleService.UpdateSample(sample, "Test");
+            await _sampleService.UpdateSample(sample, AuthorisationUtil.GetUserId());
             return RedirectToAction(sampleIndex, "SubmissionSamples", new { AVNumber = model.AVNumber });
         }
 
