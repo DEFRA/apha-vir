@@ -69,7 +69,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             Assert.True(success);
             Assert.Equal("Isolate deleted successfully.", message);
            
-            await _mockIsolatesService.Received(1).DeleteIsolateAsync(isolateId, "testUser", lastModified);
+            await _mockIsolatesService.Received(1).DeleteIsolateAsync(isolateId, "TestUser", lastModified);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             Assert.True(success);
             Assert.Equal("Isolate deleted successfully.", message);
            
-            await _mockIsolatesService.Received(1).DeleteIsolateAsync(isolateId, "testUser", lastModified);
+            await _mockIsolatesService.Received(1).DeleteIsolateAsync(isolateId, "TestUser", lastModified);
         }
 
         private void SetupMockUserAndRoles()

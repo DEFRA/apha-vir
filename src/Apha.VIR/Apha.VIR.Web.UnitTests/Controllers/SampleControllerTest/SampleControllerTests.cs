@@ -153,7 +153,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var result = await _controller.Create(model);
 
             // Assert
-            await _sampleService.Received(1).AddSample(Arg.Any<SampleDto>(), "TEST123", "Test");
+            await _sampleService.Received(1).AddSample(Arg.Any<SampleDto>(), "TEST123", "TestUser");
             Assert.IsType<RedirectToActionResult>(result);
             var redirectResult = (RedirectToActionResult)result;
 
@@ -201,7 +201,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var result = await _controller.Edit(model);
 
             // Assert
-            await _sampleService.Received(1).UpdateSample(SampleDto, "Test");
+            await _sampleService.Received(1).UpdateSample(SampleDto, "TestUser");
             Assert.IsType<RedirectToActionResult>(result);
             var redirectResult = (RedirectToActionResult)result;
 
@@ -242,7 +242,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             await _controller.Edit(model);
 
             // Assert
-            await _sampleService.Received(1).UpdateSample(SampleDto, "Test");
+            await _sampleService.Received(1).UpdateSample(SampleDto, "TestUser");
         }
 
         [Fact]
@@ -253,7 +253,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             var SampleDto = new SampleDto();
             _mapper.Map<SampleDto>(model).Returns(SampleDto);
             _sampleService
-                .UpdateSample(SampleDto, "Test")
+                .UpdateSample(SampleDto, "TestUser")
                 .Returns(Task.FromException(new Exception("Test exception")));
             SetupMockUserAndRoles();
             // Act & Assert
@@ -373,7 +373,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             lock (_lock)
             {
                 var claims = new List<Claim>
-                {
+                {    new Claim(ClaimTypes.Name, "TestUser"),
                     new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
