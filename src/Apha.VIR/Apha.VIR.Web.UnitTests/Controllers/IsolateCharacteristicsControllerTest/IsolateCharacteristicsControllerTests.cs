@@ -40,7 +40,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
             // Act
-            var result = await _controller.Edit("AVNumber", Guid.NewGuid());
+            var result = await _controller.Edit("AVNumber", Guid.NewGuid(), Guid.NewGuid());
             // Assert
             Assert.IsType<BadRequestObjectResult>(result); // Replaced IsInstanceOf with IsType
         }
@@ -50,11 +50,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         {
             // Arrange
             var isolate = Guid.NewGuid();
+            var sampleId = Guid.NewGuid();
             _isolatesService.GetIsolateCharacteristicInfoAsync(isolate).Returns(new List<IsolateCharacteristicDto>());
             _mapper.Map<List<IsolateCharacteristicViewModel>>(Arg.Any<List<IsolateCharacteristicDto>>()).Returns(new List<IsolateCharacteristicViewModel>());
 
             // Act
-            var result = await _controller.Edit("AVNumber", isolate) as ViewResult;
+            var result = await _controller.Edit("AVNumber", isolate, sampleId) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -67,6 +68,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         {
             // Arrange
             var isolate = Guid.NewGuid();
+            var sampleId = Guid.NewGuid();
             var dtoList = new List<IsolateCharacteristicDto>
             {
                 new IsolateCharacteristicDto { CharacteristicType = "Text" },
@@ -82,7 +84,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             _mapper.Map<List<IsolateCharacteristicViewModel>>(Arg.Any<List<IsolateCharacteristicDto>>()).Returns(modelList);
 
             // Act
-            var result = await _controller.Edit("AVNumber", isolate) as ViewResult;
+            var result = await _controller.Edit("AVNumber", isolate, sampleId) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -95,11 +97,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
         {
             // Arrange
             var isolate = Guid.NewGuid();
+            var sampleId = Guid.NewGuid();
             _isolatesService.GetIsolateCharacteristicInfoAsync(isolate)
                 .Returns(callInfo => Task.FromException<IEnumerable<IsolateCharacteristicDto>>(new Exception("Test exception")));
 
             // Act & Assert
-            Assert.ThrowsAsync<Exception>(() => _controller.Edit("AVNumber", isolate));
+            Assert.ThrowsAsync<Exception>(() => _controller.Edit("AVNumber", isolate, sampleId));
         }
 
         [Fact]
@@ -114,7 +117,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             _mapper.Map<IsolateCharacteristicDto>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDto());
             SetupMockUserAndRoles();
             // Act
-            var result = await _controller.Edit(characteristics);
+            var result = await _controller.Edit(characteristics, Guid.NewGuid());
 
             // Assert
             Assert.IsType<RedirectToActionResult>(result);
@@ -132,7 +135,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             var characteristics = new List<IsolateCharacteristicViewModel>();
             SetupMockUserAndRoles();
             // Act
-            var result = await _controller.Edit(characteristics);
+            var result = await _controller.Edit(characteristics, Guid.NewGuid());
 
             // Assert
             Assert.IsType<ViewResult>(result);
@@ -163,7 +166,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             _virusCharacteristicService.GetAllVirusCharacteristicsAsync().Returns(virusCharacteristics);
             SetupMockUserAndRoles();
             // Act
-            var result = await _controller.Edit(characteristics);
+            var result = await _controller.Edit(characteristics, Guid.NewGuid());
 
             // Assert
             Assert.IsType<ViewResult>(result);
@@ -187,7 +190,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             _mapper.Map<IsolateCharacteristicDto>(Arg.Any<IsolateCharacteristicViewModel>()).Returns(new IsolateCharacteristicDto());
             SetupMockUserAndRoles();
             // Act
-            var result = await _controller.Edit(characteristics);
+            var result = await _controller.Edit(characteristics, Guid.NewGuid());
 
             // Assert
             await _isolatesService.Received(1).UpdateIsolateCharacteristicsAsync(Arg.Any<IsolateCharacteristicDto>(), Arg.Any<string>());
@@ -211,7 +214,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateCharacteristicsControllerTes
             _controller.ModelState.AddModelError("Error", "Invalid input");
             SetupMockUserAndRoles();
             // Act
-            var result = await _controller.Edit(characteristics);
+            var result = await _controller.Edit(characteristics, Guid.NewGuid());
 
             // Assert
             Assert.IsType<ViewResult>(result);

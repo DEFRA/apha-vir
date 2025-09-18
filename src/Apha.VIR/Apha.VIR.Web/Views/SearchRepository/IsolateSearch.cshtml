@@ -12,7 +12,7 @@
 					<td>
 						<div class="d-flex justify-content-between">
 							<span asp-for="AVNumber" class="label-style">AV Number</span>
-							<input id="txtAVNumber" asp-for="AVNumber" class="textInput" />
+							<input id="txtAVNumber" asp-for="AVNumber" class="textInput" title="AV000000-00, PD0000-00, SI000000-00 or BN000000-00" />
 						</div>
 					</td>
 					<td>
@@ -180,8 +180,15 @@
 			@* <a id="searchRepoClearSearch" class="sp-button" href="@Url.Action(null, null)">Clear Search</a> *@
 			<button id="searchRepoClearSearch" type="button" class="btn-as-link" onclick="ClearSearchFilter()">Clear Search</button>
 		</div>
-		<div>
-			<a id="searchRepolinkExport" href="@Url.Action("ExportToExcel", "SearchRepository")">Export to Excel</a>
+		<div>			
+			@if (Model.IsFilterApplied && Model.IsolateSearchGird!.IsolateSearchResults!.Any())
+			{
+				<a id="searchRepolinkExport" href="@Url.Action("ExportToExcel", "SearchRepository")">Export to Excel</a>
+			}
+			else
+			{
+				<a id="searchRepolinkExport">Export to Excel</a>
+			}
 			&nbsp;
 		</div>
 		<div id="pnlValidation" asp-validation-summary="All" class="spvalidation">
@@ -191,6 +198,12 @@
 </form>
 <div id="gridIsolateResult">
 	<partial name="_IsolateSearchResults" for="@Model.IsolateSearchGird" />
+	@if (Model.IsFilterApplied && !Model.IsolateSearchGird!.IsolateSearchResults!.Any())
+	{
+		<div style="border: 1px solid gray; padding: 1px; display: inline-block;">
+			No Results to Display.
+		</div>
+	}
 </div>
 @section Scripts {
 	<script src="~/js/searchRepository.js"></script>

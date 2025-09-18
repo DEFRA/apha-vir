@@ -98,6 +98,18 @@
         });
     });
 
+    $('#ddlYearOfSubmissionRecieved').on('change', function () {       
+        var year = $(this).val();         
+        if (year) {
+            $('#ReceivedFromDate').val(year + '-01-01');
+            $('#ReceivedToDate').val(year + "-12-31");
+        }
+        else {           
+            $('#ReceivedFromDate').val('')
+            $('#ReceivedToDate').val('');
+        }
+    });
+
     function rebuildCharacteristicsDropdowns(virusTypeId) {        
         $.get('/SearchRepository/GetVirusCharacteristicsByVirusType', { virusTypeId: virusTypeId }, function (virusCharacteristics) {
             $('.characteristic-block').each(function (index, block) {                

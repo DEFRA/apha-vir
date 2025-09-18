@@ -57,6 +57,7 @@ namespace Apha.VIR.Web.Controllers
 
                 if (!ModelState.IsValid)
                 {
+                    ModelState.Remove(nameof(criteria.AVNumber));                    
                     searchModel = await LoadIsolateSearchFilterControlsData(criteria);
                     await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
                     searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
