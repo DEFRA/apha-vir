@@ -43,6 +43,17 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         }
 
         [Fact]
+        public void Index_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.Index();
+
+            // Assert
+            Assert.IsType<ViewResult>(result);
+        }
+
+
+        [Fact]
         public async Task Test_Relocation_ReturnsIsolateRelocationView_WhenPathContainsIsolate()
         {
             // Arrange
@@ -695,6 +706,117 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             Assert.Empty(modelState);
         }
 
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonDataButDeserializationReturnsNull_DoesNotSetSelectedFreezerOrTray()
+        {
+            // Arrange
+            var jsonData = "invalid json";
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Simulate deserialization returns null
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Error = (sender, args) => { args.ErrorContext.Handled = true; }
+            };
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonDataWithNullFreezerOrTray_DoesNotSetSelectedFreezerOrTray()
+        {
+            // Arrange
+            var cachedModel = new IsolateRelocateViewModel { Freezer = null, Tray = null };
+            var jsonData = JsonConvert.SerializeObject(cachedModel);
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Edit_WhenSessionExists_DoesNotSetSessionValue()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns("some value");
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+        }
+
+        [Fact]
+        public async Task Update_InvalidModelState_ReturnsEditViewWithModel()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            var model = new IsolateRelocateViewModel();
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.Update(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+            Assert.Equal(model, viewResult.Model);
+        }
+
+        [Fact]
+        public async Task RelocateTray_WhenServiceReturnsData_UpdatesEachIsolate()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedNewFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+
+            var data = new List<IsolateRelocateDto>
+    {
+        new IsolateRelocateDto { IsolateId = Guid.NewGuid(), Tray = Guid.NewGuid(), Well = "A1", LastModified = Array.Empty<byte>() }
+    };
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(data);
+
+            // Act
+            var result = await _controller.RelocateTray(model);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            await _isolateRelocateService.Received(2).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>());
+        }
         private void SetupMockUserAndRoles()
         {
             lock (_lock)
@@ -711,6 +833,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 AuthorisationUtil.AppRoles = appRoles;
             }
         }
+
     }
 
     public class TestSession : ISession

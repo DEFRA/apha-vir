@@ -61,5 +61,15 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
             Assert.IsType<AuditIsolateLogModel>(partial.Model);
         }
+
+        [Fact]
+        public async Task GetIsolateAuditLogs_EmptyCriteriaString_ReturnsEmptyModel()
+        {
+            await _cacheService.SetCacheValueAsync("SearchCriteria", "");
+            var result = await _controller.GetAuditLogs("isolate");
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
+            Assert.IsType<AuditIsolateLogModel>(partial.Model);
+        }
     }
 }

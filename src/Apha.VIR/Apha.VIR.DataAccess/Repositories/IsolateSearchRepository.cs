@@ -131,7 +131,8 @@ namespace Apha.VIR.DataAccess.Repositories
 
         private IQueryable ApplyCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
         {
-            query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+            var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
+            query = query.Where(i => characteristicQuery.Any(c =>
                          c.CharacteristicIsolateId == i.IsolateId && c.VirusCharacteristicId == characteristicItem.Characteristic));
 
             switch (characteristicItem.CharacteristicType)
@@ -157,24 +158,25 @@ namespace Apha.VIR.DataAccess.Repositories
 
         private IQueryable ApplyNumericCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
         {
+            var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
             switch (characteristicItem.Comparator)
             {
                 case "between":
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
-                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        query = query.Where(i => characteristicQuery.Any(c =>
                             float.Parse(c.CharacteristicValue!) >= float.Parse(characteristicItem.CharacteristicValue1)));
                     }
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue2))
                     {
-                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        query = query.Where(i => characteristicQuery.Any(c =>
                             float.Parse(c.CharacteristicValue!) <= float.Parse(characteristicItem.CharacteristicValue2)));
                     }
                     break;
                 default:
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
-                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        query = query.Where(i => characteristicQuery.Any(c =>
                             EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.Comparator}{characteristicItem.CharacteristicValue1}")));
                     }
                     break;
@@ -184,23 +186,24 @@ namespace Apha.VIR.DataAccess.Repositories
 
         private IQueryable ApplySingleListCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
         {
+            var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
             switch (characteristicItem.Comparator)
             {
                 case "begins with":
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
-                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        query = query.Where(i => characteristicQuery.Any(c =>
                             EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.CharacteristicValue1}%")));
                     }
                     break;
                 case "not equal to":
-                    query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                    query = query.Where(i => characteristicQuery.Any(c =>
                         c.CharacteristicValue != characteristicItem.CharacteristicValue1));
                     break;
                 default:
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
-                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        query = query.Where(i => characteristicQuery.Any(c =>
                             c.CharacteristicValue == characteristicItem.CharacteristicValue1));
                     }
                     break;
@@ -210,26 +213,28 @@ namespace Apha.VIR.DataAccess.Repositories
 
         private IQueryable ApplyYesNoCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
         {
-            query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+            var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
+            query = query.Where(i => characteristicQuery.Any(c =>
                         c.CharacteristicValue == characteristicItem.CharacteristicValue1));
             return query;
         }
 
         private IQueryable ApplyTextCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
         {
+            var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
             switch (characteristicItem.Comparator)
             {
                 case "contains":
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
-                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        query = query.Where(i => characteristicQuery.Any(c =>
                             EF.Functions.Like(c.CharacteristicValue, $"%{characteristicItem.CharacteristicValue1}%")));
                     }
                     break;
                 default:
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
-                        query = query.Where(i => _context.VwCharacteristicsForSearches.Any(c =>
+                        query = query.Where(i => characteristicQuery.Any(c =>
                             c.CharacteristicValue == characteristicItem.CharacteristicValue1));
                     }
                     break;

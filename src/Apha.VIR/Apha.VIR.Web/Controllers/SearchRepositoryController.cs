@@ -25,6 +25,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private const string keySearchCriteria = "SearchCriteria";
+        private const string UserNotAuthorizedMessage = "User not authorised to retrieve this list.";
 
         public SearchRepositoryController(ILookupService lookupService,
             IVirusCharacteristicService virusCharacteristicService,
@@ -115,7 +116,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list.");
+                throw new UnauthorizedAccessException(UserNotAuthorizedMessage);
             }
 
             if (!ModelState.IsValid)
@@ -129,7 +130,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list.");
+                throw new UnauthorizedAccessException(UserNotAuthorizedMessage);
             }
 
             if (!ModelState.IsValid)
@@ -143,7 +144,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list.");
+                throw new UnauthorizedAccessException(UserNotAuthorizedMessage);
             }
 
             if (!ModelState.IsValid)
@@ -157,7 +158,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                throw new UnauthorizedAccessException("User not authorised to retrieve this list.");
+                throw new UnauthorizedAccessException(UserNotAuthorizedMessage);
             }
 
             if (!ModelState.IsValid)
@@ -450,7 +451,7 @@ namespace Apha.VIR.Web.Controllers
                 var (comparators, listValues, yesnolist) = await _isolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId ?? Guid.Empty);
                 var ComparatorsDdl = comparators.Select(c => new SelectListItem { Value = c.ToString(), Text = c.ToString() }).ToList();
                 List<SelectListItem> listValuesDdl;
-                if (!yesnolist.Any())
+                if (yesnolist.Count == 0)
                 {
                     listValuesDdl = listValues.Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Name.ToString() }).ToList();
                 }
