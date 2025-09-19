@@ -62,5 +62,35 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
             Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
         }
+
+        [Fact]
+        public async Task GetCharacteristicsAuditLogs_EmptyCriteriaString_ReturnsEmptyModel()
+        {
+            await _cacheService.SetCacheValueAsync("SearchCriteria", "");
+            var result = await _controller.GetAuditLogs("characteristics");
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
+            Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
+        }
+
+        [Fact]
+        public async Task GetCharacteristicsAuditLogs_InvalidJsonCriteria_ReturnsEmptyModel()
+        {
+            await _cacheService.SetCacheValueAsync("SearchCriteria", "not a json");
+            var result = await _controller.GetAuditLogs("characteristics");
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
+            Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
+        }
+
+        [Fact]
+        public async Task GetCharacteristicsAuditLogs_DeserializesToNull_ReturnsEmptyModel()
+        {
+            await _cacheService.SetCacheValueAsync("SearchCriteria", "null");
+            var result = await _controller.GetAuditLogs("characteristics");
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
+            Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
+        }
     }
 }

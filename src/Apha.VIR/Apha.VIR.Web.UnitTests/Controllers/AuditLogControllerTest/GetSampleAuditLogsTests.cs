@@ -62,5 +62,52 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             Assert.Equal("_SampleAuditLogResults", partial.ViewName);
             Assert.IsType<AuditSampleLogModel>(partial.Model);
         }
+
+        [Fact]
+        public async Task GetSampleAuditLogs_EmptyCriteriaString_ReturnsEmptyModel()
+        {
+            // Arrange
+            await _cacheService.SetCacheValueAsync("SearchCriteria", ""); // empty string
+
+            // Act
+            var result = await _controller.GetAuditLogs("sample");
+
+            // Assert
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_SampleAuditLogResults", partial.ViewName);
+            Assert.IsType<AuditSampleLogModel>(partial.Model);
+        }
+
+        [Fact]
+        public async Task GetSampleAuditLogs_InvalidJsonCriteria_ReturnsEmptyModel()
+        {
+            // Arrange
+            await _cacheService.SetCacheValueAsync("SearchCriteria", "not a json");
+
+            // Act
+            var result = await _controller.GetAuditLogs("sample");
+
+            // Assert
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_SampleAuditLogResults", partial.ViewName);
+            Assert.IsType<AuditSampleLogModel>(partial.Model);
+        }
+
+        [Fact]
+        public async Task GetSampleAuditLogs_DeserializesToNull_ReturnsEmptyModel()
+        {
+            // Arrange
+            // This will deserialize to null if AuditLogSearchModel is a class and not a struct
+            await _cacheService.SetCacheValueAsync("SearchCriteria", "null");
+
+            // Act
+            var result = await _controller.GetAuditLogs("sample");
+
+            // Assert
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_SampleAuditLogResults", partial.ViewName);
+            Assert.IsType<AuditSampleLogModel>(partial.Model);
+        }
+
     }
 }

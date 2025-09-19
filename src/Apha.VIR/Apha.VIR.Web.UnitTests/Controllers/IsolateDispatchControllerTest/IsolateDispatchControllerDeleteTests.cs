@@ -236,6 +236,20 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             Assert.Equal("IsolateDispatch", redirectResult.ControllerName);
         }
 
+        [Fact]
+        public async Task Delete_Unauthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var dispatchId = Guid.NewGuid();
+            var isolateId = Guid.NewGuid();
+            var avnumber = "AV123";
+            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+            // Remove Administrator role
+            AuthorisationUtil.AppRoles = new List<string> { AppRoleConstant.IsolateManager };
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Delete(dispatchId, lastModified, isolateId, avnumber));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

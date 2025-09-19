@@ -139,5 +139,52 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AccountControllerTest
                 HttpContext = new DefaultHttpContext { User = user }
             };
         }
+        [Fact]
+        public void Constructor_NullLogger_ThrowsArgumentNullException()
+        {
+            // Arrange
+            ILogger<AccountController>? logger = null;
+            var config = Substitute.For<IConfiguration>();
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => new AccountController(logger!, config));
+        }
+
+        [Fact]
+        public void Constructor_NullConfiguration_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var logger = Substitute.For<ILogger<AccountController>>();
+            IConfiguration? config = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => new AccountController(logger, config!));
+        }
+
+        [Fact]
+        public void AccessDenied_NullUserIdentity_HandlesGracefully()
+        {
+            var logger = Substitute.For<ILogger<AccountController>>();
+            var config = Substitute.For<IConfiguration>();
+            var controller = new AccountController(logger, config);
+
+            // Set up HttpContext with no Identity
+            var user = new ClaimsPrincipal(new ClaimsIdentity());
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            var result = controller.AccessDenied("/home");
+
+            Assert.IsType<ViewResult>(result);
+            logger.Received().Log(
+                LogLevel.Error,
+                Arg.Any<EventId>(),
+                Arg.Any<object>(),
+                Arg.Any<UnauthorizedAccessException>(),
+                Arg.Any<Func<object, Exception?, string>>()
+            );
+        }
     }
 }
