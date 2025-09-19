@@ -166,6 +166,11 @@ namespace Apha.VIR.Web.Controllers
             {
                 throw new UnauthorizedAccessException("Delete not supported for Sender.");
             }
+
+            ModelState.Remove("SenderName");
+            ModelState.Remove("SenderOrganisation");
+            ModelState.Remove("SenderAddress");
+
             if (!ModelState.IsValid || senderId == Guid.Empty)
             {
                 model.CountryList = await GetCountryDropdownList();
