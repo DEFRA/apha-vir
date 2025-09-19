@@ -24,7 +24,7 @@
 				{
 					<tr>
 						<td>@item.ViableName</td>
-						<td>@item.DateChecked</td>
+						<td>@item.DateChecked.ToString("d")</td>
 						<td>@item.CheckedByName</td>
 						<td>
 							<a asp-action="Edit" asp-route-AVNumber="@item.AVNumber" asp-route-Isolate="@item.IsolateViabilityIsolateId" 
