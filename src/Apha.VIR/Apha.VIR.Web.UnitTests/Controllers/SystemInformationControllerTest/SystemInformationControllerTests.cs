@@ -82,7 +82,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
             Assert.Equal("TestUser", model.UserName);
             Assert.Equal("127.0.0.1", model.HostAddress);
             Assert.Equal("TestAuth", model.AuthenticationType);
-            Assert.Equal("Yes", model.IsAuthenticated);
+            Assert.Equal("True", model.IsAuthenticated);
             Assert.Equal(Environment.Version.ToString(), model.FrameworkVersion);
             Assert.Equal("http://example.com/logs", _controller.ViewBag.ErrorLogUrl);
         }
@@ -108,7 +108,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
             var model = Assert.IsType<SystemInformationViewModel>(viewResult.Model);
             Assert.Null(model.UserName);
             Assert.Null(model.AuthenticationType);
-            Assert.Equal("No", model.IsAuthenticated);
+            Assert.Equal("False", model.IsAuthenticated);
         }
 
         [Fact]

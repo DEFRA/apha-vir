@@ -33,7 +33,7 @@ namespace Apha.VIR.Web.Controllers
             sysInfo.UserName = User.Identity?.Name;
             sysInfo.HostAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
             sysInfo.AuthenticationType = User.Identity?.AuthenticationType;
-            sysInfo.IsAuthenticated = (User.Identity?.IsAuthenticated ?? false) ? "Yes" : "No";
+            sysInfo.IsAuthenticated = (User.Identity?.IsAuthenticated ?? false) ? "True" : "False";
 
             // Set URL for Error log button
             ViewBag.ErrorLogUrl = $"{ErrorReportingURL()}";
