@@ -65,8 +65,8 @@
 					</div>
 					<div class="col-sm-9">
 						<input asp-for="Sender" class="editsubmission-control-width-large" maxlength="50" />						
-						<button type="button" class="btn btn-link editsubmission-btn-link-custom" onclick="openPopupSender()" id="mainSendersBtn">Main Senders</button>
-						<button type="button" class="btn btn-link  editsubmission-btn-link-custom" onclick="openPopupAddSender()" id="addSenderBtn">Add</button>
+						<button type="button" class="btnLink ms-1" onclick="openPopupSender()" id="mainSendersBtn">Main Senders</button>
+						<button type="button" class="btnLink ms-2" onclick="openPopupAddSender()" id="addSenderBtn">Add</button>
 						<span asp-validation-for="Sender" class="text-danger"></span>
 					</div>
 				</div>
@@ -76,7 +76,7 @@
 					</div>
 					<div class="col-sm-9">
 						<textarea asp-for="SenderOrganisation" class="editsubmission-control-width-large" maxlength="200"></textarea>						
-						<button type="button" class="btn btn-link  editsubmission-btn-link-custom" onclick="openPopupOrganisation()" id="mainOrgsBtn">Main Organisations</button>
+						<button type="button" class="btnLink ms-1" onclick="openPopupOrganisation()" id="mainOrgsBtn">Main Organisations</button>
 						<span asp-validation-for="SenderOrganisation" class="text-danger"></span>
 					</div>
 				</div>
@@ -155,8 +155,8 @@
 				</div>
 				<div class="row mt-3">
 					<div class="col-sm-12 text-right">
-						<button type="submit" style="margin-left:725px" class="btn btn-link editsubmission-btn-link-custom">Update</button>
-						<a asp-action="Index" asp-controller="SubmissionSamples" class="btn btn-link editsubmission-btn-link-custom">Cancel</a>
+						<button type="submit" style="margin-left:725px" class="btnLink me-2">Update</button>
+						<a asp-action="Index" asp-controller="SubmissionSamples" class="btnLink">Cancel</a>
 					</div>
 				</div>
 			</div>

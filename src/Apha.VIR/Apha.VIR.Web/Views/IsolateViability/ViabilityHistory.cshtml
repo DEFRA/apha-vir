@@ -24,7 +24,7 @@
 				{
 					<tr>
 						<td>@item.ViableName</td>
-						<td>@item.DateChecked</td>
+						<td>@item.DateChecked.ToString("d")</td>
 						<td>@item.CheckedByName</td>
 						<td>
 							<a asp-action="Edit" asp-route-AVNumber="@item.AVNumber" asp-route-Isolate="@item.IsolateViabilityIsolateId" 
@@ -40,7 +40,7 @@
 								<input type="hidden" name="AVNUmber" value="@item.AVNumber" />
 								<input type="hidden" name="IsolateId" value="@item.IsolateViabilityIsolateId" />
 								<button type="submit"
-										class="btn-as-link"
+										class="btnLink"
 										onclick="return confirm('Please confirm that you want to delete this viability record');">
 									Delete
 								</button>
