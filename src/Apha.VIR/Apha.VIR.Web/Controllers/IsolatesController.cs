@@ -17,8 +17,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly ISubmissionService _submissionService;
         private readonly ISampleService _sampleService;
-        private readonly IMapper _mapper;
-        private const string IndexActionName = "Index";
+        private readonly IMapper _mapper;        
 
         public IsolatesController(IIsolatesService isolatesService,
              ILookupService lookupService,
@@ -124,7 +123,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(isolateModel);
             }
 
-            isolateModel.CreatedBy = "testuser";
+            isolateModel.CreatedBy = AuthorisationUtil.GetUserId();
 
             var isolateDto = _mapper.Map<IsolateDto>(isolateModel);
             isolateModel.IsolateId = await _isolatesService.AddIsolateDetailsAsync(isolateDto);
@@ -137,11 +136,11 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.ActionType == "SaveAndContinue")
             {
-                return RedirectToAction("Edit", "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
+                return RedirectToAction(nameof(IsolateCharacteristicsController.Edit), "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, Isolate = isolateModel.IsolateId, SampleId = isolateModel.IsolateSampleId });
             }
             else
             {
-                return RedirectToAction(IndexActionName, "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
+                return RedirectToAction(nameof(SubmissionSamplesController.Index), "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
             }
         }
 
@@ -209,7 +208,7 @@ namespace Apha.VIR.Web.Controllers
                 return View(isolateModel);
             }
 
-            isolateModel.CreatedBy = "testuser";
+            isolateModel.CreatedBy = AuthorisationUtil.GetUserId();
             var isolateDto = _mapper.Map<IsolateDto>(isolateModel);
             await _isolatesService.UpdateIsolateDetailsAsync(isolateDto);
 
@@ -221,11 +220,11 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.ActionType == "SaveAndContinue")
             {
-                return RedirectToAction(IndexActionName, "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, IsolateId = isolateModel.IsolateId });
+                return RedirectToAction(nameof(IsolateCharacteristicsController.Edit), "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, Isolate = isolateModel.IsolateId, SampleId = isolateModel.IsolateSampleId });
             }
             else
             {
-                return RedirectToAction(IndexActionName, "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
+                return RedirectToAction(nameof(SubmissionSamplesController.Index), "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
             }
         }
 

@@ -96,7 +96,7 @@ namespace Apha.VIR.Web.Controllers
                 ModelState.AddModelError("", "Invalid parameters.");
                 return BadRequest(ModelState);
             }
-            string userId = "testUser";
+            string userId = AuthorisationUtil.GetUserId();
             var samples = await _sampleService.GetSamplesBySubmissionIdAsync(SubmissionId);            
             var isolates = await _isolatesService.GetIsolateInfoByAVNumberAsync(AVNumber);
             if (samples.Any() || isolates.Any())
@@ -121,7 +121,7 @@ namespace Apha.VIR.Web.Controllers
                 ModelState.AddModelError("", "Invalid parameters.");
                 return BadRequest(ModelState);
             }
-            string userId = "testUser";
+            string userId = AuthorisationUtil.GetUserId();
             var isolates = await _isolatesService.GetIsolateInfoByAVNumberAsync(AVNumber);
             var isolateSample = isolates.FirstOrDefault(i => i.IsolateSampleId == SampleId);
             if (isolateSample != null)
@@ -146,7 +146,7 @@ namespace Apha.VIR.Web.Controllers
                 ModelState.AddModelError("", "Invalid parameters.");
                 return BadRequest(ModelState);
             }
-            string userId = "testUser";
+            string userId = AuthorisationUtil.GetUserId();
             var isolates = await _isolatesService.GetIsolateInfoByAVNumberAsync(AVNumber);
             var isolate = isolates.FirstOrDefault(i => i.IsolateId == IsolateId);
             if (isolate != null)

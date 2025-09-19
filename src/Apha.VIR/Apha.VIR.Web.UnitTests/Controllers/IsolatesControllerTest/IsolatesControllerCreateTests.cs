@@ -114,7 +114,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
                 Tray = Guid.NewGuid(),
                 ActionType = "SaveAndContinue",
                 AVNumber = "AV123",
-                IsolateId = Guid.NewGuid()
+                IsolateId = Guid.NewGuid(),
+                IsolateSampleId = Guid.NewGuid()
             };
 
             var IsolateDto = new IsolateDto
@@ -137,7 +138,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             Assert.Equal("Edit", result.ActionName);
             Assert.Equal("IsolateCharacteristics", result.ControllerName);
             Assert.Equal(isolateModel.AVNumber, result!.RouteValues!["AVNumber"]);
-            Assert.Equal(isolateModel.IsolateId, result!.RouteValues["IsolateId"]);
+            Assert.Equal(isolateModel.IsolateId, result!.RouteValues["Isolate"]);
+            Assert.Equal(isolateModel.IsolateSampleId, result!.RouteValues["SampleId"]);
         }
 
         [Fact]
