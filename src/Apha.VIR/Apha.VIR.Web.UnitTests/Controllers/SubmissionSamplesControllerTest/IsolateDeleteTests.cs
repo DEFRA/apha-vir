@@ -145,6 +145,35 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             await _mockIsolatesService.Received(1).DeleteIsolateAsync(isolateId, "TestUser", lastModified);
         }
 
+        [Fact]
+        public async Task IsolateDelete_UserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            string avNumber = "AV123";
+            Guid isolateId = Guid.NewGuid();
+            byte[] lastModified = new byte[] { 0x00, 0x01, 0x02 };
+
+            // Remove IsolateDeleter role from AuthorisationUtil.AppRoles
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Role, "SomeOtherRole"),
+            new Claim(ClaimTypes.Name, "TestUser")
+        };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                // Only roles that do NOT include IsolateDeleter
+                var appRoles = new List<string> { "SomeOtherRole" };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
+                _controller.IsolateDelete(avNumber, isolateId, lastModified));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

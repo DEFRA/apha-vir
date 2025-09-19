@@ -817,6 +817,160 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             var jsonResult = Assert.IsType<JsonResult>(result);
             await _isolateRelocateService.Received(2).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>());
         }
+
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonDataWithFreezerAndTray_SetsSelectedFreezerAndTray()
+        {
+            // Arrange
+            var freezerId = Guid.NewGuid();
+            var trayId = Guid.NewGuid();
+            var cachedModel = new IsolateRelocateViewModel { Freezer = freezerId, Tray = trayId };
+            var jsonData = JsonConvert.SerializeObject(cachedModel);
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
+
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(new List<IsolateRelocateDto>());
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>())
+                .Returns(new List<IsolateRelocateViewModel>());
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<IsolateRelocationViewModel>(viewResult.Model);
+            Assert.Equal(freezerId, model.SelectedFreezer);
+            Assert.Equal(trayId, model.SelectedTray);
+        }
+
+        [Fact]
+        public async Task Search_WhenUserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-10",
+                SelectedFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid()
+            };
+            // Simulate unauthorized
+            AuthorisationUtil.AppRoles = new List<string>(); // Remove all roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Search(model));
+        }
+
+        [Fact]
+        public async Task Save_WhenUserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedNewFreezer = Guid.NewGuid(),
+                SelectedNewTray = Guid.NewGuid(),
+                SelectedNewIsolatedList = new List<IsolatedRelocationData>
+        {
+            new IsolatedRelocationData { IsolatedId = Guid.NewGuid(), Well = "A1", LastModified = BitConverter.GetBytes(DateTime.UtcNow.Ticks) }
+        }
+            };
+            // Simulate unauthorized
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Save(model));
+        }
+
+        [Fact]
+        public async Task Edit_WhenSessionValueIsNull_SetsSessionValue()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns((string?)null);
+
+            _lookupService.GetAllFreezerAsync().Returns(new List<LookupItemDto>());
+            _lookupService.GetAllTraysAsync().Returns(new List<LookupItemDto>());
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+            _cacheService.Received(1).SetSessionValue("isolateRelocateSessionModel", Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task Update_WhenUserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel
+            {
+                IsolateId = Guid.NewGuid(),
+                Freezer = Guid.NewGuid(),
+                Tray = Guid.NewGuid(),
+                Well = "A1",
+                LastModified = BitConverter.GetBytes(DateTime.UtcNow.Ticks)
+            };
+            // Simulate unauthorized
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Update(model));
+        }
+
+        [Fact]
+        public async Task GetTraysByFreezerId_WhenUserNotInAnyRole_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            // Simulate unauthorized
+            AuthorisationUtil.AppRoles = new List<string>();
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.GetTraysByFreezerId(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task SearchIsolates_WhenUserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV1",
+                MaxAVNumber = "AV2"
+            };
+            // Simulate unauthorized
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.SearchIsolates(model));
+        }
+
+        [Fact]
+        public async Task RelocateTray_WhenUserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedNewFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+            // Simulate unauthorized
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.RelocateTray(model));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)
