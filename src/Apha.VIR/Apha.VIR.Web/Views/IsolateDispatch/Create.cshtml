@@ -143,11 +143,11 @@
 		</tr>
 		<tr>
 			<td colspan="3" style="text-align: right;">
-				<button id="btnSubmit" type="submit" asp-action="Create" asp-controller="IsolateDispatch" class="btn-as-link" disabled="@(Model.IsDispatchDisabled ? "disabled" : null)">Dispatch</button>
+				<button id="btnSubmit" type="submit" asp-action="Create" asp-controller="IsolateDispatch" class="btnLink" disabled="@(Model.IsDispatchDisabled ? "disabled" : null)">Dispatch</button>
 
 				<img src="~/images/spacer.gif" width="10" height="5" alt="" />
 				<input type="hidden" asp-for="@Model.Source" />
-				<button id="btnCancel" type="submit" asp-action="CancelAction" asp-controller="IsolateDispatch" class="btn-as-link">Cancel</button>				
+				<button id="btnCancel" type="submit" asp-action="CancelAction" asp-controller="IsolateDispatch" class="btnLink">Cancel</button>				
 			</td>
 		</tr>
 	</table>

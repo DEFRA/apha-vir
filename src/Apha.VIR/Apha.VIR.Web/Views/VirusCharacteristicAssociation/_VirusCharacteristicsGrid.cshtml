@@ -34,11 +34,11 @@
                     <td>
                         @if (isPresent)
                         {
-                            <button type="button" class="btn btn-danger btn-as-link" onclick="removeCharacteristic('@typeId', '@item.Id')">Remove</button>
+                            <button type="button" class="btn btn-danger btnLink" onclick="removeCharacteristic('@typeId', '@item.Id')">Remove</button>
                         }
                         else
                         {
-                            <button type="button" class="btn btn-danger btn-as-link" onclick="assignCharacteristic('@typeId', '@item.Id')">Add</button>
+                            <button type="button" class="btn btn-danger btnLink" onclick="assignCharacteristic('@typeId', '@item.Id')">Add</button>
                         }
                     </td>
                 </tr>

@@ -6,7 +6,7 @@
             <tbody>
                 <tr>
                     <td colspan="5">
-                    <select asp-for="Characteristic" tabindex="2" class="select-dropdown characteristic-ddl">
+                        <select asp-for="Characteristic" tabindex="2" style="margin-left: 4px;" class="select-dropdown characteristic-ddl width-343">
                         <option value=""></option>
                         @foreach (var item in Model.CharacteristicList)
                         {
@@ -16,23 +16,24 @@
                     <input type="hidden" asp-for="CharacteristicType" class="characteristic-ddl-type" />
                     </td>
                 </tr>
-                <tr>
-                    <td class="p-0 m-0">
+                <tr class="d-flex">
+                    <td class="p-0 m-0 padd-Left8" style="width: 104px;">
                         <select class="p-0 m-0 comparator-ddl" asp-for="Comparator" asp-items="Model.ComparatorList" hidden>
                         </select>
                     </td>
-                    <td class="p-0 m-0">
+                    <td class="p-0 m-0 padd-Left8" style="width:50px">
                         <select asp-for="CharacteristicListValue" asp-items="Model.CharacteristicValues" class="p-0 m-0 char-list-values-ddl" style="display:none;">
                         </select>
                     </td>
-                    <td class="p-0 m-0">
-                        <input type="text" asp-for="CharacteristicValue1" class="width-90 char-value1" style="display:none;" />
+                    <td class="p-0 m-0 padd-Left8" style="width:60px">
+                        <input type="text" asp-for="CharacteristicValue1" class=" char-value1" style="width:70px;display:none;" />
                     </td>
-                    <td class="p-0 m-0">
-                        <span class="mx-3 width-90 char-and-label" style="display:none;">and</span>
+                    <td class="p-0 m-0 padd-Left8" style="width:60px">
+                        
+                        <span class="mx-3  char-and-label" style="width:70px;display:none;">and</span>
                     </td>
-                    <td class="p-0 m-0 ">
-                        <input type="text" asp-for="CharacteristicValue2" class="width-90 char-value2" style="display:none;" />
+                    <td class="p-0 m-0 padd-Left8" style="width:60px">
+                        <input type="text" asp-for="CharacteristicValue2" class=" char-value2" style="width:70px;display:none;" />
                     </td>
                 </tr>
             </tbody>
