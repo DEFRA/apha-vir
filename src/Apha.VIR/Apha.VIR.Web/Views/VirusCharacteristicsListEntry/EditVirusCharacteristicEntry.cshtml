@@ -17,7 +17,7 @@
         </div>
         <div class="w-200 d-flex justify-content-end mt-3 marginLeft112" style=" gap: 8px;">
             <button type="submit" class="btn btn-primary btnLink">Save</button>
-            <a asp-action="ListEntries" asp-controller="VirusCharacteristicsListEntry" asp-route-characteristic="@Model.VirusCharacteristicId" class="btn btn-secondary">Cancel</a>
+            <a href="/VirusCharacteristicsListEntry/ListEntries?characteristicId=@Model.VirusCharacteristicId" class="btn btn-secondary">Cancel</a>
             @if (Model.Id != Guid.Empty)
             {
                 <button type="button" class="btn btn-danger btnLink"

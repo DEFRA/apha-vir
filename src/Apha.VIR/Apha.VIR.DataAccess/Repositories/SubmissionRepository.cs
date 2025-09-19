@@ -86,7 +86,7 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
     {
         var parameters = new[]
         {
-            new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = user },
+            new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = user },
             new SqlParameter("@SubmissionId", SqlDbType.UniqueIdentifier) { Value = Guid.NewGuid() },
             new SqlParameter("@AVNumber", SqlDbType.VarChar, 20) { Value = submission.Avnumber },
             new SqlParameter("@SendersReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)submission.SendersReferenceNumber ?? DBNull.Value },
@@ -117,7 +117,7 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
     {
         var parameters = new[]
         {
-            new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = user },
+            new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = user },
             new SqlParameter("@SubmissionId", SqlDbType.UniqueIdentifier) { Value = submission.SubmissionId },
             new SqlParameter("@AVNumber", SqlDbType.VarChar, 20) { Value = submission.Avnumber },
             new SqlParameter("@SendersReferenceNumber", SqlDbType.VarChar, 50) { Value = (object?)submission.SendersReferenceNumber ?? DBNull.Value },
@@ -148,7 +148,7 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
     {
         await _context.Database.ExecuteSqlRawAsync(
            "EXEC spSubmissionDelete @UserID, @SubmissionId, @LastModified",
-           new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+           new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = userId },
            new SqlParameter("@SubmissionId", SqlDbType.UniqueIdentifier) { Value = submissionId },
            new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified }
         );

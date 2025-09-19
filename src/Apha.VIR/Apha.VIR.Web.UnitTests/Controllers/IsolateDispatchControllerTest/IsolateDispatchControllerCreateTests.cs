@@ -361,6 +361,114 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             Assert.Null(model.ViabilityId);
         }
 
+        [Fact]
+        public async Task Create_Post_NoAliquots_AddsModelError()
+        {
+            // Arrange
+            var dispatchModel = new IsolateDispatchCreateViewModel
+            {
+                Avnumber = "AV123",
+                DispatchIsolateId = Guid.NewGuid(),
+                NoOfAliquots = null,
+                NoOfAliquotsToBeDispatched = 1,
+                ValidToIssue = true,
+                DispatchedDate = DateTime.Now.AddDays(-1),
+                Source = "search"
+            };
+            SetupMockUserAndRoles();
+            // Act
+            var result = await _controller.Create(dispatchModel);
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.True(_controller.ModelState.ErrorCount > 0);
+        }
+
+        [Fact]
+        public async Task Create_CheckFieldsVisibility_SetsIsFieldInVisible_WhenSampleTypeIsRNA()
+        {
+            // Arrange
+            string avNumber = "AV001";
+            Guid isolateId = Guid.NewGuid();
+            string source = "search";
+            var isolateInfo = new IsolateInfoDto
+            {
+                NoOfAliquots = 2,
+                ValidToIssue = true,
+                IsMixedIsolate = false
+            };
+            _mockIsolateDispatchService.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId).Returns(isolateInfo);
+            SetupLookupServices();
+
+            // Setup for CheckFieldsVisibility to return false (SampleTypeName == "RNA")
+            var submissionId = Guid.NewGuid();
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(new SubmissionDto { SubmissionId = submissionId });
+            _mockIsolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(new IsolateDto { IsolateSampleId = Guid.NewGuid() });
+            _mockSampleService.GetSamplesBySubmissionIdAsync(submissionId).Returns(new List<SampleDto> { new SampleDto { SampleId = Guid.NewGuid(), SampleTypeName = "RNA" } });
+
+            // Act
+            var result = await _controller.Create(avNumber, isolateId, source) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Model); 
+            var viewModel = Assert.IsType<IsolateDispatchCreateViewModel>(result.Model);          
+            Assert.False(viewModel.IsFieldInVisible);
+        }
+
+        [Fact]
+        public async Task Create_WarningMessagesAndFieldVisibility_AreSetCorrectly()
+        {
+            // Arrange
+            string avNumber = "AV001";
+            Guid isolateId = Guid.NewGuid();
+            string source = "search";
+            var isolateInfo = new IsolateInfoDto
+            {
+                NoOfAliquots = 1,
+                ValidToIssue = false,
+                IsMixedIsolate = true
+            };
+            _mockIsolateDispatchService.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId).Returns(isolateInfo);
+            SetupLookupServices();
+
+            // Make CheckFieldsVisibility return false
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(new SubmissionDto { SubmissionId = Guid.NewGuid() });
+            _mockIsolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(new IsolateDto { IsolateSampleId = Guid.NewGuid() });
+            _mockSampleService.GetSamplesBySubmissionIdAsync(Arg.Any<Guid>()).Returns(new List<SampleDto> { new SampleDto { SampleId = Guid.NewGuid(), SampleTypeName = "FTA Cards" } });
+
+            // Act
+            var result = await _controller.Create(avNumber, isolateId, source) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var viewModel = Assert.IsType<IsolateDispatchCreateViewModel>(result.Model);
+            Assert.False(viewModel.IsFieldInVisible);
+            Assert.Contains(viewModel.WarningMessages, m => m.Contains("insufficient aliquots"));
+            Assert.Contains(viewModel.WarningMessages, m => m.Contains("not valid for issue"));
+            Assert.Contains(viewModel.WarningMessages, m => m.Contains("mixed"));
+        }
+
+        [Fact]
+        public async Task Create_Post_Unauthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var dispatchModel = new IsolateDispatchCreateViewModel
+            {
+                Avnumber = "AV123",
+                DispatchIsolateId = Guid.NewGuid(),
+                NoOfAliquotsToBeDispatched = 1,
+                NoOfAliquots = 2,
+                ValidToIssue = true,
+                DispatchedDate = DateTime.Now.AddDays(-1),
+                Source = "search"
+            };
+            // Remove IsolateManager role
+            AuthorisationUtil.AppRoles = new List<string> { AppRoleConstant.Administrator };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Create(dispatchModel));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)
@@ -368,7 +476,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Role, AppRoleConstant.Administrator),
-                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager),
+                    new Claim(ClaimTypes.Name, "TestUser")
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 _mockHttpContextAccessor?.HttpContext?.User.Returns(user);

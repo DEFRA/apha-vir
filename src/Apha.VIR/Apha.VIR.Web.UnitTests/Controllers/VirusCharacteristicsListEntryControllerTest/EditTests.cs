@@ -114,7 +114,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("ListEntries", redirect.ActionName);
             Assert.NotNull(redirect.RouteValues);
-            Assert.Equal(model.VirusCharacteristicId, redirect.RouteValues["characteristic"]);
+            Assert.Equal(model.VirusCharacteristicId, redirect.RouteValues["characteristicId"]);
         }
 
         private void SetupMockUserAndRoles()

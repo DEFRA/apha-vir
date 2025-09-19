@@ -190,7 +190,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator)
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator),
+                    new Claim(ClaimTypes.Name, "TestUser")
                 };
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 _mockHttpContextAccessor?.HttpContext?.User.Returns(user);

@@ -37,7 +37,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         {
             // Arrange
             var expectedViewName = requestType == "viability" ? "_IsolateViabilityAuditLogResults"
-                : $"_{requestType.Substring(0, 1).ToUpper() + requestType.Substring(1)}AuditLogResults";
+       : string.Concat("_", requestType.AsSpan(0, 1).ToString().ToUpper(), requestType.AsSpan(1), "AuditLogResults");
 
             var auditLogService = Substitute.For<IAuditLogService>();
             var cacheService = Substitute.For<ICacheService>();

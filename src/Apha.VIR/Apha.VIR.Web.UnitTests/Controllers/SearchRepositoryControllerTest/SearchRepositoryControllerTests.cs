@@ -484,10 +484,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             var jListValues = jObject["ListValues"] as JArray;
 
             Assert.NotNull(jComparators);
-            Assert.Equal(2, jComparators.Count());
+            Assert.Equal(2, jComparators.Count);
 
             Assert.NotNull(jListValues);
-            Assert.Equal(2, jListValues.Count());
+            Assert.Equal(2, jListValues.Count);
         }
 
         [Fact]
@@ -768,10 +768,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // This might involve parsing the Excel file and checking its structure
         }
 
-        private List<IsolateSearchExportDto> SetupValidSearchCriteriaExportResult()
+        private static List<IsolateSearchExportDto> SetupValidSearchCriteriaExportResult()
         {
-            return new List<IsolateSearchExportDto>
-            {
+            return
+            [
                 new IsolateSearchExportDto
                 {
                     AVNumber = "AV123456",
@@ -807,10 +807,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                     ViabilityChecks = "Passed",
                     Characteristics = "Characteristic1: Value1, Characteristic2: Value2"
                 }
-            };
+            ];
         }
 
-        private List<IsolateSearchExportViewModel> SetupValidSearchCriteriaExportMappedResult()
+        private static List<IsolateSearchExportViewModel> SetupValidSearchCriteriaExportMappedResult()
         {
             return new List<IsolateSearchExportViewModel>
             {

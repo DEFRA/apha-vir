@@ -170,7 +170,7 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
     {
         await ExecuteSqlAsync(
           "EXEC spIsolateDelete @UserID, @IsolateId, @LastModified OUTPUT",
-          new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = userId },
+          new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = userId },
           new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolateId },
           new SqlParameter("@LastModified", SqlDbType.Timestamp) { Value = lastModified, Direction = ParameterDirection.InputOutput }
        );
@@ -193,7 +193,7 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
     {
         var parameters = new[]
         {
-            new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = User },
+            new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = User },
             new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolateId },
             new SqlParameter("@Type", SqlDbType.UniqueIdentifier) { Value = type }
         };
@@ -310,7 +310,7 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
     {
         return new[]
         {
-            new SqlParameter("@UserID", SqlDbType.VarChar, 20) { Value = isolate.CreatedBy },
+            new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = isolate.CreatedBy },
             new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = isolate.IsolateId },
             new SqlParameter("@IsolateSampleId", SqlDbType.UniqueIdentifier) { Value = isolate.IsolateSampleId },
             new SqlParameter("@IsolateNumber", SqlDbType.Int) { Value = (object?)isolate.IsolateNumber ?? DBNull.Value },
@@ -328,8 +328,8 @@ public class IsolateRepository : RepositoryBase<Isolate>, IIsolateRepository
             new SqlParameter("@ValidToIssue", SqlDbType.Bit) { Value = (object?)isolate.ValidToIssue ?? DBNull.Value },
             new SqlParameter("@WhyNotValidToIssue", SqlDbType.VarChar, 50) { Value = (object?)isolate.WhyNotValidToIssue ?? DBNull.Value },
             new SqlParameter("@OriginalSampleAvailable", SqlDbType.Bit) { Value = isolate.OriginalSampleAvailable },
-            new SqlParameter("@FirstViablePassageNumber", SqlDbType.Int) { Value = isolate.FirstViablePassageNumber  },
-            new SqlParameter("@NoOfAliquots", SqlDbType.Int) { Value = isolate.NoOfAliquots },
+            new SqlParameter("@FirstViablePassageNumber", SqlDbType.Int) { Value = (object?)isolate.FirstViablePassageNumber ?? DBNull.Value },
+            new SqlParameter("@NoOfAliquots", SqlDbType.Int) { Value = (object?)isolate.NoOfAliquots ?? DBNull.Value },
             new SqlParameter("@Freezer", SqlDbType.UniqueIdentifier) { Value = (object?)isolate.Freezer ?? DBNull.Value },
             new SqlParameter("@Tray", SqlDbType.UniqueIdentifier) { Value = (object?)isolate.Tray ?? DBNull.Value },
             new SqlParameter("@Well", SqlDbType.VarChar, 10) { Value = (object ?) isolate.Well ?? DBNull.Value },

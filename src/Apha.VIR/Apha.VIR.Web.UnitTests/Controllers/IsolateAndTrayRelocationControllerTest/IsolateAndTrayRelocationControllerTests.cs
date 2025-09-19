@@ -1,34 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Security.Claims;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Services;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NSubstitute;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class IsolateAndTrayRelocationControllerTests
     {
+        private readonly object _lock;
         private readonly IIsolateRelocateService _isolateRelocateService;
         private readonly ILookupService _lookupService;
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly IsolateAndTrayRelocationController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        public IsolateAndTrayRelocationControllerTests()
+        public IsolateAndTrayRelocationControllerTests(AppRolesFixture fixture)
         {
             // Create the CacheService substitute with the mocked dependencies
             _cacheService = Substitute.For<ICacheService>();
@@ -37,7 +37,21 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             _lookupService = Substitute.For<ILookupService>();
             _mapper = Substitute.For<IMapper>();
             _controller = new IsolateAndTrayRelocationController(_isolateRelocateService, _lookupService, _cacheService, _mapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
+
+        [Fact]
+        public void Index_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.Index();
+
+            // Assert
+            Assert.IsType<ViewResult>(result);
+        }
+
 
         [Fact]
         public async Task Test_Relocation_ReturnsIsolateRelocationView_WhenPathContainsIsolate()
@@ -130,7 +144,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(dtoList);
             _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(viewModelList);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Search(model);
 
@@ -145,7 +159,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         {
             // Arrange
             _controller.ModelState.AddModelError("Error", "Model error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Search(new IsolateRelocationViewModel());
 
@@ -170,7 +184,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(new List<IsolateRelocateDto>());
             _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(new List<IsolateRelocateViewModel>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Search(model);
 
@@ -194,7 +208,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(new List<IsolateRelocateDto>());
             _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(new List<IsolateRelocateViewModel>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Search(model);
 
@@ -217,7 +231,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(new List<IsolateRelocateDto>());
             _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>())
                 .Returns(new List<IsolateRelocateViewModel>());
-
+            
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Search(model);
 
@@ -246,6 +261,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>())
             .Returns(Task.CompletedTask);
 
+            SetupMockUserAndRoles();
+
             // Act
             var result = await _controller.Save(model);
 
@@ -265,7 +282,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Arrange
             var model = new IsolateRelocationViewModel();
             _controller.ModelState.AddModelError("error", "Some error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Save(model);
 
@@ -283,7 +300,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 SelectedNewTray = Guid.NewGuid(),
                 SelectedNewIsolatedList = new List<IsolatedRelocationData>()
             };
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Save(model);
 
@@ -340,7 +357,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>())
             .Returns(Task.CompletedTask);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.Update(model);
 
@@ -363,7 +380,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 new LookupItemDto { Id = Guid.NewGuid(), Name = "Tray 2" }
             };
             _lookupService.GetAllTraysByParentAsync(freezerId).Returns(trays);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetTraysByFreezerId(freezerId);
 
@@ -381,7 +398,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Arrange
             Guid? freezerId = null;
             _lookupService.GetAllTraysByParentAsync(freezerId).Returns(new List<LookupItemDto>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetTraysByFreezerId(freezerId);
 
@@ -396,7 +413,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "Some error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.GetTraysByFreezerId(Guid.NewGuid());
 
@@ -422,7 +439,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             var mappedResult = new List<IsolateRelocateViewModel>();
             _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(mappedResult);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.SearchIsolates(model);
 
@@ -443,7 +460,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 MinAVNumber = "AV00-01",
                 MaxAVNumber = "AV00-02"
             };
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.SearchIsolates(model);
 
@@ -460,7 +477,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "test error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.SearchIsolates(new IsolateRelocationViewModel());
 
@@ -486,7 +503,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             var emptyMappedResult = new List<IsolateRelocateViewModel>();
             _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>()).Returns(emptyMappedResult);
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.SearchIsolates(model);
 
@@ -511,7 +528,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
             .Returns(new List<IsolateRelocateDto>());
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.RelocateTray(model);
 
@@ -529,7 +546,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         {
             // Arrange
             _controller.ModelState.AddModelError("error", "some error");
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.RelocateTray(new IsolateRelocationViewModel());
 
@@ -546,7 +563,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
                 SelectedNewFreezer = null,
                 SelectedTray = Guid.NewGuid()
             };
-
+            SetupMockUserAndRoles();
             // Act
             var result = await _controller.RelocateTray(model);
 
@@ -572,9 +589,273 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
 
             _isolateRelocateService.UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>())
             .Returns(Task.FromException(new Exception("Service error")));
-
+            SetupMockUserAndRoles();
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _controller.RelocateTray(model));
         }
+
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonData_PopulatesModelFromCache()
+        {
+            // Arrange
+            var cachedModel = new IsolateRelocateViewModel { Freezer = Guid.NewGuid(), Tray = Guid.NewGuid() };
+            var jsonData = JsonConvert.SerializeObject(cachedModel);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Session = new TestSession();
+            _controller.HttpContext.Session.SetString("isolateRelocateSessionModel", jsonData);
+
+            _isolateRelocateService.GetIsolatesByCriteria(
+                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(new List<IsolateRelocateDto>());
+
+            _mapper.Map<List<IsolateRelocateViewModel>>(Arg.Any<List<IsolateRelocateDto>>())
+                .Returns(new List<IsolateRelocateViewModel>());
+
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Edit_WhenSessionIsNull_ReturnsViewWithModelAndLists()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Session = new TestSession();
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+            Assert.NotNull(_controller.ViewBag.FreezersList);
+            Assert.NotNull(_controller.ViewBag.TrayList);
+        }
+
+        [Fact]
+        public async Task Update_WhenCalled_LoadsFreezersAndTraysAndReturnsEditView()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();
+            SetupMockUserAndRoles();
+            // Act
+            var result = await _controller.Update(model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Isolate", redirectResult.ActionName); 
+            Assert.Equal("Relocation", redirectResult.ControllerName);
+        }
+
+        private static void InvokeValidateIsolatedFields(IsolateRelocationViewModel model, ModelStateDictionary modelState)
+        {
+            var method = typeof(IsolateAndTrayRelocationController)
+                .GetMethod("ValidateIsolatedFields", BindingFlags.NonPublic | BindingFlags.Static);
+
+            method!.Invoke(null, new object[] { model, modelState });
+        }
+
+        [Fact]
+        public void ValidateIsolatedFields_WhenInvalidAvNumbers_AddsModelErrors()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                MinAVNumber = "invalid",
+                MaxAVNumber = "invalid"
+            };
+            var modelState = new ModelStateDictionary();
+
+            // Act
+            InvokeValidateIsolatedFields(model, modelState);
+
+            // Assert
+            Assert.True(modelState.ErrorCount >= 2);
+        }
+
+        [Fact]
+        public void ValidateIsolatedFields_WhenValidAvNumbers_NoModelErrors()
+        {
+            // Arrange
+            var model = new IsolateRelocationViewModel
+            {
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+            var modelState = new ModelStateDictionary();
+
+            // Act
+            InvokeValidateIsolatedFields(model, modelState);
+
+            // Assert
+            Assert.Empty(modelState);
+        }
+
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonDataButDeserializationReturnsNull_DoesNotSetSelectedFreezerOrTray()
+        {
+            // Arrange
+            var jsonData = "invalid json";
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Simulate deserialization returns null
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Error = (sender, args) => { args.ErrorContext.Handled = true; }
+            };
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonDataWithNullFreezerOrTray_DoesNotSetSelectedFreezerOrTray()
+        {
+            // Arrange
+            var cachedModel = new IsolateRelocateViewModel { Freezer = null, Tray = null };
+            var jsonData = JsonConvert.SerializeObject(cachedModel);
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Edit_WhenSessionExists_DoesNotSetSessionValue()
+        {
+            // Arrange
+            var model = new IsolateRelocateViewModel();
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns("some value");
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+        }
+
+        [Fact]
+        public async Task Update_InvalidModelState_ReturnsEditViewWithModel()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            var model = new IsolateRelocateViewModel();
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.Update(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+            Assert.Equal(model, viewResult.Model);
+        }
+
+        [Fact]
+        public async Task RelocateTray_WhenServiceReturnsData_UpdatesEachIsolate()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            var model = new IsolateRelocationViewModel
+            {
+                SelectedNewFreezer = Guid.NewGuid(),
+                SelectedTray = Guid.NewGuid(),
+                MinAVNumber = "AV00-01",
+                MaxAVNumber = "AV00-02"
+            };
+
+            var data = new List<IsolateRelocateDto>
+    {
+        new IsolateRelocateDto { IsolateId = Guid.NewGuid(), Tray = Guid.NewGuid(), Well = "A1", LastModified = Array.Empty<byte>() }
+    };
+            _isolateRelocateService.GetIsolatesByCriteria(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid>(), Arg.Any<Guid>())
+                .Returns(data);
+
+            // Act
+            var result = await _controller.RelocateTray(model);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            await _isolateRelocateService.Received(2).UpdateIsolateFreezeAndTrayAsync(Arg.Any<IsolateRelocateDto>());
+        }
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager),
+                    new Claim(ClaimTypes.Name, "TestUser")
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
+        }
+
     }
+
+    public class TestSession : ISession
+    {
+        private readonly Dictionary<string, byte[]> _sessionStorage = new();
+
+        public IEnumerable<string> Keys => _sessionStorage.Keys;
+        public string Id => Guid.NewGuid().ToString();
+        public bool IsAvailable => true;
+
+        public void Clear() => _sessionStorage.Clear();
+        public Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task LoadAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public void Remove(string key) => _sessionStorage.Remove(key);
+
+        public void Set(string key, byte[] value) => _sessionStorage[key] = value;
+        public bool TryGetValue(string key, out byte[] value) => _sessionStorage.TryGetValue(key, out value!);
+
+        public void SetString(string key, string value) => Set(key, System.Text.Encoding.UTF8.GetBytes(value));
+        public string? GetString(string key) => TryGetValue(key, out var value) ? System.Text.Encoding.UTF8.GetString(value) : null;
+       
+    }
+
 }
