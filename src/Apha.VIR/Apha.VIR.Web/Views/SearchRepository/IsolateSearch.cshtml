@@ -131,6 +131,42 @@
 						</div>
 					</td>
 				</tr>
+
+				<tr>
+					<td>
+						<div class="d-flex justify-content-between align-items-center">
+							
+							<div class="label-style"><span>Created Date</span></div>
+							<div>
+								<span class="me-1">From</span>
+								<input type="date" asp-for="CreatedFromDate" />
+
+							</div>
+							<div>
+								<span class="me-1  ms-2">To</span>
+
+								<input type="date" asp-for="CreatedToDate" />
+
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="d-flex justify-content-between align-items-center">
+							<div class="ms-5 label-style"><span>Received Date</span></div>
+							<div class="d-inline-flex align-items-center">
+								<span class="me-2">From</span>
+
+								<input type="date" asp-for="ReceivedFromDate" />
+
+							</div>
+							<div class="d-inline-flex align-items-center">
+								<span class="me-2  ms-2">To</span>
+								<input type="date" asp-for="ReceivedToDate" />
+
+							</div>
+						</div>
+					</td>
+				</tr>
 				<tr>
 					<td colspan="2">
 						<table class="mt-4">
@@ -139,34 +175,12 @@
 								<tr>
 									<td>
 										<div>
-											<div class="label-style"><span>Created Date</span></div>
-											<div>
-												<span class="me-1">From</span>
-												<input type="date" asp-for="CreatedFromDate" />
-												
-											</div>
-											<div>
-												<span class="me-1  ms-2">To</span>
-												
-												<input type="date" asp-for="CreatedToDate" />
-												
-											</div>
+											
 										</div>
 									</td>
 									<td>
 										<div>
-											<div class="label-style"><span>Received Date</span></div>
-											<div>
-												<span class="me-1">From</span>
-												
-												<input type="date" asp-for="ReceivedFromDate" />
-												
-											</div>
-											<div>
-												<span class="me-1  ms-2">To</span>
-												<input type="date" asp-for="ReceivedToDate" />
-												
-											</div>
+											
 										</div>
 									</td>
 								</tr>
