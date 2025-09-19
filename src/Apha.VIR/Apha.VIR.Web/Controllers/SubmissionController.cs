@@ -70,7 +70,7 @@ namespace Apha.VIR.Web.Controllers
             var submissionDto = _mapper.Map<SubmissionDto>(submission);
             await _submissionService.AddSubmissionAsync(submissionDto, AuthorisationUtil.GetUserId());
 
-            return RedirectToAction("Index", "SubmissionSamples");
+            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = submission.AVNumber });
         }
 
         [HttpGet]
@@ -119,7 +119,7 @@ namespace Apha.VIR.Web.Controllers
             var submissionDto = _mapper.Map<SubmissionDto>(submission);
             await _submissionService.UpdateSubmissionAsync(submissionDto,AuthorisationUtil.GetUserId());
 
-            return RedirectToAction("Index", "SubmissionSamples");
+            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = submission.AVNumber });
         }
 
         [HttpGet]
