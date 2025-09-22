@@ -43,7 +43,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
-            Assert.IsAssignableFrom<AuditIsolateLogModel>(partial.Model);
+            Assert.IsAssignableFrom<List<AuditIsolateLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditIsolateLogModel>(partial.Model);
+            Assert.IsType<List<AuditIsolateLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var result = await _controller.GetAuditLogs("isolate");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditIsolateLogModel>(partial.Model);
+            Assert.IsType<List<AuditIsolateLogModel>>(partial.Model);
         }
     }
 }
