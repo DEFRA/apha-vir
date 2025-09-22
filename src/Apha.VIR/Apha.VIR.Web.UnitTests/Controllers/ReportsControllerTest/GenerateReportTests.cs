@@ -77,6 +77,43 @@ namespace Apha.VIR.Web.UnitTests.Controllers.ReportsControllerTest
             Assert.Equal(model.DateTo, viewModel.DateTo);
             Assert.Equal(mappedResult, viewModel.ReportData);
         }
+        [Fact]
+        public void IsolateDispatch_ReturnsViewWithModel()
+        {
+            // Arrange
+            var controller = new ReportsController(_mockReportService, _mockMapper);
+
+            // Act
+            var result = controller.IsolateDispatch() as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("IsolateDispatchReport", result.ViewName);
+            var model = Assert.IsType<IsolateDispatchReportViewModel>(result.Model);
+            Assert.NotNull(model);
+           
+        }
+        [Fact]
+        public void Index_AuthorizedUser_ReturnsView()
+        {
+            // Arrange
+            var controller = new ReportsController(_mockReportService, _mockMapper);
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+        new Claim(ClaimTypes.Role, AppRoleConstant.ReportViewer)
+            }, "mock"));
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+
+            // Act
+            var result = controller.Index() as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+        }
 
         [Fact]
         public async Task GenerateReport_UserNotInAnyRole_ThrowsUnauthorizedAccessException()

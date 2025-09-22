@@ -1,29 +1,33 @@
-﻿using Apha.VIR.Application.Interfaces;
+﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
+using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using NSubstitute;
-using Apha.VIR.Application.DTOs;
-using Apha.VIR.Web.Models;
-using Apha.VIR.Application.Pagination;
+using Microsoft.OpenApi.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Apha.VIR.Web.Services;
-using Microsoft.OpenApi.Services;
+using NSubstitute;
+using System.Security.Claims;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 {
     public class SearchRepositoryControllerTests
     {
+        private readonly object _lock;
         private readonly IVirusCharacteristicService _mockVirusCharacteristicService;
         private readonly IIsolateSearchService _mockIsolateSearchService;
         private readonly ILookupService _mockLookupService;
         private readonly ICacheService _mockCacheService;
         private readonly IMapper _mockMapper;
-        private readonly SearchRepositoryController _controller;       
+        private readonly SearchRepositoryController _controller;
+        private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
         private readonly QueryParameters<SearchCriteriaDTO> queryParameters = new QueryParameters<SearchCriteriaDTO>
         {
@@ -43,7 +47,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             _mockIsolateSearchService = Substitute.For<IIsolateSearchService>();
             _mockLookupService = Substitute.For<ILookupService>();
             _mockCacheService = Substitute.For<ICacheService>();
+            _lock = Substitute.For<object>();
             _mockMapper = Substitute.For<IMapper>();
+            _mockHttpContextAccessor = Substitute.For<HttpContextAccessor>();
             _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockCacheService, _mockMapper);           
         }
 
@@ -118,6 +124,68 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             Assert.Equal("IsolateSearch", result.ViewName);
             Assert.IsType<SearchRepositoryViewModel>(result.Model);
         }
+        [Fact]
+        public async Task Search_WithNewSearchAndValidCriteria_ReturnsCorrectViewAndSetsCacheValue()
+        {
+            // Arrange
+            var criteria = new SearchCriteria
+            {
+                AVNumber = "AV001",
+                ReceivedFromDate = DateTime.Today.AddDays(-30),
+                ReceivedToDate = DateTime.Today,
+                CreatedFromDate = DateTime.Today.AddDays(-30),
+                CreatedToDate = DateTime.Today,
+                Pagination = new PaginationModel(),
+                CharacteristicSearch = new List<CharacteristicCriteria>
+        {
+            new CharacteristicCriteria { Characteristic = null },
+            new CharacteristicCriteria { Characteristic = null },
+            new CharacteristicCriteria { Characteristic = null }
+        },
+                VirusType =  Guid.NewGuid(),
+                VirusFamily =  Guid.NewGuid(),
+                Group =  Guid.NewGuid()
+            };
+
+            var searchResults = new PaginatedResult<IsolateSearchResultDto>
+            {
+                data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
+                TotalCount = 1
+            };
+
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+                .Returns(searchResults);
+
+            _mockMapper.Map<SearchCriteriaDTO>(Arg.Any<SearchCriteria>()).Returns(new SearchCriteriaDTO());
+            _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
+                .Returns(new List<IsolateSearchResult> { new IsolateSearchResult() });
+            _mockMapper.Map<SearchRepositoryViewModel>(Arg.Any<SearchCriteria>()).Returns(new SearchRepositoryViewModel());
+
+            // Mock the lookup service methods
+            _mockLookupService.GetAllVirusFamiliesAsync().Returns(new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Family1" } });
+            _mockLookupService.GetAllHostSpeciesAsync().Returns(new List<LookupItemDto> { new LookupItemDto { Id =  Guid.NewGuid(), Name = "Species1" } });
+            _mockLookupService.GetAllCountriesAsync().Returns(new List<LookupItemDto> { new LookupItemDto { Id =  Guid.NewGuid(), Name = "Country1" } });
+            _mockLookupService.GetAllHostPurposesAsync().Returns(new List<LookupItemDto> { new LookupItemDto { Id =  Guid.NewGuid(), Name = "Purpose1" } });
+            _mockLookupService.GetAllSampleTypesAsync().Returns(new List<LookupItemDto> { new LookupItemDto { Id =  Guid.NewGuid(), Name = "SampleType1" } });
+
+        
+
+            // Act
+            var result = await _controller.Search(criteria, IsNewSearch: true) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("IsolateSearch", result.ViewName);
+            var model = Assert.IsType<SearchRepositoryViewModel>(result.Model);
+            Assert.NotNull(model);
+            Assert.NotNull(model.IsolateSearchGird);
+            Assert.NotNull(model.IsolateSearchGird.IsolateSearchResults);
+         
+            Assert.False(model.IsFilterApplied);
+
+
+        }
+
 
         [Fact]
         public async Task Search_WithInvalidModelState_ReturnsViewWithEmptyResults()
@@ -349,7 +417,68 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             await _mockLookupService.Received(1).GetAllHostBreedsAsync();
             await _mockLookupService.DidNotReceive().GetAllHostBreedsByParentAsync(Arg.Any<Guid>());
         }
+      
+        [Fact]
+        public async Task GetHostBreedsByGroup_ValidModelStateNullHostSpicyId_ReturnsAllBreeds()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            var allBreeds = new List<LookupItemDto>
+    {
+        new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed1" },
+        new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed2" }
+    };
+            _mockLookupService.GetAllHostBreedsAsync().Returns(allBreeds);
 
+            // Act
+            var result = await _controller.GetHostBreedsByGroup(null);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var selectListItems = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Equal(2, selectListItems.Count);
+            Assert.Equal(allBreeds[0].Id.ToString(), selectListItems[0].Value);
+            Assert.Equal(allBreeds[0].Name, selectListItems[0].Text);
+            Assert.Equal(allBreeds[1].Id.ToString(), selectListItems[1].Value);
+            Assert.Equal(allBreeds[1].Name, selectListItems[1].Text);
+        }
+        [Fact]
+        public async Task GetHostBreedsByGroup_ValidModelStateWithHostSpicyId_ReturnsFilteredBreeds()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            var hostSpicyId = Guid.NewGuid();
+            var filteredBreeds = new List<LookupItemDto>
+    {
+        new LookupItemDto { Id = Guid.NewGuid(), Name = "FilteredBreed1" }
+    };
+            _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(filteredBreeds);
+
+            // Act
+            var result = await _controller.GetHostBreedsByGroup(hostSpicyId);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var selectListItems = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Single(selectListItems);
+            Assert.Equal(filteredBreeds[0].Id.ToString(), selectListItems[0].Value);
+            Assert.Equal(filteredBreeds[0].Name, selectListItems[0].Text);
+        }
+        [Fact]
+        public async Task GetHostBreedsByGroup_InvalidModelState_ReturnsEmptyList()
+        {
+            // Arrange
+            SetupMockUserAndRoles(); // This sets up the user with proper roles
+            _controller.ModelState.AddModelError("Error", "Model state is invalid");
+
+            // Act
+            var result = await _controller.GetHostBreedsByGroup(null);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var selectListItems = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Empty(selectListItems);
+        }
         [Fact]
         public async Task GetHostBreedsByGroup_WithEmptyResult_ReturnsEmptyList()
         {
@@ -488,6 +617,51 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 
             Assert.NotNull(jListValues);
             Assert.Equal(2, jListValues.Count);
+        }
+        [Fact]
+        public void ResetMockSetup()
+        {
+            _mockHttpContextAccessor?.HttpContext?.User.Returns((ClaimsPrincipal)null);
+            AuthorisationUtil.AppRoles = new List<string>();
+        }
+     
+        [Fact]
+        public async Task GetComparatorsAndListValues_UnauthorizedUser_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            ResetMockSetup(); // Reset the mock setup
+            var virusCharacteristicId = Guid.NewGuid();
+
+            // Set up an unauthorized user (empty claims)
+            var unauthorizedUser = new ClaimsPrincipal(new ClaimsIdentity());
+            _mockHttpContextAccessor.HttpContext?.User.Returns(unauthorizedUser);
+
+            // Clear the AppRoles to ensure the user is not in any role
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NullReferenceException>(() =>
+                _controller.GetComparatorsAndListValues(virusCharacteristicId));
+        }
+        [Fact]
+        public async Task GetComparatorsAndListValues_InvalidModelState_ReturnsEmptyJsonResult()
+        {
+            // Arrange
+            var virusCharacteristicId = Guid.NewGuid();
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.GetComparatorsAndListValues(virusCharacteristicId);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            Assert.NotNull(jsonResult.Value);
+            var jObject = JObject.FromObject(jsonResult.Value);
+
+            Assert.NotNull(jObject["Comparators"]);
+            Assert.NotNull(jObject["ListValues"]);
+            Assert.IsType<JObject>(jObject["Comparators"]);
+            Assert.IsType<JObject>(jObject["ListValues"]);
         }
 
         [Fact]
@@ -808,6 +982,23 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                     Characteristics = "Characteristic1: Value1, Characteristic2: Value2"
                 }
             ];
+        }
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator),
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager),
+                    new Claim(ClaimTypes.Name, "TestUser")
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
 
         private static List<IsolateSearchExportViewModel> SetupValidSearchCriteriaExportMappedResult()
