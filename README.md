@@ -1,4 +1,4 @@
-# APHA-VIR (BrainStem Training)
+# APHA-VIR (Virus Isolate Repository)
 
 ![Build status](https://github.com/DEFRA/apha-vir/actions/workflows/dev-ci.yaml/badge.svg)[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_apha-vir&metric=alert_status)](https://sonarcloud.io/dashboard?id=DEFRA_apha-vir)[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_apha-vir&metric=coverage)](https://sonarcloud.io/dashboard?id=DEFRA_apha-vir)
 
