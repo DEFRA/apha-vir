@@ -707,10 +707,36 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
         }
 
         [Fact]
-        public async Task Relocation_WhenSessionHasJsonDataButDeserializationReturnsNull_DoesNotSetSelectedFreezerOrTray()
+        public async Task Relocation_WhenSessionHasJsonDataButDeserializationFails_DoesNotSetSelectedFreezerOrTray()
         {
             // Arrange
             var jsonData = "invalid json";
+            _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            _controller.HttpContext.Request.Path = "/relocation/isolate";
+
+            // Simulate deserialization throws exception
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Error = (sender, args) => { args.ErrorContext.Handled = true; }
+            };
+
+            // Act
+            var result = await _controller.Relocation();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("IsolateRelocation", viewResult.ViewName);
+        }
+
+        [Fact]
+        public async Task Relocation_WhenSessionHasJsonDataButDeserializationReturnsNull_DoesNotSetSelectedFreezerOrTray()
+        {
+            // Arrange
+            var jsonData = "null";
             _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
             _controller.ControllerContext = new ControllerContext
             {

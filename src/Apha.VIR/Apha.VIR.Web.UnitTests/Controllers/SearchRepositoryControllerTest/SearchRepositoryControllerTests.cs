@@ -18,6 +18,7 @@ using System.Security.Claims;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 {
+    [Collection("UserAppRolesValidationTests")]
     public class SearchRepositoryControllerTests
     {
         private readonly object _lock;
@@ -41,16 +42,19 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             PageSize = 10
         };
 
-        public SearchRepositoryControllerTests()
+        public SearchRepositoryControllerTests(AppRolesFixture fixture)
         {
             _mockVirusCharacteristicService = Substitute.For<IVirusCharacteristicService>();
             _mockIsolateSearchService = Substitute.For<IIsolateSearchService>();
             _mockLookupService = Substitute.For<ILookupService>();
             _mockCacheService = Substitute.For<ICacheService>();
-            _lock = Substitute.For<object>();
+          
             _mockMapper = Substitute.For<IMapper>();
             _mockHttpContextAccessor = Substitute.For<HttpContextAccessor>();
-            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockCacheService, _mockMapper);           
+            _controller = new SearchRepositoryController(_mockLookupService, _mockVirusCharacteristicService, _mockIsolateSearchService, _mockCacheService, _mockMapper);
+            _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            AuthorisationUtil.Configure(_mockHttpContextAccessor);
+            _lock = fixture.LockObject;
         }
 
         [Fact]
@@ -273,6 +277,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 2" }
             };
             _mockLookupService.GetAllVirusTypesAsync().Returns(virusTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetVirusTypesByVirusFamily(null);
@@ -299,6 +304,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 new LookupItemDto { Id = Guid.NewGuid(), Name = "Type 1" }
             };
             _mockLookupService.GetAllVirusTypesByParentAsync(virusFamilyId).Returns(virusTypes);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetVirusTypesByVirusFamily(virusFamilyId);
@@ -324,6 +330,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed2" }
             };
             _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(hostBreeds);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetHostBreedsByGroup(hostSpicyId);
@@ -349,6 +356,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed3" }
             };
             _mockLookupService.GetAllHostBreedsAsync().Returns(allHostBreeds);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetHostBreedsByGroup(null);
@@ -375,6 +383,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 new LookupItemDto { Id = Guid.NewGuid(), Name = "Breed2" }
             };
             _mockLookupService.GetAllHostBreedsAsync().Returns(allHostBreeds);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetHostBreedsByGroup(null);
@@ -395,6 +404,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             Guid hostSpicyId = Guid.NewGuid();
             _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDto>());
+            SetupMockUserAndRoles();
 
             // Act
             await _controller.GetHostBreedsByGroup(hostSpicyId);
@@ -409,6 +419,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             _mockLookupService.GetAllHostBreedsAsync().Returns(new List<LookupItemDto>());
+            SetupMockUserAndRoles();
 
             // Act
             await _controller.GetHostBreedsByGroup(null);
@@ -485,6 +496,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             Guid hostSpicyId = Guid.NewGuid();
             _mockLookupService.GetAllHostBreedsByParentAsync(hostSpicyId).Returns(new List<LookupItemDto>());
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetHostBreedsByGroup(hostSpicyId);
@@ -508,6 +520,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsByVirusTypeAsync(virusTypeId, false)
             .Returns(expectedCharacteristics);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetVirusCharacteristicsByVirusType(virusTypeId);
@@ -539,6 +552,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
             .Returns(expectedCharacteristics);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetVirusCharacteristicsByVirusType(virusTypeId);
@@ -570,6 +584,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 
             _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
             .Returns(expectedCharacteristics);
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetVirusCharacteristicsByVirusType(virusTypeId);
@@ -593,6 +608,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var comparators = new List<string> { "Equal", "NotEqual" };
+            var yesnolist = new List<string> { "Yes", "No" };
             var listValues = new List<VirusCharacteristicListEntryDto>
             {
                 new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Value1" },
@@ -600,7 +616,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             };
 
             _mockIsolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId)
-            .Returns(Task.FromResult(Tuple.Create(comparators, listValues)));
+            .Returns(Task.FromResult(Tuple.Create(comparators, listValues, yesnolist)));
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetComparatorsAndListValues(virusCharacteristicId);
@@ -618,18 +635,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             Assert.NotNull(jListValues);
             Assert.Equal(2, jListValues.Count);
         }
-        [Fact]
-        public void ResetMockSetup()
-        {
-            _mockHttpContextAccessor?.HttpContext?.User.Returns((ClaimsPrincipal)null);
-            AuthorisationUtil.AppRoles = new List<string>();
-        }
+     
      
         [Fact]
         public async Task GetComparatorsAndListValues_UnauthorizedUser_ThrowsUnauthorizedAccessException()
         {
             // Arrange
-            ResetMockSetup(); // Reset the mock setup
+            SetupMockUserAndRoles();
             var virusCharacteristicId = Guid.NewGuid();
 
             // Set up an unauthorized user (empty claims)
@@ -638,15 +650,16 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
 
             // Clear the AppRoles to ensure the user is not in any role
             AuthorisationUtil.AppRoles = new List<string>();
-
+        
             // Act & Assert
-            await Assert.ThrowsAsync<NullReferenceException>(() =>
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
                 _controller.GetComparatorsAndListValues(virusCharacteristicId));
         }
         [Fact]
         public async Task GetComparatorsAndListValues_InvalidModelState_ReturnsEmptyJsonResult()
         {
             // Arrange
+            SetupMockUserAndRoles();
             var virusCharacteristicId = Guid.NewGuid();
             _controller.ModelState.AddModelError("error", "some error");
 
@@ -670,10 +683,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var comparators = new List<string>();
+            var yesnolist = new List<string>();
             var listValues = new List<VirusCharacteristicListEntryDto>();
 
             _mockIsolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId)
-            .Returns(Task.FromResult(Tuple.Create(comparators, listValues)));
+            .Returns(Task.FromResult(Tuple.Create(comparators, listValues, yesnolist)));
+            SetupMockUserAndRoles();
 
             // Act
             var result = await _controller.GetComparatorsAndListValues(virusCharacteristicId);
@@ -983,23 +998,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 }
             ];
         }
-        private void SetupMockUserAndRoles()
-        {
-            lock (_lock)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Role, AppRoleConstant.Administrator),
-                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager),
-                    new Claim(ClaimTypes.Name, "TestUser")
-                };
-                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
-                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
-
-                var appRoles = new List<string> { AppRoleConstant.LookupDataManager, AppRoleConstant.IsolateManager, AppRoleConstant.Administrator };
-                AuthorisationUtil.AppRoles = appRoles;
-            }
-        }
+      
 
         private static List<IsolateSearchExportViewModel> SetupValidSearchCriteriaExportMappedResult()
         {
@@ -1041,6 +1040,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                     Characteristics = "Characteristic1: Value1, Characteristic2: Value2"
                 }
             };
+        }
+
+        private void SetupMockUserAndRoles()
+        {
+            lock (_lock)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, AppRoleConstant.IsolateManager)
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                _mockHttpContextAccessor?.HttpContext?.User.Returns(user);
+
+                var appRoles = new List<string> { AppRoleConstant.IsolateManager, AppRoleConstant.IsolateViewer, AppRoleConstant.Administrator };
+                AuthorisationUtil.AppRoles = appRoles;
+            }
         }
     }
 }

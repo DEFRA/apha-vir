@@ -62,18 +62,25 @@
             },
             {
                 "title": "Relocation Management",
-                "url": "/IsolateRelocationManagement",
+                "url": "/Relocation",
                 "description": "Relocates Virus Isolate Aliquots",
                 "children": [
                     {
                         "title": "Relocate Virus Isolates",
-                        "url": "/IsolateRelocate",
+                        "url": "/Relocation/Isolate",
                         "description": "Relocates Virus Isolate Aliquots",
-                        "children": []
+                        "children": [
+                            {
+                                "title": "Modify Relocate Virus Isolates",
+                                "url": "/Relocation/Edit",
+                                "description": "Relocates Virus Isolate Aliquots",
+                                "children": []
+                            }
+                        ]
                     },
                     {
                         "title": "Relocate Freezer Tray",
-                        "url": "/TrayRelocate",
+                        "url": "/Relocation/Tray",
                         "description": "Relocates Freezer Trays",
                         "children": []
                     }
@@ -91,11 +98,11 @@
                         "children": []
                     },
                     {
-                        "title": "Missing Isolates Report Page",
-                        "url": "/MissingIsolatesReport",
+                        "title": "Isolate Dispatch Report Page",
+                        "url": "/Reports/GenerateReport",
                         "description": "",
                         "children": []
-                    }
+                    }                    
                 ]
             },
             {
@@ -138,28 +145,40 @@
             },
             {
                 "title": "Virus Characteristic Management",
-                "url": "/VirusCharacteristicsListEntry",
+                "url": "/VirusCharacteristics",
                 "description": "Manage virus characteristics",
                 "children": [
                     {
                         "title": "Virus Characteristics",
-                        "url": "/VirusCharacteristicsListEntry",
+                        "url": "/VirusCharacteristics/List",
                         "description": "Manage virus characteristic",
                         "children": [
                             {
                                 "title": "Modify Virus Characteristic",
-                                "url": "/VirusCharacteristicEdit",
+                                "url": "/VirusCharacteristics/Create",
+                                "description": "Add Virus Characteristic",
+                                "children": []
+                            },
+                            {
+                                "title": "Modify Virus Characteristic",
+                                "url": "/VirusCharacteristics/Edit",
                                 "description": "Edit Virus Characteristic",
                                 "children": []
                             },
                             {
                                 "title": "Virus Characteristic List Entries",
-                                "url": "/VirusCharacteristicListEntries",
+                                "url": "/VirusCharacteristicsListEntry/ListEntries",
                                 "description": "Manage Virus Characteristic List Entries",
                                 "children": [
                                     {
                                         "title": "Modify Virus Characteristic List Entries",
-                                        "url": "/VirusCharacteristicListEntryEdit",
+                                        "url": "/VirusCharacteristicsListEntry/Create",
+                                        "description": "Edit Virus Characteristic List Entries",
+                                        "children": []
+                                    },
+                                    {
+                                        "title": "Modify Virus Characteristic List Entries",
+                                        "url": "/VirusCharacteristicsListEntry/Edit",
                                         "description": "Edit Virus Characteristic List Entries",
                                         "children": []
                                     }
@@ -179,7 +198,20 @@
                 "title": "Sender Management",
                 "url": "/Sender",
                 "description": "Manages list of senders",
-                "children": []
+                "children": [
+                    {
+                        "title": "Modify Sender Details",
+                        "url": "/Sender/Create",
+                        "description": "Edit Sender Details",
+                        "children": []
+                    },
+                    {
+                        "title": "Modify Sender Details",
+                        "url": "/Sender/Edit",
+                        "description": "Edit Sender Details",
+                        "children": []
+                    }
+                ]
             },
             {
                 "title": "Search Repository",
@@ -228,7 +260,13 @@
                 "children": [
                     {
                         "title": "Log Isolate Details",
-                        "url": "/IsolateLog",
+                        "url": "/AuditLog/IsolateLog",
+                        "description": "Log Isolate Details",
+                        "children": []
+                    },
+                    {
+                        "title": "Log Isolate Details",
+                        "url": "/AuditLog/SearchAudit",
                         "description": "Log Isolate Details",
                         "children": []
                     }

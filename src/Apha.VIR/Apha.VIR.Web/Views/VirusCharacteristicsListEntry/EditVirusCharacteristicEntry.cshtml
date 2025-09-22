@@ -16,11 +16,11 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="w-200 d-flex justify-content-end mt-3 marginLeft112" style=" gap: 8px;">
-            <button type="submit" class="btn btn-primary btn-as-link">Save</button>
+            <button type="submit" class="btn btn-primary btnLink">Save</button>
             <a href="/VirusCharacteristicsListEntry/ListEntries?characteristicId=@Model.VirusCharacteristicId" class="btn btn-secondary">Cancel</a>
             @if (Model.Id != Guid.Empty)
             {
-                <button type="button" class="btn btn-danger btn-as-link"
+                <button type="button" class="btn btn-danger btnLink"
                         onclick="if(confirm('Please confirm that you want to delete this entry list record')) document.getElementById('deleteForm').submit();">
                     Delete
                 </button>

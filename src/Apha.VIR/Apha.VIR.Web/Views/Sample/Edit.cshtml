@@ -50,7 +50,7 @@
 						<select id="ddlHostSpecies" asp-for="HostSpecies" asp-items="Model.HostSpeciesList" class="form-control addeditsample-addsender-select">
 							<option value=""></option>
 						</select>
-						<button type="button" class="btn btn-link addeditsample-btn-link-custom"
+						<button type="button" class="btnLink"
 								id="latinBreedButton">
 							Latin Breeds
 						</button>
@@ -90,8 +90,8 @@
 
 				<div class="form-group row mt-3 justify-content-end">
 					<div class="col-sm-3 offset-sm-9">
-						<button type="submit" asp-action="Edit" class="btn btn-link addeditsample-btn-link-custom">Update</button>
-						<a href="~/SubmissionSamples?AVNumber=@Model.AVNumber" class="btn  btn-link addeditsample-btn-link-custom">Cancel</a>
+						<button type="submit" asp-action="Edit" class="btnLink">Update</button>
+						<a href="~/SubmissionSamples?AVNumber=@Model.AVNumber" class="btnLink">Cancel</a>
 					</div>
 				</div>
 			</form>
