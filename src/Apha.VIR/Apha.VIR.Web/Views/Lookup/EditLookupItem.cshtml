@@ -21,7 +21,7 @@
 				<td>
 					<input id="Name"
 						   asp-for="@Model.LookupItem.Name"
-						   class="form-control"
+						   class="form-control width-234"
 						   disabled="@(Model.IsReadOnly ? "disabled" : null)" />
 					<br><span asp-validation-for="@Model.LookupItem.Name" class="Validation"></span>
 					@if (Model.IsReadOnly)
@@ -40,7 +40,7 @@
 					<td>
 						<input id="AlternateName"
 							   asp-for="@Model.LookupItem.AlternateName"
-							   class="form-control"
+							   class="form-control "
 							   disabled="@(Model.IsReadOnly ? "disabled" : null)" />
 						@if (Model.IsReadOnly)
 						{
@@ -111,7 +111,7 @@
 					<td>
 						<input id="Smscode"
 							   asp-for="@Model.LookupItem.Smscode"
-							   class="form-control" disabled />
+							   class="form-control width-234" disabled />
 
 						<input type="hidden" asp-for="@Model.LookupItem.Smscode" />
 					</td>
