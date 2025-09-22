@@ -32,6 +32,7 @@
 - RDS SQL SERVER 
 - AWS Cloud infrastructure  
 - ECR for CI
+- Redis cache for session management
 - ECS for hosting application 
 
 ---
