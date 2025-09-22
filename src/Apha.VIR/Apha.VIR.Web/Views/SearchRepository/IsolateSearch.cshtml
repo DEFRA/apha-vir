@@ -1,6 +1,6 @@
 ﻿@model SearchRepositoryViewModel
 @{
-	ViewData["Title"] = "SearchRepository";
+	ViewData["Title"] = "Search Repository";
 }
 <form asp-action="Search" method="post">
 	<input type="hidden" name="IsNewSearch" value="true" />
@@ -62,13 +62,16 @@
 				</tr>
 				<tr>
 					<td>
-						<div class="d-flex justify-content-between">
-							<span class="label-style">Virus Characteristics
-								<br /><span style="font-size:8pt"> (you can specify up to three) </span>
-							</span>
+						@if (Model?.CharacteristicSearch != null && Model.CharacteristicSearch.Count > 0)
+						{
+							<div class="d-flex justify-content-between">
+								<span class="label-style">Virus Characteristics
+									<br /><span style="font-size:8pt"> (you can specify up to three) </span>
+								</span>
 
-							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[0]" />
-						</div>
+								<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[0]" />
+							</div>
+						}
 					</td>
 					<td>
 						<div class="d-flex justify-content-between">
@@ -82,10 +85,13 @@
 				</tr>
 				<tr>
 					<td>
-						<div class="d-flex justify-content-between">
-							<span class="label-style"></span>
-							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[1]" />
-						</div>
+						@if (Model?.CharacteristicSearch != null && Model.CharacteristicSearch.Count > 1)
+						{
+							<div class="d-flex justify-content-between">
+								<span class="label-style"></span>
+								<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[1]" />
+							</div>
+						}
 					</td>
 					<td class="">
 						<div class="d-flex justify-content-between">
@@ -99,10 +105,13 @@
 				</tr>
 				<tr>
 					<td>
+						@if (Model?.CharacteristicSearch != null && Model.CharacteristicSearch.Count > 2)
+						{
 						<div class="d-flex justify-content-between">
 							<span class="label-style"></span>
 							<partial name="_CharacteristicSearchControl" for="@Model.CharacteristicSearch[2]" />
 						</div>
+						}
 					</td>
 					<td>
 						<div class="d-flex justify-content-start">

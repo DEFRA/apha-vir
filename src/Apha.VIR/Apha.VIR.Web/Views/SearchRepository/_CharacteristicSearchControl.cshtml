@@ -6,12 +6,15 @@
             <tbody>
                 <tr>
                     <td colspan="5">
-                        <select asp-for="Characteristic" tabindex="2" style="margin-left: 4px;" class="select-dropdown characteristic-ddl width-343">
+                        <select asp-for="Characteristic" style="margin-left: 4px;" class="select-dropdown characteristic-ddl width-343">
                         <option value=""></option>
-                        @foreach (var item in Model.CharacteristicList)
-                        {
-                            <option value="@item.Value" data-type="@item.DataType">@item.Text</option>
-                        }                                             
+                            @if (Model?.CharacteristicList != null)
+                            {
+                                @foreach (var item in Model.CharacteristicList)
+                                {
+                                    <option value="@item.Value" data-type="@item.DataType">@item.Text</option>
+                                }     
+                            }
                     </select>
                     <input type="hidden" asp-for="CharacteristicType" class="characteristic-ddl-type" />
                     </td>
