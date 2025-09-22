@@ -448,17 +448,9 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!SearchCriteria.IsNullOrEmptyGuid(virusCharacteristicId))
             {
-                var (comparators, listValues, yesnolist) = await _isolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId ?? Guid.Empty);
+                var (comparators, listValues) = await _isolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId ?? Guid.Empty);
                 var ComparatorsDdl = comparators.Select(c => new SelectListItem { Value = c.ToString(), Text = c.ToString() }).ToList();
-                List<SelectListItem> listValuesDdl;
-                if (yesnolist.Count == 0)
-                {
-                    listValuesDdl = listValues.Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Name.ToString() }).ToList();
-                }
-                else
-                {
-                    listValuesDdl = yesnolist.Select(l => new SelectListItem { Value = l.ToString(), Text = l.ToString() }).ToList();
-                }
+                var listValuesDdl = listValues.Select(l => new SelectListItem { Value = l.ToString(), Text = l.ToString() }).ToList();
                 return (ComparatorsDdl, listValuesDdl);
             }
             else

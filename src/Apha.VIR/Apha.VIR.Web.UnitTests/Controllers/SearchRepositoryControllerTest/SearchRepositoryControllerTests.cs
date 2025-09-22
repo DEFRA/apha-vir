@@ -481,15 +481,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var comparators = new List<string> { "Equal", "NotEqual" };
-            var yesnolist = new List<string> { "Yes", "No" };
-            var listValues = new List<VirusCharacteristicListEntryDto>
-            {
-                new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Value1" },
-                new VirusCharacteristicListEntryDto { Id = Guid.NewGuid(), Name = "Value2" }
-            };
+            var listValues = new List<string> { "Value1", "Value2" };            
 
             _mockIsolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId)
-            .Returns(Task.FromResult(Tuple.Create(comparators, listValues, yesnolist)));
+            .Returns(Task.FromResult(Tuple.Create(comparators, listValues)));
             SetupMockUserAndRoles();
 
             // Act
@@ -515,11 +510,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             var virusCharacteristicId = Guid.NewGuid();
             var comparators = new List<string>();
-            var yesnolist = new List<string>();
-            var listValues = new List<VirusCharacteristicListEntryDto>();
+            var listValues = new List<string>();           
 
             _mockIsolateSearchService.GetComparatorsAndListValuesAsync(virusCharacteristicId)
-            .Returns(Task.FromResult(Tuple.Create(comparators, listValues, yesnolist)));
+            .Returns(Task.FromResult(Tuple.Create(comparators, listValues)));
             SetupMockUserAndRoles();
 
             // Act

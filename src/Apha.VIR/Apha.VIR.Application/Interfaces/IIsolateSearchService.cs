@@ -5,7 +5,7 @@ namespace Apha.VIR.Application.Interfaces
 {
     public interface IIsolateSearchService
     {
-        Task<Tuple<List<string>, List<VirusCharacteristicListEntryDto>, List<string>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId);
+        Task<Tuple<List<string>, List<string>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId);
         Task<PaginatedResult<IsolateSearchResultDto>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria);
         Task<List<IsolateSearchExportDto>> GetIsolateSearchExportResultAsync(QueryParameters<SearchCriteriaDTO> criteria);
     }
