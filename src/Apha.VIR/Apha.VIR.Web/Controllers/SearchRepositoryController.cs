@@ -44,7 +44,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var searchModel = await LoadIsolateSearchFilterControlsData(null);
-
+            ViewBag.showsummary = true;
             return View("IsolateSearch", searchModel);
         }
 
@@ -56,11 +56,16 @@ namespace Apha.VIR.Web.Controllers
             if (IsNewSearch)
             {
                 criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
+                ViewBag.showsummary = true;
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.showsummary = false;
+                }
 
                 ValidateSearchModel(criteria, ModelState);
 
                 if (!ModelState.IsValid)
-                {
+                {                    
                     ModelState.Remove(nameof(criteria.AVNumber));
                     searchModel = await LoadIsolateSearchFilterControlsData(criteria);
                     await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
