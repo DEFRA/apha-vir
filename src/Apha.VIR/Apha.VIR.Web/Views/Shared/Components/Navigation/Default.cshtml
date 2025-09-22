@@ -10,14 +10,7 @@
             if (i < Model.Count - 1)
             {
                 <li class="breadcrumb-item">
-                    @if (item.Title == "Home")
-                    {
-                        <a title="@item.Description" href="@item.Url">@item.Title</a>
-                    }
-                    else
-                    {
-                        <a title="@item.Description" href="#">@item.Title</a>
-                    }
+                    <a title="@item.Description" href="@item.Url">@item.Title</a>
                 </li>
             }
             else

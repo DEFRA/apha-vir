@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using System.Collections.Generic;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
@@ -29,9 +30,10 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Tuple<List<string>, List<VirusCharacteristicListEntryDto>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId)
+        public async Task<Tuple<List<string>, List<VirusCharacteristicListEntryDto>, List<string>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId)
         {
             List<string> compartaors = new List<string>();
+            List<string> yesNoList = new List<string>();
             List<VirusCharacteristicListEntryDto> listValues = new List<VirusCharacteristicListEntryDto>();
 
             var virusCharacteristics = _mapper.Map<IEnumerable<VirusCharacteristicDto>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync());
@@ -49,17 +51,37 @@ namespace Apha.VIR.Application.Services
                         break;
                     case "Yes/No":
                         compartaors.AddRange(new List<string> { "=" });
+                        yesNoList = new List<string> { "Yes", "No" };
                         break;
                     case "Text":
                         compartaors.AddRange(new List<string> { "=", "contains" });
                         break;
                 }
             }
-            return Tuple.Create(compartaors, listValues);
+            return Tuple.Create(compartaors, listValues, yesNoList);
         }
 
         public async Task<PaginatedResult<IsolateSearchResultDto>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)
         {
+            //Arranged characteristics values in Value_1 and Value_2 for SingleList and YesNo types.
+            foreach(CharacteristicCriteriaDto charItem in criteria.Filter?.CharacteristicSearch ?? Enumerable.Empty<CharacteristicCriteriaDto>())
+            {
+                if(charItem.CharacteristicType == "SingleList" && (charItem.Comparator == "=" || charItem.Comparator == "not equal to"))
+                {
+                    charItem.CharacteristicValue1 = charItem.CharacteristicListValue;
+                }
+                if(charItem.CharacteristicType == "Yes/No")
+                {
+                    if(charItem.CharacteristicListValue == "Yes")
+                    {
+                        charItem.CharacteristicValue1 = "True";
+                    }
+                    else if(charItem.CharacteristicListValue == "No")
+                    {
+                        charItem.CharacteristicValue2 = "False";
+                    }
+                }
+            }
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);
             return _mapper.Map<PaginatedResult<IsolateSearchResultDto>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
         }
