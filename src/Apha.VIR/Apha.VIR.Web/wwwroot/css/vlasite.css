@@ -1225,6 +1225,9 @@ select , input, textarea {
     min-width: 343px !important;
 }
 
-.padd-Left8 {
-    padding-left: 8px !important;
+.padd-Left11 {
+    padding-left: 11px !important;
+}
+.marginLeft15 {
+    margin-left: 15px;
 }
