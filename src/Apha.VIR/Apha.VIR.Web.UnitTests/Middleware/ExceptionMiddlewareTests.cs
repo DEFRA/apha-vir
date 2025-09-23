@@ -43,8 +43,7 @@ namespace Apha.VIR.Web.UnitTests.Middleware
             await _middleware.InvokeAsync(context);
 
             // Assert
-            Assert.Equal("/Error", context.Response.Headers["Location"]);
-            // Cannot assert extension method call directly, ensure no exception is thrown
+            Assert.Equal("/Error", context.Response.Headers.Location.ToString());
         }
 
         [Fact]
@@ -55,7 +54,7 @@ namespace Apha.VIR.Web.UnitTests.Middleware
 
             await _middleware.InvokeAsync(context);
 
-            Assert.Equal("/Error", context.Response.Headers["Location"]);
+            Assert.Equal("/Error", context.Response.Headers.Location.ToString());
         }
 
         [Fact]
@@ -71,7 +70,7 @@ namespace Apha.VIR.Web.UnitTests.Middleware
 
             await _middleware.InvokeAsync(context);
 
-            Assert.Equal("/Error", context.Response.Headers["Location"]);
+            Assert.Equal("/Error", context.Response.Headers.Location.ToString());
         }
 
         [Fact]
@@ -86,7 +85,7 @@ namespace Apha.VIR.Web.UnitTests.Middleware
             await _middleware.InvokeAsync(context);
 
             Assert.StartsWith("application/json", context.Response.ContentType);
-            Assert.Equal("/Error", context.Response.Headers["Location"]);
+            Assert.Equal("/Error", context.Response.Headers.Location.ToString());
         }
 
         [Fact]
@@ -97,7 +96,7 @@ namespace Apha.VIR.Web.UnitTests.Middleware
 
             await _middleware.InvokeAsync(context);
 
-            Assert.Equal("/Error", context.Response.Headers["Location"]);
+            Assert.Equal("/Error", context.Response.Headers.Location.ToString());
         }
     }
 }
