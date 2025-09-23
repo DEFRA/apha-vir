@@ -94,6 +94,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
+                ViewBag.showsummary = true;
                 criteriaPaginationDto = await RetriveThePreviousSearchFilter();
                 criteria = _mapper.Map<SearchCriteria>(criteriaPaginationDto.Filter);
                 criteria.Pagination = new PaginationModel

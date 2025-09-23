@@ -3,6 +3,7 @@ using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.Lookup;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
     {
         private readonly object _lock;
         private readonly ILookupService _lookupService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly LookupController _controller;
         private readonly IHttpContextAccessor _mockHttpContextAccessor;
@@ -23,8 +25,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         public EditTests(AppRolesFixture fixture)
         {
             _lookupService = Substitute.For<ILookupService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new LookupController(_lookupService, _mapper);
+            _controller = new LookupController(_lookupService, 
+                _cacheService,
+                _mapper);
             _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             AuthorisationUtil.Configure(_mockHttpContextAccessor);
             _lock = fixture.LockObject;

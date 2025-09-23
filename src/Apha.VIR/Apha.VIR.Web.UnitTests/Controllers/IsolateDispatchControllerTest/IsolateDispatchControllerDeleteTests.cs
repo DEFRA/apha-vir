@@ -3,6 +3,7 @@ using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         private readonly IIsolatesService _mockIsolatesService;
         private readonly ISubmissionService _mockSubmissionService;
         private readonly ISampleService _mockSampleService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mockMapper;
         private readonly IsolateDispatchController _controller;
         private readonly IHttpContextAccessor _mockHttpContextAccessor;
@@ -31,6 +33,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockSubmissionService = Substitute.For<ISubmissionService>();
             _mockSampleService = Substitute.For<ISampleService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mockMapper = Substitute.For<IMapper>();
             _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             AuthorisationUtil.Configure(_mockHttpContextAccessor);
@@ -41,6 +44,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 _mockIsolatesService,
                 _mockSubmissionService,
                 _mockSampleService,
+                _cacheService,
                 _mockMapper);
         }
 

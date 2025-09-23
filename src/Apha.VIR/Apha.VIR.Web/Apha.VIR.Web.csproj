@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Utilities\SessionBreadcrumbExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Views\VirusCharacteristicsListEntry\VirusCharacteristicListEntryEdit.cshtml" />
   </ItemGroup>
 

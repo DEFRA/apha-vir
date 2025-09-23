@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +18,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly IIsolatesService _isolatesService;
         private readonly ISubmissionService _submissionService;
         private readonly ISampleService _sampleService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public IsolateDispatchController(IIsolateDispatchService isolateDispatchService,
@@ -24,6 +26,7 @@ namespace Apha.VIR.Web.Controllers
             IIsolatesService isolatesService,
             ISubmissionService submissionService,
             ISampleService sampleService,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _isolateDispatchService = isolateDispatchService;
@@ -31,6 +34,7 @@ namespace Apha.VIR.Web.Controllers
             _isolatesService = isolatesService;
             _submissionService = submissionService;
             _sampleService = sampleService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
@@ -65,7 +69,11 @@ namespace Apha.VIR.Web.Controllers
                     DispatchHistoryRecords = dispatchHistoryRecords
                 };
             }
-
+            _cacheService.AddOrUpdateBreadcrumb("/IsolateDispatch/History",
+            new Dictionary<string, string> {
+                { "AVNumber", AVNumber },
+                { "IsolateId", IsolateId.ToString() }
+            });
             return View(viewModel);
         }
 
