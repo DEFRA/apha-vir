@@ -208,5 +208,48 @@ namespace Apha.VIR.Web.UnitTests.Services
              Arg.Any<Exception>(),
              Arg.Any<Func<object, Exception?, string>>());            
         }
+
+        [Fact]
+        public async Task SetCacheValueAsync_UsesProvidedExpiration()
+        {
+            // Arrange
+            var expiration = TimeSpan.FromMinutes(5);
+            DistributedCacheEntryOptions? capturedOptions = null;
+
+            _cache.When(x => x.SetAsync(
+                    "key",
+                    Arg.Any<byte[]>(),
+                    Arg.Any<DistributedCacheEntryOptions>(),
+                    Arg.Any<CancellationToken>()))
+                .Do(ci => capturedOptions = ci.Arg<DistributedCacheEntryOptions>());
+
+            // Act
+            await _service.SetCacheValueAsync("key", "value", expiration);
+
+            // Assert
+            Assert.NotNull(capturedOptions);
+            Assert.Equal(expiration, capturedOptions!.AbsoluteExpirationRelativeToNow);
+        }
+
+        [Fact]
+        public async Task SetCacheValueAsync_UsesDefaultExpirationWhenNull()
+        {
+            // Arrange
+            DistributedCacheEntryOptions? capturedOptions = null;
+
+            _cache.When(x => x.SetAsync(
+                    "key",
+                    Arg.Any<byte[]>(),
+                    Arg.Any<DistributedCacheEntryOptions>(),
+                    Arg.Any<CancellationToken>()))
+                .Do(ci => capturedOptions = ci.Arg<DistributedCacheEntryOptions>());
+
+            // Act
+            await _service.SetCacheValueAsync("key", "value", null);
+
+            // Assert
+            Assert.NotNull(capturedOptions);
+            Assert.Equal(TimeSpan.FromMinutes(60), capturedOptions!.AbsoluteExpirationRelativeToNow);
+        }
     }
 }
