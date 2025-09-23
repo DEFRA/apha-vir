@@ -184,6 +184,113 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             await _isolateViabilityService.Received(1).UpdateIsolateViabilityAsync(dto, "TestUser");
         }
 
+        [Fact]
+        public async Task Edit_Post_ValidateModel_LastModifiedEmpty_AddsModelError()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var isolateViabilityId = Guid.NewGuid();
+
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = Array.Empty<byte>()
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+                .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
+
+            SetupMockUserAndRoles();
+
+            // Act
+            // Pass empty lastModified to trigger ModelState error
+            var result = await _controller.Edit(model);
+
+            // Assert
+            Assert.False(_controller.ModelState.IsValid);
+            Assert.Contains(_controller.ModelState, kvp =>kvp.Value != null && kvp.Value.Errors != null &&
+        kvp.Value.Errors.Any(e => e.ErrorMessage != null && e.ErrorMessage.Contains("Last Modified cannot be empty.")));
+        }
+
+        [Fact]
+        public async Task Edit_Post_ModelStateInvalid_ReturnsEditViewWithModel()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var isolateViabilityId = Guid.NewGuid();
+
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+                .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
+
+            // Simulate user authorized
+            SetupMockUserAndRoles();
+
+            // Force ModelState to be invalid after ValidateModel
+            _controller.ModelState.AddModelError("key", "error");
+
+            var viabilities = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Viable" } };
+            var staffs = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Staff" } };
+            _lookupService.GetAllViabilityAsync().Returns(viabilities);
+            _lookupService.GetAllStaffAsync().Returns(staffs);
+
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Edit", viewResult.ViewName);
+            var returnedModel = Assert.IsType<IsolateViabilityViewModel>(viewResult.Model);
+            Assert.NotNull(returnedModel.ViabilityList);
+            Assert.NotNull(returnedModel.CheckedByList);
+        }
+
+        [Fact]
+        public async Task Edit_Post_UserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var isolateViabilityId = Guid.NewGuid();
+
+            var model = new IsolateViabilityViewModel
+            {
+                IsolateViability = new IsolateViabilityModel
+                {
+                    AVNumber = "AV123",
+                    IsolateViabilityIsolateId = isolateId,
+                    IsolateViabilityId = isolateViabilityId,
+                    LastModified = new byte[8]
+                }
+            };
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+                .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
+
+            _mapper.Map<IsolateViabilityInfoDto>(model.IsolateViability).Returns(new IsolateViabilityInfoDto());
+
+            // Simulate user not authorized
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(model));
+        }
+
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

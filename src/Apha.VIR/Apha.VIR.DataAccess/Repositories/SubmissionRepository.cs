@@ -146,7 +146,7 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
 
     public async Task DeleteSubmissionAsync(Guid submissionId, string userId, byte[] lastModified)
     {
-        await _context.Database.ExecuteSqlRawAsync(
+        await ExecuteSqlAsync(
            "EXEC spSubmissionDelete @UserID, @SubmissionId, @LastModified",
            new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = userId },
            new SqlParameter("@SubmissionId", SqlDbType.UniqueIdentifier) { Value = submissionId },

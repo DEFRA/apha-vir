@@ -368,6 +368,110 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SampleControllerTest
             Assert.False(model[1].Active);
         }
 
+        [Fact]
+        public async Task Create_Get_WithNullAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Create((string)null!);
+
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirect.ActionName);
+            Assert.Equal("Home", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task Create_Get_WithEmptyAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Create((string)string.Empty);
+
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirect.ActionName);
+            Assert.Equal("Home", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task Create_Post_WhenUserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new SampleViewModel { AVNumber = "AV123" };
+            AuthorisationUtil.AppRoles = new List<string>(); 
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Create(model));
+        }
+
+        [Fact]
+        public async Task Edit_Get_WithNullAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Edit(null!, Guid.NewGuid());
+
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirect.ActionName);
+            Assert.Equal("Home", redirect.ControllerName);
+        }
+
+
+        [Fact]
+        public async Task Edit_Get_WithEmptyAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Edit(string.Empty, Guid.NewGuid());
+
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirect.ActionName);
+            Assert.Equal("Home", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task Edit_Get_WithInvalidModelState_ReturnsBadRequest()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Error", "Test error");
+
+            // Act
+            var result = await _controller.Edit("AV123", Guid.NewGuid());
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Edit_Post_WhenUserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var model = new SampleViewModel { AVNumber = "AV123" };
+            AuthorisationUtil.AppRoles = new List<string>(); 
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(model));
+        }
+
+        [Fact]
+        public async Task GetBreedsBySpecies_WhenUserNotInAnyRole_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); 
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.GetBreedsBySpecies(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task GetLatinBreadList_WhenUserNotInAnyRole_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); 
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.GetLatinBreadList());
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

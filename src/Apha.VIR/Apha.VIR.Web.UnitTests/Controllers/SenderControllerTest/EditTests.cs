@@ -163,6 +163,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             Assert.Equal(countryList, returnedModel.CountryList);
         }
 
+        [Fact]
+        public async Task Edit_Post_ThrowsUnauthorizedAccessException_WhenNotAuthorized()
+        {
+            // Arrange
+            var model = new SenderViewModel
+            {
+                SenderId = Guid.NewGuid(),
+                SenderName = "Test Sender",
+                SenderAddress = "India",
+                SenderOrganisation = "India"
+            };
+            // Simulate not authorized
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(model));
+            Assert.Equal("Update not supported for Sender.", ex.Message);
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

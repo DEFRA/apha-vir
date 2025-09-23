@@ -447,6 +447,164 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsControllerTest
             await _mockVirusCharacteristicService.Received(1).DeleteVirusCharactersticsAsync(id, model.LastModified);
         }
 
+        [Fact]
+        public void Index_UserNotInAnyRole_RedirectsToAccessDenied()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); 
+            var result = _controller.Index();
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal(nameof(AccountController.AccessDenied), redirect.ActionName);
+            Assert.Equal("Account", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task List_UserNotInAnyRole_RedirectsToAccessDenied()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>();
+            // Act
+            var result = await _controller.List();
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal(nameof(AccountController.AccessDenied), redirect.ActionName);
+            Assert.Equal("Account", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task List_ModelStateInvalid_ReturnsBadRequest()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            _controller.ModelState.AddModelError("error", "some error");
+            // Act
+            var result = await _controller.List();
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task BindCharacteristicsGridOnPagination_UserNotInAnyRole_RedirectsToAccessDenied()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>();
+            // Act
+            var result = await _controller.BindCharacteristicsGridOnPagination(1, 10);
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal(nameof(AccountController.AccessDenied), redirect.ActionName);
+            Assert.Equal("Account", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task CreateAsync_Get_UserNotInAnyRole_RedirectsToAccessDenied()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>();
+            // Act
+            var result = await _controller.CreateAsync();
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal(nameof(AccountController.AccessDenied), redirect.ActionName);
+            Assert.Equal("Account", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task CreateAsync_Get_ModelStateInvalid_ReturnsBadRequest()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            _controller.ModelState.AddModelError("error", "some error");
+            // Act
+            var result = await _controller.CreateAsync();
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Create_Post_UserCannotAdd_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+            var model = new VirusCharacteristicsModel
+            {
+                Name = "test",
+                DisplayOnSearch = true,
+                CharacteristicIndex = 0,
+            };
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Create(model));
+        }
+
+        [Fact]
+        public async Task Create_Post_ModelStateInvalid_ReturnsViewWithSelectList()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            _controller.ModelState.AddModelError("error", "some error");
+            var virusTypesDto = new List<VirusCharacteristicDataTypeDto>
+    {
+        new VirusCharacteristicDataTypeDto { Id = Guid.NewGuid(), DataType = "Type1" }
+    };
+            _mockVirusCharacteristicService.GetAllVirusCharactersticsTypeNamesAsync().Returns(virusTypesDto);
+            _mockMapper.Map<List<VirusCharacteristicDataType>>(virusTypesDto).Returns(
+                new List<VirusCharacteristicDataType> { new VirusCharacteristicDataType { Id = virusTypesDto[0].Id, DataType = "Type1" } }
+            );
+            var model = new VirusCharacteristicsModel();
+            // Act
+            var result = await _controller.Create(model);
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var viewModel = Assert.IsType<VirusCharacteristicsModel>(viewResult.Model);
+            Assert.NotNull(viewModel.CharacteristicTypeNameList);
+            Assert.Single(viewModel.CharacteristicTypeNameList);
+        }
+
+        [Fact]
+        public async Task EditAsync_Get_UserNotInAnyRole_RedirectsToAccessDenied()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>();
+            // Act
+            var result = await _controller.EditAsync(Guid.NewGuid());
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal(nameof(AccountController.AccessDenied), redirect.ActionName);
+            Assert.Equal("Account", redirect.ControllerName);
+        }
+
+        [Fact]
+        public async Task Edit_Post_UserCannotEdit_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+            var model = new VirusCharacteristicsModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                CharacteristicIndex = 1
+            };
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(model));
+        }
+
+        [Fact]
+        public async Task Delete_UserCannotDelete_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+            var model = new VirusCharacteristicsModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                CharacteristicIndex = 1,
+                LastModified = new byte[8]
+            };
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Delete(model, model.Id));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)
