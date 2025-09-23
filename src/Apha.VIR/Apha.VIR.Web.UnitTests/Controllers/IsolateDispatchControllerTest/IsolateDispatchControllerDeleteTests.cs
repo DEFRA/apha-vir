@@ -60,6 +60,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                ValidToIssue = false,
                 LastModified = new byte[8]
             };
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
@@ -97,6 +98,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                ValidToIssue = false,
                 LastModified = new byte[8]
             };
 
@@ -127,6 +129,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                ValidToIssue = false,
                 LastModified = new byte[8]
             };
             SetupMockUserAndRoles();
@@ -174,6 +177,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                ValidToIssue = true,
                 LastModified = new byte[8]
             };
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)

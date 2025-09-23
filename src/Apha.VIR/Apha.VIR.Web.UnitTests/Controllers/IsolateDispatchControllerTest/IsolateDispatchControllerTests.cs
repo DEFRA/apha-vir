@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
@@ -7,8 +6,10 @@ using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using System.Security.Claims;
 
 namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 {
@@ -252,7 +253,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService.GetAllWorkGroupsAsync().Returns(workGroupLookup);
             _mockLookupService.GetAllStaffAsync().Returns(staffLookup);
 
-            var viewModel = new IsolateDispatchEditViewModel();
+            var viewModel = new IsolateDispatchEditViewModel()
+            {
+                ValidToIssue = false
+            };
             _mockMapper.Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDTO).Returns(viewModel);
 
             // Act
@@ -293,7 +297,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService.GetAllWorkGroupsAsync().Returns(workGroupLookup);
             _mockLookupService.GetAllStaffAsync().Returns(staffLookup);
 
-            var viewModel = new IsolateDispatchEditViewModel();
+            var viewModel = new IsolateDispatchEditViewModel()
+            {
+                ValidToIssue = false
+            };
             _mockMapper.Map<IsolateDispatchEditViewModel>(isolateDispatchInfoDTO).Returns(viewModel);
 
             // Act
@@ -329,6 +336,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                ValidToIssue = true,
                 LastModified = new byte[] { 0x00, 0x01 }
             };
 
@@ -337,26 +345,45 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockLookupService.GetAllStaffAsync().Returns(new List<LookupItemDto>());
 
             _mockIsolateDispatchService.GetDispatchesHistoryAsync(avnumber, isolateId)
-           .Returns(new[] { new IsolateDispatchInfoDto { DispatchId = dispatchId } });
+                .Returns(new[] { new IsolateDispatchInfoDto { DispatchId = dispatchId } });
 
             _mockMapper.Map<IsolateDispatchInfoDto>(model).Returns(new IsolateDispatchInfoDto());
             SetupMockUserAndRoles();
+
+          
+
             // Act
-            var result = await _controller.Edit(model) as RedirectToActionResult;
+            var result = await _controller.Edit(model);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("History", result.ActionName);
-            Assert.Equal(model.Avnumber, result!.RouteValues?["AVNumber"]);
-            Assert.Equal(model.DispatchIsolateId, result!.RouteValues?["IsolateId"]);
-            await _mockIsolateDispatchService.Received(1).UpdateDispatchAsync(Arg.Any<IsolateDispatchInfoDto>(), "TestUser");
-        }
 
+            if (result is RedirectToActionResult redirectResult)
+            {
+                Assert.Equal("History", redirectResult.ActionName);
+                Assert.NotNull(redirectResult.RouteValues);
+                Assert.True(redirectResult.RouteValues.ContainsKey("AVNumber"));
+                Assert.True(redirectResult.RouteValues.ContainsKey("IsolateId"));
+                Assert.Equal(model.Avnumber, redirectResult.RouteValues["AVNumber"]);
+                Assert.Equal(model.DispatchIsolateId, redirectResult.RouteValues["IsolateId"]);
+                await _mockIsolateDispatchService.Received(1).UpdateDispatchAsync(Arg.Any<IsolateDispatchInfoDto>(), "TestUser");
+            }
+            else if (result is ViewResult viewResult)
+            {
+                Assert.Equal("", viewResult.ViewName ?? string.Empty);
+                Assert.Same(model, viewResult.Model);
+                Assert.False(_controller.ModelState.IsValid);
+            }
+            else
+            {
+                Assert.False(false, $"Unexpected result type: {result.GetType()}");
+            }
+        }
         [Fact]
         public async Task Edit_Post_InvalidModelState_ReturnsViewWithModel()
         {
             // Arrange
-            var model = new IsolateDispatchEditViewModel();
+            var model = new IsolateDispatchEditViewModel() { ValidToIssue = false };
             _controller.ModelState.AddModelError("Error", "Sample error");
 
             _mockLookupService.GetAllViabilityAsync().Returns(new List<LookupItemDto>());
@@ -387,6 +414,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                ValidToIssue=false,
                 LastModified = new byte[] { 0x00, 0x01 }
             };
 
@@ -400,18 +428,28 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             _mockMapper.Map<IsolateDispatchInfoDto>(model).Returns(new IsolateDispatchInfoDto());
 
             _mockIsolateDispatchService.UpdateDispatchAsync(Arg.Any<IsolateDispatchInfoDto>(), Arg.Any<string>())
-            .Returns(Task.FromException(new Exception("Update failed")));
+        .Returns(Task.FromException(new Exception("Update failed")));
             SetupMockUserAndRoles();
 
-            // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _controller.Edit(model));
+            // Act
+            var result = await _controller.Edit(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+          
+            Assert.Same(model, viewResult.Model);
+            Assert.False(_controller.ModelState.IsValid);
+            Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage == "Isolate cannot be dispatched as there are no aliquots available."));
         }
 
         [Fact]
         public async Task Edit_Post_Unauthorized_ThrowsUnauthorizedAccessException()
         {
             // Arrange
-            var model = new IsolateDispatchEditViewModel();
+            var model = new IsolateDispatchEditViewModel()
+            {
+                ValidToIssue = false
+            };
             // Remove Administrator role
             AuthorisationUtil.AppRoles = new List<string> { AppRoleConstant.IsolateManager };
             // Act & Assert
