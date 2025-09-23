@@ -13,14 +13,14 @@ namespace Apha.VIR.Web.Models
         public string? Avnumber { get; set; }
 
         [Display(Name = "Number of Aliquots")]
-        public int NoOfAliquots { get; set; }
+        public int? NoOfAliquots { get; set; }
 
         [Display(Name = "Nomenclature")]
         public string? Nomenclature { get; set; }
 
         [Required]
         [Display(Name = "ValidToIssue")]
-        public bool ValidToIssue { get; set; }
+        public required bool ValidToIssue { get; set; }
 
         [Display(Name = "Viability")]
         public Guid? ViabilityId { get; set; }
