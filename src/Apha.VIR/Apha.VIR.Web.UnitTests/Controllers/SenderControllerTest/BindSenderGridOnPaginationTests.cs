@@ -67,6 +67,20 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
         }
 
         [Fact]
+        public async Task Index_ReturnsBadRequest_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.Index();
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Invalid parameters.", badRequestResult.Value);
+        }
+
+        [Fact]
         public async Task BindSenderGridOnPagination_ReturnsPartialView_whenValidInput()
         {
             // Arrange

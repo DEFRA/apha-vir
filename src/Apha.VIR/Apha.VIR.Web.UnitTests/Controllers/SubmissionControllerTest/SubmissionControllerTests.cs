@@ -64,6 +64,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             await Assert.ThrowsAsync<Exception>(() => _controller.SubmissionLetter(avNumber));
         }
 
+        [Fact]
+        public async Task SubmissionLetter_WhenAVNumberDoesNotExist_RedirectsToHomeIndex()
+        {
+            // Arrange
+            string avNumber = "AV0000-01";
+            _submissionService.AVNumberExistsInVirAsync(avNumber).Returns(false);
+
+            // Act
+            var result = await _controller.SubmissionLetter(avNumber) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Home", result.ControllerName);
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

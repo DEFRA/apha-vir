@@ -10,6 +10,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
     {
         public bool InsertCalled { get; private set; }
         public bool UpdateCalled { get; private set; }
+        public bool DeleteCalled { get; private set; }
 
         private readonly IQueryable<int> _fakeCounts;
         private readonly IQueryable<string> _fakeStrings;
@@ -46,6 +47,12 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
             if (query.Contains("update"))
             {
                 UpdateCalled = true;
+                return Task.FromResult(1);
+            }
+
+            if (query.Contains("delete"))   
+            {
+                DeleteCalled = true;
                 return Task.FromResult(1);
             }
 
@@ -113,6 +120,27 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
 
             Assert.True(repo.UpdateCalled);
         }
+
+        [Fact]
+        public async Task DeleteSubmissionAsync_CallsExecuteSqlAsync()
+        {
+            // Arrange
+            var repo = new TestSubmissionRepository(
+                new Mock<VIRDbContext>().Object,
+                new TestAsyncEnumerable<int>(Array.Empty<int>()),
+                new TestAsyncEnumerable<string>(Array.Empty<string>()));
+
+            var submissionId = Guid.NewGuid();
+            var userId = "user123";
+            var lastModified = new byte[8];
+
+            // Act
+            await repo.DeleteSubmissionAsync(submissionId, userId, lastModified);
+
+            // Assert
+            Assert.True(repo.DeleteCalled);
+        }
+
 
         [Fact]
         public void Constructor_ThrowsArgumentNullException_WhenContextIsNull()

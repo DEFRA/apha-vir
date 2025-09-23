@@ -188,7 +188,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
         }
 
         [Fact]
+#pragma warning disable S4144 // Methods should not have identical implementations
         public async Task Edit_WithDefaultAction_RedirectsToSubmissionSamples()
+#pragma warning restore S4144 // Methods should not have identical implementations
         {
             // Arrange
             var isolateModel = new IsolateAddEditViewModel
@@ -213,6 +215,77 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             var redirectResult = (RedirectToActionResult)result;
             Assert.Equal("Index", redirectResult.ActionName);
             Assert.Equal("SubmissionSamples", redirectResult.ControllerName);
+        }
+
+        [Fact]
+        public async Task Edit_Post_Unauthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var isolateModel = new IsolateAddEditViewModel();
+            AuthorisationUtil.CanEditItem(Arg.Any<string>()).Returns(false);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(isolateModel));
+        }
+
+        [Theory]
+        [InlineData("FTA Cards")]
+        [InlineData("RNA")]
+        public async Task Edit_Get_SetsIsChkDetection_ForSpecialSampleTypes(string sampleTypeName)
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var sampleId = Guid.NewGuid();
+            var isolateId = Guid.NewGuid();
+            var isolate = new IsolateDto { IsolateId = isolateId, IsolateSampleId = sampleId };
+            var isolateModel = new IsolateAddEditViewModel();
+            var submission = new SubmissionDto { DateSubmissionReceived = DateTime.Now, SubmissionId = Guid.NewGuid() };
+            var samples = new List<SampleDto> { new SampleDto { SampleId = sampleId, SampleTypeName = sampleTypeName } };
+
+            _mockIsolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
+            _mockMapper.Map<IsolateAddEditViewModel>(isolate).Returns(isolateModel);
+            _mockIsolateViabilityService.GetLastViabilityByIsolateAsync(isolateId).Returns((IsolateViabilityDto)null!);
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
+            _mockSampleService.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(samples);
+
+            // Act
+            var result = await _controller.Edit(avNumber, sampleId, isolateId);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<IsolateAddEditViewModel>(viewResult.Model);
+            Assert.True(model.IsChkDetection);
+        }
+
+        [Fact]
+        public async Task Edit_Get_SetsPreviousViableFields_WhenViabilityExists()
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var sampleId = Guid.NewGuid();
+            var isolateId = Guid.NewGuid();
+            var isolate = new IsolateDto { IsolateId = isolateId, IsolateSampleId = sampleId };
+            var isolateModel = new IsolateAddEditViewModel();
+            var viability = new IsolateViabilityDto
+            {
+                Viable = Guid.NewGuid(),
+                DateChecked = DateTime.Now,
+                CheckedById = Guid.NewGuid()
+            };
+
+            _mockIsolatesService.GetIsolateByIsolateAndAVNumberAsync(avNumber, isolateId).Returns(isolate);
+            _mockMapper.Map<IsolateAddEditViewModel>(isolate).Returns(isolateModel);
+            _mockIsolateViabilityService.GetLastViabilityByIsolateAsync(isolateId).Returns(viability);
+
+            // Act
+            var result = await _controller.Edit(avNumber, sampleId, isolateId);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<IsolateAddEditViewModel>(viewResult.Model);
+            Assert.Equal(viability.Viable, model.PreviousViable);
+            Assert.Equal(viability.DateChecked, model.PreviousDateChecked);
+            Assert.Equal(viability.CheckedById, model.PreviousCheckedBy);
         }
 
         private void SetupMockUserAndRoles()

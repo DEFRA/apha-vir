@@ -35,7 +35,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 Id = lookupId,
                 Parent = Guid.NewGuid(),
                 AlternateName = true,
-                Smsrelated = false
+                Smsrelated = true
             };
             var lookupViewModel = new LookupViewModel
             {
@@ -43,10 +43,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
                 Parent = lookupResult.Parent,
                 AlternateName = lookupResult.AlternateName,
                 Smsrelated = lookupResult.Smsrelated
-            }; ;
+            };
             var lookupEntries = new PaginatedResult<LookupItemDto>
-            { data = new List<LookupItemDto> { new LookupItemDto() }, TotalCount = 0 };
-            var lookupItems = new List<LookupItemModel>();
+            {
+                data = new List<LookupItemDto> { new LookupItemDto() },
+                TotalCount = 1
+            };
+            var lookupItems = new List<LookupItemModel> { new LookupItemModel() };
 
             _mockLookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mockMapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
@@ -60,7 +63,19 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var partialViewResult = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_LookupItemList", partialViewResult.ViewName);
             var model = Assert.IsType<LookupItemListViewModel>(partialViewResult.Model);
+
+            // Assert LookupItemListViewModel properties
             Assert.Equal(lookupId, model.LookupId);
+            Assert.True(model.ShowParent);
+            Assert.True(model.ShowAlternateName);
+            Assert.True(model.ShowSMSRelated);
+            Assert.Single(model.LookupItems);
+
+            // Assert Pagination
+            Assert.NotNull(model.Pagination);
+            Assert.Equal(pageNo, model.Pagination.PageNumber);
+            Assert.Equal(pageSize, model.Pagination.PageSize);
+            Assert.Equal(1, model.Pagination.TotalCount);
         }
 
         [Fact]

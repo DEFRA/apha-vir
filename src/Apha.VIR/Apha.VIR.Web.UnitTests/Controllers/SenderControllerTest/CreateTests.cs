@@ -104,6 +104,32 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             Assert.Equal("Index", viewResult.ActionName);
         }
 
+        [Fact]
+        public async Task Create_Get_ReturnsBadRequest_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.Create();
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<SerializableError>(badRequestResult.Value);
+        }
+        [Fact]
+        public async Task Create_Post_ThrowsUnauthorizedAccessException_WhenNotAuthorized()
+        {
+            // Arrange
+            var model = new SenderViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
+            // Simulate not authorized
+            AuthorisationUtil.AppRoles = new List<string>(); 
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Create(model));
+            Assert.Equal("Insert not supported for Sender.", ex.Message);
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

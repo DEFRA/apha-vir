@@ -83,6 +83,20 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SenderControllerTest
             Assert.Equal(model, viewResult.Model);
         }
 
+        [Fact]
+        public async Task Delete_ThrowsUnauthorizedAccessException_WhenNotAuthorized()
+        {
+            // Arrange
+            var model = new SenderViewModel { SenderName = "Test Sender", SenderAddress = "test", SenderOrganisation = "India" };
+            var senderId = Guid.NewGuid();
+            // Simulate not authorized
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Delete(model, senderId));
+            Assert.Equal("Delete not supported for Sender.", ex.Message);
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

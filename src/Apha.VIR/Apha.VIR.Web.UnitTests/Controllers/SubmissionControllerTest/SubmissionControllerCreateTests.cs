@@ -107,6 +107,41 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             Assert.Equal("SubmissionSamples", result.ControllerName);
         }
 
+        [Fact]
+        public async Task Create_Get_WithNullAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Create((string)null!) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Home", result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Create_Get_WithEmptyAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Create(string.Empty) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Home", result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Create_Post_WhenUserNotAuthorised_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var submission = new SubmissionCreateViewModel();
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Create(submission));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)
