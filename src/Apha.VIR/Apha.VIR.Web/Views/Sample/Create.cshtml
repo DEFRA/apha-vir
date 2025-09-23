@@ -119,7 +119,7 @@
 			$('#latinBreedButton').click(function () {
 				$.get('@Url.Action("GetLatinBreadList", "Sample")', function (data) {
 					$('#latinBreedContent').html(data);
-					$("#latinBreedModal .modal-dialog").css("max-width", "550px");
+					$("#latinBreedModal .modal-dialog").css("max-width", "fit-content");
 					$('#latinBreedModal .modal-dialog').css('margin-top', '190px');
 					$('#latinBreedModal').modal('show');
 					$('#latinBreedModal').on('shown.bs.modal', function () {

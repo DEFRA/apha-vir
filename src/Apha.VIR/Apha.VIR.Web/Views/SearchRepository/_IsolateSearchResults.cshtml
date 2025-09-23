@@ -1,5 +1,5 @@
 ﻿@model IsolateSearchGirdViewModel
-@if (Model.IsolateSearchResults.Count > 0)
+@if (Model?.IsolateSearchResults != null && Model.IsolateSearchResults.Count > 0 && Model?.Pagination != null)
 {
 	<div class="d-flex ">
 		<span id="lblNumberOfIsolates" class="search-repository-label ">Number of Isolates found matching the above criteria: @Model.Pagination.TotalCount</span>

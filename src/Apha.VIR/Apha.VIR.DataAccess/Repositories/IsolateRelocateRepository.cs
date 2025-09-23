@@ -8,15 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
-public class IsolateRelocateRepository : IIsolateRelocateRepository
+public class IsolateRelocateRepository : RepositoryBase<IsolateRelocate>, IIsolateRelocateRepository
 {
-    private readonly VIRDbContext _context;
-    public IsolateRelocateRepository(VIRDbContext context)
+    private new readonly VIRDbContext _context;
+    public IsolateRelocateRepository(VIRDbContext context) : base(context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<IEnumerable<IsolateRelocate>> GetIsolatesByCriteria(string? min, string? max, Guid? freezer, Guid? tray)
+    public virtual async Task<IEnumerable<IsolateRelocate>> GetIsolatesByCriteria(string? min, string? max, Guid? freezer, Guid? tray)
     {
         var parameters = new[]
         {
@@ -30,7 +30,7 @@ public class IsolateRelocateRepository : IIsolateRelocateRepository
             "EXEC spIsolateRelocateGetByCriteria @MinAVNumber, @MaxAVNumber, @Freezer, @Tray", parameters).ToListAsync();
 
     }
-    public async Task UpdateIsolateFreezeAndTrayAsync(IsolateRelocate item)
+    public virtual async Task UpdateIsolateFreezeAndTrayAsync(IsolateRelocate item)
     {
         if (item.UpdateType == "Isolate")
         {
