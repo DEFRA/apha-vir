@@ -173,6 +173,41 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             await Assert.ThrowsAsync<Exception>(() => _controller.Edit(submission));
         }
 
+        [Fact]
+        public async Task Edit_Get_WithNullAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Edit((string)null!) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Home", result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Edit_Get_WithEmptyAVNumber_RedirectsToHomeIndex()
+        {
+            // Act
+            var result = await _controller.Edit(string.Empty) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Home", result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Edit_Post_WhenUserNotAuthorised_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var submission = new SubmissionEditViewModel();
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Edit(submission));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)
