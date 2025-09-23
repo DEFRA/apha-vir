@@ -43,7 +43,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);
-            Assert.IsAssignableFrom<AuditIsolateViabilityLogModel>(partial.Model);
+            Assert.IsAssignableFrom<List<AuditIsolateViabilityLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditIsolateViabilityLogModel>(partial.Model);
+            Assert.IsType<List<AuditIsolateViabilityLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var result = await _controller.GetAuditLogs("viability");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditIsolateViabilityLogModel>(partial.Model);
+            Assert.IsType<List<AuditIsolateViabilityLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var result = await _controller.GetAuditLogs("viability");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditIsolateViabilityLogModel>(partial.Model);
+            Assert.IsType<List<AuditIsolateViabilityLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var result = await _controller.GetAuditLogs("viability");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditIsolateViabilityLogModel>(partial.Model);
+            Assert.IsType<List<AuditIsolateViabilityLogModel>>(partial.Model);
         }
     }
 }

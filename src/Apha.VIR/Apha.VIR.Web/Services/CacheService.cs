@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Utilities;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
 namespace Apha.VIR.Web.Services
@@ -8,6 +10,7 @@ namespace Apha.VIR.Web.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDistributedCache _cache;
         private readonly ILogger<CacheService> _logger;
+        private const string SessionKey = "BreadcrumbTrail";
 
         public CacheService(
             IHttpContextAccessor httpContextAccessor,
@@ -101,6 +104,45 @@ namespace Apha.VIR.Web.Services
             {
                 _logger.LogError(ex, "Failed to remove cache value for key {Key}", key);
             }
+        }        
+
+        public void AddOrUpdateBreadcrumb(string url, Dictionary<string, string> parameters)
+        {
+            var list = GetBreadcrumbs();
+
+            var existing = list.FirstOrDefault(x => x.Url.Equals(url, StringComparison.OrdinalIgnoreCase));
+            if (existing != null)
+            {
+                existing.Parameters = parameters;
+            }
+            else
+            {
+                list.Add(new BreadcrumbEntry { Url = url, Parameters = parameters });
+            }
+
+            SetSessionValue(SessionKey, System.Text.Json.JsonSerializer.Serialize(list));
+        }
+        
+        public string? GetFullUrlFor(string? url)
+        {
+            var list = GetBreadcrumbs();
+            var entry = list.FirstOrDefault(x => x.Url.Equals(url, StringComparison.OrdinalIgnoreCase));
+
+            if (entry == null) return null;
+
+            if (entry.Parameters == null || entry.Parameters.Count == 0)
+                return entry.Url;
+
+            var query = string.Join("&", entry.Parameters.Select(p => $"{p.Key}={Uri.EscapeDataString(p.Value)}"));
+            return $"{entry.Url}?{query}";
+        }
+
+        private List<BreadcrumbEntry> GetBreadcrumbs()
+        {
+            var json = GetSessionValue(SessionKey);
+            return string.IsNullOrEmpty(json)
+                ? new List<BreadcrumbEntry>()
+                : System.Text.Json.JsonSerializer.Deserialize<List<BreadcrumbEntry>>(json)!;
         }
     }
 
@@ -112,6 +154,8 @@ namespace Apha.VIR.Web.Services
         Task SetCacheValueAsync<T>(string key, T value, TimeSpan? expiration = null);
         Task<T?> GetCacheValueAsync<T>(string key);
         Task RemoveCacheValueAsync(string key);
+        void AddOrUpdateBreadcrumb(string url, Dictionary<string, string> parameters);
+        string? GetFullUrlFor(string? url);
     }
 }
 

@@ -238,5 +238,5 @@
 });
 
 function ClearSearchFilter() {
-    window.location.href = '/SearchRepository/Index';    
+    window.location.href = '/SearchRepository';    
 }

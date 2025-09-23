@@ -77,7 +77,7 @@
 						<div class="d-flex justify-content-between">
 							<span asp-for="HostPurpose" class="ms-5 label-styleRight"> Host Purpose</span>
 
-							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" class="select-dropdown min-width343">
+							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model?.HostPurposeList" class="select-dropdown min-width343">
 								<option value=""></option>
 							</select>
 						</div>
@@ -97,7 +97,7 @@
 						<div class="d-flex justify-content-between">
 							<span asp-for="SampleType" class=" ms-5 label-styleRight">Sample Type</span>
 
-							<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" class="select-dropdown min-width343">
+							<select id="ddlSampleType" asp-for="SampleType" asp-items="Model?.SampleTypeList" class="select-dropdown min-width343">
 								<option value=""></option>
 							</select>
 						</div>
@@ -118,7 +118,7 @@
 							<span class=" ms-5  word-break label-styleRight"><span asp-for="YearOfIsolation">Year of Isolation / FTA Absorption &nbsp;&nbsp;</span></span>
 
 							<span>
-								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" class="width-110 select-dropdown">
+								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model?.YearsList" class="width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -133,7 +133,7 @@
 							<span class="ms-5 word-break label-styleRight"><span asp-for="YearOfSubmissionRecieved">Year Submission Received &nbsp;&nbsp;</span></span>
 
 							<span>
-								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList"  class=" width-110 select-dropdown">
+								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model?.YearsList" class=" width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -144,7 +144,7 @@
 				<tr>
 					<td>
 						<div class="d-flex justify-content-between align-items-center">
-							
+
 							<div class="label-style"><span>Created Date</span></div>
 							<div>
 								<span class="me-1">From</span>
@@ -155,7 +155,7 @@
 								<span class="me-1  ms-2">To</span>
 
 								<input type="date" asp-for="CreatedToDate" />
-
+								
 							</div>
 						</div>
 					</td>
@@ -166,12 +166,12 @@
 								<span class="me-2">From</span>
 
 								<input type="date" asp-for="ReceivedFromDate" />
-
+								
 							</div>
 							<div class="d-inline-flex align-items-center">
 								<span class="me-2  ms-2">To</span>
 								<input type="date" asp-for="ReceivedToDate" />
-
+								
 							</div>
 						</div>
 					</td>
@@ -185,8 +185,8 @@
 			@* <a id="searchRepoClearSearch" class="sp-button" href="@Url.Action(null, null)">Clear Search</a> *@
 			<button id="searchRepoClearSearch" type="button" class="btnLink" onclick="ClearSearchFilter()">Clear Search</button>
 		</div>
-		<div>			
-			@if (Model.IsFilterApplied && Model.IsolateSearchGird!.IsolateSearchResults!.Any())
+		<div>
+			@if (Model!.IsFilterApplied && Model.IsolateSearchGird!.IsolateSearchResults!.Any())
 			{
 				<a id="searchRepolinkExport" href="@Url.Action("ExportToExcel", "SearchRepository")">Export to Excel</a>
 			}
@@ -196,9 +196,24 @@
 			}
 			&nbsp;
 		</div>
-		<div id="pnlValidation" asp-validation-summary="All" class="spvalidation">
-			<span id="lblValidationMessage" class="validation"></span>
-		</div>
+		@if (ViewBag.showsummary)
+		{
+			<div id="pnlValidation" asp-validation-summary="All" class="spvalidation">
+				<span id="lblValidationMessage" class="validation"></span>
+			</div>
+		}
+		else
+		{
+			<div class="text-danger mt-3 spvalidation">
+				<ul>
+					<li><span asp-validation-for="CreatedFromDate"></span></li>
+					<li><span asp-validation-for="CreatedToDate"></span></li>
+					<li><span asp-validation-for="ReceivedFromDate"></span></li>
+					<li><span asp-validation-for="ReceivedToDate"></span></li>
+				</ul>				
+			</div>
+		}
+
 	</div>
 </form>
 <div id="gridIsolateResult">
