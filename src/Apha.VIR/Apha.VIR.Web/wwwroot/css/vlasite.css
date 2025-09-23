@@ -912,7 +912,7 @@ a {
     border-collapse: collapse;
     border: 1px solid gray;
     table-layout: auto; /* auto-sizes columns based on content */
-    width: auto; /* do not force 100% */
+    width: 100%; /* do not force 100% */
     box-sizing: border-box;
 }
 
@@ -1003,7 +1003,7 @@ button.isolaterelocate-btn-link-custom.btn-link {
     border-collapse: collapse;
    
     border: 1px solid #0b2677;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
     .VIRtable td {
