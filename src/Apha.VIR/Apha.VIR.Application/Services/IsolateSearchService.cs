@@ -30,11 +30,10 @@ namespace Apha.VIR.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Tuple<List<string>, List<VirusCharacteristicListEntryDto>, List<string>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId)
+        public async Task<Tuple<List<string>, List<string>>> GetComparatorsAndListValuesAsync(Guid virusCharateristicId)
         {
             List<string> compartaors = new List<string>();
-            List<string> yesNoList = new List<string>();
-            List<VirusCharacteristicListEntryDto> listValues = new List<VirusCharacteristicListEntryDto>();
+            List<string> listValues = new List<string>();            
 
             var virusCharacteristics = _mapper.Map<IEnumerable<VirusCharacteristicDto>>(await _virusCharacteristicRepository.GetAllVirusCharacteristicsAsync());
             VirusCharacteristicDto? characteristic = virusCharacteristics.FirstOrDefault(c => c.Id == virusCharateristicId);
@@ -47,18 +46,19 @@ namespace Apha.VIR.Application.Services
                         break;
                     case "SingleList":
                         compartaors.AddRange(new List<string> { "=", "not equal to", "begins with" });
-                        listValues = _mapper.Map<IEnumerable<VirusCharacteristicListEntryDto>>(await _virusCharacteristicListEntryRepository.GetEntriesByCharacteristicIdAsync(characteristic.Id)).ToList();
+                        var charListValues = _mapper.Map<IEnumerable<VirusCharacteristicListEntryDto>>(await _virusCharacteristicListEntryRepository.GetEntriesByCharacteristicIdAsync(characteristic.Id)).ToList();
+                        listValues = charListValues.Select(v => v.Name).ToList();
                         break;
                     case "Yes/No":
                         compartaors.AddRange(new List<string> { "=" });
-                        yesNoList = new List<string> { "Yes", "No" };
+                        listValues = new List<string> { "Yes", "No" };
                         break;
                     case "Text":
                         compartaors.AddRange(new List<string> { "=", "contains" });
                         break;
                 }
             }
-            return Tuple.Create(compartaors, listValues, yesNoList);
+            return Tuple.Create(compartaors, listValues);
         }
 
         public async Task<PaginatedResult<IsolateSearchResultDto>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)

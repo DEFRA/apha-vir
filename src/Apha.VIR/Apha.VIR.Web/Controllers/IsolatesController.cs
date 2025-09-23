@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -17,13 +18,15 @@ namespace Apha.VIR.Web.Controllers
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly ISubmissionService _submissionService;
         private readonly ISampleService _sampleService;
-        private readonly IMapper _mapper;        
+        private readonly ICacheService _cacheService;
+        private readonly IMapper _mapper;
 
         public IsolatesController(IIsolatesService isolatesService,
              ILookupService lookupService,
              IIsolateViabilityService isolateViabilityService,
-             ISubmissionService submissionService,
-             ISampleService sampleService,
+             ISubmissionService submissionService, 
+             ISampleService sampleService, 
+             ICacheService cacheService,
         IMapper mapper)
         {
             _isolatesService = isolatesService;
@@ -31,6 +34,7 @@ namespace Apha.VIR.Web.Controllers
             _isolateViabilityService = isolateViabilityService;
             _submissionService = submissionService;
             _sampleService = sampleService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
@@ -55,6 +59,9 @@ namespace Apha.VIR.Web.Controllers
                     isolateDetails.IsolateDetails.IsFullViewIsolateDetails = true;
                 }
             }
+
+            _cacheService.AddOrUpdateBreadcrumb("/Isolates/ViewIsolateDetails",
+            new Dictionary<string, string> { { "IsolateId", isolateDetails!.IsolateDetails!.IsolateId.ToString() } });
             return View("IsolateDetails", isolateDetails);
         }
 
@@ -96,7 +103,7 @@ namespace Apha.VIR.Web.Controllers
                 isolateCreateModel.Nomenclature = $"[Virus Type]/" +
                     $"{(string.IsNullOrEmpty(sample?.HostBreedName) ? sample?.HostSpeciesName : sample.HostBreedName)}/" +
                     $"{submission.CountryOfOriginName}/{sample?.SenderReferenceNumber}/[Year of Isolation]";
-            }            
+            }
 
             return View(isolateCreateModel);
         }
@@ -408,6 +415,6 @@ namespace Apha.VIR.Web.Controllers
             }
 
             return IsViabilityInsert;
-        }              
+        }
     }
 }

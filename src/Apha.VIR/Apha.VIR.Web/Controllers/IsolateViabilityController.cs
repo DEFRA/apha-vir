@@ -1,6 +1,7 @@
 ﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -13,14 +14,17 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IIsolateViabilityService _isolateViabilityService;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cacheService;
         private readonly ILookupService _lookupService;
 
         public IsolateViabilityController(IIsolateViabilityService isolateViabilityService,
             ILookupService lookupService,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _isolateViabilityService = isolateViabilityService;
             _lookupService = lookupService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
@@ -43,7 +47,11 @@ namespace Apha.VIR.Web.Controllers
                 Nomenclature = viabilityHistories.FirstOrDefault()?.Nomenclature!,
                 ViabilityHistoryList = viabilityHistories
             };
-
+            _cacheService.AddOrUpdateBreadcrumb("/IsolateViability/History",
+            new Dictionary<string, string> { 
+                { "AVNumber", AVNumber },
+                { "Isolate", Isolate.ToString() } 
+            });
             return View("ViabilityHistory", viewModel);
         }
 

@@ -1,27 +1,29 @@
 ﻿@model PaginationModel
 <div class="pagination">
-
-    @* Previous window *@
-    @if (Model.StartPage > 1)
+    @if(Model.TotalPages > 1)
     {
-        <a class="page" href="#" data-pageno="@(Model.StartPage - 1)">...</a>
-    }
-
-    @for (int i = Model.StartPage; i <= Model.EndPage; i++)
-    {
-        if (i == Model.PageNumber)
+        @* Previous window *@
+        @if (Model.StartPage > 1)
         {
-            <span class="page active">@i</span>
+            <a class="page" href="#" data-pageno="@(Model.StartPage - 1)">...</a>
         }
-        else
-        {
-            <a class="page" href="#" data-pageno="@i">@i</a>
-        }
-    }
 
-    @* Next window *@
-    @if (Model.EndPage < Model.TotalPages)
-    {
-        <a class="page" href="#" data-pageno="@(Model.EndPage + 1)">...</a>
-    }
+        @for (int i = Model.StartPage; i <= Model.EndPage; i++)
+        {
+            if (i == Model.PageNumber)
+            {
+                <span class="page active">@i</span>
+            }
+            else
+            {
+                <a class="page" href="#" data-pageno="@i">@i</a>
+            }
+        }
+
+        @* Next window *@
+        @if (Model.EndPage < Model.TotalPages)
+        {
+            <a class="page" href="#" data-pageno="@(Model.EndPage + 1)">...</a>
+        }
+    }    
 </div>

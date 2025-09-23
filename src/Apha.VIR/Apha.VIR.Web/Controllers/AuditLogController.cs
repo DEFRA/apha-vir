@@ -62,6 +62,7 @@ namespace Apha.VIR.Web.Controllers
                         ShowErrorSummary = showerrorSummary
 
                     };
+                    await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
                     return View("AuditLog", model);
                 }
 
@@ -185,7 +186,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                return PartialView("_SubmissionAuditLogResults", new AuditSubmissionLogModel());
+                return PartialView("_SubmissionAuditLogResults", new List<AuditSubmissionLogModel>());
             }
         }
 
@@ -206,7 +207,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                return PartialView("_SampleAuditLogResults", new AuditSampleLogModel());
+                return PartialView("_SampleAuditLogResults", new List<AuditSampleLogModel>());
             }
         }
 
@@ -227,7 +228,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                return PartialView("_IsolateAuditLogResults", new AuditIsolateLogModel());
+                return PartialView("_IsolateAuditLogResults", new List<AuditIsolateLogModel>());
             }
         }
 
@@ -248,7 +249,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                return PartialView("_DispatchAuditLogResults", new AuditDispatchLogModel());
+                return PartialView("_DispatchAuditLogResults", new List<AuditDispatchLogModel>());
             }
         }
 
@@ -269,7 +270,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                return PartialView("_IsolateViabilityAuditLogResults", new AuditIsolateViabilityLogModel());
+                return PartialView("_IsolateViabilityAuditLogResults", new List<AuditIsolateViabilityLogModel>());
             }
         }
 
@@ -290,7 +291,7 @@ namespace Apha.VIR.Web.Controllers
             }
             else
             {
-                return PartialView("_CharacteristicsAuditLogResults", new AuditCharacteristicsLogModel());
+                return PartialView("_CharacteristicsAuditLogResults", new List<AuditCharacteristicsLogModel>());
             }
         }
 
