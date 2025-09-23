@@ -260,6 +260,39 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage.Contains("Freezer Tray")));
         }
 
+        [Fact]
+        public async Task Create_Post_Unauthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var isolateModel = new IsolateAddEditViewModel();
+            AuthorisationUtil.CanAddItem(Arg.Any<string>()).Returns(false);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Create(isolateModel));
+        }
+
+        [Theory]
+        [InlineData("FTA Cards")]
+        [InlineData("RNA")]
+        public async Task Create_Get_SetsIsChkDetection_ForSpecialSampleTypes(string sampleTypeName)
+        {
+            // Arrange
+            var avNumber = "AV123";
+            var sampleId = Guid.NewGuid();
+            _mockSubmissionService.GetSubmissionDetailsByAVNumberAsync(avNumber)
+                .Returns(new SubmissionDto { DateSubmissionReceived = DateTime.Now, });
+            _mockSampleService.GetSamplesBySubmissionIdAsync(Arg.Any<Guid>())
+                .Returns(new List<SampleDto> { new SampleDto { SampleId = sampleId, SampleTypeName = sampleTypeName } });
+
+            // Act
+            var result = await _controller.Create(avNumber, sampleId) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var model = Assert.IsType<IsolateAddEditViewModel>(result.Model);
+            Assert.True(model.IsChkDetection);
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

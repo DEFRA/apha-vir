@@ -203,6 +203,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             Assert.False(_controller.ModelState.IsValid);
         }
 
+        [Fact]
+        public async Task Delete_UserNotAuthorized_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var isolateViabilityId = Guid.NewGuid();
+            var lastModified = Convert.ToBase64String(new byte[] { 1, 2, 3, 4 });
+            var avNumber = "AV123";
+            var isolateId = Guid.NewGuid();
+
+            _isolateViabilityService.GetViabilityByIsolateIdAsync(isolateId)
+                .Returns(new[] { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } });
+
+            // Simulate user not authorized
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.Delete(isolateViabilityId, lastModified, avNumber, isolateId));
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

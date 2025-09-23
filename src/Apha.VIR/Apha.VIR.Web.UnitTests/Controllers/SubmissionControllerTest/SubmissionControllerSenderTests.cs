@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Security;
+using System.Security.Claims;
 using System.Text.Json;
 using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
@@ -297,6 +298,38 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionControllerTest
             Assert.Equal(senderViewModels, partialViewResult.Model);
             await _mockSenderService.Received(1).GetAllSenderOrderByOrganisationAsync(null);
         }
+
+        [Fact]
+        public async Task GetSenderDetails_WhenUserNotInAnyRole_ThrowsSecurityException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<SecurityException>(() => _controller.GetSenderDetails(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task AddSender_WhenUserNotAuthorised_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var senderModel = new SubmissionSenderViewModel();
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.AddSender(senderModel));
+        }
+
+        [Fact]
+        public async Task GetOrganisationDetails_WhenUserNotInAnyRole_ThrowsSecurityException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>(); // No roles
+
+            // Act & Assert
+            await Assert.ThrowsAsync<SecurityException>(() => _controller.GetOrganisationDetails(Guid.NewGuid()));
+        }
+
 
         private void SetupMockUserAndRoles()
         {

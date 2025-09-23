@@ -249,6 +249,108 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolatesControllerTest
             await _mockIsolatesService.Received(1).GenerateNomenclature(avNumber, sampleId, virusType, yearOfIsolation);
         }
 
+        [Fact]
+        public async Task ViewIsolateDetails_SetsIsEditHistoryAndIsFullViewIsolateDetails_WhenUserHasRoles()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var isolateDetailsDto = new IsolateFullDetailDto
+            {
+                IsolateDetails = new IsolateInfoDto(),
+                IsolateViabilityDetails = new List<IsolateViabilityInfoDto>(),
+                IsolateDispatchDetails = new List<IsolateDispatchInfoDto>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfoDto>()
+            };
+            var isolateViewModel = new IsolateDetailsViewModel
+            {
+                IsolateDetails = new IsolateDetails(),
+                IsolateViabilityDetails = new List<IsolateViabilityCheckInfo>(),
+                IsolateDispatchDetails = new List<IsolateDispatchInfo>(),
+                IsolateCharacteristicDetails = new List<IsolateCharacteristicInfo>()
+            };
+
+            _mockIsolatesService.GetIsolateFullDetailsAsync(isolateId).Returns(isolateDetailsDto);
+            _mockMapper.Map<IsolateDetailsViewModel>(isolateDetailsDto).Returns(isolateViewModel);
+
+            // Simulate both roles
+            AuthorisationUtil.CanGetItem(Arg.Is(AppRoleConstant.Administrator)).Returns(true);
+            AuthorisationUtil.CanGetItem(Arg.Is(AppRoleConstant.IsolateManager)).Returns(true);
+
+            // Act
+            var result = await _controller.ViewIsolateDetails(isolateId);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.True(isolateViewModel.IsolateDetails.IsEditHistory);
+            Assert.True(isolateViewModel.IsolateDetails.IsFullViewIsolateDetails);
+        }
+
+        [Fact]
+        public async Task GenerateNomenclature_InvalidModelState_ThrowsIfNull()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("error", "some error");
+            string avNumber = null!;
+            Guid sampleId = Guid.Empty;
+            string virusType = "TestVirus";
+            string yearOfIsolation = "2023";
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _controller.GenerateNomenclature(avNumber, sampleId, virusType, yearOfIsolation));
+        }
+
+        [Fact]
+        public async Task GetVirusTypesByVirusFamily_UserNotInAnyRole_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange: Remove all roles so IsUserInAnyRole() returns false
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.GetVirusTypesByVirusFamily(null));
+        }
+
+        [Fact]
+        public async Task GetTraysByFeezer_UserNotInAnyRole_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            AuthorisationUtil.AppRoles = new List<string>();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _controller.GetTraysByFeezer(null));
+        }
+
+        [Fact]
+        public async Task GetVirusTypesByVirusFamily_InvalidModelState_ReturnsEmptyList()
+        {
+            // Arrange
+            SetupMockUserAndRoles(); 
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.GetVirusTypesByVirusFamily(null);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var list = Assert.IsType<List<CustomSelectListItem>>(jsonResult.Value);
+            Assert.Empty(list);
+        }
+
+        [Fact]
+        public async Task GetTraysByFeezer_InvalidModelState_ReturnsEmptyList()
+        {
+            // Arrange
+            SetupMockUserAndRoles();
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.GetTraysByFeezer(null);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var list = Assert.IsType<List<SelectListItem>>(jsonResult.Value);
+            Assert.Empty(list);
+        }
+
         private void SetupMockUserAndRoles()
         {
             lock (_lock)

@@ -37,10 +37,30 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupResult = new LookupDto { Id = lookupId, Name = "Test Lookup" };
-            var lookupViewModel = new LookupViewModel { Id = lookupId, Name = "Test Lookup" };
-            var lookupEntries = new PaginatedResult<LookupItemDto> { data = new List<LookupItemDto>(), TotalCount = 0 };
-            var lookupItems = new List<LookupItemModel>();
+            var lookupResult = new LookupDto
+            {
+                Id = lookupId,
+                Name = "Test Lookup",
+                ReadOnly = true,
+                Parent = Guid.NewGuid(),
+                AlternateName = true,
+                Smsrelated = true
+            };
+            var lookupViewModel = new LookupViewModel
+            {
+                Id = lookupId,
+                Name = "Test Lookup",
+                ReadOnly = true,
+                Parent = lookupResult.Parent,
+                AlternateName = true,
+                Smsrelated = true
+            };
+            var lookupEntries = new PaginatedResult<LookupItemDto>
+            {
+                data = new List<LookupItemDto> { new LookupItemDto() },
+                TotalCount = 1
+            };
+            var lookupItems = new List<LookupItemModel> { new LookupItemModel() };
 
             _lookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
@@ -55,7 +75,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("LookupItem", viewResult.ViewName);
             var model = Assert.IsType<LookupListViewModel>(viewResult.Model);
+
+            // Assert LookupListViewModel properties
             Assert.Equal(lookupId, model.LookupId);
+            Assert.Equal("Test Lookup Look-up List", model.LookupName);
+            Assert.True(model.IsReadOnly);
+
+            // Assert LookupItemListViewModel properties
+            Assert.NotNull(model.LookupItemResult);
+            Assert.Equal(lookupId, model.LookupItemResult.LookupId);
+            Assert.True(model.LookupItemResult.ShowParent);
+            Assert.True(model.LookupItemResult.ShowAlternateName);
+            Assert.True(model.LookupItemResult.ShowSMSRelated);
+            Assert.Single(model.LookupItemResult.LookupItems);
+
+            // Assert Pagination
+            Assert.NotNull(model.LookupItemResult.Pagination);
+            Assert.Equal(1, model.LookupItemResult.Pagination.PageNumber);
+            Assert.Equal(10, model.LookupItemResult.Pagination.PageSize);
+            Assert.Equal(1, model.LookupItemResult.Pagination.TotalCount);
         }
 
         [Fact]
@@ -63,10 +101,26 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
         {
             // Arrange
             var lookupId = Guid.NewGuid();
-            var lookupResult = new LookupDto { Id = lookupId, Name = "Test Lookup" };
-            var lookupViewModel = new LookupViewModel { Id = lookupId, Name = "Test Lookup" };
-            var lookupEntries = new PaginatedResult<LookupItemDto> { data = new List<LookupItemDto>(), TotalCount = 100 };
-            var lookupItems = new List<LookupItemModel>();
+            var lookupResult = new LookupDto
+            {
+                Id = lookupId,
+                Name = "Test Lookup",
+                ReadOnly = true,
+                Parent = Guid.NewGuid(),
+                AlternateName = true,
+                Smsrelated = true
+            };
+            var lookupViewModel = new LookupViewModel
+            {
+                Id = lookupId,
+                Name = "Test Lookup",
+                ReadOnly = true,
+                Parent = lookupResult.Parent,
+                AlternateName = true,
+                Smsrelated = true
+            };
+            var lookupEntries = new PaginatedResult<LookupItemDto> { data = new List<LookupItemDto> { new LookupItemDto() }, TotalCount = 100 };
+            var lookupItems = new List<LookupItemModel> { new LookupItemModel() };
 
             _lookupService.GetLookupByIdAsync(lookupId).Returns(lookupResult);
             _mapper.Map<LookupViewModel>(lookupResult).Returns(lookupViewModel);
@@ -79,9 +133,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<LookupListViewModel>(viewResult.Model);
-            Assert.Equal(2, model.LookupItemResult?.Pagination?.PageNumber);
-            Assert.Equal(20, model.LookupItemResult?.Pagination?.PageSize);
-            Assert.Equal(100, model.LookupItemResult?.Pagination?.TotalCount);
+
+            // Assert LookupListViewModel properties
+            Assert.Equal(lookupId, model.LookupId);
+            Assert.Equal("Test Lookup Look-up List", model.LookupName);
+            Assert.True(model.IsReadOnly);
+
+            // Assert LookupItemListViewModel properties
+            Assert.NotNull(model.LookupItemResult);
+            Assert.Equal(lookupId, model.LookupItemResult.LookupId);
+            Assert.True(model.LookupItemResult.ShowParent);
+            Assert.True(model.LookupItemResult.ShowAlternateName);
+            Assert.True(model.LookupItemResult.ShowSMSRelated);
+            Assert.Single(model.LookupItemResult.LookupItems);
+
+            // Assert Pagination
+            Assert.NotNull(model.LookupItemResult.Pagination);
+            Assert.Equal(2, model.LookupItemResult.Pagination.PageNumber);
+            Assert.Equal(20, model.LookupItemResult.Pagination.PageSize);
+            Assert.Equal(100, model.LookupItemResult.Pagination.TotalCount);
         }
 
         [Fact]
