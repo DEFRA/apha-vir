@@ -32,7 +32,7 @@ namespace Apha.VIR.Web.Components
             }
             else
             {
-                path = "/" + controllerName + "/" + actionName;
+                path = $"/{controllerName}/{actionName}";
             }
             path = path.Replace("SearchRepository/Index", "SearchRepository/Search");
 
