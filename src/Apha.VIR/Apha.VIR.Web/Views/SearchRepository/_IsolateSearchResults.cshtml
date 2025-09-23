@@ -25,7 +25,7 @@
 					<th><a href="" data-sortcolumn="TrayName" data-sortorder="@Model.SortOrderFor("TrayName")">Tray</a></th>
 					<th><a href="" data-sortcolumn="Well" data-sortorder="@Model.SortOrderFor("Well")">Well</a></th>
 					<th colspan="2">
-						
+
 					</th>
 					<th><a href="">Dispatch Warning</a></th>
 				</tr>
@@ -50,7 +50,16 @@
 						<td>@searchModel.TrayName</td>
 						<td>@searchModel.Well</td>
 						<td><a href="@Url.Action("ViewIsolateDetails", "Isolates", new { IsolateId = searchModel.IsolateId })" class="sp-button">View</a></td>
-						<td><a href="@Url.Action("Create", "IsolateDispatch", new { AVNumber = searchModel.Avnumber, IsolateId = searchModel.IsolateId, Source = "Search" })" class="sp-button">Dispatch</a></td>
+						<td>
+							@if (searchModel.IsDispatchEnabled)
+							{
+								<a href="@Url.Action("Create", "IsolateDispatch", new { AVNumber = searchModel.Avnumber, IsolateId = searchModel.IsolateId, Source = "Search" })" class="sp-button">Dispatch</a>
+							}
+							else
+							{
+								<a class="anchor-btn-disabled">Dispatch</a>								
+							}
+						</td>
 						@if ((searchModel.MaterialTransferAgreement || searchModel.IsMixedIsolate) || (!(searchModel.ValidToIssue)))
 						{
 							<td>

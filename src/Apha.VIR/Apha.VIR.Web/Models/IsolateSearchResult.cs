@@ -57,5 +57,6 @@
         public string? CreatedBy { get; set; }
         public string? IsoSmsreferenceNumber { get; set; }
         public string? PhylogeneticFileName { get; set; }
+        public bool IsDispatchEnabled { get; set; } = false;
     }
 }

@@ -95,7 +95,7 @@ namespace Apha.VIR.Web.Utilities
     public static class AppRoleConstant
     {
         public const string IsolateManager = "IsolateManager";
-        public const string IsolateViewer = "IsolateViewerr";
+        public const string IsolateViewer = "IsolateViewer";
         public const string IsolateDeleter = "IsolateDeleter";
         public const string LookupDataManager = "LookupManager";
         public const string ReportViewer = "ReportViewer";
