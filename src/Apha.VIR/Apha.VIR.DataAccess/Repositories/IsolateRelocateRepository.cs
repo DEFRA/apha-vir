@@ -10,10 +10,10 @@ namespace Apha.VIR.DataAccess.Repositories;
 
 public class IsolateRelocateRepository : RepositoryBase<IsolateRelocate>, IIsolateRelocateRepository
 {
-    private new readonly VIRDbContext _context;
+    
     public IsolateRelocateRepository(VIRDbContext context) : base(context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+     
     }
 
     public virtual async Task<IEnumerable<IsolateRelocate>> GetIsolatesByCriteria(string? min, string? max, Guid? freezer, Guid? tray)
@@ -26,7 +26,7 @@ public class IsolateRelocateRepository : RepositoryBase<IsolateRelocate>, IIsola
             new SqlParameter("@Tray",  SqlDbType.UniqueIdentifier) { Value = tray == Guid.Empty ? DBNull.Value : tray }
            
         };
-        return await _context.Database.SqlQueryRaw<IsolateRelocate>(
+        return await SqlQueryRawFor<IsolateRelocate>(
             "EXEC spIsolateRelocateGetByCriteria @MinAVNumber, @MaxAVNumber, @Freezer, @Tray", parameters).ToListAsync();
 
     }
@@ -34,7 +34,7 @@ public class IsolateRelocateRepository : RepositoryBase<IsolateRelocate>, IIsola
     {
         if (item.UpdateType == "Isolate")
         {
-            await _context.Database.ExecuteSqlRawAsync(
+            await ExecuteSqlAsync(
                 "EXEC spIsolateRelocateByIsolate @UserID, @IsolateId, @Freezer, @Tray, @Well, @LastModified OUTPUT, @FreezerName OUTPUT, @TrayName OUTPUT",
                        new SqlParameter("@UserID", SqlDbType.VarChar, 120) { Value = item.UserID },
                        new SqlParameter("@IsolateId", SqlDbType.UniqueIdentifier) { Value = item.IsolateId },
@@ -47,7 +47,7 @@ public class IsolateRelocateRepository : RepositoryBase<IsolateRelocate>, IIsola
         }
         else if (item.UpdateType == "Tray")
         {
-            await _context.Database.ExecuteSqlRawAsync(
+            await ExecuteSqlAsync(
                 "EXEC spIsolateRelocateByTray @Freezer, @Tray",
                        new SqlParameter("@Freezer", SqlDbType.UniqueIdentifier) { Value = item.Freezer },
                        new SqlParameter("@Tray", SqlDbType.UniqueIdentifier) { Value = item.Tray });
