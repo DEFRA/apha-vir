@@ -44,7 +44,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_SampleAuditLogResults", partial.ViewName);
-            Assert.IsAssignableFrom<AuditSampleLogModel>(partial.Model);
+            Assert.IsAssignableFrom<List<AuditSampleLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_SampleAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditSampleLogModel>(partial.Model);
+            Assert.IsType<List<AuditSampleLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Assert
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_SampleAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditSampleLogModel>(partial.Model);
+            Assert.IsType<List<AuditSampleLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Assert
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_SampleAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditSampleLogModel>(partial.Model);
+            Assert.IsType<List<AuditSampleLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Assert
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_SampleAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditSampleLogModel>(partial.Model);
+            Assert.IsType<List<AuditSampleLogModel>>(partial.Model);
         }
 
     }

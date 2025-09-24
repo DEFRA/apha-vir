@@ -1,58 +1,71 @@
 [
     {
         "title": "Home",
-        "url": "/",
+        "url": "/Home/Index",
         "description": "The Virus Isolates Respository Application Home Page",
         "children": [
             {
                 "title": "Submission Selection",
-                "url": "/GetAVNumber",
+                "url": "/GetAVNumber/Index",
                 "description": "Enter AV Number",
                 "children": []
             },
             {
                 "title": "Submission - Samples and Isolates",
-                "url": "/SubmissionSamples",
+                "url": "/SubmissionSamples/Index",
                 "description": "",
                 "children": [
                     {
-                        "title": "Samples from SMS",
-                        "url": "/SMSamples",
-                        "description": "",
-                        "children": []
-                    },
-                    {
-                        "title": "Isolates from SMS",
-                        "url": "/SMIsolates",
-                        "description": "",
+                        "title": "Submission Details",
+                        "url": "/Submission/Create",
+                        "description": "Submission Details",
                         "children": []
                     },
                     {
                         "title": "Submission Details",
-                        "url": "/SubmissionDetails",
+                        "url": "/Submission/Edit",
                         "description": "Submission Details",
                         "children": []
                     },
                     {
                         "title": "Submission Letter",
-                        "url": "/SubmissionLetter",
+                        "url": "/Submission/SubmissionLetter",
                         "description": "",
                         "children": []
                     },
                     {
                         "title": "Sample Details",
-                        "url": "/SampleDetails",
+                        "url": "/Sample/Create",
+                        "description": "",
+                        "children": []
+                    },
+                    {
+                        "title": "Sample Details",
+                        "url": "/Sample/Edit",
                         "description": "",
                         "children": []
                     },
                     {
                         "title": "Isolate Details",
-                        "url": "/IsolateDetails",
+                        "url": "/Isolates/Create",
                         "description": "",
                         "children": [
                             {
                                 "title": "Isolate Characteristics",
-                                "url": "/IsolateCharacteristics",
+                                "url": "/IsolateCharacteristics/Edit",
+                                "description": "",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Isolate Details",
+                        "url": "/Isolates/Edit",
+                        "description": "",
+                        "children": [
+                            {
+                                "title": "Isolate Characteristics",
+                                "url": "/IsolateCharacteristics/Edit",
                                 "description": "",
                                 "children": []
                             }
@@ -88,7 +101,7 @@
             },
             {
                 "title": "Report Selection Page",
-                "url": "/Reports",
+                "url": "/Reports/Index",
                 "description": "",
                 "children": [
                     {
@@ -102,12 +115,18 @@
                         "url": "/Reports/GenerateReport",
                         "description": "",
                         "children": []
-                    }                    
+                    }
                 ]
             },
             {
                 "title": "Dispatch Virus Isolates",
                 "url": "/IsolateDispatch/Create",
+                "description": "Dispatch Virus Isolate Aliquots",
+                "children": []
+            },
+            {
+                "title": "Dispatch Virus Isolates",
+                "url": "/IsolateDispatch/Edit",
                 "description": "Dispatch Virus Isolate Aliquots",
                 "children": []
             },
@@ -119,7 +138,7 @@
             },
             {
                 "title": "Look-up Lists",
-                "url": "/Lookup",
+                "url": "/Lookup/Index",
                 "description": "Manage look-up lists",
                 "children": [
                     {
@@ -145,7 +164,7 @@
             },
             {
                 "title": "Virus Characteristic Management",
-                "url": "/VirusCharacteristics",
+                "url": "/VirusCharacteristics/Index",
                 "description": "Manage virus characteristics",
                 "children": [
                     {
@@ -188,7 +207,7 @@
                     },
                     {
                         "title": "Virus Characteristic Associations",
-                        "url": "/VirusCharacteristicAssociation",
+                        "url": "/VirusCharacteristicAssociation/Index",
                         "description": "Manage Virus Family and Type characteristic associations",
                         "children": []
                     }
@@ -196,7 +215,7 @@
             },
             {
                 "title": "Sender Management",
-                "url": "/Sender",
+                "url": "/Sender/Index",
                 "description": "Manages list of senders",
                 "children": [
                     {
@@ -215,7 +234,7 @@
             },
             {
                 "title": "Search Repository",
-                "url": "/SearchRepository",
+                "url": "/SearchRepository/Search",
                 "description": "Search the Isolates Repository",
                 "children": [
                     {
@@ -229,7 +248,7 @@
                                 "description": "",
                                 "children": [
                                     {
-                                        "title": "Edit Isolate Dispatch History",
+                                        "title": "Modify Isolate Dispatch History",
                                         "url": "/IsolateDispatch/Edit",
                                         "description": "",
                                         "children": []
@@ -242,7 +261,7 @@
                                 "description": "",
                                 "children": [
                                     {
-                                        "title": "Edit Isolate Viability History",
+                                        "title": "Modify Isolate Viability History",
                                         "url": "/IsolateViability/Edit",
                                         "description": "",
                                         "children": []
@@ -255,7 +274,7 @@
             },
             {
                 "title": "Search Audit Log",
-                "url": "/AuditLog",
+                "url": "/AuditLog/Index",
                 "description": "Search Audit Log",
                 "children": [
                     {
@@ -274,38 +293,26 @@
             },
             {
                 "title": "Unauthorised Access",
-                "url": "/Unauthorised",
+                "url": "/Account/AccessDenied",
                 "description": "Unauthorised access to page",
                 "children": []
             },
             {
                 "title": "System Information",
-                "url": "/SystemInformation",
+                "url": "/SystemInformation/Index",
                 "description": "Displays information about the system",
                 "children": []
             },
             {
                 "title": "Contact Us",
-                "url": "/ContactUs",
+                "url": "/ContactUs/Index",
                 "description": "Contact Us",
                 "children": []
             },
             {
                 "title": "Error Page",
-                "url": "/ErrorPage",
+                "url": "/Error/Index",
                 "description": "Error Page",
-                "children": []
-            },
-            {
-                "title": "Concurrency Error Page",
-                "url": "/ConcurrencyError",
-                "description": "Concurrency Error Page",
-                "children": []
-            },
-            {
-                "title": "Session Timeout Error Page",
-                "url": "/TimeoutError",
-                "description": "Session Timeout Error Page",
                 "children": []
             }
         ]

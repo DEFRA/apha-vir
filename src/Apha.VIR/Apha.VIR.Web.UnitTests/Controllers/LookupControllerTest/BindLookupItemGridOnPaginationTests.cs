@@ -3,6 +3,7 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.Lookup;
+using Apha.VIR.Web.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -13,13 +14,17 @@ namespace Apha.VIR.Web.UnitTests.Controllers.LookupControllerTest
     {
         private readonly LookupController _controller;
         private readonly ILookupService _mockLookupService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mockMapper;
 
         public BindLookupItemGridOnPaginationTests()
         {
             _mockLookupService = Substitute.For<ILookupService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new LookupController(_mockLookupService, _mockMapper);
+            _controller = new LookupController(_mockLookupService,
+                _cacheService,
+                _mockMapper);
         }
 
         [Fact]

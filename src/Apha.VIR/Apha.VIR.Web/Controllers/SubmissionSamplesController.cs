@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -13,18 +14,21 @@ namespace Apha.VIR.Web.Controllers
         private readonly ISampleService _sampleService;
         private readonly IIsolatesService _isolatesService;      
         private readonly IIsolateDispatchService _isolatesDispatchService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public SubmissionSamplesController(ISubmissionService submissionService, 
             ISampleService sampleService, 
             IIsolatesService isolatesService,
             IIsolateDispatchService isolatesDispatchService,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _submissionService = submissionService;
             _sampleService = sampleService;
             _isolatesService = isolatesService;
             _isolatesDispatchService = isolatesDispatchService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
@@ -80,6 +84,9 @@ namespace Apha.VIR.Web.Controllers
                 Samples = sampleList,
                 Isolates = submissionIsolates,
             };
+
+            _cacheService.AddOrUpdateBreadcrumb("/SubmissionSamples/Index",
+            new Dictionary<string, string> { { "AVNumber", AVNumber } });
             return View(viewModel);
         }
 

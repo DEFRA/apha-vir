@@ -3,6 +3,7 @@ using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.Lookup;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -15,11 +16,15 @@ namespace Apha.VIR.Web.Controllers
     public class LookupController : Controller
     {
         private readonly ILookupService _lookupService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
-        public LookupController(ILookupService lookupService, IMapper mapper)
+        public LookupController(ILookupService lookupService, 
+            ICacheService cacheService, 
+            IMapper mapper)
         {
             _lookupService = lookupService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
@@ -67,7 +72,12 @@ namespace Apha.VIR.Web.Controllers
                     }
                 }
             };
-
+            _cacheService.AddOrUpdateBreadcrumb("/Lookup/LookupList",
+            new Dictionary<string, string> { 
+                { "lookupid", lookupid.ToString() },
+                { "pageNo", pageNo.ToString() },
+                { "pageSize", pageSize.ToString() }
+            });
             return View("LookupItem", viewModel);
         }
 

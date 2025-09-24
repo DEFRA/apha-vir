@@ -1,5 +1,6 @@
 ﻿using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
+using Apha.VIR.Web.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -14,8 +15,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
             // Arrange
             var service = Substitute.For<IVirusCharacteristicService>();
             var listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
+            var _cacheService = Substitute.For<ICacheService>();
             var mapper = Substitute.For<IMapper>();
-            var controller = new VirusCharacteristicsListEntryController(service, listEntryService, mapper);
+            var controller = new VirusCharacteristicsListEntryController(service, listEntryService, _cacheService, mapper);
 
             // Act
             var result = controller.Back();

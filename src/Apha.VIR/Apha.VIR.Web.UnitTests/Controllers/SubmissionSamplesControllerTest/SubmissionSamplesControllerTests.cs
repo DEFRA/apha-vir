@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -14,6 +15,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
         private readonly ISampleService _mockSampleService;
         private readonly IIsolatesService _mockIsolatesService;
         private readonly IIsolateDispatchService _mockIsolatesDispatchService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mockMapper;
         private readonly SubmissionSamplesController _controller;
 
@@ -23,8 +25,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SubmissionSamplesControllerTest
             _mockSampleService = Substitute.For<ISampleService>();
             _mockIsolatesService = Substitute.For<IIsolatesService>();
             _mockIsolatesDispatchService = Substitute.For<IIsolateDispatchService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mockMapper = Substitute.For<IMapper>();
-            _controller = new SubmissionSamplesController(_mockSubmissionService, _mockSampleService, _mockIsolatesService, _mockIsolatesDispatchService, _mockMapper);
+            _controller = new SubmissionSamplesController(_mockSubmissionService, 
+                _mockSampleService, 
+                _mockIsolatesService,
+                _mockIsolatesDispatchService, 
+                _cacheService,
+                _mockMapper);
         }
 
         [Fact]

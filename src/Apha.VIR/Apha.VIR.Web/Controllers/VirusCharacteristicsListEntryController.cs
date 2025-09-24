@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.VirusCharacteristic;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,18 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public VirusCharacteristicsListEntryController(
            IVirusCharacteristicService virusCharacteristicService,
            IVirusCharacteristicListEntryService listEntryService,
+           ICacheService cacheService,
            IMapper mapper)
         {
             _virusCharacteristicService = virusCharacteristicService;
             _listEntryService = listEntryService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
    
@@ -60,7 +64,12 @@ namespace Apha.VIR.Web.Controllers
                     }
                 }
             };
-
+            _cacheService.AddOrUpdateBreadcrumb("/VirusCharacteristicsListEntry/ListEntries",
+            new Dictionary<string, string> {
+                { "characteristicId", characteristicId.ToString()??"" },
+                { "pageNo", pageNo.ToString() },
+                { "pageSize", pageSize.ToString() }
+            });
             return View("VirusCharacteristicListEntries", vm);
         }
 

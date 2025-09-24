@@ -4,6 +4,7 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.VirusCharacteristic;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
         private readonly object _lock;
         private readonly IVirusCharacteristicService _service;
         private readonly IVirusCharacteristicListEntryService _listEntryService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private readonly VirusCharacteristicsListEntryController _controller;
         private readonly IHttpContextAccessor _mockHttpContextAccessor;
@@ -26,8 +28,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.VirusCharacteristicsListEntryContro
         {
             _service = Substitute.For<IVirusCharacteristicService>();
             _listEntryService = Substitute.For<IVirusCharacteristicListEntryService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _mapper);
+            _controller = new VirusCharacteristicsListEntryController(_service, _listEntryService, _cacheService, _mapper);
             _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             AuthorisationUtil.Configure(_mockHttpContextAccessor);
             _lock = fixture.LockObject;
