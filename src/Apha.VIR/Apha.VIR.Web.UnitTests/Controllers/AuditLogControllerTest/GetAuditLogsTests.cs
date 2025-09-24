@@ -86,7 +86,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var cacheService = Substitute.For<ICacheService>();
             var mapper = Substitute.For<IMapper>();
             var tempData = Substitute.For<ITempDataDictionary>();
-            cacheService.SetSessionValue("AuditLogSearchCriteria", (string?)null);
+            cacheService.SetSessionValue("AuditLogSearchCriteria", null!);
 
             var controller = new AuditLogController(auditLogService, cacheService, mapper);
 

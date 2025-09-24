@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         public async Task SearchAudit_NotNewSearch_InvalidTempData_ReturnsDefaultView()
         {
             // Arrange           
-            _cacheService.SetSessionValue("AuditLogSearchCriteria", (string?)null);
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", null!);
 
             // Act
             var result = await _controller.SearchAudit(new AuditLogSearchModel(), false);
