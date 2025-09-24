@@ -12,6 +12,9 @@
 .width-90 {
     width: 90%
 }
+.width-350{
+    width:350px;
+}
 
 /*Layout*/
 .master_header_top {
@@ -1058,7 +1061,7 @@ button.isolaterelocate-btn-link-custom.btn-link {
 
     .isolatedetailsblock_Left span {
         display: inline-block;
-        width: auto;
+       
     }
     .isolatedetailsblock_Left p {
         width: 60%;
