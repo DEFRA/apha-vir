@@ -68,7 +68,7 @@ namespace Apha.VIR.Web.Controllers
                 {                    
                     ModelState.Remove(nameof(criteria.AVNumber));
                     searchModel = await LoadIsolateSearchFilterControlsData(criteria);
-                    await _cacheService.RemoveCacheValueAsync(keySearchCriteria);
+                    _cacheService.RemoveSessionValue(keySearchCriteria);
                     searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
                     {
                         IsolateSearchResults = new List<IsolateSearchResult>(),
@@ -95,7 +95,7 @@ namespace Apha.VIR.Web.Controllers
             else
             {
                 ViewBag.showsummary = true;
-                criteriaPaginationDto = await RetriveThePreviousSearchFilter();
+                criteriaPaginationDto = RetriveThePreviousSearchFilter();
                 criteria = _mapper.Map<SearchCriteria>(criteriaPaginationDto.Filter);
                 criteria.Pagination = new PaginationModel
                 {
@@ -118,7 +118,7 @@ namespace Apha.VIR.Web.Controllers
             searchModel.IsolateSearchGird.Pagination = criteria.Pagination;
             searchModel.IsFilterApplied = true;
 
-            await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(criteriaPaginationDto));
+            _cacheService.SetSessionValue(keySearchCriteria, JsonConvert.SerializeObject(criteriaPaginationDto));
             return View("IsolateSearch", searchModel);
         }
 
@@ -197,7 +197,7 @@ namespace Apha.VIR.Web.Controllers
                 return BadRequest("Invalid parameters.");
             }
             var modelIsolateSearchGird = new IsolateSearchGirdViewModel();
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
+            var criteriaString = _cacheService.GetSessionValue(keySearchCriteria);
             if (!String.IsNullOrEmpty(criteriaString))
             {
                 var criteriaDto = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
@@ -221,7 +221,7 @@ namespace Apha.VIR.Web.Controllers
                     SortDirection = criteriaDto.Descending,
                     TotalCount = searchResults.TotalCount
                 };
-                await _cacheService.SetCacheValueAsync(keySearchCriteria, JsonConvert.SerializeObject(criteriaDto));
+                _cacheService.SetSessionValue(keySearchCriteria, JsonConvert.SerializeObject(criteriaDto));
             }
 
             return PartialView("_IsolateSearchResults", modelIsolateSearchGird);
@@ -242,7 +242,7 @@ namespace Apha.VIR.Web.Controllers
         [Authorize(Roles = AppRoleConstant.IsolateManager + "," + AppRoleConstant.IsolateViewer)]
         public async Task<IActionResult> ExportToExcel()
         {
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
+            var criteriaString = _cacheService.GetSessionValue(keySearchCriteria);
             List<IsolateSearchExportViewModel> searchExportRecords = new List<IsolateSearchExportViewModel>();
             var criteriaDto = String.IsNullOrEmpty(criteriaString) ? null : JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
             if (criteriaDto != null)
@@ -471,10 +471,10 @@ namespace Apha.VIR.Web.Controllers
 
         }
 
-        private async Task<QueryParameters<SearchCriteriaDTO>> RetriveThePreviousSearchFilter()
+        private QueryParameters<SearchCriteriaDTO> RetriveThePreviousSearchFilter()
         {
             QueryParameters<SearchCriteriaDTO> previousSearch = new QueryParameters<SearchCriteriaDTO>();
-            var criteriaString = await _cacheService.GetCacheValueAsync<string>(keySearchCriteria);
+            var criteriaString = _cacheService.GetSessionValue(keySearchCriteria);
             if (criteriaString != null)
             {
                 previousSearch = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString)

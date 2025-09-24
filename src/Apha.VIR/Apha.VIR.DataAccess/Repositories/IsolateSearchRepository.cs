@@ -193,18 +193,24 @@ namespace Apha.VIR.DataAccess.Repositories
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.CharacteristicValue1}%")));
+                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.CharacteristicValue1}%") 
+                            && i.IsolateId == c.CharacteristicIsolateId
+                            && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
                     break;
                 case "not equal to":
                     query = query.Where(i => characteristicQuery.Any(c =>
-                        c.CharacteristicValue != characteristicItem.CharacteristicValue1));
+                        c.CharacteristicValue != characteristicItem.CharacteristicValue1 
+                        && i.IsolateId == c.CharacteristicIsolateId
+                        && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     break;
                 default:
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            c.CharacteristicValue == characteristicItem.CharacteristicValue1));
+                            c.CharacteristicValue == characteristicItem.CharacteristicValue1 
+                            && i.IsolateId == c.CharacteristicIsolateId
+                            && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
                     break;
             }
@@ -215,7 +221,9 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
             query = query.Where(i => characteristicQuery.Any(c =>
-                        c.CharacteristicValue == characteristicItem.CharacteristicValue1));
+                        c.CharacteristicValue == characteristicItem.CharacteristicValue1 
+                        && i.IsolateId == c.CharacteristicIsolateId
+                        && c.VirusCharacteristicId == characteristicItem.Characteristic));
             return query;
         }
 
@@ -228,14 +236,18 @@ namespace Apha.VIR.DataAccess.Repositories
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            EF.Functions.Like(c.CharacteristicValue, $"%{characteristicItem.CharacteristicValue1}%")));
+                            EF.Functions.Like(c.CharacteristicValue, $"%{characteristicItem.CharacteristicValue1}%") 
+                            && i.IsolateId == c.CharacteristicIsolateId
+                            && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
                     break;
                 default:
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            c.CharacteristicValue == characteristicItem.CharacteristicValue1));
+                            c.CharacteristicValue == characteristicItem.CharacteristicValue1 
+                            && i.IsolateId == c.CharacteristicIsolateId
+                            && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
                     break;
             }

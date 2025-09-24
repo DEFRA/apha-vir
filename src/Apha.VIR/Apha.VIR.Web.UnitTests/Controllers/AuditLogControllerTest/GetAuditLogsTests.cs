@@ -4,7 +4,6 @@ using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Services;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NSubstitute;
@@ -43,7 +42,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var cacheService = Substitute.For<ICacheService>();
             var mapper = Substitute.For<IMapper>();
             var tempData = Substitute.For<ITempDataDictionary>();
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "{\"AVNumber\":\"AV123\",\"DateTimeFrom\":\"2023-01-01\",\"DateTimeTo\":\"2023-12-31\",\"UserId\":\"testuser\"}");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "{\"AVNumber\":\"AV123\",\"DateTimeFrom\":\"2023-01-01\",\"DateTimeTo\":\"2023-12-31\",\"UserId\":\"testuser\"}");
 
             var controller = new AuditLogController(auditLogService, cacheService, mapper);
 
@@ -65,7 +64,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var cacheService = Substitute.For<ICacheService>();
             var mapper = Substitute.For<IMapper>();
             var tempData = Substitute.For<ITempDataDictionary>();
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "{\"AVNumber\":\"AV123\",\"DateTimeFrom\":\"2023-01-01\",\"DateTimeTo\":\"2023-12-31\",\"UserId\":\"testuser\"}");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "{\"AVNumber\":\"AV123\",\"DateTimeFrom\":\"2023-01-01\",\"DateTimeTo\":\"2023-12-31\",\"UserId\":\"testuser\"}");
 
             var controller = new AuditLogController(auditLogService, cacheService, mapper);
 
@@ -87,7 +86,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var cacheService = Substitute.For<ICacheService>();
             var mapper = Substitute.For<IMapper>();
             var tempData = Substitute.For<ITempDataDictionary>();
-            await cacheService.SetCacheValueAsync("SearchCriteria", (string?)null);
+            cacheService.SetSessionValue("AuditLogSearchCriteria", (string?)null);
 
             var controller = new AuditLogController(auditLogService, cacheService, mapper);
 
@@ -111,7 +110,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var searchCriteriaJson = "{\"AVNumber\":\"AV123\",\"DateTimeFrom\":\"2023-01-01\",\"DateTimeTo\":\"2023-12-31\",\"UserId\":\"testuser\"}";
 
-            cacheService.GetCacheValueAsync<string>("SearchCriteria").Returns(searchCriteriaJson!);
+            cacheService.GetSessionValue("AuditLogSearchCriteria").Returns(searchCriteriaJson!);
 
             auditLogService.GetSubmissionLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
             .Returns(Task.FromResult<IEnumerable<AuditSubmissionLogDto>>(new[] { new AuditSubmissionLogDto() }));

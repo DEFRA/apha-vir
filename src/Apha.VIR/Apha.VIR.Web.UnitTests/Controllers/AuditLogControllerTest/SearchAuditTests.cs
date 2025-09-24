@@ -48,7 +48,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var mappedLogs = new List<AuditSubmissionLogModel> { new AuditSubmissionLogModel(), new AuditSubmissionLogModel() };
             _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(Arg.Any<IEnumerable<object>>()).Returns(mappedLogs);
 
-            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(searchCriteria));   
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", JsonConvert.SerializeObject(searchCriteria));   
 
             // Act
             ValidateModel(searchCriteria, _controller);
@@ -98,8 +98,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var searchCriteriaJson = System.Text.Json.JsonSerializer.Serialize(searchCriteria);
 
-            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(searchCriteria));
-           _cacheService.GetCacheValueAsync<string>("SearchCriteria").Returns(searchCriteriaJson!);
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", JsonConvert.SerializeObject(searchCriteria));
+            _cacheService.GetSessionValue("AuditLogSearchCriteria").Returns(searchCriteriaJson!);
 
             var isolateLogs = new List<AuditIsolateLogDto> { new AuditIsolateLogDto(), new AuditIsolateLogDto() };
             _auditLogService.GetIsolatLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
@@ -128,7 +128,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         public async Task SearchAudit_NotNewSearch_InvalidTempData_ReturnsDefaultView()
         {
             // Arrange           
-            await _cacheService.SetCacheValueAsync("SearchCriteria", (string?)null);
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", (string?)null);
 
             // Act
             var result = await _controller.SearchAudit(new AuditLogSearchModel(), false);
