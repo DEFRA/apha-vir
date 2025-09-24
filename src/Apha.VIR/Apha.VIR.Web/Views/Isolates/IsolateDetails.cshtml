@@ -11,7 +11,7 @@
 
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">AVNumber</span>
-				<span>@Model.IsolateDetails!.Avnumber</span>
+			<span class="width-350">@Model.IsolateDetails!.Avnumber</span>
 				
 			</div>
 
@@ -19,7 +19,9 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Nomenclature
 				</span>
-				<span>@Model.IsolateDetails.Nomenclature</span>
+					<span class="width-350">
+					@Model.IsolateDetails.Nomenclature
+</span>
 
 			</div>
 
@@ -28,15 +30,19 @@
 
 					@if ((Model.IsolateDetails.MaterialTransferAgreement || Model.IsolateDetails.IsMixedIsolate) || (!(Model.IsolateDetails.ValidToIssue)))
 					{
-						<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="yes-label">
+						<span class="width-350">
+				<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="yes-label ">
 							Yes
 						</span>
+				</span>
 					}
 					else
 					{
-						<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="no-label">
+						<span class="width-350">
+				<span id="lblDispatchWarning" disabled="disabled" title="One or more of the following is true: MTA exists, Is a Mixed Isolate, Is not Valid To Issue" class="no-label">
 							No
 						</span>
+				</span>
 					}
 			</div>
 
@@ -44,7 +50,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Mixed Isolate
 				</span>
-				<span>
+			<span class="width-350">
 					@(Model.IsolateDetails.IsMixedIsolate ? "Yes" : "No")
 				</span>
 
@@ -55,7 +61,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Virus Family
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.FamilyName
 				</span>
 
@@ -65,7 +71,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Virus Type
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.TypeName
 				</span>
 
@@ -75,7 +81,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Host Purpose
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.HostPurposeName
 				</span>
 
@@ -85,7 +91,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Sample Type
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.SampleTypeName
 				</span>
 
@@ -95,7 +101,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Group
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.GroupSpeciesName
 				</span>
 
@@ -105,7 +111,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Species
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.BreedName
 				</span>
 
@@ -115,7 +121,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Country Of Origin
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.CountryOfOriginName
 				</span>
 
@@ -125,7 +131,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Year Of Isolation
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.YearOfIsolation
 				</span>
 
@@ -135,7 +141,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Isolation Method
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.IsolationMethodName
 				</span>
 
@@ -145,7 +151,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Received Date
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.ReceivedDate?.ToString("dd/MM/yyyy")
 				</span>
 
@@ -156,7 +162,7 @@
 				<span class="view-isolate-details-label isolatelabel_title">
 					Freezer
 				</span>
-				<span>
+				<span class="width-350">
 					@Model.IsolateDetails.FreezerName
 				</span>
 
@@ -167,7 +173,7 @@
 				<span class="view-isolate-details-label isolatelabel_title">
 					Tray
 				</span>
-				<span>
+				<span class="width-350">
 					@Model.IsolateDetails.TrayName
 				</span>
 
@@ -177,7 +183,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Well
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.Well
 				</span>
 
@@ -187,7 +193,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				No Of Aliquots
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.NoOfAliquots
 				</span>
 
@@ -197,7 +203,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Valid To Issue
 				</span>
-				<span>
+			<span class="width-350">
 					@(Model.IsolateDetails.ValidToIssue ? "Yes" : "No")
 				</span>
 
@@ -207,7 +213,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Why Not Valid To Issue
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.WhyNotValidToIssue
 				</span>
 
@@ -218,7 +224,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Original Sample Available
 				</span>
-				<span>
+			<span class="width-350">
 					@(Model.IsolateDetails.OriginalSampleAvailable ? "Yes" : "No")
 				</span>
 
@@ -227,7 +233,7 @@
 		<div class="rowdetails">
 			<span class="view-isolate-details-label isolatelabel_title">
 				First Viable Passage Number</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.FirstViablePassageNumber
 				</span>
 
@@ -237,7 +243,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Antiserum Produced
 				</span>
-				<span>
+			<span class="width-350">
 					@(Model.IsolateDetails.AntiserumProduced ? "Yes" : "No")
 				</span>
 
@@ -247,7 +253,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Antigen Produced
 				</span>
-				<span>
+			<span class="width-350">
 					@(Model.IsolateDetails.AntigenProduced ? "Yes" : "No")
 				</span>
 
@@ -257,7 +263,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Phylogenetic Analysis
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.PhylogeneticAnalysis
 				</span>
 
@@ -268,7 +274,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Phylogenetic File
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.PhylogeneticFileName
 					@if (!string.IsNullOrEmpty(Model.IsolateDetails.PhylogeneticFileName))
 					{
@@ -283,7 +289,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				MTA
 				</span>
-				<span>
+			<span class="width-350">
 					@(Model.IsolateDetails.MaterialTransferAgreement ? "Yes" : "No")
 				</span>
 
@@ -293,7 +299,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				MTA Location
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.Mtalocation
 				</span>
 
@@ -306,7 +312,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Sender Reference Number
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.SenderReferenceNumber
 				</span>
 
@@ -317,7 +323,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				SMS Reference Number
 				</span>
-				<span>
+			<span class="width-350">
 					@Model.IsolateDetails.SmsreferenceNumber
 				</span>
 
@@ -328,7 +334,7 @@
 			<span class="view-isolate-details-label isolatelabel_title">
 				Comment
 				</span>
-				<span>
+			<span class="width-350">
 					<textarea readonly rows="10" cols="45">@Model.IsolateDetails.Comment</textarea>
 				</span>
 
