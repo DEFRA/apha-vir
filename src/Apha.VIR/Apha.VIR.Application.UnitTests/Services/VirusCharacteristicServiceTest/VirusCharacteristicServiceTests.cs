@@ -371,5 +371,15 @@ namespace Apha.VIR.Application.UnitTests.Services.VirusCharacteristicServiceTest
             Assert.Equal(expectedDtos, result);
         }
 
+        [Fact]
+        public void Constructor_NullRepository_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IMapper mockMapper = Substitute.For<IMapper>();
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => new VirusCharacteristicService(null!, mockMapper));
+        }
+
     }
 }
