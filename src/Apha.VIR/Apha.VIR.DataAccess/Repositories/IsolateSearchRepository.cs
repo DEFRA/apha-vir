@@ -10,7 +10,7 @@ namespace Apha.VIR.DataAccess.Repositories
 {
     public class IsolateSearchRepository : RepositoryBase<IsolateSearchResult>, IIsolateSearchRepository
     {
-        public IsolateSearchRepository(VIRDbContext context): base(context) { }
+        public IsolateSearchRepository(VIRDbContext context) : base(context) { }
 
         public async Task<PagedData<IsolateSearchResult>> PerformSearchAsync(PaginationParameters<SearchCriteria> criteria)
         {
@@ -158,29 +158,12 @@ namespace Apha.VIR.DataAccess.Repositories
 
         private IQueryable ApplyNumericCharacteristicFilter(IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
         {
-            var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
-            switch (characteristicItem.Comparator)
-            {
-                case "between":
-                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                    {
-                        query = query.Where(i => characteristicQuery.Any(c =>
-                            float.Parse(c.CharacteristicValue!) >= float.Parse(characteristicItem.CharacteristicValue1)));
-                    }
-                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue2))
-                    {
-                        query = query.Where(i => characteristicQuery.Any(c =>
-                            float.Parse(c.CharacteristicValue!) <= float.Parse(characteristicItem.CharacteristicValue2)));
-                    }
-                    break;
-                default:
-                    if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
-                    {
-                        query = query.Where(i => characteristicQuery.Any(c =>
-                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.Comparator}{characteristicItem.CharacteristicValue1}")));
-                    }
-                    break;
-            }
+            var isolateResult = query.ToList();
+            var isolateIds = isolateResult.Count > 0 ? isolateResult.Select(i => i.IsolateId).ToList() : new List<Guid> { Guid.Empty };
+            var numericCharacteristics = GetNumericCharacteristicsForSearch(isolateIds, characteristicItem.Characteristic, characteristicItem.CharacteristicValue1, characteristicItem.CharacteristicValue2, characteristicItem.Comparator);
+            var charIsolateIds= numericCharacteristics.Select(i => i.CharacteristicIsolateId).ToList();
+            query = query.Where(i => charIsolateIds.Contains(i.IsolateId));
+            
             return query;
         }
 
@@ -193,14 +176,14 @@ namespace Apha.VIR.DataAccess.Repositories
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.CharacteristicValue1}%") 
+                            EF.Functions.Like(c.CharacteristicValue, $"{characteristicItem.CharacteristicValue1}%")
                             && i.IsolateId == c.CharacteristicIsolateId
                             && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
                     break;
                 case "not equal to":
                     query = query.Where(i => characteristicQuery.Any(c =>
-                        c.CharacteristicValue != characteristicItem.CharacteristicValue1 
+                        c.CharacteristicValue != characteristicItem.CharacteristicValue1
                         && i.IsolateId == c.CharacteristicIsolateId
                         && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     break;
@@ -208,7 +191,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            c.CharacteristicValue == characteristicItem.CharacteristicValue1 
+                            c.CharacteristicValue == characteristicItem.CharacteristicValue1
                             && i.IsolateId == c.CharacteristicIsolateId
                             && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
@@ -221,7 +204,7 @@ namespace Apha.VIR.DataAccess.Repositories
         {
             var characteristicQuery = GetDbSetFor<IsolateCharacteristicsForSearch>();
             query = query.Where(i => characteristicQuery.Any(c =>
-                        c.CharacteristicValue == characteristicItem.CharacteristicValue1 
+                        c.CharacteristicValue == characteristicItem.CharacteristicValue1
                         && i.IsolateId == c.CharacteristicIsolateId
                         && c.VirusCharacteristicId == characteristicItem.Characteristic));
             return query;
@@ -236,7 +219,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            EF.Functions.Like(c.CharacteristicValue, $"%{characteristicItem.CharacteristicValue1}%") 
+                            EF.Functions.Like(c.CharacteristicValue, $"%{characteristicItem.CharacteristicValue1}%")
                             && i.IsolateId == c.CharacteristicIsolateId
                             && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
@@ -245,13 +228,46 @@ namespace Apha.VIR.DataAccess.Repositories
                     if (!string.IsNullOrEmpty(characteristicItem.CharacteristicValue1))
                     {
                         query = query.Where(i => characteristicQuery.Any(c =>
-                            c.CharacteristicValue == characteristicItem.CharacteristicValue1 
+                            c.CharacteristicValue == characteristicItem.CharacteristicValue1
                             && i.IsolateId == c.CharacteristicIsolateId
                             && c.VirusCharacteristicId == characteristicItem.Characteristic));
                     }
                     break;
             }
             return query;
+        }
+
+        private List<IsolateCharacteristicsForSearch> GetNumericCharacteristicsForSearch(List<Guid> isolateIds, Guid? characteristic, string? value1, string? value2, string? comparator)
+        {
+            string sqlQuery = $"SELECT * FROM vwCharacteristicsForSearch INNER JOIN vwIsolate ON vwIsolate.IsolateID = CharacteristicIsolateID " +
+                $"WHERE VirusCharacteristicID= '{characteristic}' AND vwIsolate.IsolateID IN ({string.Join(",", isolateIds.Select(id => $"'{id}'"))}) ";
+            string whereClause = string.Empty;
+            switch (comparator)
+            {
+                case "between":
+                    if (!string.IsNullOrEmpty(value1))
+                    {
+                        whereClause = $" AND TRY_CAST(CharacteristicValue as float) >= CAST('{value1}' as float)";
+                    }
+                    if (!string.IsNullOrEmpty(value2))
+                    {
+
+                        whereClause += $" AND TRY_CAST(CharacteristicValue as float) <= CAST('{value2}' as float)";
+                    }
+                    break;
+                default:
+                    if (!string.IsNullOrEmpty(value1))
+                    {
+                        whereClause = $" AND TRY_CAST(CharacteristicValue as float) {comparator} CAST('{value1}' as float)";
+                    }
+                    break;
+            }
+
+            var numericCharacteristics = _context.Database
+                .SqlQueryRaw<IsolateCharacteristicsForSearch>(sqlQuery + whereClause)
+                .ToList();
+
+            return numericCharacteristics;
         }
 
         private static IQueryable ApplySorting(IQueryable<IsolateSearchResult> query, string? sortBy, bool descending)
