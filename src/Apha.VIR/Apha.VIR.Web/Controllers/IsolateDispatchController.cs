@@ -78,7 +78,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = AppRoleConstant.Administrator)]
+        [Authorize(Roles = AppRoleConstant.IsolateManager)]
         public async Task<ActionResult> Create(string AVNumber, Guid IsolateId, string Source)
         {
             bool isBtnDisabled = false;

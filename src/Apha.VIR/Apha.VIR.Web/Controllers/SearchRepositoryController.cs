@@ -105,10 +105,15 @@ namespace Apha.VIR.Web.Controllers
             }
             searchModel = await LoadIsolateSearchFilterControlsData(criteria);
             var searchResults = await _isolateSearchService.PerformSearchAsync(criteriaPaginationDto);
+            
             searchModel.IsolateSearchGird = new IsolateSearchGirdViewModel
             {
                 IsolateSearchResults = _mapper.Map<List<IsolateSearchResult>>(searchResults.data)
             };
+            if (AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateManager))
+            {
+                searchModel.IsolateSearchGird.IsolateSearchResults.ForEach(s => s.IsDispatchEnabled = true);
+            }
             criteria!.Pagination!.TotalCount = searchResults.TotalCount;
             searchModel.IsolateSearchGird.Pagination = criteria.Pagination;
             searchModel.IsFilterApplied = true;
