@@ -83,7 +83,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
 
             // Assert
             Assert.Equal(new List<string> { "=" }, result.Item1);
-            Assert.Empty(result.Item2);
+            Assert.NotEmpty(result.Item2);
         }
 
         [Fact]

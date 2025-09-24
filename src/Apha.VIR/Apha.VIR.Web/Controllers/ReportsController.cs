@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Reflection;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
@@ -103,7 +104,8 @@ namespace Apha.VIR.Web.Controllers
             using (var workbook = new XLWorkbook())
             {
                 string fileName = $"VIR IsolateDispatchReport {DateTime.Today.Day}{DateTime.Today.ToString("MMMM")}{DateTime.Today.Year}";
-                string sheetName = $"VIR IsolateDispatchReport {DateTime.Today.Day}{DateTime.Today.ToString("MMM")}";
+                var sheetName = $"VIR IsolateDispatchReport {DateTime.Today.Day}{DateTime.Today.ToString("MMM", CultureInfo.InvariantCulture)}";
+                sheetName = sheetName.Length > 31 ? sheetName.Substring(0, 31) : sheetName;
 
                 var worksheet = workbook.Worksheets.Add(sheetName);
                 var currentRow = 1;

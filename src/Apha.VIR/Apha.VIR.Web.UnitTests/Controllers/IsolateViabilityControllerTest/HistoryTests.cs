@@ -2,6 +2,7 @@
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -14,12 +15,17 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
         private readonly IMapper _mapper;
         private readonly IsolateViabilityController _controller;
         private readonly ILookupService _lookupService;
+        private readonly ICacheService _cacheService;
         public HistoryTests()
         {
             _lookupService = Substitute.For<ILookupService>();
             _isolateViabilityService = Substitute.For<IIsolateViabilityService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new IsolateViabilityController(_isolateViabilityService, _lookupService, _mapper);
+            _controller = new IsolateViabilityController(_isolateViabilityService, 
+                _lookupService, 
+                _cacheService,
+                _mapper);
         }
 
         [Fact]

@@ -158,7 +158,7 @@
 				<div class="row mt-3">
 					<div class="col-sm-9 text-right">
 						<button type="submit" style="margin-left:425px" class="btnLink me-2">Update</button>
-						<a asp-action="Index" asp-controller="SubmissionSamples" class="btnLink">Cancel</a>
+						<a asp-action="Index" asp-controller="SubmissionSamples" asp-route-AVNumber="@Html.Encode(Model.AVNumber)" class="btnLink">Cancel</a>
 					</div>
 				</div>
 			</div>

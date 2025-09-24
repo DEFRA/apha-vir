@@ -5,6 +5,7 @@ using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Web.Controllers;
 using Apha.VIR.Web.Models;
+using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -18,17 +19,22 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
     {
         private readonly object _lock;
         private readonly IIsolateViabilityService _isolateViabilityService;
-        private readonly IMapper _mapper;
-        private readonly IsolateViabilityController _controller;
         private readonly ILookupService _lookupService;
+        private readonly ICacheService _cacheService;
+        private readonly IMapper _mapper;
+        private readonly IsolateViabilityController _controller;        
         private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
         public EditTests(AppRolesFixture fixture)
         {
             _lookupService = Substitute.For<ILookupService>();
             _isolateViabilityService = Substitute.For<IIsolateViabilityService>();
+            _cacheService = Substitute.For<ICacheService>();
             _mapper = Substitute.For<IMapper>();
-            _controller = new IsolateViabilityController(_isolateViabilityService, _lookupService, _mapper);
+            _controller = new IsolateViabilityController(_isolateViabilityService, 
+                _lookupService,
+                _cacheService,
+                _mapper);
             _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             AuthorisationUtil.Configure(_mockHttpContextAccessor);
             _lock = fixture.LockObject;

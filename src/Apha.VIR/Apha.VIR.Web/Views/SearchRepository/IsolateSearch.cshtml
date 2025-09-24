@@ -10,13 +10,13 @@
 			<tbody>
 				<tr>
 					<td>
-						<div class="d-flex justify-content-between">
+						<div class="d-flex justify-content-start">
 							<span asp-for="AVNumber" class="label-style">AV Number</span>
-							<input id="txtAVNumber" asp-for="AVNumber" class="textInput width-335" title="AV000000-00, PD0000-00, SI000000-00 or BN000000-00" />
+							<input id="txtAVNumber" asp-for="AVNumber" class="textInput width-335 marginLeft15" title="AV000000-00, PD0000-00, SI000000-00 or BN000000-00" />
 						</div>
 					</td>
 					<td>
-						<div class="d-flex justify-content-between">
+						<div class="d-flex justify-content-start">
 							<span asp-for="Group" class="ms-5 label-styleRight">Group</span>
 							<select id="ddlGroup" asp-for="Group" asp-items="Model.HostSpecyList" class="select-dropdown min-width343">
 								<option value=""></option>
@@ -26,17 +26,17 @@
 				</tr>
 				<tr>
 					<td class="">
-						<div class="d-flex justify-content-between">
+						<div class="d-flex justify-content-start">
 							<span asp-for="VirusFamily" class="label-style">Virus Family</span>
-							<select id="ddlVirusFamily" asp-for="VirusFamily" asp-items="Model.VirusFamilyList" class="select-dropdown width-343">
+							<select id="ddlVirusFamily" asp-for="VirusFamily" asp-items="Model.VirusFamilyList" class="select-dropdown width-343  marginLeft15">
 								<option value=""></option>
 							</select>
 						</div>
 					</td>
 					<td>
-						<div class="d-flex justify-content-between">
+						<div class="d-flex justify-content-start">
 							<span asp-for="Species" class="ms-5 label-styleRight">Species</span>
-							<select id="ddlSpecies" asp-for="Species" asp-items="Model.HostBreedList" class="select-dropdown width-343">
+							<select id="ddlSpecies" asp-for="Species" asp-items="Model.HostBreedList" class="select-dropdown min-width343">
 								<option value=""></option>
 							</select>
 						</div>
@@ -44,17 +44,17 @@
 				</tr>
 				<tr>
 					<td class="">
-						<div class="d-flex justify-content-between">
+						<div class="d-flex justify-content-start">
 							<span asp-for="VirusType" class="label-style">Virus Type</span>
-							<select id="ddlVirusType" asp-for="VirusType" asp-items="Model.VirusTypeList" class="select-dropdown width-343">
+							<select id="ddlVirusType" asp-for="VirusType" asp-items="Model.VirusTypeList" class="select-dropdown width-343  marginLeft15">
 								<option value=""></option>
 							</select>
 						</div>
 					</td>
 					<td>
-						<div class="d-flex justify-content-between">
+						<div class="d-flex justify-content-start">
 							<span asp-for="CountryOfOrigin" class="ms-5 label-styleRight">Country Of Origin</span>
-							<select id="ddlCountry" asp-for="CountryOfOrigin" asp-items="Model.CountryList" class="select-dropdown width-343">
+							<select id="ddlCountry" asp-for="CountryOfOrigin" asp-items="Model.CountryList" class="select-dropdown min-width343">
 								<option value=""></option>
 							</select>
 						</div>
@@ -77,7 +77,7 @@
 						<div class="d-flex justify-content-between">
 							<span asp-for="HostPurpose" class="ms-5 label-styleRight"> Host Purpose</span>
 
-							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model.HostPurposeList" class="select-dropdown min-width343">
+							<select id="ddlHostPurpose" asp-for="HostPurpose" asp-items="Model?.HostPurposeList" class="select-dropdown min-width343">
 								<option value=""></option>
 							</select>
 						</div>
@@ -97,7 +97,7 @@
 						<div class="d-flex justify-content-between">
 							<span asp-for="SampleType" class=" ms-5 label-styleRight">Sample Type</span>
 
-							<select id="ddlSampleType" asp-for="SampleType" asp-items="Model.SampleTypeList" class="select-dropdown min-width343">
+							<select id="ddlSampleType" asp-for="SampleType" asp-items="Model?.SampleTypeList" class="select-dropdown min-width343">
 								<option value=""></option>
 							</select>
 						</div>
@@ -118,7 +118,7 @@
 							<span class=" ms-5  word-break label-styleRight"><span asp-for="YearOfIsolation">Year of Isolation / FTA Absorption &nbsp;&nbsp;</span></span>
 
 							<span>
-								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model.YearsList" class="width-110 select-dropdown">
+								<select id="ddlYearOfIsolation" asp-for="YearOfIsolation" asp-items="Model?.YearsList" class="width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -133,7 +133,7 @@
 							<span class="ms-5 word-break label-styleRight"><span asp-for="YearOfSubmissionRecieved">Year Submission Received &nbsp;&nbsp;</span></span>
 
 							<span>
-								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model.YearsList"  class=" width-110 select-dropdown">
+								<select id="ddlYearOfSubmissionRecieved" asp-for="YearOfSubmissionRecieved" asp-items="Model?.YearsList" class=" width-110 select-dropdown">
 									<option value="0"></option>
 								</select>
 							</span>
@@ -143,8 +143,8 @@
 
 				<tr>
 					<td>
-						<div class="d-flex justify-content-between align-items-center">
-							
+						<div class="d-flex justify-content-start align-items-center">
+
 							<div class="label-style"><span>Created Date</span></div>
 							<div>
 								<span class="me-1">From</span>
@@ -155,23 +155,23 @@
 								<span class="me-1  ms-2">To</span>
 
 								<input type="date" asp-for="CreatedToDate" />
-
+								
 							</div>
 						</div>
 					</td>
 					<td>
-						<div class="d-flex justify-content-between align-items-center">
+						<div class="d-flex justify-content-start align-items-center">
 							<div class="ms-5 label-style"><span>Received Date</span></div>
 							<div class="d-inline-flex align-items-center">
 								<span class="me-2">From</span>
 
 								<input type="date" asp-for="ReceivedFromDate" />
-
+								
 							</div>
 							<div class="d-inline-flex align-items-center">
 								<span class="me-2  ms-2">To</span>
 								<input type="date" asp-for="ReceivedToDate" />
-
+								
 							</div>
 						</div>
 					</td>
@@ -185,8 +185,8 @@
 			@* <a id="searchRepoClearSearch" class="sp-button" href="@Url.Action(null, null)">Clear Search</a> *@
 			<button id="searchRepoClearSearch" type="button" class="btnLink" onclick="ClearSearchFilter()">Clear Search</button>
 		</div>
-		<div>			
-			@if (Model.IsFilterApplied && Model.IsolateSearchGird!.IsolateSearchResults!.Any())
+		<div>
+			@if (Model!.IsFilterApplied && Model.IsolateSearchGird!.IsolateSearchResults!.Any())
 			{
 				<a id="searchRepolinkExport" href="@Url.Action("ExportToExcel", "SearchRepository")">Export to Excel</a>
 			}
@@ -196,9 +196,24 @@
 			}
 			&nbsp;
 		</div>
-		<div id="pnlValidation" asp-validation-summary="All" class="spvalidation">
-			<span id="lblValidationMessage" class="validation"></span>
-		</div>
+		@if (ViewBag.showsummary)
+		{
+			<div id="pnlValidation" asp-validation-summary="All" class="spvalidation">
+				<span id="lblValidationMessage" class="validation"></span>
+			</div>
+		}
+		else
+		{
+			<div class="text-danger mt-3 spvalidation">
+				<ul>
+					<li><span asp-validation-for="CreatedFromDate"></span></li>
+					<li><span asp-validation-for="CreatedToDate"></span></li>
+					<li><span asp-validation-for="ReceivedFromDate"></span></li>
+					<li><span asp-validation-for="ReceivedToDate"></span></li>
+				</ul>				
+			</div>
+		}
+
 	</div>
 </form>
 <div id="gridIsolateResult">

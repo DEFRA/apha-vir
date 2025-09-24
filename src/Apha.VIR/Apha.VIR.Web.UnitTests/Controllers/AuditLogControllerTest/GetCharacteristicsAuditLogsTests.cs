@@ -44,7 +44,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
-            Assert.IsAssignableFrom<AuditCharacteristicsLogModel>(partial.Model);
+            Assert.IsAssignableFrom<List<AuditCharacteristicsLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
+            Assert.IsType<List<AuditCharacteristicsLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var result = await _controller.GetAuditLogs("characteristics");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
+            Assert.IsType<List<AuditCharacteristicsLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var result = await _controller.GetAuditLogs("characteristics");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
+            Assert.IsType<List<AuditCharacteristicsLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             var result = await _controller.GetAuditLogs("characteristics");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_CharacteristicsAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditCharacteristicsLogModel>(partial.Model);
+            Assert.IsType<List<AuditCharacteristicsLogModel>>(partial.Model);
         }
     }
 }

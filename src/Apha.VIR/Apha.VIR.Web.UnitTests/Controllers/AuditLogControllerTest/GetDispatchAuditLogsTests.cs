@@ -43,7 +43,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_DispatchAuditLogResults", partial.ViewName);
-            Assert.IsAssignableFrom<AuditDispatchLogModel>(partial.Model);
+            Assert.IsAssignableFrom<List<AuditDispatchLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_DispatchAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditDispatchLogModel>(partial.Model);
+            Assert.IsType<List<AuditDispatchLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Assert
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_DispatchAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditDispatchLogModel>(partial.Model);
+            Assert.IsType<List<AuditDispatchLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Assert
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_DispatchAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditDispatchLogModel>(partial.Model);
+            Assert.IsType<List<AuditDispatchLogModel>>(partial.Model);
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             // Assert
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_DispatchAuditLogResults", partial.ViewName);
-            Assert.IsType<AuditDispatchLogModel>(partial.Model);
+            Assert.IsType<List<AuditDispatchLogModel>>(partial.Model);
         }
     }
 }

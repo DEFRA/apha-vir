@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using Apha.VIR.Core.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Apha.VIR.Web.Models
@@ -24,9 +25,13 @@ namespace Apha.VIR.Web.Models
         public List<SelectListItem>? HostPurposeList { get; set; }
         public List<SelectListItem>? SampleTypeList { get; set; }
         public List<SelectListItem>? YearsList { get; set; }
+        [Display(Name = "Created From Date")]
         public DateTime? CreatedFromDate { get; set; }
+        [Display(Name = "Created To Date")]
         public DateTime? CreatedToDate { get; set; }
+        [Display(Name = "Received From Date")]
         public DateTime? ReceivedFromDate { get; set; }
+        [Display(Name = "Received To Date")]
         public DateTime? ReceivedToDate { get; set; }
         public List<CharacteristicSearchViewModel>? CharacteristicSearch { get; set; }
         public IsolateSearchGirdViewModel? IsolateSearchGird { get; set; }
