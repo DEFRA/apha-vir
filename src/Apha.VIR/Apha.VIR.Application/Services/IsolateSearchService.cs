@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
@@ -61,7 +60,7 @@ namespace Apha.VIR.Application.Services
             return Tuple.Create(compartaors, listValues);
         }
 
-        public async Task<PaginatedResult<IsolateSearchResultDto>> PerformSearchAsync(QueryParameters<SearchCriteriaDTO> criteria)
+        public async Task<PaginatedResult<IsolateSearchResultDto>> PerformSearchAsync(QueryParameters<SearchCriteriaDto> criteria)
         {
             //Arranged characteristics values in Value_1 and Value_2 for SingleList and YesNo types.
             foreach(CharacteristicCriteriaDto charItem in criteria.Filter?.CharacteristicSearch ?? Enumerable.Empty<CharacteristicCriteriaDto>())
@@ -86,7 +85,7 @@ namespace Apha.VIR.Application.Services
             return _mapper.Map<PaginatedResult<IsolateSearchResultDto>>(await _isolateSearchRepository.PerformSearchAsync(criteriaData));
         }
 
-        public async Task<List<IsolateSearchExportDto>> GetIsolateSearchExportResultAsync(QueryParameters<SearchCriteriaDTO> criteria)
+        public async Task<List<IsolateSearchExportDto>> GetIsolateSearchExportResultAsync(QueryParameters<SearchCriteriaDto> criteria)
         {
             List<IsolateSearchExportDto> isolateSearchExportData = new List<IsolateSearchExportDto>();
             var criteriaData = _mapper.Map<PaginationParameters<SearchCriteria>>(criteria);

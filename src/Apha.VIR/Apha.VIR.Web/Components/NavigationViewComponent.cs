@@ -1,6 +1,5 @@
 ﻿using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Services;
-using Apha.VIR.Web.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 

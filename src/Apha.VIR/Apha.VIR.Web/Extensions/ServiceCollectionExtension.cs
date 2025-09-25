@@ -43,9 +43,7 @@ namespace Apha.VIR.Web.Extensions
             services.AddScoped<IVirusCharacteristicRepository, VirusCharacteristicRepository>();
             services.AddScoped<IIsolateDispatchRepository, DispatchRepository>();
             services.AddScoped<ICharacteristicRepository, CharacteristicRepository>();
-            services.AddScoped<IIsolateRepository, IsolateRepository>();
-            services.AddScoped<IStaffRepository, StaffRepository>();
-            services.AddScoped<IWorkgroupRepository, WorkgroupRepository>();
+            services.AddScoped<IIsolateRepository, IsolateRepository>(); 
             services.AddScoped<IVirusCharacteristicListEntryRepository, VirusCharacteristicListEntryRepository>();
             services.AddScoped<IIsolateSearchRepository, IsolateSearchRepository>();
             services.AddScoped<IIsolateViabilityRepository, IsolateViabilityRepository>();

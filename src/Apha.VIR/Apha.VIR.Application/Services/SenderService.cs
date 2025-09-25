@@ -4,7 +4,6 @@ using Apha.VIR.Application.Pagination;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Apha.VIR.Application.Services
 {

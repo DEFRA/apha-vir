@@ -52,7 +52,7 @@ namespace Apha.VIR.Web.Controllers
         public async Task<IActionResult> Search(SearchCriteria criteria, bool IsNewSearch = false)
         {
             SearchRepositoryViewModel searchModel = new();
-            QueryParameters<SearchCriteriaDTO> criteriaPaginationDto;
+            QueryParameters<SearchCriteriaDto> criteriaPaginationDto;
             if (IsNewSearch)
             {
                 criteria.AVNumber = NormalizeAVNumber(criteria.AVNumber);
@@ -83,9 +83,9 @@ namespace Apha.VIR.Web.Controllers
                 UpdateModelStateValuesAndSearchModel(searchModel, criteria, ModelState);
 
                 criteria.Pagination = new PaginationModel();
-                criteriaPaginationDto = new QueryParameters<SearchCriteriaDTO>
+                criteriaPaginationDto = new QueryParameters<SearchCriteriaDto>
                 {
-                    Filter = _mapper.Map<SearchCriteriaDTO>(criteria),
+                    Filter = _mapper.Map<SearchCriteriaDto>(criteria),
                     SortBy = criteria.Pagination.SortColumn,
                     Descending = criteria.Pagination.SortDirection,
                     Page = criteria.Pagination.PageNumber,
@@ -200,7 +200,7 @@ namespace Apha.VIR.Web.Controllers
             var criteriaString = _cacheService.GetSessionValue(keySearchCriteria);
             if (!String.IsNullOrEmpty(criteriaString))
             {
-                var criteriaDto = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
+                var criteriaDto = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDto>>(criteriaString);
                 if (pageNo != 0)
                 {
                     criteriaDto!.Page = pageNo;
@@ -244,7 +244,7 @@ namespace Apha.VIR.Web.Controllers
         {
             var criteriaString = _cacheService.GetSessionValue(keySearchCriteria);
             List<IsolateSearchExportViewModel> searchExportRecords = new List<IsolateSearchExportViewModel>();
-            var criteriaDto = String.IsNullOrEmpty(criteriaString) ? null : JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString);
+            var criteriaDto = String.IsNullOrEmpty(criteriaString) ? null : JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDto>>(criteriaString);
             if (criteriaDto != null)
             {
                 searchExportRecords = _mapper.Map<List<IsolateSearchExportViewModel>>(
@@ -471,14 +471,14 @@ namespace Apha.VIR.Web.Controllers
 
         }
 
-        private QueryParameters<SearchCriteriaDTO> RetriveThePreviousSearchFilter()
+        private QueryParameters<SearchCriteriaDto> RetriveThePreviousSearchFilter()
         {
-            QueryParameters<SearchCriteriaDTO> previousSearch = new QueryParameters<SearchCriteriaDTO>();
+            QueryParameters<SearchCriteriaDto> previousSearch = new QueryParameters<SearchCriteriaDto>();
             var criteriaString = _cacheService.GetSessionValue(keySearchCriteria);
             if (criteriaString != null)
             {
-                previousSearch = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDTO>>(criteriaString)
-                    ?? new QueryParameters<SearchCriteriaDTO>();
+                previousSearch = JsonConvert.DeserializeObject<QueryParameters<SearchCriteriaDto>>(criteriaString)
+                    ?? new QueryParameters<SearchCriteriaDto>();
                 return previousSearch;
             }
             return previousSearch;
