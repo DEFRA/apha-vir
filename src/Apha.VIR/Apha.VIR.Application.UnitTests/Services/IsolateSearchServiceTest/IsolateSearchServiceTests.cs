@@ -128,9 +128,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_WithValidInput_ReturnsSuccessfulSearch()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO(),
+                Filter = new SearchCriteriaDto(),
                 Page = 1,
                 PageSize = 10
             };
@@ -168,7 +168,7 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_WithEmptyCriteria_ReturnsEmptyResult()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
                 Filter = null,
                 Page = 1,
@@ -208,9 +208,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_WithInvalidInput_ThrowsException()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO(),
+                Filter = new SearchCriteriaDto(),
                 Page = -1, // Invalid page number
                 PageSize = 10
             };
@@ -225,9 +225,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_ErrorHandling_ThrowsException()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO(),
+                Filter = new SearchCriteriaDto(),
                 Page = 1,
                 PageSize = 10
             };
@@ -250,9 +250,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task GetIsolateSearchExportResultAsync_ValidInput_ReturnsExpectedOutput()
         {
             // Arrange
-            var criteria = new QueryParameters<SearchCriteriaDTO>
+            var criteria = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO { FullSearch = false }
+                Filter = new SearchCriteriaDto { FullSearch = false }
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             var isolateFullDetails = new List<IsolateSearchResult>
@@ -335,9 +335,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task GetIsolateSearchExportResultAsync_EmptyCriteria_ReturnsEmptyList()
         {
             // Arrange
-            var criteria = new QueryParameters<SearchCriteriaDTO>
+            var criteria = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO()
+                Filter = new SearchCriteriaDto()
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);
@@ -356,9 +356,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task GetIsolateSearchExportResultAsync_FullSearchTrue_ExcludesFreezerTrayWell()
         {
             // Arrange
-            var criteria = new QueryParameters<SearchCriteriaDTO>
+            var criteria = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO { FullSearch = true }
+                Filter = new SearchCriteriaDto { FullSearch = true }
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             var isolateSearchResult = new List<IsolateSearchResult>
@@ -419,9 +419,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task GetIsolateSearchExportResultAsync_RepositoryThrowsException_PropagatesException()
         {
             // Arrange
-            var criteria = new QueryParameters<SearchCriteriaDTO>
+            var criteria = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO()
+                Filter = new SearchCriteriaDto()
             };
             var mappedCriteria = new PaginationParameters<SearchCriteria>();
             _mockMapper.Map<PaginationParameters<SearchCriteria>>(criteria).Returns(mappedCriteria);

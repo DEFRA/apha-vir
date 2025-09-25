@@ -17,7 +17,7 @@ namespace Apha.VIR.Web.Mappings
             CreateMap<IsolateDispatchHistory, IsolateDispatchInfoDto>().ReverseMap();
             CreateMap<SearchCriteria, SearchRepositoryViewModel>();
             CreateMap<CharacteristicCriteria, CharacteristicSearchViewModel>();
-            CreateMap<SearchCriteria, SearchCriteriaDTO>().ReverseMap();
+            CreateMap<SearchCriteria, SearchCriteriaDto>().ReverseMap();
             CreateMap<CharacteristicCriteria, CharacteristicCriteriaDto>().ReverseMap();
             CreateMap<IsolateSearchResultDto, IsolateSearchResult>();
             CreateMap<IsolateSearchExportDto, IsolateSearchExportViewModel>();

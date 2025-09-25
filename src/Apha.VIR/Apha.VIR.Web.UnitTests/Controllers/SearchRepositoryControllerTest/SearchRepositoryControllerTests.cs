@@ -30,9 +30,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         private readonly SearchRepositoryController _controller;
         private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-        private readonly QueryParameters<SearchCriteriaDTO> queryParameters = new QueryParameters<SearchCriteriaDTO>
+        private readonly QueryParameters<SearchCriteriaDto> queryParameters = new QueryParameters<SearchCriteriaDto>
         {
-            Filter = new SearchCriteriaDTO
+            Filter = new SearchCriteriaDto
             {
                 AVNumber = "AV000000-01",
                 YearOfIsolation = 0,
@@ -110,14 +110,14 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                     new CharacteristicCriteria { Characteristic = null}
                 }
             };
-            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(inputSearchCriteria);
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDto>()).Returns(inputSearchCriteria);
             var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
                 data = new List<IsolateSearchResultDto>(),
                 TotalCount = 10
             };
 
-            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
             .Returns(searchResults);
 
             // Act
@@ -157,10 +157,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 TotalCount = 1
             };
 
-            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
                 .Returns(searchResults);
 
-            _mockMapper.Map<SearchCriteriaDTO>(Arg.Any<SearchCriteria>()).Returns(new SearchCriteriaDTO());
+            _mockMapper.Map<SearchCriteriaDto>(Arg.Any<SearchCriteria>()).Returns(new SearchCriteriaDto());
             _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
                 .Returns(new List<IsolateSearchResult> { new IsolateSearchResult() });
             _mockMapper.Map<SearchRepositoryViewModel>(Arg.Any<SearchCriteria>()).Returns(new SearchRepositoryViewModel());
@@ -204,13 +204,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 }
             };
             _controller.ModelState.AddModelError("Error", "Model state is invalid");
-            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDTO>()).Returns(inputSearchCriteria);
+            _mockMapper.Map<SearchCriteria>(Arg.Any<SearchCriteriaDto>()).Returns(inputSearchCriteria);
             var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
                 data = new List<IsolateSearchResultDto>(),
                 TotalCount = 10
             };
-            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>()).Returns(searchResults);
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>()).Returns(searchResults);
 
             // Act            
             var result = await _controller.Search(new SearchCriteria()) as ViewResult;
@@ -251,7 +251,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 TotalCount = 1
             };
 
-            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
             .Returns(searchResults);
             _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
             .Returns(new List<IsolateSearchResult> { new IsolateSearchResult() });
@@ -701,13 +701,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task BindIsolateGridOnPaginationAndSort_WithValidCriteria_ReturnsPartialView()
         {
             // Arrange            
-            var criteriaDto = new QueryParameters<SearchCriteriaDTO>
+            var criteriaDto = new QueryParameters<SearchCriteriaDto>
             {
                 Page = 1,
                 PageSize = 10,
                 SortBy = "Avnumber",
                 Descending = false,
-                Filter = new SearchCriteriaDTO()
+                Filter = new SearchCriteriaDto()
             };            
             _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
@@ -716,7 +716,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
-            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
             .Returns(searchResults);
 
             _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
@@ -740,13 +740,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task BindIsolateGridOnPaginationAndSort_WithInvalidCriteria_ReturnsEmptyPartialView()
         {
             // Arrange
-            var criteriaDto = new QueryParameters<SearchCriteriaDTO>
+            var criteriaDto = new QueryParameters<SearchCriteriaDto>
             {
                 Page = 1,
                 PageSize = 10,
                 SortBy = "FreezerName",
                 Descending = true,
-                Filter = new SearchCriteriaDTO { AVNumber = "XWERWE" }
+                Filter = new SearchCriteriaDto { AVNumber = "XWERWE" }
             };            
             _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
@@ -755,7 +755,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
-            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
             .Returns(searchResults);
 
             _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
@@ -778,13 +778,13 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             var pageNo = 0;
             var column = "FreezerName";
             var sortOrder = true;
-            var criteriaDto = new QueryParameters<SearchCriteriaDTO>
+            var criteriaDto = new QueryParameters<SearchCriteriaDto>
             {
                 Page = 1,
                 PageSize = 10,
                 SortBy = "FreezerName",
                 Descending = false,
-                Filter = new SearchCriteriaDTO()
+                Filter = new SearchCriteriaDto()
             };           
             _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
@@ -793,7 +793,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 data = new List<IsolateSearchResultDto> { new IsolateSearchResultDto() },
                 TotalCount = 1
             };
-            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.PerformSearchAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
             .Returns(searchResults);
 
             _mockMapper.Map<List<IsolateSearchResult>>(Arg.Any<List<IsolateSearchResultDto>>())
@@ -874,7 +874,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
 
             var exportResults = SetupValidSearchCriteriaExportResult();
-            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
            .Returns(exportResults);
             var mappedResults = SetupValidSearchCriteriaExportMappedResult();
             _mockMapper.Map<List<IsolateSearchExportViewModel>>(Arg.Any<List<IsolateSearchExportDto>>())
@@ -896,7 +896,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange            
             var exportResults = SetupValidSearchCriteriaExportResult();
-            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
            .Returns(exportResults);
             var mappedResults = SetupValidSearchCriteriaExportMappedResult();
             _mockMapper.Map<List<IsolateSearchExportViewModel>>(Arg.Any<List<IsolateSearchExportDto>>())
@@ -917,7 +917,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             // Arrange
             var exportResults = SetupValidSearchCriteriaExportResult();
             _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
-            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
            .Returns(Task.FromResult(exportResults));
             var mappedResults = SetupValidSearchCriteriaExportMappedResult();
             _mockMapper.Map<List<IsolateSearchExportViewModel>>(Arg.Any<List<IsolateSearchExportDto>>())
@@ -935,7 +935,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             var exportResults = SetupValidSearchCriteriaExportResult();
-            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
+            _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDto>>())
            .Returns(Task.FromResult(exportResults));
             var mappedResults = SetupValidSearchCriteriaExportMappedResult();
             _mockMapper.Map<List<IsolateSearchExportViewModel>>(Arg.Any<List<IsolateSearchExportDto>>())

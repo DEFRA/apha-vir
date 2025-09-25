@@ -15,10 +15,10 @@ namespace Apha.VIR.Application.Mappings
             CreateMap<PagedData<LookupItem>, PaginatedResult<LookupItemDto>>();
             CreateMap<VirusCharacteristic, VirusCharacteristicDto>().ReverseMap();
             CreateMap<VirusCharacteristicListEntry, VirusCharacteristicListEntryDto>().ReverseMap();
-            CreateMap<SearchCriteriaDTO, SearchCriteria>();
+            CreateMap<SearchCriteriaDto, SearchCriteria>();
             CreateMap<CharacteristicCriteriaDto, CharacteristicCriteria>();
             CreateMap<IsolateSearchResult, IsolateSearchResultDto>();
-            CreateMap<QueryParameters<SearchCriteriaDTO>, PaginationParameters<SearchCriteria>>();
+            CreateMap<QueryParameters<SearchCriteriaDto>, PaginationParameters<SearchCriteria>>();
             CreateMap<PagedData<IsolateSearchResult>, PaginatedResult<IsolateSearchResultDto>>();
             CreateMap<IsolateInfoDto, IsolateSearchExportDto>()
              .ForMember(dest => dest.VirusFamily, opt => opt.MapFrom(src => src.FamilyName))
