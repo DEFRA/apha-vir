@@ -1,4 +1,5 @@
-﻿using Apha.VIR.Application.DTOs;
+﻿using Amazon.Runtime.Internal.Transform;
+using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Services;
@@ -24,8 +25,8 @@ namespace Apha.VIR.Web.Controllers
         public IsolatesController(IIsolatesService isolatesService,
              ILookupService lookupService,
              IIsolateViabilityService isolateViabilityService,
-             ISubmissionService submissionService, 
-             ISampleService sampleService, 
+             ISubmissionService submissionService,
+             ISampleService sampleService,
              ICacheService cacheService,
         IMapper mapper)
         {
@@ -143,11 +144,26 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.ActionType == "SaveAndContinue")
             {
-                return RedirectToAction(nameof(IsolateCharacteristicsController.Edit), "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, Isolate = isolateModel.IsolateId, SampleId = isolateModel.IsolateSampleId });
+                _cacheService.AddOrUpdateBreadcrumb("/Isolates/Edit", 
+                    new Dictionary<string, string> { 
+                        { "AVNumber", isolateModel.AVNumber??"" },
+                        { "SampleId", isolateModel.IsolateSampleId.ToString()??"" },
+                        { "IsolateId", isolateModel.IsolateId?.ToString()??"" }
+                    });
+                return RedirectToAction(nameof(IsolateCharacteristicsController.Edit), "IsolateCharacteristics",
+                    new
+                    {
+                        AVNumber = isolateModel.AVNumber,
+                        Isolate = isolateModel.IsolateId,
+                        SampleId = isolateModel.IsolateSampleId
+                    });
             }
             else
             {
-                return RedirectToAction(nameof(SubmissionSamplesController.Index), "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
+                return RedirectToAction(nameof(SubmissionSamplesController.Index), "SubmissionSamples", 
+                    new { 
+                        AVNumber = isolateModel.AVNumber 
+                    });
             }
         }
 

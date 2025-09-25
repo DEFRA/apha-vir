@@ -47,7 +47,7 @@
                     },
                     {
                         "title": "Isolate Details",
-                        "url": "/Isolates/Create",
+                        "url": "/Isolates/Edit",
                         "description": "",
                         "children": [
                             {
@@ -276,16 +276,16 @@
                 "title": "Search Audit Log",
                 "url": "/AuditLog/Index",
                 "description": "Search Audit Log",
+                "children": []
+            },
+            {
+                "title": "Search Audit Log",
+                "url": "/AuditLog/SearchAudit",
+                "description": "Search Audit Log",
                 "children": [
                     {
                         "title": "Log Isolate Details",
-                        "url": "/AuditLog/IsolateLog",
-                        "description": "Log Isolate Details",
-                        "children": []
-                    },
-                    {
-                        "title": "Log Isolate Details",
-                        "url": "/AuditLog/SearchAudit",
+                        "url": "/AuditLog/GetIsolateLogDetail",
                         "description": "Log Isolate Details",
                         "children": []
                     }
