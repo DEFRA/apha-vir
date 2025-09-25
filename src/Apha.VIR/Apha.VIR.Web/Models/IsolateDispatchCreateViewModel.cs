@@ -19,6 +19,7 @@ namespace Apha.VIR.Web.Models
         public int? NoOfAliquotsToBeDispatched { get; set; }
         [Required(ErrorMessage = "Passage Number must be entered")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Passage Number must be a numeric value")]
+        [Display(Name = "Passage Number")]
         public int? PassageNumber { get; set; }
         public Guid? RecipientId { get; set; }
         public List<SelectListItem>? RecipientList { get; set; }
