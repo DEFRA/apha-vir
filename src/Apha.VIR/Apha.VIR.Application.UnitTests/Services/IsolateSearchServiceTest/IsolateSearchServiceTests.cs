@@ -435,9 +435,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_WithSingleListAndEquals_SetsCharacteristicValue1()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO
+                Filter = new SearchCriteriaDto
                 {
                     CharacteristicSearch = new List<CharacteristicCriteriaDto>
             {
@@ -475,9 +475,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_WithSingleListAndNotEqualTo_SetsCharacteristicValue1()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO
+                Filter = new SearchCriteriaDto
                 {
                     CharacteristicSearch = new List<CharacteristicCriteriaDto>
             {
@@ -515,9 +515,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_WithYesNoAndYes_SetsCharacteristicValue1ToTrue()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO
+                Filter = new SearchCriteriaDto
                 {
                     CharacteristicSearch = new List<CharacteristicCriteriaDto>
             {
@@ -554,9 +554,9 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
         public async Task PerformSearchAsync_WithYesNoAndNo_SetsCharacteristicValue2ToFalse()
         {
             // Arrange
-            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            var queryParams = new QueryParameters<SearchCriteriaDto>
             {
-                Filter = new SearchCriteriaDTO
+                Filter = new SearchCriteriaDto
                 {
                     CharacteristicSearch = new List<CharacteristicCriteriaDto>
             {
