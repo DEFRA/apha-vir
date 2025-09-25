@@ -227,7 +227,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task Search_WhenTempDataIsNull_ReturnsViewWithEmptyResults()
         {
             // Arrange            
-            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string?)null);
+            _mockCacheService.GetSessionValue("SearchCriteria").Returns((string?)null);
             // Act
             var result = await _controller.BindIsolateGridOnPaginationAndSort(1, "CreatedDate", true) as PartialViewResult;
 
@@ -243,7 +243,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task Search_WhenTempDataIsNotEmpty_ReturnsViewWithResults()
         {
             // Arrange                       
-            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
+            _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
@@ -709,7 +709,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 Descending = false,
                 Filter = new SearchCriteriaDTO()
             };            
-            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
+            _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
@@ -748,7 +748,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 Descending = true,
                 Filter = new SearchCriteriaDTO { AVNumber = "XWERWE" }
             };            
-            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
+            _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
@@ -786,7 +786,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
                 Descending = false,
                 Filter = new SearchCriteriaDTO()
             };           
-            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
+            _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(criteriaDto));
 
             var searchResults = new PaginatedResult<IsolateSearchResultDto>
             {
@@ -871,7 +871,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         public async Task ExportToExcel_ValidSearchCriteria_ReturnsFileContentResult()
         {
             // Arrange                    
-            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
+            _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
 
             var exportResults = SetupValidSearchCriteriaExportResult();
             _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
@@ -916,7 +916,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
         {
             // Arrange
             var exportResults = SetupValidSearchCriteriaExportResult();
-            _mockCacheService.GetCacheValueAsync<string>("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
+            _mockCacheService.GetSessionValue("SearchCriteria").Returns((string)JsonConvert.SerializeObject(queryParameters));
             _mockIsolateSearchService.GetIsolateSearchExportResultAsync(Arg.Any<QueryParameters<SearchCriteriaDTO>>())
            .Returns(Task.FromResult(exportResults));
             var mappedResults = SetupValidSearchCriteriaExportMappedResult();

@@ -31,7 +31,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         public async Task GetViabilityAuditLogs_WithCriteria_ReturnsPartialView()
         {
             var criteria = new AuditLogSearchModel { AVNumber = "AV123", UserId = "test" };           
-            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(criteria));
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", JsonConvert.SerializeObject(criteria));
            
             _auditLogService.GetIsolateViabilityLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
                 .Returns(new[] { new AuditViabilityLogDto() });
@@ -49,12 +49,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task GetViabilityAuditLogs_NoCriteria_ReturnsEmptyModel()
         {
-            var httpContext = new DefaultHttpContext();
-            var tempDataProvider = Substitute.For<ITempDataProvider>();
-            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
-            tempData["SearchCriteria"] = null;
-            _controller.TempData = tempData;
-
             var result = await _controller.GetAuditLogs("viability");
 
             var partial = Assert.IsType<PartialViewResult>(result);
@@ -65,7 +59,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task GetViabilityAuditLogs_EmptyCriteriaString_ReturnsEmptyModel()
         {
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "");
             var result = await _controller.GetAuditLogs("viability");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);
@@ -75,7 +69,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task GetViabilityAuditLogs_InvalidJsonCriteria_ReturnsEmptyModel()
         {
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "not a json");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "not a json");
             var result = await _controller.GetAuditLogs("viability");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);
@@ -85,7 +79,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task GetViabilityAuditLogs_DeserializesToNull_ReturnsEmptyModel()
         {
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "null");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "null");
             var result = await _controller.GetAuditLogs("viability");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateViabilityAuditLogResults", partial.ViewName);

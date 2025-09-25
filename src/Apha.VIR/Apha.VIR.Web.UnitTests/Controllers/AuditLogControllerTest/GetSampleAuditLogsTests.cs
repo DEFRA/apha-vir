@@ -31,7 +31,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         public async Task GetSampleAuditLogs_WithCriteria_ReturnsPartialView()
         {
             var criteria = new AuditLogSearchModel { AVNumber = "AV123", UserId = "test" };           
-            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(criteria));
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", JsonConvert.SerializeObject(criteria));
             
 
             _auditLogService.GetSamplLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
@@ -50,12 +50,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task GetSampleAuditLogs_NoCriteria_ReturnsEmptyModel()
         {
-            var httpContext = new DefaultHttpContext();
-            var tempDataProvider = Substitute.For<ITempDataProvider>();
-            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
-            tempData["SearchCriteria"] = null;
-            _controller.TempData = tempData;
-
             var result = await _controller.GetAuditLogs("sample");
 
             var partial = Assert.IsType<PartialViewResult>(result);
@@ -67,7 +61,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         public async Task GetSampleAuditLogs_EmptyCriteriaString_ReturnsEmptyModel()
         {
             // Arrange
-            await _cacheService.SetCacheValueAsync("SearchCriteria", ""); // empty string
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", ""); // empty string
 
             // Act
             var result = await _controller.GetAuditLogs("sample");
@@ -82,7 +76,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         public async Task GetSampleAuditLogs_InvalidJsonCriteria_ReturnsEmptyModel()
         {
             // Arrange
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "not a json");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "not a json");
 
             // Act
             var result = await _controller.GetAuditLogs("sample");
@@ -98,7 +92,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         {
             // Arrange
             // This will deserialize to null if AuditLogSearchModel is a class and not a struct
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "null");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "null");
 
             // Act
             var result = await _controller.GetAuditLogs("sample");
