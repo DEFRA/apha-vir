@@ -54,6 +54,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    CheckedById=Guid.NewGuid(),
+                    Viable=Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };
@@ -100,6 +103,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    CheckedById=Guid.NewGuid(),
+                    Viable=Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };
@@ -131,6 +137,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    CheckedById =Guid.NewGuid(),
+                    Viable=Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };
@@ -156,6 +165,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    Viable=Guid.NewGuid(),
+                    CheckedById=Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };
@@ -187,6 +199,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    Viable=Guid.NewGuid(),
+                    CheckedById = Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };

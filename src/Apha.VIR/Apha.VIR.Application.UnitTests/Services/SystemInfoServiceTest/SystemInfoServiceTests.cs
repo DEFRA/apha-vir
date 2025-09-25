@@ -68,7 +68,7 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
         {
             // Arrange
             _mockRepository.GetLatestSysInfoAsync()
-                .Returns(Task.FromResult<SystemInfo>(null!));  // use null! to silence warning
+                .Returns(Task.FromResult<SystemInfo>(null!));  
 
             _mockMapper.Map<SystemInfoDto>(Arg.Any<SystemInfo>())
                 .Returns((SystemInfoDto?)null);
@@ -78,6 +78,40 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
 
             // Assert
             Assert.Null(result);
+        }
+
+        [Fact]
+        public void Constructor_NullRepository_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() =>
+                new SystemInfoService(null!, _mockMapper));
+        }
+
+        [Fact]
+        public async Task GetEnvironmentName_ReturnsEnvironmentString()
+        {
+            // Arrange
+            var mockSystemInfo = new SystemInfo
+            {
+                Id = Guid.NewGuid(),
+                Environment = "Integration"
+            };
+
+            var expectedDto = new SystemInfoDto
+            {
+                Id = mockSystemInfo.Id,
+                Environment = mockSystemInfo.Environment
+            };
+
+            _mockRepository.GetLatestSysInfoAsync().Returns(mockSystemInfo);
+            _mockMapper.Map<SystemInfoDto>(mockSystemInfo).Returns(expectedDto);
+
+            // Act
+            var result = await _systemInfoService.GetEnvironmentName();
+
+            // Assert
+            Assert.Equal("Integration", result);
         }
     }
 }

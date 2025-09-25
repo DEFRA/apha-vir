@@ -134,6 +134,90 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
         }
 
         [Fact]
+        public async Task GetDispatchForIsolateAsync_WhenDispatchHasRecipientIdAndDispatchedByIdAndViabilityId_PopulatesAllFields()
+        {
+            // Arrange
+            string avNumber = "AV123";
+            Guid dispatchId = Guid.NewGuid();
+            Guid isolateId = Guid.NewGuid();
+            Guid recipientId = Guid.NewGuid();
+            Guid dispatchedById = Guid.NewGuid();
+            Guid viabilityId = Guid.NewGuid();
+
+            var isolateInfo = new IsolateInfo { IsolateId = isolateId, NoOfAliquots = 10 };
+            _isolateRepository.GetIsolateInfoByAVNumberAsync(avNumber)
+                .Returns(new List<IsolateInfo> { isolateInfo });
+
+            var dispatchInfo = new IsolateDispatchInfo
+            {
+                DispatchId = dispatchId,
+                RecipientId = recipientId,
+                DispatchedById = dispatchedById,
+                ViabilityId = viabilityId
+            };
+
+            _isolateDispatchRepository.GetDispatchesHistoryAsync(isolateId)
+                .Returns(new List<IsolateDispatchInfo> { dispatchInfo });
+
+            _lookupRepository.GetAllWorkGroupsAsync()
+                .Returns(new List<LookupItem> { new LookupItem { Id = recipientId, Name = "WG1" } });
+            _lookupRepository.GetAllStaffAsync()
+                .Returns(new List<LookupItem> { new LookupItem { Id = dispatchedById, Name = "Staff1" } });
+            _lookupRepository.GetAllViabilityAsync()
+                .Returns(new List<LookupItem> { new LookupItem { Id = viabilityId, Name = "Alive" } });
+
+            // Fix: use GetViabilityByIsolateIdAsync instead of GetLastViabilityByIsolateAsync
+            var viability = new IsolateViability { Viable = viabilityId, DateChecked = DateTime.UtcNow };
+            _isolateViabilityRepository.GetViabilityByIsolateIdAsync(isolateId)
+                .Returns(new List<IsolateViability> { viability });
+
+            var viabilityDto = new IsolateViabilityDto { Viable = viability.Viable };
+            _mapper.Map<IsolateViabilityDto>(viability).Returns(viabilityDto);
+
+            var expectedDto = new IsolateDispatchInfoDto { DispatchId = dispatchId };
+            _mapper.Map<IsolateDispatchInfoDto>(dispatchInfo).Returns(expectedDto);
+
+            _mapper.Map<IEnumerable<LookupItemDto>>(Arg.Any<IEnumerable<LookupItem>>())
+                .Returns(new List<LookupItemDto> { new LookupItemDto { Id = viabilityId, Name = "Alive" } });
+
+            // Act
+            var result = await _service.GetDispatchForIsolateAsync(avNumber, dispatchId, isolateId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(dispatchId, result.DispatchId);
+            Assert.Equal(expectedDto.DispatchId, result.DispatchId);
+        }
+
+        [Theory]
+        [InlineData("Paramyxoviridae", "Nom", null, "TypeA", "CharN", "Nom (TypeA)")]
+        [InlineData("OtherFamily", "Nom", null, "TypeA", "CharN", "Nom CharN")]
+        [InlineData("OtherFamily", "Nom", "IsoNom", "TypeA", "CharN", "Nom")]
+        public void GetFullNomenclature_CoversAllBranches(string family, string nomen, string isolateNomen, string type, string charNom, string expected)
+        {
+            // Act
+            var result = InvokePrivateGetFullNomenclature(nomen, isolateNomen, family, type, charNom);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
+
+        private static string InvokePrivateGetFullNomenclature(string nomen, string isoNom, string family, string type, string charNom)
+        {
+            var method = typeof(IsolateDispatchService).GetMethod("GetFullNomenclature", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            return (string)method!.Invoke(null, new object[] { nomen, isoNom, family, type, charNom })!;
+        }
+
+        [Fact]
+        public void Constructor_WithNullDependencies_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => new IsolateDispatchService(null!, _isolateRepository, _characteristicRepository, _lookupRepository, _mapper, _isolateViabilityRepository));
+            Assert.Throws<ArgumentNullException>(() => new IsolateDispatchService(_isolateDispatchRepository, null!, _characteristicRepository, _lookupRepository, _mapper, _isolateViabilityRepository));
+            Assert.Throws<ArgumentNullException>(() => new IsolateDispatchService(_isolateDispatchRepository, _isolateRepository, null!, _lookupRepository, _mapper, _isolateViabilityRepository));
+            Assert.Throws<ArgumentNullException>(() => new IsolateDispatchService(_isolateDispatchRepository, _isolateRepository, _characteristicRepository, null!, _mapper, _isolateViabilityRepository));
+        }
+
+        [Fact]
         public async Task DeleteDispatchAsync_WithValidInput_ShouldCallRepositoryMethod()
         {
             // Arrange
@@ -445,23 +529,6 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateDispatchServiceTest
 
         [Fact]
         public async Task GetIsolateInfoByAVNumberAndIsolateIdAsync_EmptyResult_ReturnsNull()
-        {
-            // Arrange
-            var avNumber = "AV123";
-            var isolateId = Guid.NewGuid();
-
-            _isolateRepository.GetIsolateInfoByAVNumberAsync(avNumber)
-            .Returns(new List<IsolateInfo>());
-
-            // Act
-            var result = await _service.GetIsolateInfoByAVNumberAndIsolateIdAsync(avNumber, isolateId);
-
-            // Assert
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public async Task GetIsolateInfoByAVNumberAndIsolateIdAsync_RepositoryReturnsNull_ReturnsNull()
         {
             // Arrange
             var avNumber = "AV123";

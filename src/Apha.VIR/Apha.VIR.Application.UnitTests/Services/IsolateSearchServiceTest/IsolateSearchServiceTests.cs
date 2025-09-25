@@ -430,5 +430,163 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateSearchServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _mockIsolateSearchService.GetIsolateSearchExportResultAsync(criteria));
         }
+
+        [Fact]
+        public async Task PerformSearchAsync_WithSingleListAndEquals_SetsCharacteristicValue1()
+        {
+            // Arrange
+            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            {
+                Filter = new SearchCriteriaDTO
+                {
+                    CharacteristicSearch = new List<CharacteristicCriteriaDto>
+            {
+                new CharacteristicCriteriaDto
+                {
+                    CharacteristicType = "SingleList",
+                    Comparator = "=",
+                    CharacteristicListValue = "ListVal"
+                }
+            }
+                }
+            };
+
+            var mappedParams = new PaginationParameters<SearchCriteria>();
+            var searchResult = new PagedData<IsolateSearchResult>(new List<IsolateSearchResult>(), 0);
+            var expectedResult = new PaginatedResult<IsolateSearchResultDto>
+            {
+                data = new List<IsolateSearchResultDto>(),
+                TotalCount = 0
+            };
+
+            _mockMapper.Map<PaginationParameters<SearchCriteria>>(queryParams).Returns(mappedParams);
+            _mockIsolateSearchRepository.PerformSearchAsync(mappedParams).Returns(searchResult);
+            _mockMapper.Map<PaginatedResult<IsolateSearchResultDto>>(searchResult).Returns(expectedResult);
+
+            // Act
+            var result = await _mockIsolateSearchService.PerformSearchAsync(queryParams);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("ListVal", queryParams.Filter.CharacteristicSearch[0].CharacteristicValue1);
+        }
+
+        [Fact]
+        public async Task PerformSearchAsync_WithSingleListAndNotEqualTo_SetsCharacteristicValue1()
+        {
+            // Arrange
+            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            {
+                Filter = new SearchCriteriaDTO
+                {
+                    CharacteristicSearch = new List<CharacteristicCriteriaDto>
+            {
+                new CharacteristicCriteriaDto
+                {
+                    CharacteristicType = "SingleList",
+                    Comparator = "not equal to",
+                    CharacteristicListValue = "AnotherVal"
+                }
+            }
+                }
+            };
+
+            var mappedParams = new PaginationParameters<SearchCriteria>();
+            var searchResult = new PagedData<IsolateSearchResult>(new List<IsolateSearchResult>(), 0);
+            var expectedResult = new PaginatedResult<IsolateSearchResultDto>
+            {
+                data = new List<IsolateSearchResultDto>(),
+                TotalCount = 0
+            };
+
+            _mockMapper.Map<PaginationParameters<SearchCriteria>>(queryParams).Returns(mappedParams);
+            _mockIsolateSearchRepository.PerformSearchAsync(mappedParams).Returns(searchResult);
+            _mockMapper.Map<PaginatedResult<IsolateSearchResultDto>>(searchResult).Returns(expectedResult);
+
+            // Act
+            var result = await _mockIsolateSearchService.PerformSearchAsync(queryParams);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("AnotherVal", queryParams.Filter.CharacteristicSearch[0].CharacteristicValue1);
+        }
+
+        [Fact]
+        public async Task PerformSearchAsync_WithYesNoAndYes_SetsCharacteristicValue1ToTrue()
+        {
+            // Arrange
+            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            {
+                Filter = new SearchCriteriaDTO
+                {
+                    CharacteristicSearch = new List<CharacteristicCriteriaDto>
+            {
+                new CharacteristicCriteriaDto
+                {
+                    CharacteristicType = "Yes/No",
+                    CharacteristicListValue = "Yes"
+                }
+            }
+                }
+            };
+
+            var mappedParams = new PaginationParameters<SearchCriteria>();
+            var searchResult = new PagedData<IsolateSearchResult>(new List<IsolateSearchResult>(), 0);
+            var expectedResult = new PaginatedResult<IsolateSearchResultDto>
+            {
+                data = new List<IsolateSearchResultDto>(),
+                TotalCount = 0
+            };
+
+            _mockMapper.Map<PaginationParameters<SearchCriteria>>(queryParams).Returns(mappedParams);
+            _mockIsolateSearchRepository.PerformSearchAsync(mappedParams).Returns(searchResult);
+            _mockMapper.Map<PaginatedResult<IsolateSearchResultDto>>(searchResult).Returns(expectedResult);
+
+            // Act
+            var result = await _mockIsolateSearchService.PerformSearchAsync(queryParams);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("True", queryParams.Filter.CharacteristicSearch[0].CharacteristicValue1);
+        }
+
+        [Fact]
+        public async Task PerformSearchAsync_WithYesNoAndNo_SetsCharacteristicValue2ToFalse()
+        {
+            // Arrange
+            var queryParams = new QueryParameters<SearchCriteriaDTO>
+            {
+                Filter = new SearchCriteriaDTO
+                {
+                    CharacteristicSearch = new List<CharacteristicCriteriaDto>
+            {
+                new CharacteristicCriteriaDto
+                {
+                    CharacteristicType = "Yes/No",
+                    CharacteristicListValue = "No"
+                }
+            }
+                }
+            };
+
+            var mappedParams = new PaginationParameters<SearchCriteria>();
+            var searchResult = new PagedData<IsolateSearchResult>(new List<IsolateSearchResult>(), 0);
+            var expectedResult = new PaginatedResult<IsolateSearchResultDto>
+            {
+                data = new List<IsolateSearchResultDto>(),
+                TotalCount = 0
+            };
+
+            _mockMapper.Map<PaginationParameters<SearchCriteria>>(queryParams).Returns(mappedParams);
+            _mockIsolateSearchRepository.PerformSearchAsync(mappedParams).Returns(searchResult);
+            _mockMapper.Map<PaginatedResult<IsolateSearchResultDto>>(searchResult).Returns(expectedResult);
+
+            // Act
+            var result = await _mockIsolateSearchService.PerformSearchAsync(queryParams);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("False", queryParams.Filter.CharacteristicSearch[0].CharacteristicValue2);
+        }
     }
 }

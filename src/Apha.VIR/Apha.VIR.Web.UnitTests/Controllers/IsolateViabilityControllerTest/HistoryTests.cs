@@ -35,7 +35,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var avNumber = "AV123";
             var isolateGuid = Guid.NewGuid();
             var serviceResult = new List<IsolateViabilityInfoDto> { new IsolateViabilityInfoDto { Nomenclature = "NULL/Congo Peafowl/Ascension Island/Ref 2/2025" } };
-            var mappedResult = new List<IsolateViabilityModel> { new IsolateViabilityModel { Nomenclature = "NULL/Congo Peafowl/Ascension Island/Ref 2/2025" } };
+            var mappedResult = new List<IsolateViabilityModel> { new IsolateViabilityModel { Nomenclature = "NULL/Congo Peafowl/Ascension Island/Ref 2/2025", DateChecked = DateTime.Now,IsolateViabilityIsolateId=Guid.NewGuid(),CheckedById=Guid.NewGuid(), Viable=Guid.NewGuid(), IsolateViabilityId=Guid.NewGuid()} };
 
             _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolateGuid).Returns(Task.FromResult((IEnumerable<IsolateViabilityInfoDto>)serviceResult));
             _mapper.Map<IEnumerable<IsolateViabilityModel>>(serviceResult).Returns(mappedResult);

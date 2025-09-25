@@ -285,5 +285,137 @@ namespace Apha.VIR.Application.UnitTests.Services.SubmissionServiceTest
             Assert.Contains("[Missing]", result);
             Assert.Contains("Date of Receipt:", result);
         }
+
+        [Fact]
+        public void Constructor_WithNullSubmissionRepository_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new SubmissionService(null!, _mockSampleRepository, _mockIsolatesRepository, _mockLookupRepository, _mockMapper));
+        }
+
+        [Fact]
+        public void Constructor_WithNullSampleRepository_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new SubmissionService(_mockSubmissionRepository, null!, _mockIsolatesRepository, _mockLookupRepository, _mockMapper));
+        }
+
+        [Fact]
+        public void Constructor_WithNullIsolatesRepository_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new SubmissionService(_mockSubmissionRepository, _mockSampleRepository, null!, _mockLookupRepository, _mockMapper));
+        }
+
+        [Fact]
+        public void Constructor_WithNullLookupRepository_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new SubmissionService(_mockSubmissionRepository, _mockSampleRepository, _mockIsolatesRepository, null!, _mockMapper));
+        }
+
+        [Fact]
+        public async Task SubmissionLetter_IsolatesNull_AppendsMissingYear()
+        {
+            // Arrange
+            var avNumber = "AV999";
+            var user = "TestUser";
+            var submission = new Submission
+            {
+                SubmissionId = Guid.NewGuid(),
+                Avnumber = avNumber,
+                Sender = "Alice"
+            };
+            var sampleId = Guid.NewGuid();
+            var samples = new List<Sample>
+    {
+        new Sample { SampleId = sampleId, SenderReferenceNumber = "SREF" }
+    };
+
+            _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
+            _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(samples);
+            _mockIsolatesRepository.GetIsolateInfoByAVNumberAsync(avNumber).Returns((IEnumerable<IsolateInfo>)null!);
+
+            _mockMapper.Map<IEnumerable<SampleDto>>(samples)
+                .Returns(samples.Select(s => new SampleDto { SampleId = s.SampleId, SenderReferenceNumber = s.SenderReferenceNumber }));
+
+            // Act
+            var result = await _submissionService.SubmissionLetter(avNumber, user);
+
+            // Assert
+            Assert.Contains("Virus Year of Isolation: [Missing]", result);
+        }
+
+        [Fact]
+        public async Task SubmissionLetter_IsolatesDoNotMatchSample_AppendsMissingYear()
+        {
+            // Arrange
+            var avNumber = "AV888";
+            var user = "TestUser";
+            var submission = new Submission { SubmissionId = Guid.NewGuid(), Avnumber = avNumber, Sender = "Bob" };
+            var sampleId = Guid.NewGuid();
+            var samples = new List<Sample>
+    {
+        new Sample { SampleId = sampleId, SenderReferenceNumber = "SREF2" }
+    };
+            var isolates = new List<IsolateInfo>
+    {
+        new IsolateInfo { IsolateSampleId = Guid.NewGuid(), YearOfIsolation = 2020 } // does not match
+    };
+
+            _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
+            _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(samples);
+            _mockIsolatesRepository.GetIsolateInfoByAVNumberAsync(avNumber).Returns(isolates);
+
+            _mockMapper.Map<IEnumerable<SampleDto>>(samples)
+                .Returns(samples.Select(s => new SampleDto { SampleId = s.SampleId, SenderReferenceNumber = s.SenderReferenceNumber }));
+
+            // Act
+            var result = await _submissionService.SubmissionLetter(avNumber, user);
+
+            // Assert
+            Assert.Contains("Virus Year of Isolation: [Missing]", result);
+        }
+
+        [Fact]
+        public async Task SubmissionLetter_HostSpeciesMappedCorrectly()
+        {
+            // Arrange
+            var avNumber = "AV777";
+            var user = "TestUser";
+            var submission = new Submission { SubmissionId = Guid.NewGuid(), Avnumber = avNumber, Sender = "Charlie" };
+
+            var hostSpeciesId = Guid.NewGuid();
+            var sampleId = Guid.NewGuid();
+            var samples = new List<Sample>
+    {
+        new Sample { SampleId = sampleId, SenderReferenceNumber = "SREF3", HostSpecies = hostSpeciesId }
+    };
+            var isolates = new List<IsolateInfo>();
+
+            var hostSpeciesList = new List<LookupItem>
+    {
+        new LookupItem { Id = hostSpeciesId, Name = "Chicken" }
+    };
+
+            _mockSubmissionRepository.GetSubmissionDetailsByAVNumberAsync(avNumber).Returns(submission);
+            _mockSampleRepository.GetSamplesBySubmissionIdAsync(submission.SubmissionId).Returns(samples);
+            _mockIsolatesRepository.GetIsolateInfoByAVNumberAsync(avNumber).Returns(isolates);
+            _mockLookupRepository.GetAllHostSpeciesAsync().Returns(hostSpeciesList);
+
+            _mockMapper.Map<IEnumerable<SampleDto>>(samples)
+                .Returns(samples.Select(s => new SampleDto
+                {
+                    SampleId = s.SampleId,
+                    SenderReferenceNumber = s.SenderReferenceNumber,
+                    HostSpecies = s.HostSpecies
+                }));
+
+            // Act
+            var result = await _submissionService.SubmissionLetter(avNumber, user);
+
+            // Assert
+            Assert.Contains("Animal Health and Veterinary Laboratories", result);
+        }
     }
 }

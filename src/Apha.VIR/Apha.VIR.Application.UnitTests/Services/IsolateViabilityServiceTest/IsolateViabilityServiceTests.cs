@@ -1,5 +1,8 @@
 ﻿using Apha.VIR.Application.DTOs;
+using Apha.VIR.Application.Services;
 using Apha.VIR.Core.Entities;
+using Apha.VIR.Core.Interfaces;
+using AutoMapper;
 using NSubstitute;
 
 namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
@@ -340,6 +343,152 @@ namespace Apha.VIR.Application.UnitTests.Services.IsolateViabilityServiceTest
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _isolateViabilityService.GetLastViabilityByIsolateAsync(emptyGuid));
             await _mockIsolateViabilityRepository.DidNotReceive().GetViabilityByIsolateIdAsync(Arg.Any<Guid>());
+        }
+
+        [Fact]
+        public void Constructor_WithNullIsolateViabilityRepository_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() =>
+                new IsolateViabilityService(null!, Substitute.For<IIsolateRepository>(),
+                    Substitute.For<ICharacteristicRepository>(),
+                    Substitute.For<ILookupRepository>(),
+                    Substitute.For<IMapper>()));
+        }
+
+        [Fact]
+        public void Constructor_WithNullIsolateRepository_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new IsolateViabilityService(Substitute.For<IIsolateViabilityRepository>(), null!,
+                    Substitute.For<ICharacteristicRepository>(),
+                    Substitute.For<ILookupRepository>(),
+                    Substitute.For<IMapper>()));
+        }
+
+        [Fact]
+        public void Constructor_WithNullCharacteristicRepository_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new IsolateViabilityService(Substitute.For<IIsolateViabilityRepository>(),
+                    Substitute.For<IIsolateRepository>(), null!,
+                    Substitute.For<ILookupRepository>(),
+                    Substitute.For<IMapper>()));
+        }
+
+        [Fact]
+        public void Constructor_WithNullLookupRepository_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new IsolateViabilityService(Substitute.For<IIsolateViabilityRepository>(),
+                    Substitute.For<IIsolateRepository>(),
+                    Substitute.For<ICharacteristicRepository>(), null!,
+                    Substitute.For<IMapper>()));
+        }
+
+        [Fact]
+        public void GetFullNomenclature_WithParamyxoviridaeFamily_ReturnsFormattedString()
+        {
+            // Act
+            var result = typeof(IsolateViabilityService)
+                .GetMethod("GetFullNomenclature", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                .Invoke(null, new object?[] { "Nom", null, "Paramyxoviridae", "TypeA", "CharNom" });
+
+            // Assert
+            Assert.Equal("Nom (TypeA)", result);
+        }
+
+        [Fact]
+        public void GetFullNomenclature_WithEmptyIsolateNomenclature_ReturnsNomPlusCharNom()
+        {
+            var result = typeof(IsolateViabilityService)
+                .GetMethod("GetFullNomenclature", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                .Invoke(null, new object?[] { "Nom", "", "OtherFamily", "TypeA", "CharNom" });
+
+            Assert.Equal("Nom CharNom", result);
+        }
+
+        [Fact]
+        public void GetFullNomenclature_WithNonEmptyIsolateNomenclature_ReturnsOnlyNom()
+        {
+            var result = typeof(IsolateViabilityService)
+                .GetMethod("GetFullNomenclature", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                .Invoke(null, new object?[] { "Nom", "IsoNom", "OtherFamily", "TypeA", "CharNom" });
+
+            Assert.Equal("Nom", result);
+        }
+
+        [Fact]
+        public void GetCheckedByName_WithNonEmptyCheckedById_SetsCheckedByName()
+        {
+            // Arrange
+            var checkedById = Guid.NewGuid();
+            var list = new List<Core.Entities.IsolateViabilityInfo>
+            {
+                new() { CheckedById = checkedById }
+            };
+            var staffs = new List<Core.Entities.LookupItem>
+            {
+                new() { Id = checkedById, Name = "Staff1" }
+            };
+
+            // Act
+            typeof(IsolateViabilityService)
+                .GetMethod("GetCheckedByName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                .Invoke(null, [list, staffs]);
+
+            // Assert
+            Assert.Equal("Staff1", list.First().CheckedByName);
+        }
+
+        [Fact]
+        public void GetCheckedByName_WithEmptyCheckedById_DoesNotChangeCheckedByName()
+        {
+            var list = new List<Core.Entities.IsolateViabilityInfo>
+            {
+                new() { CheckedById = Guid.Empty, CheckedByName = "OldName" }
+            };
+
+            typeof(IsolateViabilityService)
+                .GetMethod("GetCheckedByName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                .Invoke(null, [list, new List<Core.Entities.LookupItem>()]);
+
+            Assert.Equal("OldName", list.First().CheckedByName);
+        }
+
+        [Fact]
+        public void GetViableName_WithNonEmptyViable_SetsViableName()
+        {
+            var viableId = Guid.NewGuid();
+            var list = new List<Core.Entities.IsolateViabilityInfo>
+            {
+                new() { Viable = viableId }
+            };
+            var viabilities = new List<Core.Entities.LookupItem>
+            {
+                new() { Id = viableId, Name = "Alive" }
+            };
+
+            typeof(IsolateViabilityService)
+                .GetMethod("GetViableName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                .Invoke(null, [list, viabilities]);
+
+            Assert.Equal("Alive", list.First().ViableName);
+        }
+
+        [Fact]
+        public void GetViableName_WithEmptyViable_DoesNotChangeViableName()
+        {
+            var list = new List<Core.Entities.IsolateViabilityInfo>
+            {
+                new() { Viable = Guid.Empty, ViableName = "OldName" }
+            };
+
+            typeof(IsolateViabilityService)
+                .GetMethod("GetViableName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                .Invoke(null, [list, new List<Core.Entities.LookupItem>()]);
+
+            Assert.Equal("OldName", list.First().ViableName);
         }
     }
 }

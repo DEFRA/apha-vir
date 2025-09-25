@@ -49,7 +49,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
             var isolateViabilityId = Guid.NewGuid();
 
             var viabilityHistory = new List<IsolateViabilityInfoDto> { new IsolateViabilityInfoDto { IsolateViabilityId = isolateViabilityId } };
-            var isolateViabilityModelList = new List<IsolateViabilityModel> { new IsolateViabilityModel { IsolateViabilityId = isolateViabilityId } };
+            var isolateViabilityModelList = new List<IsolateViabilityModel> { new IsolateViabilityModel { IsolateViabilityId = isolateViabilityId, Viable=Guid.NewGuid(), CheckedById=Guid.NewGuid(), DateChecked = DateTime.Now,IsolateViabilityIsolateId=Guid.NewGuid() } };
             var MapviabilityList = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Viability" } };
             var MapStaffList = new List<LookupItemDto> { new LookupItemDto { Id = Guid.NewGuid(), Name = "Test Staff" } };
 
@@ -127,7 +127,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                                     new IsolateViabilityInfoDto { IsolateViabilityId = Guid.NewGuid() }
                                     };
             var isolateViabilityModelList = new List<IsolateViabilityModel>
-            { new IsolateViabilityModel { IsolateViabilityId = isolateViabilityId } };
+            { new IsolateViabilityModel {IsolateViabilityId = isolateViabilityId, Viable=Guid.NewGuid(), CheckedById = Guid.NewGuid(), DateChecked = DateTime.Now,IsolateViabilityIsolateId=Guid.NewGuid() } };
 
             _isolateViabilityService.GetViabilityHistoryAsync(avNumber, isolate).Returns(viabilityHistory);
             _lookupService.GetAllViabilityAsync().Returns(new List<LookupItemDto>());
@@ -164,6 +164,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    Viable=Guid.NewGuid(),
+                    CheckedById =Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };
@@ -204,7 +207,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
-                    LastModified = Array.Empty<byte>()
+                    CheckedById = Guid.NewGuid(),
+                    Viable=Guid.NewGuid(),
+                    LastModified = Array.Empty<byte>(),
+                    DateChecked = DateTime.Now
                 }
             };
 
@@ -237,6 +243,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    CheckedById=Guid.NewGuid(),
+                    Viable=Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };
@@ -280,6 +289,9 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateViabilityControllerTest
                     AVNumber = "AV123",
                     IsolateViabilityIsolateId = isolateId,
                     IsolateViabilityId = isolateViabilityId,
+                    CheckedById = Guid.NewGuid(),
+                    Viable=Guid.NewGuid(),
+                    DateChecked = DateTime.Now,
                     LastModified = new byte[8]
                 }
             };
