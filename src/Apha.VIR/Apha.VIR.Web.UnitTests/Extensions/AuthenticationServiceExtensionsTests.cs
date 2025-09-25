@@ -79,7 +79,7 @@ namespace Apha.VIR.Web.UnitTests.Extensions
                 null!,
                 new AuthenticationProperties());
 
-            Assert.Throws<TargetInvocationException>(() =>
+            Assert.Throws<TargetParameterCountException>(() =>
                 typeof(AuthenticationExtension)
                     .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
                     .Invoke(null, new object[] { context })
@@ -99,7 +99,7 @@ namespace Apha.VIR.Web.UnitTests.Extensions
                 principal,
                 new AuthenticationProperties());
 
-            Assert.Throws<TargetInvocationException>(() =>
+            Assert.Throws<TargetParameterCountException>(() =>
                 typeof(AuthenticationExtension)
                     .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
                     .Invoke(null, new object[] { context })
