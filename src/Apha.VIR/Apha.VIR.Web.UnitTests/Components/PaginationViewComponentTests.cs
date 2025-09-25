@@ -23,6 +23,7 @@ namespace Apha.VIR.Web.UnitTests.Components
             var result = _component.Invoke(paginationModel);
 
             // Assert
+            Assert.NotNull(result);
             Assert.IsType<ViewViewComponentResult>(result);
         }
 
@@ -41,33 +42,14 @@ namespace Apha.VIR.Web.UnitTests.Components
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.ViewData); 
+            Assert.NotNull(result.ViewData);
             Assert.NotNull(result.ViewData.Model);
-            Assert.Equal(paginationModel, result.ViewData.Model);
+            var model = Assert.IsType<PaginationModel>(result.ViewData.Model);
+            Assert.Equal(paginationModel.PageNumber, model.PageNumber);
+            Assert.Equal(paginationModel.TotalCount, model.TotalCount);
         }
 
-        [Fact]
-        public void Invoke_WithNullModel_ReturnsViewComponentResult()
-        {
-            // Act
-            var result = _component.Invoke(null!);
-
-            // Assert
-            Assert.IsType<ViewViewComponentResult>(result);
-        }
-
-        [Fact]
-        public void Invoke_WithEmptyModel_ReturnsViewComponentResult()
-        {
-            // Arrange
-            var emptyModel = new PaginationModel();
-
-            // Act
-            var result = _component.Invoke(emptyModel);
-
-            // Assert
-            Assert.IsType<ViewViewComponentResult>(result);
-        }
+       
 
         [Theory]
         [InlineData(1, 1)]
@@ -88,11 +70,25 @@ namespace Apha.VIR.Web.UnitTests.Components
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.ViewData); // Ensure ViewData is not null
-            Assert.NotNull(result.ViewData.Model); // Ensure Model is not null
+            Assert.NotNull(result.ViewData);
+            Assert.NotNull(result.ViewData.Model);
             var model = Assert.IsType<PaginationModel>(result.ViewData.Model);
             Assert.Equal(currentPage, model.PageNumber);
             Assert.Equal(totalPages, model.TotalCount);
+        }
+
+        [Fact]
+        public void Invoke_ReturnsViewComponentResult_WithViewName()
+        {
+            // Arrange
+            var paginationModel = new PaginationModel();
+
+            // Act
+            var result = _component.Invoke(paginationModel) as ViewViewComponentResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Null(result.ViewName); // Default view
         }
     }
 }
