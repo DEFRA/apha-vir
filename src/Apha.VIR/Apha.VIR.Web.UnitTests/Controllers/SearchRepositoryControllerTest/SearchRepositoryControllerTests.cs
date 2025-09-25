@@ -568,39 +568,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SearchRepositoryControllerTest
             });
 
             await _mockVirusCharacteristicService.Received(1).GetAllVirusCharacteristicsAsync();
-        }
-
-        [Fact]
-        public async Task GetVirusCharacteristicsByVirusType_EmptyVirusTypeId_ReturnsAllCharacteristics()
-        {
-            // Arrange
-            Guid? virusTypeId = null;
-            var expectedCharacteristics = new List<VirusCharacteristicDto>
-            {
-                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 1", DataType = "Type 1" },
-                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 2", DataType = "Type 2" },
-                new VirusCharacteristicDto { Id = Guid.NewGuid(), Name = "Characteristic 3", DataType = "Type 3" }
-            };
-
-            _mockVirusCharacteristicService.GetAllVirusCharacteristicsAsync()
-            .Returns(expectedCharacteristics);
-            SetupMockUserAndRoles();
-
-            // Act
-            var result = await _controller.GetVirusCharacteristicsByVirusType(virusTypeId);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var selectListItems = Assert.IsType<List<CustomSelectListItem>>(jsonResult.Value);
-
-            Assert.Equal(expectedCharacteristics.Count, selectListItems.Count);
-            Assert.All(selectListItems, item =>
-            {
-                Assert.Contains(expectedCharacteristics, c => c.Id.ToString() == item.Value && c.Name.ToString() == item.Text);
-            });
-
-            await _mockVirusCharacteristicService.Received(1).GetAllVirusCharacteristicsAsync();
-        }
+        }        
 
         [Fact]
         public async Task GetComparatorsAndListValues_ValidInput_ReturnsNonEmptyResults()
