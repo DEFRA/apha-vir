@@ -25,7 +25,7 @@ namespace Apha.VIR.Web.Components
             string path = string.Empty;
             string? controllerName = HttpContext.Request.RouteValues["controller"]?.ToString();
             string? actionName = HttpContext.Request.RouteValues["action"]?.ToString();
-            if(controllerName?.ToLower() == "isolates")
+            if(controllerName?.ToLower() == "isolates" && actionName?.ToLower() == "create")
             {
                 actionName = "Edit";
             }
