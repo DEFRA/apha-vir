@@ -31,7 +31,7 @@ namespace Apha.VIR.Web.Controllers
             // Populate additional information
             sysInfo.FrameworkVersion = Environment.Version.ToString();
             sysInfo.UserName = User.Identity?.Name;
-            sysInfo.HostAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            sysInfo.HostAddress = GetClientIP(); 
             sysInfo.AuthenticationType = User.Identity?.AuthenticationType;
             sysInfo.IsAuthenticated = (User.Identity?.IsAuthenticated ?? false) ? "True" : "False";
 
@@ -49,6 +49,21 @@ namespace Apha.VIR.Web.Controllers
                 throw new InvalidOperationException("AWS Log Monitoring URL configuration setting was not found");
             }
             return url;
+        }
+
+        private string GetClientIP()
+        {
+              string forwardedFor = HttpContext.Request.Headers
+                .FirstOrDefault(h => h.Key.Equals("X-Forwarded-For", StringComparison.OrdinalIgnoreCase))
+                .Value
+                .ToString() ?? string.Empty;
+
+            if (string.IsNullOrEmpty(forwardedFor))
+            {
+                // Fallback to the direct IP address (in case no proxy adds the header)
+               forwardedFor = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown IP";
+            }
+            return forwardedFor;
         }
     }
 }
