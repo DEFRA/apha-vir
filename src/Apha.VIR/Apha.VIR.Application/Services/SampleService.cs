@@ -1,11 +1,8 @@
-﻿using System;
-using System.Net.Http.Headers;
-using Apha.VIR.Application.DTOs;
+﻿using Apha.VIR.Application.DTOs;
 using Apha.VIR.Application.Interfaces;
 using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Components;
 
 namespace Apha.VIR.Application.Services
 {

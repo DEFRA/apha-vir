@@ -60,7 +60,7 @@ namespace Apha.VIR.Application.UnitTests.Services.ReportServiceTest
             // Arrange
             _mockReportRepository.GetDispatchesReportAsync(Arg.Any<DateTime?>(), Arg.Any<DateTime?>())
             .Returns(new List<IsolateDispatchInfo>());
-            _mockMapper.Map<IEnumerable<IsolateDispatchReportDto>>(Arg.Any<IEnumerable<IsolateDispatchReport>>())
+            _mockMapper.Map<IEnumerable<IsolateDispatchReportDto>>(Arg.Any<IEnumerable<IsolateDispatchInfo>>())
             .Returns(new List<IsolateDispatchReportDto>());
 
             // Act

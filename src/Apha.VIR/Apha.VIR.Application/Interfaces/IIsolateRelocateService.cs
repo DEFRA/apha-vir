@@ -1,6 +1,4 @@
-﻿
-using Apha.VIR.Application.DTOs;
-using Apha.VIR.Core.Entities;
+﻿using Apha.VIR.Application.DTOs;
 
 namespace Apha.VIR.Application.Interfaces
 {
