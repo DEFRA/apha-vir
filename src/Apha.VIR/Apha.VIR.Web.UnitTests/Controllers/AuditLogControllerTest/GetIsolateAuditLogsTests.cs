@@ -31,7 +31,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         public async Task GetIsolateAuditLogs_WithCriteria_ReturnsPartialView()
         {
             var criteria = new AuditLogSearchModel { AVNumber = "AV123", UserId = "test" };            
-            await _cacheService.SetCacheValueAsync("SearchCriteria", JsonConvert.SerializeObject(criteria));           
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", JsonConvert.SerializeObject(criteria));           
 
             _auditLogService.GetIsolatLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
                 .Returns(new[] { new AuditIsolateLogDto() });
@@ -49,12 +49,6 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task GetIsolateAuditLogs_NoCriteria_ReturnsEmptyModel()
         {
-            var httpContext = new DefaultHttpContext();
-            var tempDataProvider = Substitute.For<ITempDataProvider>();
-            var tempData = new TempDataDictionary(httpContext, tempDataProvider);
-            tempData["SearchCriteria"] = null;
-            _controller.TempData = tempData;
-
             var result = await _controller.GetAuditLogs("isolate");
 
             var partial = Assert.IsType<PartialViewResult>(result);
@@ -65,7 +59,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         [Fact]
         public async Task GetIsolateAuditLogs_EmptyCriteriaString_ReturnsEmptyModel()
         {
-            await _cacheService.SetCacheValueAsync("SearchCriteria", "");
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "");
             var result = await _controller.GetAuditLogs("isolate");
             var partial = Assert.IsType<PartialViewResult>(result);
             Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
