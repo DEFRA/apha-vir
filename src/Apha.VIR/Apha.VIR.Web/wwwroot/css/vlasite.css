@@ -568,14 +568,6 @@ a {
     margin-top: 1px;
 }
 
-.editsubmission-btn-link-custom {
-    background: none;
-    border: none;
-    font-family: verdana, arial, helvetica, sans-serif;
-    color: #0000FF;
-    text-decoration: underline;
-    cursor: pointer;
-}
 
 /* Basic fade effect */
 .modal {
@@ -940,24 +932,6 @@ a {
         padding: 6px 10px;
         white-space: nowrap; /* keeps columns as wide as their content */
     }
-
-.isolaterelocate-btn-link-custom {
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    font-family: Verdana, Arial, Helvetica, sans-serif !important;
-    color: #0000FF !important;
-    text-decoration: underline !important;
-    cursor: pointer !important;
-}
-
-button.isolaterelocate-btn-link-custom.btn-link {
-    all: unset; /* strips Bootstrap styles */
-    color: #0000FF;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    text-decoration: underline;
-    cursor: pointer;
-}
 
 .recent-av-link {
     text-decoration: none;

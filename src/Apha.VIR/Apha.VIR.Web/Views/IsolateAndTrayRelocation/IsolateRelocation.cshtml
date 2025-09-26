@@ -66,7 +66,7 @@
                     </select>
                 </div>
                 <div style="text-align: right; padding-right: 45px;padding-top: 10px;">
-                    <button type="button" id="saveButton" class="btn btn-link isolaterelocate-btn-link-custom">
+                    <button type="button" id="saveButton" class="btnLink">
                         Save
                     </button>
                 </div>
@@ -74,7 +74,7 @@
         </div>
         <div class="form-group row mb-0 mt-4 width-85PC">
             <div class="col-sm-3 offset-sm-5">
-                <button id="searchButton" class="btn  btn-link isolaterelocate-btn-link-custom">Search</button>
+                <button id="searchButton" class="btnLink">Search</button>
             </div>
         </div>
     </div>
@@ -96,8 +96,8 @@
     <div class="col-sm-12">
         <div class="col-sm-7">           
             <div style="text-align: right;margin-bottom: 5px;">
-                <button id="selectAllButton" class="btn btn-link isolaterelocate-btn-link-custom" style="margin-right:10px">Select All</button>
-                <button id="unselectAllButton" class="btn btn-link isolaterelocate-btn-link-custom">Unselect All</button>
+                <button id="selectAllButton" class="btnLink me-2" style="margin-right:10px">Select All</button>
+                <button id="unselectAllButton" class="btnLink">Unselect All</button>
             </div>
             <div id="isolatesGrid">
                 @await Html.PartialAsync("_SearchResults",
