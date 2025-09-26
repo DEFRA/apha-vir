@@ -2,6 +2,7 @@
 using Apha.VIR.DataAccess.Data;
 using Apha.VIR.DataAccess.Repositories;
 using Apha.VIR.DataAccess.UnitTests.Repository.Helpers;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -11,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
 {
@@ -45,14 +47,21 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
             await Task.Delay(1);
 
 
-            if (_fakeDatabase.TryGetValue(avNumber, out var submission))
+            if (_fakeDatabase.TryGetValue(avNumber, out var sub))
             {
-                return submission;
+                return sub; 
             }
             else
             {
-                return null;
+                return new Submission
+                {
+                   Avnumber = avNumber,
+                   SenderAddress = null,
+                };
+
             }
+
+
         }
 
         public override async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
@@ -221,10 +230,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
             Assert.Throws<ArgumentNullException>(() => new SubmissionRepository(null!
 ));
         }
-        // New test for GetSubmissionDetailsByAVNumberAsync
-
-
-
+   
         [Fact]
         public async Task GetSubmissionDetailsByAVNumberAsync_ReturnsSubmission_WhenAVNumberExists()
         {
@@ -247,15 +253,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
             // ... assert other properties
         }
 
-        [Fact]
-        public async Task GetSubmissionDetailsByAVNumberAsync_ReturnsNull_WhenAVNumberDoesNotExist()
-        {
-            // Act
-            var result = await _repo.GetSubmissionDetailsByAVNumberAsync("NonExistentAV");
-
-            // Assert
-            Assert.Null(result);
-        }
+      
 
         [Fact]
         public async Task GetSubmissionDetailsByAVNumberAsync_HandlesNullValues_Correctly()
@@ -278,7 +276,87 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
             Assert.Equal(submissionWithNulls.Avnumber, result.Avnumber);
             // ... assert that null properties are indeed null
         }
+        [Fact]
+        public async Task GetSubmissionDetailsByAVNumberAsync_ReturnsFullyPopulatedSubmission()
+        {
+            // Arrange
+            var fullSubmission = new Submission
+            {
+                SubmissionId = Guid.NewGuid(),
+                Avnumber = "AV789",
+                SendersReferenceNumber = "SRN123",
+                RlreferenceNumber = "RLR456",
+                SubmittingLab = Guid.NewGuid(),
+                Sender = "John Doe",
+                SenderOrganisation = "Test Org",
+                SenderAddress = "123 Test St",
+                CountryOfOrigin = Guid.NewGuid(),
+                SubmittingCountry = Guid.NewGuid(),
+                ReasonForSubmission = Guid.NewGuid(),
+                DateSubmissionReceived = DateTime.Now,
+                Cphnumber = "CPH123",
+                Owner = "Jane Smith",
+                SamplingLocationPremises = "Test Location",
+                NumberOfSamples = 5,
+                LastModified = new byte[] { 0x01, 0x02, 0x03 },
+                CountryOfOriginName = "TestCountry",
+                SubmittingCountryName = "SubmitCountry"
+            };
+            _repo.AddFakeSubmission(fullSubmission);
+
+            // Act
+            var result = await _repo.GetSubmissionDetailsByAVNumberAsync("AV789");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(fullSubmission.SubmissionId, result.SubmissionId);
+            Assert.Equal(fullSubmission.Avnumber, result.Avnumber);
+            Assert.Equal(fullSubmission.SendersReferenceNumber, result.SendersReferenceNumber);
+            Assert.Equal(fullSubmission.RlreferenceNumber, result.RlreferenceNumber);
+            Assert.Equal(fullSubmission.SubmittingLab, result.SubmittingLab);
+            Assert.Equal(fullSubmission.Sender, result.Sender);
+            Assert.Equal(fullSubmission.SenderOrganisation, result.SenderOrganisation);
+            Assert.Equal(fullSubmission.SenderAddress, result.SenderAddress);
+            Assert.Equal(fullSubmission.CountryOfOrigin, result.CountryOfOrigin);
+            Assert.Equal(fullSubmission.SubmittingCountry, result.SubmittingCountry);
+            Assert.Equal(fullSubmission.ReasonForSubmission, result.ReasonForSubmission);
+            Assert.Equal(fullSubmission.DateSubmissionReceived, result.DateSubmissionReceived);
+            Assert.Equal(fullSubmission.Cphnumber, result.Cphnumber);
+            Assert.Equal(fullSubmission.Owner, result.Owner);
+            Assert.Equal(fullSubmission.SamplingLocationPremises, result.SamplingLocationPremises);
+            Assert.Equal(fullSubmission.NumberOfSamples, result.NumberOfSamples);
+            Assert.Equal(fullSubmission.LastModified, result.LastModified);
+            Assert.Equal(fullSubmission.CountryOfOriginName, result.CountryOfOriginName);
+            Assert.Equal(fullSubmission.SubmittingCountryName, result.SubmittingCountryName);
+        }
+        [Fact]
+        public async Task GetSubmissionDetailsByAVNumberAsync_ReturnsNewSubmission_WhenAVNumberDoesNotExist()
+        {
+            // Arrange
+            string nonExistentAVNumber = "NONEXISTENT";
+
+            // Act
+            var result = await _repo.GetSubmissionDetailsByAVNumberAsync(nonExistentAVNumber);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(nonExistentAVNumber, result.Avnumber);
+            Assert.Null(result.SenderAddress);
+        }
        
+        [Fact]
+        public async Task GetSubmissionDetailsByAVNumberAsync_HandlesEmptyAVNumber()
+        {
+            // Arrange
+            string emptyAVNumber = string.Empty;
+
+            // Act
+            var result = await _repo.GetSubmissionDetailsByAVNumberAsync(emptyAVNumber);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(emptyAVNumber, result.Avnumber);
+        }
 
     }
 
