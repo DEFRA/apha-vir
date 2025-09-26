@@ -57,6 +57,38 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
         }
     }
 
+    public class TestLookupRepositoryWithByParent : LookupRepository
+    {
+        private readonly IEnumerable<LookupItem> _lookupItems;
+        private readonly Func<string, Guid?, Task<IEnumerable<LookupItem>>>? _getLookupItemsByParentAsyncOverride;
+
+        public TestLookupRepositoryWithByParent(
+            VIRDbContext context,
+            IEnumerable<LookupItem> lookupItems,
+            Func<string, Guid?, Task<IEnumerable<LookupItem>>>? getLookupItemsByParentAsyncOverride = null)
+            : base(context)
+        {
+            _lookupItems = lookupItems;
+            _getLookupItemsByParentAsyncOverride = getLookupItemsByParentAsyncOverride;
+        }
+
+        protected override IQueryable<T> GetQueryableResultFor<T>(string sql, params object[] parameters)
+        {
+            if (typeof(T) == typeof(LookupItem))
+                return (IQueryable<T>)_lookupItems.AsQueryable();
+            throw new NotImplementedException($"No test data for type {typeof(T).Name}");
+        }
+
+        // Override the private method with protected virtual to make it testable
+        protected override async Task<IEnumerable<LookupItem>> GetLookupItemsByParentAsync(string Lookup, Guid? Parent)
+        {
+            if (_getLookupItemsByParentAsyncOverride != null)
+                return await _getLookupItemsByParentAsyncOverride(Lookup, Parent);
+
+            return _lookupItems.Where(i => i.Active).ToList();
+        }
+    }
+
     public class LookupRepositoryTests
     {
         private static TestLookupRepository CreateRepo(IEnumerable<LookupItem> lookupItems)
@@ -74,6 +106,17 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
                 mockContext.Object,
                 new TestAsyncEnumerable<LookupItem>(lookupItems),
                 new TestAsyncEnumerable<Lookup>(lookups)
+            );
+        }
+        private static TestLookupRepositoryWithByParent CreateRepoWithByParent(
+            IEnumerable<LookupItem> lookupItems,
+            Func<string, Guid?, Task<IEnumerable<LookupItem>>>? getLookupItemsByParentAsyncOverride = null)
+        {
+            var mockContext = new Mock<VIRDbContext>();
+            return new TestLookupRepositoryWithByParent(
+                mockContext.Object,
+                lookupItems,
+                getLookupItemsByParentAsyncOverride
             );
         }
         private class TestLookupRepositoryForInUse : LookupRepository
@@ -823,6 +866,223 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.LookupRepositoryTest
             Assert.NotNull(item);
             Assert.NotEqual(Guid.Empty, item.Id);
             Assert.True(item.Active);
+        }
+
+        [Fact]
+        public async Task GetAllVirusTypesByParentAsync_ReturnsFilteredItems()
+        {
+            // Arrange
+            var virusFamilyId = Guid.NewGuid();
+            var items = new List<LookupItem>
+            {
+                new() { Id = Guid.NewGuid(), Name = "Type1", Parent = virusFamilyId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Type2", Parent = virusFamilyId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Type3", Parent = Guid.NewGuid(), Active = true }
+            };
+
+            bool called = false;
+            var repo = CreateRepoWithByParent(
+                items,
+                (lookup, parent) => {
+                    called = true;
+                    Assert.Equal("VirusType", lookup);
+                    Assert.Equal(virusFamilyId, parent);
+                    return Task.FromResult(items.Where(i => i.Parent == parent).AsEnumerable());
+                }
+            );
+
+            // Act
+            var result = await repo.GetAllVirusTypesByParentAsync(virusFamilyId);
+
+            // Assert
+            Assert.True(called);
+            Assert.Equal(2, result.Count());
+            Assert.All(result, x => Assert.Equal(virusFamilyId, x.Parent));
+        }
+
+        [Fact]
+        public async Task GetAllHostBreedsByParentAsync_ReturnsFilteredItems()
+        {
+            // Arrange
+            var hostSpeciesId = Guid.NewGuid();
+            var items = new List<LookupItem>
+            {
+                new() { Id = Guid.NewGuid(), Name = "Breed1", Parent = hostSpeciesId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Breed2", Parent = hostSpeciesId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Breed3", Parent = Guid.NewGuid(), Active = true }
+            };
+
+            bool called = false;
+            var repo = CreateRepoWithByParent(
+                items,
+                (lookup, parent) => {
+                    called = true;
+                    Assert.Equal("HostBreed", lookup);
+                    Assert.Equal(hostSpeciesId, parent);
+                    return Task.FromResult(items.Where(i => i.Parent == parent).AsEnumerable());
+                }
+            );
+
+            // Act
+            var result = await repo.GetAllHostBreedsByParentAsync(hostSpeciesId);
+
+            // Assert
+            Assert.True(called);
+            Assert.Equal(2, result.Count());
+            Assert.All(result, x => Assert.Equal(hostSpeciesId, x.Parent));
+        }
+
+        [Fact]
+        public async Task GetAllTraysByParentAsync_ReturnsFilteredItems()
+        {
+            // Arrange
+            var freezerId = Guid.NewGuid();
+            var items = new List<LookupItem>
+            {
+                new() { Id = Guid.NewGuid(), Name = "Tray1", Parent = freezerId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Tray2", Parent = freezerId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Tray3", Parent = Guid.NewGuid(), Active = true }
+            };
+
+            bool called = false;
+            var repo = CreateRepoWithByParent(
+                items,
+                (lookup, parent) => {
+                    called = true;
+                    Assert.Equal("Tray", lookup);
+                    Assert.Equal(freezerId, parent);
+                    return Task.FromResult(items.Where(i => i.Parent == parent).AsEnumerable());
+                }
+            );
+
+            // Act
+            var result = await repo.GetAllTraysByParentAsync(freezerId);
+
+            // Assert
+            Assert.True(called);
+            Assert.Equal(2, result.Count());
+            Assert.All(result, x => Assert.Equal(freezerId, x.Parent));
+        }
+
+        [Fact]
+        public async Task GetAllVirusTypesByParentAsync_ReturnsFilteredActiveItems()
+        {
+            // Arrange
+            var virusFamilyId = Guid.NewGuid();
+            var items = new List<LookupItem>
+            {
+                new() { Id = Guid.NewGuid(), Name = "Type1", Parent = virusFamilyId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Type2", Parent = virusFamilyId, Active = false }, // inactive
+                new() { Id = Guid.NewGuid(), Name = "Type3", Parent = Guid.NewGuid(), Active = true }  // different parent
+            };
+
+            var repo = CreateRepoWithByParent(
+                items,
+                (lookup, parent) => {
+                    // Only return active items matching the parent
+                    var filteredItems = items
+                        .Where(i => i.Parent == parent && i.Active)
+                        .ToList();
+                    return Task.FromResult(filteredItems.AsEnumerable());
+                }
+            );
+
+            // Act
+            var result = await repo.GetAllVirusTypesByParentAsync(virusFamilyId);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Type1", result.First().Name);
+            Assert.Equal(virusFamilyId, result.First().Parent);
+            Assert.True(result.First().Active);
+        }
+
+        [Fact]
+        public async Task GetAllHostBreedsByParentAsync_ReturnsEmptyList_WhenNoMatches()
+        {
+            // Arrange
+            var nonExistentParentId = Guid.NewGuid();
+            var items = new List<LookupItem>
+            {
+                new() { Id = Guid.NewGuid(), Name = "Breed1", Parent = Guid.NewGuid(), Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Breed2", Parent = Guid.NewGuid(), Active = true }
+            };
+
+            var repo = CreateRepoWithByParent(
+                items,
+                (lookup, parent) => {
+                    return Task.FromResult(items.Where(i => i.Parent == parent && i.Active).AsEnumerable());
+                }
+            );
+
+            // Act
+            var result = await repo.GetAllHostBreedsByParentAsync(nonExistentParentId);
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetAllTraysByParentAsync_ReturnsOnlyActiveItems()
+        {
+            // Arrange
+            var freezerId = Guid.NewGuid();
+            var items = new List<LookupItem>
+            {
+                new() { Id = Guid.NewGuid(), Name = "Tray1", Parent = freezerId, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Tray2", Parent = freezerId, Active = false },
+                new() { Id = Guid.NewGuid(), Name = "Tray3", Parent = freezerId, Active = true }
+            };
+
+            var repo = CreateRepoWithByParent(
+                items,
+                (lookup, parent) => {
+                    return Task.FromResult(items.Where(i => i.Parent == parent && i.Active).AsEnumerable());
+                }
+            );
+
+            // Act
+            var result = await repo.GetAllTraysByParentAsync(freezerId);
+
+            // Assert
+            Assert.Equal(2, result.Count());
+            Assert.All(result, x => Assert.True(x.Active));
+            Assert.Contains(result, x => x.Name == "Tray1");
+            Assert.Contains(result, x => x.Name == "Tray3");
+        }
+
+        [Fact]
+        public async Task GetAllVirusTypesByParentAsync_HandlesNullParent()
+        {
+            // Arrange
+            Guid? nullParent = null;
+            var items = new List<LookupItem>
+            {
+                new() { Id = Guid.NewGuid(), Name = "TypeNull1", Parent = null, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "TypeNull2", Parent = null, Active = true },
+                new() { Id = Guid.NewGuid(), Name = "Type3", Parent = Guid.NewGuid(), Active = true }
+            };
+
+            bool called = false;
+            var repo = CreateRepoWithByParent(
+                items,
+                (lookup, parent) => {
+                    called = true;
+                    Assert.Equal("VirusType", lookup);
+                    Assert.Null(parent);
+
+                    // Filter for items with null parent
+                    return Task.FromResult(items.Where(i => i.Parent == parent && i.Active).AsEnumerable());
+                }
+            );
+
+            // Act
+            var result = await repo.GetAllVirusTypesByParentAsync(nullParent);
+
+            // Assert
+            Assert.True(called);
+            Assert.Equal(2, result.Count());
+            Assert.All(result, x => Assert.Null(x.Parent));
         }
     }
 }
