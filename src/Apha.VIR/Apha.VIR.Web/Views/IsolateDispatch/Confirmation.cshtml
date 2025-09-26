@@ -39,7 +39,7 @@
             @foreach (var item in Model.DispatchHistorys)
             {
                 <tr>
-                    <td>@item.NoOfAliquots</td>
+                    <td>@item.NoOfAliquotsToBeDispatched</td>
                     <td>@item.PassageNumber</td>
                     <td>@item.RecipientName</td>
                     <td>@item.RecipientAddress</td>
@@ -53,5 +53,12 @@
 </div>
 
 <p>
-    <a asp-action="Search" asp-controller="SearchRepository">Return to the Search Repository Page</a>
+    @if(Model.Source.ToLower() == "search")
+    {
+        <a asp-action="Search" asp-controller="SearchRepository">Return to the Search Repository Page</a>
+    }
+    else
+    {
+        <a asp-action="Index" asp-controller="SubmissionSamples" asp-route-AVNumber="@Html.Encode(Model.AVNumber)">Return to the Submission Summary Page</a>
+    }
 </p>

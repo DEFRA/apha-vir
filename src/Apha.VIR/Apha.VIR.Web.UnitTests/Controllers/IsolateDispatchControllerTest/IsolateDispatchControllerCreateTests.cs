@@ -148,7 +148,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
         [Theory]
         [InlineData("search", "IsolateDispatch", "Confirmation")]
-        [InlineData("summary", "SubmissionSamples", "Index")]
+        [InlineData("summary", "IsolateDispatch", "Confirmation")]
         [InlineData("other", "IsolateDispatch", "Create")]
         public async Task Create_DifferentSources_RedirectsCorrectly(string source, string expectedController, string expectedAction)
         {
@@ -296,7 +296,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
         [Theory]
         [InlineData("search", "Confirmation", "IsolateDispatch")]
-        [InlineData("summary", "Index", "SubmissionSamples")]
+        [InlineData("summary", "Confirmation", "IsolateDispatch")]
         [InlineData("other", "Create", "IsolateDispatch")]
         public async Task Create_ValidModel_ReturnsCorrectRedirectBasedOnSource(string source, string expectedAction, string expectedController)
         {
