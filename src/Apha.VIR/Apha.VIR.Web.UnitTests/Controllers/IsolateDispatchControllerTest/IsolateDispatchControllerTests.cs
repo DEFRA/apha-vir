@@ -420,6 +420,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                DispatchedDate = DateTime.Now.AddDays(10),
                 ValidToIssue=false,
                 LastModified = new byte[] { 0x00, 0x01 }
             };
@@ -445,7 +446,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
           
             Assert.Same(model, viewResult.Model);
             Assert.False(_controller.ModelState.IsValid);
-            Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage == "Isolate cannot be dispatched as there are no aliquots available."));
+            Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage == "Dispatched Date cannot be in the future."));
         }
 
         [Fact]
