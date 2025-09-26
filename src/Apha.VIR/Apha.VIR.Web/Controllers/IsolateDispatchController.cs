@@ -146,17 +146,17 @@ namespace Apha.VIR.Web.Controllers
             string fromSource = dispatchModel!.Source!.ToLower();
             return fromSource switch
             {
-                "search" => RedirectToAction("Confirmation", "IsolateDispatch", new { 
+                "search" => RedirectToAction("Confirmation", new { 
                     Isolate = dispatchRecord.DispatchIsolateId,
                     AVNumber = dispatchModel.Avnumber,
                     Source = "Search" 
                 }),
-                "summary" => RedirectToAction("Confirmation", "IsolateDispatch", new { 
+                "summary" => RedirectToAction("Confirmation", new { 
                     Isolate = dispatchRecord.DispatchIsolateId,
                     AVNumber = dispatchModel.Avnumber,
                     Source = "Summary" 
                 }),
-                _ => RedirectToAction("Create", "IsolateDispatch")
+                _ => RedirectToAction("Create")
             };
         }
 
@@ -315,7 +315,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 "search" => RedirectToAction("Search", "SearchRepository"),
                 "summary" => RedirectToAction("Index", "SubmissionSamples", new { AVNumber = Avnumber }),
-                _ => RedirectToAction("Create", "IsolateDispatch")
+                _ => RedirectToAction("Create")
             };
         }
 
@@ -409,19 +409,6 @@ namespace Apha.VIR.Web.Controllers
         {
             List<string> validationErrors = new List<string>();
             Guid isolateId = Guid.Empty;
-
-            //Commneting as per the existing application behaviour
-            //if (dispatchModel.NoOfAliquots>=0)
-            //{
-            //    if (dispatchModel.NoOfAliquotsToBeDispatched >= dispatchModel.NoOfAliquots)
-            //    {
-            //        validationErrors.Add("Attempting to dispatch too many aliquots, must leave at least one aliquot in storage.");
-            //    }
-            //}
-            //else
-            //{
-            //    validationErrors.Add("Isolate cannot be dispatched as there are no aliquots available.");
-            //}
 
             if (dispatchModel.DispatchedDate > DateTime.Now.Date)
             {

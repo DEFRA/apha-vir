@@ -147,10 +147,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Theory]
-        [InlineData("search", "IsolateDispatch", "Confirmation")]
-        [InlineData("summary", "IsolateDispatch", "Confirmation")]
-        [InlineData("other", "IsolateDispatch", "Create")]
-        public async Task Create_DifferentSources_RedirectsCorrectly(string source, string expectedController, string expectedAction)
+        [InlineData("search", "Confirmation")]
+        [InlineData("summary", "Confirmation")]
+        [InlineData("other", "Create")]
+        public async Task Create_DifferentSources_RedirectsCorrectly(string source, string expectedAction)
         {
             // Arrange
             var dispatchModel = new IsolateDispatchCreateViewModel
@@ -182,8 +182,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(expectedAction, result.ActionName);
-            Assert.Equal(expectedController, result.ControllerName);
+            Assert.Equal(expectedAction, result.ActionName);            
         }
 
         private void SetupLookupServices()
@@ -228,8 +227,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Confirmation", redirectToActionResult.ActionName);
-            Assert.Equal("IsolateDispatch", redirectToActionResult.ControllerName);
+            Assert.Equal("Confirmation", redirectToActionResult.ActionName);            
         }
 
         [Fact]
@@ -295,10 +293,10 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         }
 
         [Theory]
-        [InlineData("search", "Confirmation", "IsolateDispatch")]
-        [InlineData("summary", "Confirmation", "IsolateDispatch")]
-        [InlineData("other", "Create", "IsolateDispatch")]
-        public async Task Create_ValidModel_ReturnsCorrectRedirectBasedOnSource(string source, string expectedAction, string expectedController)
+        [InlineData("search", "Confirmation")]
+        [InlineData("summary", "Confirmation")]
+        [InlineData("other", "Create")]
+        public async Task Create_ValidModel_ReturnsCorrectRedirectBasedOnSource(string source, string expectedAction)
         {
             // Arrange
             var dispatchModel = new IsolateDispatchCreateViewModel
@@ -332,8 +330,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal(expectedAction, redirectToActionResult.ActionName);
-            Assert.Equal(expectedController, redirectToActionResult.ControllerName);
+            Assert.Equal(expectedAction, redirectToActionResult.ActionName);           
         }
 
         [Fact]
