@@ -112,7 +112,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
         }
 
         [Fact]
-        public async Task SystemInfo_HandlesNullRemoteIpAddress()
+        public async Task SystemInfo_HandlesUnknownIPlRemoteIpAddress()
         {
             // Arrange
             _mockSysInfoService.GetLatestSysInfo().Returns(new SystemInfoDto());
@@ -126,11 +126,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.SystemInformationControllerTest
 
             // Act
             var result = await _controller.Index();
-
+ 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<SystemInformationViewModel>(viewResult.Model);
-            Assert.Null(model.HostAddress);
+            Assert.Equal("Unknown IP", model.HostAddress);
         }
 
         [Fact]

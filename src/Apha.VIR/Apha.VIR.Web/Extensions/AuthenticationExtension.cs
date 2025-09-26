@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using System.Security.Claims;
@@ -15,7 +16,7 @@ namespace Apha.VIR.Web.Extensions
                     configuration.Bind("AzureAd", options);
                     options.Events = new OpenIdConnectEvents
                     {
-                        OnTokenValidated = context => HandleTokenValidatedAsync(context),
+                        OnTokenValidated = context => HandleTokenValidatedAsync(context, services),
                         OnRedirectToIdentityProvider = context => HandleRedirectToIdentityProvider(context),
                         OnRemoteFailure = context => HandleRemoteFailure(context)
                     };
@@ -25,7 +26,7 @@ namespace Apha.VIR.Web.Extensions
             return services;
         }
 
-        private static Task HandleTokenValidatedAsync(TokenValidatedContext context)
+        private static Task HandleTokenValidatedAsync(TokenValidatedContext context, IServiceCollection services)
         {
             var identity = context.Principal?.Identity as ClaimsIdentity;
             if (identity == null)
@@ -34,14 +35,19 @@ namespace Apha.VIR.Web.Extensions
             }
             var email = identity.FindFirst(ClaimTypes.Email)?.Value
                         ?? identity.FindFirst("preferred_username")?.Value;
-            if (!string.IsNullOrEmpty(email))
-            {
-                //Authenticated user
-            }
-            else
+            
+            if (string.IsNullOrEmpty(email))
             {
                 throw new UnauthorizedAccessException("User Identifier not received from IDP");
             }
+
+            var loggerFactory = services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger("AuthenticationExtension");
+
+            var userName = identity.Name! ?? string.Empty;
+            var currentTime = DateTime.UtcNow;   
+            logger.LogInformation("User {Username} logged in successfully at {Timestamp}", userName, currentTime);
+
             return Task.CompletedTask;
         }
 
