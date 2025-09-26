@@ -67,44 +67,44 @@ namespace Apha.VIR.Web.UnitTests.Extensions
                     .Invoke(null, new object[] { context })
             );
         }
-       
+
 
         [Fact]
-        //public void HandleTokenValidatedAsync_NoIdentity_ThrowsUnauthorizedAccessException()
-        //{
-        //    var context = new TokenValidatedContext(
-        //        new DefaultHttpContext(),
-        //        new AuthenticationScheme("Test", "Test", typeof(OpenIdConnectHandler)),
-        //        new OpenIdConnectOptions(),
-        //        null!,
-        //        new AuthenticationProperties());
+        public void HandleTokenValidatedAsync_NoIdentity_ThrowsUnauthorizedAccessException()
+        {
+            var context = new TokenValidatedContext(
+                new DefaultHttpContext(),
+                new AuthenticationScheme("Test", "Test", typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                null!,
+                new AuthenticationProperties());
 
-        //    Assert.Throws<TargetParameterCountException>(() =>
-        //        typeof(AuthenticationExtension)
-        //            .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
-        //            .Invoke(null, new object[] { context })
-        //    );
-        //}
+            Assert.Throws<TargetInvocationException>(() =>
+                typeof(AuthenticationExtension)
+                    .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
+                    .Invoke(null, new object[] { context })
+            );
+        }
 
-        //[Fact]
-        //public void HandleTokenValidatedAsync_NoEmail_ThrowsUnauthorizedAccessException()
-        //{
-        //    var identity = new ClaimsIdentity(new List<Claim>(), "test");
-        //    var principal = new ClaimsPrincipal(identity);
+        [Fact]
+        public void HandleTokenValidatedAsync_NoEmail_ThrowsUnauthorizedAccessException()
+        {
+            var identity = new ClaimsIdentity(new List<Claim>(), "test");
+            var principal = new ClaimsPrincipal(identity);
 
-        //    var context = new TokenValidatedContext(
-        //        new DefaultHttpContext(),
-        //        new AuthenticationScheme("Test", "Test", typeof(OpenIdConnectHandler)),
-        //        new OpenIdConnectOptions(),
-        //        principal,
-        //        new AuthenticationProperties());
+            var context = new TokenValidatedContext(
+                new DefaultHttpContext(),
+                new AuthenticationScheme("Test", "Test", typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                principal,
+                new AuthenticationProperties());
 
-        //    Assert.Throws<TargetParameterCountException>(() =>
-        //        typeof(AuthenticationExtension)
-        //            .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
-        //            .Invoke(null, new object[] { context })
-        //    );
-        //}
+            Assert.Throws<TargetInvocationException>(() =>
+                typeof(AuthenticationExtension)
+                    .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
+                    .Invoke(null, new object[] { context })
+            );
+        }
 
         [Fact]
         public void HandleRedirectToIdentityProvider_HttpsUri_DoesNotModifyUri()

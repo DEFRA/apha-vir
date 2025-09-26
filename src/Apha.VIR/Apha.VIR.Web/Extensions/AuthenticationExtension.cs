@@ -43,7 +43,7 @@ namespace Apha.VIR.Web.Extensions
 
             if (!hasMatchingRole)
             {
-                var msg = $"Unauthorized access attempt by user {userName} as he not a member of application group.";
+                var msg = $"Unauthorized access attempt by user {userName}. He is not a member of any of the application groups.";
                 throw new UnauthorizedAccessException(msg);
             }
             var logger = context.HttpContext.RequestServices
