@@ -1,11 +1,11 @@
-﻿using System.Data;
-using Apha.VIR.Core.Entities;
+﻿using Apha.VIR.Core.Entities;
 using Apha.VIR.Core.Interfaces;
 using Apha.VIR.DataAccess.Data;
 using Apha.VIR.DataAccess.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Apha.VIR.DataAccess.Repositories;
 
@@ -24,7 +24,7 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
         return count > 0;
     }
 
-    public async Task<Submission> GetSubmissionDetailsByAVNumberAsync(string avNumber)
+    public virtual async Task<Submission> GetSubmissionDetailsByAVNumberAsync(string avNumber)
     {
         Submission submission = null!;
         using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
@@ -51,7 +51,7 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
         return submission;
     }
 
-    private static async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
+    public virtual async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
     {
         Submission submission = null!;
         if (await reader.ReadAsync())

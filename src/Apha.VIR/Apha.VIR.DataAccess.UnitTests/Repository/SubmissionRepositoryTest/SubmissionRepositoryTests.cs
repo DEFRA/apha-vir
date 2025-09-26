@@ -2,10 +2,19 @@
 using Apha.VIR.DataAccess.Data;
 using Apha.VIR.DataAccess.Repositories;
 using Apha.VIR.DataAccess.UnitTests.Repository.Helpers;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using NSubstitute;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
 {
+
     public class TestSubmissionRepository : SubmissionRepository
     {
         public bool InsertCalled { get; private set; }
@@ -14,15 +23,51 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
 
         private readonly IQueryable<int> _fakeCounts;
         private readonly IQueryable<string> _fakeStrings;
+        private readonly Dictionary<string, Submission> _fakeDatabase = new Dictionary<string, Submission>();
 
         public TestSubmissionRepository(
             VIRDbContext context,
+
             IQueryable<int> fakeCounts,
             IQueryable<string> fakeStrings) : base(context)
         {
             _fakeCounts = fakeCounts;
             _fakeStrings = fakeStrings;
         }
+        public void AddFakeSubmission(Submission submission)
+        {
+            _fakeDatabase[submission.Avnumber] = submission;
+        }
+
+        public override async Task<Submission> GetSubmissionDetailsByAVNumberAsync(string avNumber)
+        {
+            // Simulate some async operation
+            await Task.Delay(1);
+
+
+            if (_fakeDatabase.TryGetValue(avNumber, out var submission))
+            {
+                return submission;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public override async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
+        {
+            // Your implementation here
+            return await Task.FromResult(new Submission
+            {
+                SubmissionId = Guid.NewGuid(),
+                Avnumber = "FAKE123",
+                CountryOfOrigin=Guid.NewGuid(),
+                SenderAddress="aaa",
+
+            });
+        }
+
 
         protected override IQueryable<T> SqlQueryInterpolatedFor<T>(FormattableString sql)
         {
@@ -50,7 +95,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
                 return Task.FromResult(1);
             }
 
-            if (query.Contains("delete"))   
+            if (query.Contains("delete"))
             {
                 DeleteCalled = true;
                 return Task.FromResult(1);
@@ -61,13 +106,32 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
     }
     public class SubmissionRepositoryTests
     {
+        private readonly TestSubmissionRepository _repo;
+        private readonly Mock<VIRDbContext> _mockContext;
+
         private static readonly int[] CountGreaterThanZero = { 1 };
         private static readonly int[] CountZero = { 0 };
         private static readonly string[] LatestSubmissionStrings = { "AV001", "AV002" };
+        private readonly IQueryable<int> _fakeCounts;
+        private readonly IQueryable<string> _fakeStrings;
+        public SubmissionRepositoryTests()
+        {
+            _mockContext = new Mock<VIRDbContext>();
+
+            _fakeCounts = new List<int> { 1, 2, 3 }.AsQueryable();
+            _fakeStrings = new List<string> { "test1", "test2" }.AsQueryable();
+            _repo = new TestSubmissionRepository(
+           _mockContext.Object,
+
+           _fakeCounts,
+           _fakeStrings
+       );
+        }
         [Fact]
         public async Task AVNumberExistsInVirAsync_ReturnsTrue_WhenCountGreaterThanZero()
         {
             var fakeCounts = new TestAsyncEnumerable<int>(CountGreaterThanZero);
+
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, fakeCounts, new TestAsyncEnumerable<string>(Array.Empty<string>()));
 
             var result = await repo.AVNumberExistsInVirAsync("AV123");
@@ -79,6 +143,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         public async Task AVNumberExistsInVirAsync_ReturnsFalse_WhenCountZero()
         {
             var fakeCounts = new TestAsyncEnumerable<int>(CountZero);
+
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, fakeCounts, new TestAsyncEnumerable<string>(Array.Empty<string>()));
 
             var result = await repo.AVNumberExistsInVirAsync("AV123");
@@ -90,6 +155,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         public async Task GetLatestSubmissionsAsync_ReturnsStrings()
         {
             var fakeStrings = new TestAsyncEnumerable<string>(LatestSubmissionStrings);
+
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, new TestAsyncEnumerable<int>(Array.Empty<int>()), fakeStrings);
 
             var result = await repo.GetLatestSubmissionsAsync();
@@ -102,6 +168,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         [Fact]
         public async Task AddSubmissionAsync_CallsExecuteSqlAsync()
         {
+
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, new TestAsyncEnumerable<int>(Array.Empty<int>()), new TestAsyncEnumerable<string>(Array.Empty<string>()));
             var submission = new Submission { Avnumber = "AV123" };
 
@@ -113,6 +180,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         [Fact]
         public async Task UpdateSubmissionAsync_CallsExecuteSqlAsync()
         {
+
             var repo = new TestSubmissionRepository(new Mock<VIRDbContext>().Object, new TestAsyncEnumerable<int>(Array.Empty<int>()), new TestAsyncEnumerable<string>(Array.Empty<string>()));
             var submission = new Submission { SubmissionId = Guid.NewGuid(), Avnumber = "AV123", LastModified = new byte[8] };
 
@@ -125,8 +193,12 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         public async Task DeleteSubmissionAsync_CallsExecuteSqlAsync()
         {
             // Arrange
+
             var repo = new TestSubmissionRepository(
                 new Mock<VIRDbContext>().Object,
+
+
+
                 new TestAsyncEnumerable<int>(Array.Empty<int>()),
                 new TestAsyncEnumerable<string>(Array.Empty<string>()));
 
@@ -145,7 +217,69 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
         [Fact]
         public void Constructor_ThrowsArgumentNullException_WhenContextIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new SubmissionRepository(null!));
+
+            Assert.Throws<ArgumentNullException>(() => new SubmissionRepository(null!
+));
         }
+        // New test for GetSubmissionDetailsByAVNumberAsync
+
+
+
+        [Fact]
+        public async Task GetSubmissionDetailsByAVNumberAsync_ReturnsSubmission_WhenAVNumberExists()
+        {
+            // Arrange
+            var expectedSubmission = new Submission
+            {
+                SubmissionId = Guid.NewGuid(),
+                Avnumber = "AV123",
+                // ... set other properties
+            };
+            _repo.AddFakeSubmission(expectedSubmission);
+
+            // Act
+            var result = await _repo.GetSubmissionDetailsByAVNumberAsync("AV123");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(expectedSubmission.SubmissionId, result.SubmissionId);
+            Assert.Equal(expectedSubmission.Avnumber, result.Avnumber);
+            // ... assert other properties
+        }
+
+        [Fact]
+        public async Task GetSubmissionDetailsByAVNumberAsync_ReturnsNull_WhenAVNumberDoesNotExist()
+        {
+            // Act
+            var result = await _repo.GetSubmissionDetailsByAVNumberAsync("NonExistentAV");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetSubmissionDetailsByAVNumberAsync_HandlesNullValues_Correctly()
+        {
+            // Arrange
+            var submissionWithNulls = new Submission
+            {
+                SubmissionId = Guid.NewGuid(),
+                Avnumber = "AV456",
+                // ... set some properties to null
+            };
+            _repo.AddFakeSubmission(submissionWithNulls);
+
+            // Act
+            var result = await _repo.GetSubmissionDetailsByAVNumberAsync("AV456");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(submissionWithNulls.SubmissionId, result.SubmissionId);
+            Assert.Equal(submissionWithNulls.Avnumber, result.Avnumber);
+            // ... assert that null properties are indeed null
+        }
+       
+
     }
+
 }
