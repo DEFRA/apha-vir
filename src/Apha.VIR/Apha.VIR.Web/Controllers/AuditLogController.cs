@@ -76,6 +76,7 @@ namespace Apha.VIR.Web.Controllers
 
                 var reportData = _mapper.Map<IEnumerable<AuditSubmissionLogModel>>(result);
 
+
                 var viewModel = new AuditLogViewModel
                 {
                     AVNumber = searchCriteria.AVNumber,
