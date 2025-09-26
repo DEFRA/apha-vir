@@ -110,6 +110,10 @@
             <input type="hidden" name="Freezer" />
             <input type="hidden" name="Tray" />
             <input type="hidden" name="LastModified" />
+            <input type="hidden" name="IsolateRelocationViewModel.MinAVNumber" />
+            <input type="hidden" name="IsolateRelocationViewModel.MaxAVNumber" />
+            <input type="hidden" name="IsolateRelocationViewModel.SelectedFreezer" />
+            <input type="hidden" name="IsolateRelocationViewModel.SelectedTray" />
        </form>
     </div>
 </div>
@@ -174,6 +178,10 @@
                 $('#editForm input[name="Freezer"]').val(button.data('freezer'));
                 $('#editForm input[name="Tray"]').val(button.data('tray'));
                 $('#editForm input[name="LastModified"]').val(button.data('lastmodified'));
+                $('#editForm input[name="IsolateRelocationViewModel.MinAVNumber"]').val($('#MinimumAVNumber').val());
+                $('#editForm input[name="IsolateRelocationViewModel.MaxAVNumber"]').val($('#MaximumAVNumber').val());
+                $('#editForm input[name="IsolateRelocationViewModel.SelectedFreezer"]').val($('#FreezerSearch').val() || null);
+                $('#editForm input[name="IsolateRelocationViewModel.SelectedTray"]').val( $('#TraySearch').val() || null);
                 $('#editForm').submit();
             });
         });
@@ -190,9 +198,10 @@
                         SelectedTray: $('#TraySearch').val() || null
                     }),
                     success: function (data) {
+                        debugger;
                        $('#isolatesGrid').html(data);
                         $('#validationPanel').hide();
-                        if ($.trim(data).length == 0) {
+                        if ($.trim(data).length == 0 || data.indexOf("There are no isolates matching the criteria specified") !== -1) {
                             $('#divNewFreezer').hide();
                             $('#divNewTray').hide();
                          } else {
