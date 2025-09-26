@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+﻿using Apha.VIR.Web.Utilities;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
@@ -16,7 +17,7 @@ namespace Apha.VIR.Web.Extensions
                     configuration.Bind("AzureAd", options);
                     options.Events = new OpenIdConnectEvents
                     {
-                        OnTokenValidated = context => HandleTokenValidatedAsync(context, services),
+                        OnTokenValidated = context => HandleTokenValidatedAsync(context),
                         OnRedirectToIdentityProvider = context => HandleRedirectToIdentityProvider(context),
                         OnRemoteFailure = context => HandleRemoteFailure(context)
                     };
@@ -26,31 +27,33 @@ namespace Apha.VIR.Web.Extensions
             return services;
         }
 
-        private static Task HandleTokenValidatedAsync(TokenValidatedContext context, IServiceCollection services)
+        private static Task HandleTokenValidatedAsync(TokenValidatedContext context)
         {
             var identity = context.Principal?.Identity as ClaimsIdentity;
             if (identity == null)
             {
                 throw new UnauthorizedAccessException("Unauthorized Access");
             }
-            var email = identity.FindFirst(ClaimTypes.Email)?.Value
-                        ?? identity.FindFirst("preferred_username")?.Value;
-            
-            if (string.IsNullOrEmpty(email))
-            {
-                throw new UnauthorizedAccessException("User Identifier not received from IDP");
-            }
 
-            var loggerFactory = services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
-            var logger = loggerFactory.CreateLogger("AuthenticationExtension");
-
+            var currentTime = DateTime.UtcNow;
             var userName = identity.Name! ?? string.Empty;
-            var currentTime = DateTime.UtcNow;   
+            var userroles = identity.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+            bool hasMatchingRole = userroles.Any(role => AuthorisationUtil.AppRoles.Contains(role, StringComparer.OrdinalIgnoreCase));
+
+            if (!hasMatchingRole)
+            {
+                var msg = $"Unauthorized access attempt by user {userName} as he not a member of application group.";
+                throw new UnauthorizedAccessException(msg);
+            }
+            var logger = context.HttpContext.RequestServices
+                .GetRequiredService<ILoggerFactory>()
+                .CreateLogger("AuthenticationExtension");
+
             logger.LogInformation("User {Username} logged in successfully at {Timestamp}", userName, currentTime);
 
             return Task.CompletedTask;
         }
-
         /// <summary>
         /// Ensures the redirect URI uses HTTPS instead of HTTP.
         /// This is typically used in OpenID Connect authentication
