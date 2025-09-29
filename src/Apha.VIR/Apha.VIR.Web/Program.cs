@@ -19,7 +19,9 @@ else
     Serilog.Debugging.SelfLog.Enable(Console.Error);
     builder.Host.UseSerilog((context, services, loggerConfiguration) =>
     {
-        loggerConfiguration.UseAwsCloudWatch(builder.Configuration);
+        loggerConfiguration
+        .ReadFrom.Configuration(context.Configuration)  // load min levels from appsettings.json
+        .UseStructuredConsoleLogging();
     });
 }
 

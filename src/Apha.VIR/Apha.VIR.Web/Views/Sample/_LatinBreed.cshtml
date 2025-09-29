@@ -3,7 +3,7 @@
 <fieldset id="latinBreedModal" > 
 	<legend class="legend">Pick By Latin Breed (English)</legend>
 	<div class="py-4" style="display: flex; justify-content: start;">
-		<select id="ddlLatinBreed" class="form-control addeditsample-addsender-select">
+		<select id="ddlLatinBreed" class="form-control addeditsample-addsender-select" style="width:fit-content">
 			@foreach (var item in Model)
 			{
 				var latinBreedName = item.AlternateName + " (" + item.Name + ")";
@@ -15,7 +15,7 @@
 		</select>
 	</div>
 	<div class="modal-footer p-0 mt-2">
-		<button type="button" class="btnLink" style="margin-left: 210px;" onclick="selectLatinBreed()">OK</button>
+		<button type="button" class="btnLink" style="margin-left: 210px;" onclick="selectLatinBreed()">Ok</button>
 		<button type="button" class="btnLink" style="margin-right: 210px;" data-bs-dismiss="modal">Cancel</button>
 	</div>
 </fieldset>
