@@ -26,13 +26,16 @@ else
                     </td>
                 </tr>
             }
-            <tr>
-                <td colspan="2">
+            @if (Model.Pagination?.TotalPages > 1)
+            {
+                <tr>
+                    <td colspan="2">
                     <div id="girdPagination" class="pagination" style="text-align:left">
                         @await Component.InvokeAsync("Pagination", Model.Pagination)
                     </div>
                 </td>
             </tr>
+            }
         </tbody>
     </table>
 }
