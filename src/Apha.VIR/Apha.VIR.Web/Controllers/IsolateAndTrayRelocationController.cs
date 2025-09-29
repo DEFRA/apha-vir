@@ -48,23 +48,17 @@ namespace Apha.VIR.Web.Controllers
             var model = new IsolateRelocationViewModel();
             await LoadIsolateAndTrayData(model);
 
-            var jsonData = _cacheService.GetSessionValue("isolateRelocateSessionModel");
-            if (!string.IsNullOrEmpty(jsonData))
+            var sessionData = GetSessionRelocationData();
+            if (sessionData != null)
             {
-                var data = JsonConvert.DeserializeObject<IsolateRelocateViewModel>(jsonData);
-                _cacheService.RemoveSessionValue("isolateRelocateSessionModel");
-                if (data != null && data.IsolateRelocationViewModel != null && data.IsolateRelocationViewModel.MinAVNumber != null)
-                    model.MinAVNumber = data.IsolateRelocationViewModel.MinAVNumber;
-                if (data != null && data.IsolateRelocationViewModel != null && data.IsolateRelocationViewModel.MaxAVNumber != null)
-                    model.MaxAVNumber = data.IsolateRelocationViewModel.MaxAVNumber;
-                if (data != null && data.IsolateRelocationViewModel != null && data.IsolateRelocationViewModel.SelectedFreezer != null)
-                    model.SelectedFreezer = data.IsolateRelocationViewModel.SelectedFreezer;
-                if (data != null && data.IsolateRelocationViewModel != null && data.IsolateRelocationViewModel.SelectedTray != null)
-                    model.SelectedTray = data.IsolateRelocationViewModel.SelectedTray;   
-                
-                var searchModel = await _isolateRelocateService.GetIsolatesByCriteria(model.MinAVNumber!,
-                    model.MaxAVNumber!, model.SelectedFreezer ?? Guid.Empty, model.SelectedTray ?? Guid.Empty);
-                model.SearchResults = _mapper.Map<List<IsolateRelocateViewModel>>(searchModel);
+                ApplySessionDataToModel(sessionData, model);
+                var searchResults = await _isolateRelocateService.GetIsolatesByCriteria(
+                    model.MinAVNumber!,
+                    model.MaxAVNumber!,
+                    model.SelectedFreezer ?? Guid.Empty,
+                    model.SelectedTray ?? Guid.Empty
+                );
+                model.SearchResults = _mapper.Map<List<IsolateRelocateViewModel>>(searchResults);
             }
             else
             {
@@ -345,5 +339,25 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
+        private IsolateRelocateViewModel? GetSessionRelocationData()
+        {
+            var jsonData = _cacheService.GetSessionValue("isolateRelocateSessionModel");
+            if (string.IsNullOrEmpty(jsonData)) return null;
+
+            _cacheService.RemoveSessionValue("isolateRelocateSessionModel");
+            var sessionModel = JsonConvert.DeserializeObject<IsolateRelocateViewModel>(jsonData);
+            return sessionModel;
+        }
+
+        private void ApplySessionDataToModel(IsolateRelocateViewModel sessionData, IsolateRelocationViewModel model)
+        {
+            var data = sessionData.IsolateRelocationViewModel;
+            if (data == null) return;
+
+            model.MinAVNumber = data.MinAVNumber ?? model.MinAVNumber;
+            model.MaxAVNumber = data.MaxAVNumber ?? model.MaxAVNumber;
+            model.SelectedFreezer = data.SelectedFreezer ?? model.SelectedFreezer;
+            model.SelectedTray = data.SelectedTray ?? model.SelectedTray;
+        }
     }
 }
