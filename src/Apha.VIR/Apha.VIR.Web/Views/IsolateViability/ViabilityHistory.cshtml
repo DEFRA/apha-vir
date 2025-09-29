@@ -17,6 +17,7 @@
 					<th class="view-isolate-details-label2">Date Checked</th>
 					<th class="view-isolate-details-label2">Checked By</th>
 					<th class="view-isolate-details-label2"></th>
+					<th class="view-isolate-details-label2"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -28,8 +29,9 @@
 						<td>@item.CheckedByName</td>
 						<td>
 							<a asp-action="Edit" asp-route-AVNumber="@item.AVNumber" asp-route-Isolate="@item.IsolateViabilityIsolateId" 
-							asp-route-IsolateViabilityId="@item.IsolateViabilityId" class="btn btn-primary">Edit</a>
-
+							asp-route-IsolateViabilityId="@item.IsolateViabilityId" class="btn btn-primary">Edit</a>							
+						</td>
+						<td>
 							<form asp-action="Delete"
 								  asp-controller="IsolateViability"
 								  method="post"
