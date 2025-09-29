@@ -64,7 +64,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
 
         }
 
-        public override async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
+        protected override async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
         {
             // Your implementation here
             return await Task.FromResult(new Submission

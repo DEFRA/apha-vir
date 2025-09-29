@@ -51,7 +51,7 @@ public class SubmissionRepository : RepositoryBase<Submission>, ISubmissionRepos
         return submission;
     }
 
-    public virtual async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
+    protected virtual async Task<Submission> GetSubmissionDetail(SqlDataReader reader)
     {
         Submission submission = null!;
         if (await reader.ReadAsync())
