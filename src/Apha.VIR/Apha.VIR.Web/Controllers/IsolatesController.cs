@@ -243,11 +243,25 @@ namespace Apha.VIR.Web.Controllers
 
             if (isolateModel.ActionType == "SaveAndContinue")
             {
-                return RedirectToAction(nameof(IsolateCharacteristicsController.Edit), "IsolateCharacteristics", new { AVNumber = isolateModel.AVNumber, Isolate = isolateModel.IsolateId, SampleId = isolateModel.IsolateSampleId });
+                _cacheService.AddOrUpdateBreadcrumb("/Isolates/Edit",
+                    new Dictionary<string, string> {
+                        { "AVNumber", isolateModel.AVNumber??"" },
+                        { "SampleId", isolateModel.IsolateSampleId.ToString()??"" },
+                        { "IsolateId", isolateModel.IsolateId?.ToString()??"" }
+                    });
+                return RedirectToAction(nameof(IsolateCharacteristicsController.Edit), "IsolateCharacteristics", 
+                    new { 
+                        AVNumber = isolateModel.AVNumber, 
+                        Isolate = isolateModel.IsolateId, 
+                        SampleId = isolateModel.IsolateSampleId 
+                    });
             }
             else
             {
-                return RedirectToAction(nameof(SubmissionSamplesController.Index), "SubmissionSamples", new { AVNumber = isolateModel.AVNumber });
+                return RedirectToAction(nameof(SubmissionSamplesController.Index), "SubmissionSamples", 
+                    new { 
+                        AVNumber = isolateModel.AVNumber 
+                    });
             }
         }
 

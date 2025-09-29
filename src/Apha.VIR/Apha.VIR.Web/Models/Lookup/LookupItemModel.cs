@@ -79,7 +79,7 @@ public class LookupItemModel
         }
 
         //Ensure that the item is unique
-        if (parentExist)
+        if (!parentExist)
         {
             isDuplicate = lookupItemList.Any(listItem => listItem.Id != Id && listItem.Name == Name);
         }
