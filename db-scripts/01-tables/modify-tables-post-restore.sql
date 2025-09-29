@@ -1,4 +1,4 @@
-/* Fix deprecated fetaures */
+-- Fix deprecated fetaures
 
 ALTER TABLE [dbo].[tblIsolate] ALTER COLUMN [Comment] VARCHAR(MAX) NULL;
 ALTER TABLE [dbo].[tblIsolate] ALTER COLUMN [PhylogeneticAnalysis] VARCHAR(MAX) NULL;
