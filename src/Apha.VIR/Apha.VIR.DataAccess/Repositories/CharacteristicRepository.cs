@@ -16,7 +16,7 @@ public class CharacteristicRepository : RepositoryBase<IsolateCharacteristicInfo
         return await GetIsolateCharacteristics(isolateId);
     }
 
-    private async Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristics(Guid isolateId)
+    protected virtual async Task<IEnumerable<IsolateCharacteristicInfo>> GetIsolateCharacteristics(Guid isolateId)
     {
         var isolateCharacteristicList = new List<IsolateCharacteristicInfo>();
 

@@ -259,7 +259,7 @@ namespace Apha.VIR.DataAccess.Repositories
              .Where(vf => vf.Active).ToList();
         }
 
-        private async Task<IEnumerable<LookupItem>> GetLookupItemsByParentAsync(string Lookup, Guid? Parent)
+        protected virtual async Task<IEnumerable<LookupItem>> GetLookupItemsByParentAsync(string Lookup, Guid? Parent)
         {
             var lookupItemList = new List<LookupItem>();
             string commandName = string.Empty;
