@@ -240,8 +240,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Create", redirectResult.ActionName);
-            Assert.Equal("IsolateDispatch", redirectResult.ControllerName);
+            Assert.Equal("Create", redirectResult.ActionName);            
         }
 
         [Fact]

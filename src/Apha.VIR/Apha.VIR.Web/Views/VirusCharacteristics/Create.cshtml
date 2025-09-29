@@ -17,8 +17,8 @@
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
 		<span for="NumericSort" class="virusform_label">Numeric Sort</span>
-		<input asp-for="NumericSort" type="checkbox" />
-		<br /><span asp-validation-for="NumericSort" class="ms-2 text-danger"></span>
+		<input id="chkNumericSort" type="checkbox" @(Model.NumericSort ? "checked" : "") />
+		<input type="hidden" asp-for="NumericSort" />
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
 		<span for="DisplayOnSearch" class="virusform_label">Display In Nomenclature</span>
@@ -32,22 +32,22 @@
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
 		<span for="MinValue" class="virusform_label">Min Value</span>
-		<input asp-for="MinValue" />
+		<input asp-for="MinValue" class="readonly-input-dsiabled-view" />
 		<br /><span asp-validation-for="MinValue" class="ms-2 text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
 		<span for="MaxValue" class="virusform_label">Max Value</span>
-		<input asp-for="MaxValue" />
+		<input asp-for="MaxValue" class="readonly-input-dsiabled-view" />
 		<span asp-validation-for="MaxValue" class="ms-2 text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
 		<span for="DecimalPlaces" class="virusform_label">Decimal Places *</span>
-		<input asp-for="DecimalPlaces" />
+		<input asp-for="DecimalPlaces" class="readonly-input-dsiabled-view" />
 		<br /><span asp-validation-for="DecimalPlaces" class="ms-2 text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
 		<span for="Length" class="virusform_label">Length</span>
-		<input asp-for="Length" />
+		<input asp-for="Length" class="readonly-input-dsiabled-view" />
 		<br /><span asp-validation-for="Length" class="ms-2 text-danger"></span>
 	</div>
 	<div class="form-group d-flex align-items-center mb-3">
@@ -70,12 +70,11 @@
 		<div asp-validation-summary="All" class="validation"></div>
 	</div>
 }
-
 @section Scripts {
 	<script>
 		function updateFields() {
 			var typeText = $("#CharacteristicType option:selected").text();
-			var numericSort = $("#NumericSort");
+			var numericSort = $("#chkNumericSort");
 			var minValue = $("#MinValue");
 			var maxValue = $("#MaxValue");
 			var decimalPlaces = $("#DecimalPlaces");
@@ -83,34 +82,38 @@
 
 			if (typeText === "Text") {
 				numericSort.prop("disabled", true);
-				minValue.prop("disabled", true);
-				maxValue.prop("disabled", true);
-				decimalPlaces.prop("disabled", true);
-				length.prop("disabled", false);
+				minValue.prop("readonly", true);
+				maxValue.prop("readonly", true);
+				decimalPlaces.prop("readonly", true);
+				length.prop("readonly", false);
 			} else if (typeText === "Numeric") {
 				numericSort.prop("disabled", true);
-				minValue.prop("disabled", false);
-				maxValue.prop("disabled", false);
-				decimalPlaces.prop("disabled", false);
-				length.prop("disabled", true);
+				minValue.prop("readonly", false);
+				maxValue.prop("readonly", false);
+				decimalPlaces.prop("readonly", false);
+				length.prop("readonly", true);
 			} else if (typeText === "Yes/No") {
 				numericSort.prop("disabled", true);
-				minValue.prop("disabled", true);
-				maxValue.prop("disabled", true);
-				decimalPlaces.prop("disabled", true);
-				length.prop("disabled", true);
+				minValue.prop("readonly", true);
+				maxValue.prop("readonly", true);
+				decimalPlaces.prop("readonly", true);
+				length.prop("readonly", true);
 			} else if (typeText === "SingleList") {
 				numericSort.prop("disabled", false);
-				minValue.prop("disabled", true);
-				maxValue.prop("disabled", true);
-				decimalPlaces.prop("disabled", true);
-				length.prop("disabled", true);
+				minValue.prop("readonly", true);
+				maxValue.prop("readonly", true);
+				decimalPlaces.prop("readonly", true);
+				length.prop("readonly", true);
 			}
 		}
 
 		$(document).ready(function () {
 			$("#CharacteristicType").change(updateFields);
 			updateFields(); // Initial call
+
+			$("#chkNumericSort").change(function(){
+				$("#NumericSort").val(this.checked);
+			});
 		});
 	</script>
 }

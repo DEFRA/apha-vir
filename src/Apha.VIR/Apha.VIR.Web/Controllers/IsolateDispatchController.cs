@@ -146,9 +146,17 @@ namespace Apha.VIR.Web.Controllers
             string fromSource = dispatchModel!.Source!.ToLower();
             return fromSource switch
             {
-                "search" => RedirectToAction("Confirmation", "IsolateDispatch", new { Isolate = dispatchRecord.DispatchIsolateId }),
-                "summary" => RedirectToAction("Index", "SubmissionSamples", new { AVNumber = dispatchModel.Avnumber }),
-                _ => RedirectToAction("Create", "IsolateDispatch")
+                "search" => RedirectToAction("Confirmation", new { 
+                    Isolate = dispatchRecord.DispatchIsolateId,
+                    AVNumber = dispatchModel.Avnumber,
+                    Source = "Search" 
+                }),
+                "summary" => RedirectToAction("Confirmation", new { 
+                    Isolate = dispatchRecord.DispatchIsolateId,
+                    AVNumber = dispatchModel.Avnumber,
+                    Source = "Summary" 
+                }),
+                _ => RedirectToAction("Create")
             };
         }
 
@@ -277,7 +285,7 @@ namespace Apha.VIR.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Confirmation(Guid Isolate)
+        public async Task<IActionResult> Confirmation(Guid Isolate, string AVNumber, string Source)
         {
             if (Isolate == Guid.Empty || !ModelState.IsValid)
             {
@@ -292,7 +300,9 @@ namespace Apha.VIR.Web.Controllers
             {
                 DispatchConfirmationMessage = "Isolate dispatch completed successfully.",
                 RemainingAliquots = result.IsolateDetails?.NoOfAliquots ?? 0,
-                DispatchHistorys = dislist
+                DispatchHistorys = dislist,
+                AVNumber = AVNumber,
+                Source = Source
             };
 
             return View(model);
@@ -305,7 +315,7 @@ namespace Apha.VIR.Web.Controllers
             {
                 "search" => RedirectToAction("Search", "SearchRepository"),
                 "summary" => RedirectToAction("Index", "SubmissionSamples", new { AVNumber = Avnumber }),
-                _ => RedirectToAction("Create", "IsolateDispatch")
+                _ => RedirectToAction("Create")
             };
         }
 
@@ -399,18 +409,6 @@ namespace Apha.VIR.Web.Controllers
         {
             List<string> validationErrors = new List<string>();
             Guid isolateId = Guid.Empty;
-
-            if (dispatchModel.NoOfAliquots>=0)
-            {
-                if (dispatchModel.NoOfAliquotsToBeDispatched >= dispatchModel.NoOfAliquots)
-                {
-                    validationErrors.Add("Attempting to dispatch too many aliquots, must leave at least one aliquot in storage.");
-                }
-            }
-            else
-            {
-                validationErrors.Add("Isolate cannot be dispatched as there are no aliquots available.");
-            }
 
             if (dispatchModel.DispatchedDate > DateTime.Now.Date)
             {
