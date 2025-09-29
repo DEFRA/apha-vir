@@ -4,73 +4,76 @@
 @if (Model != null && Model.LookupItems.Any())
 {
     <table class="VIRtable width-75">
-		<thead>
-			<tr>
-				<th class="width-20">Name</th>
-				@if (Model.ShowAlternateName)
-				{
-					<th class="width-20">Alternate Name</th>
-				}
-				@if (Model.ShowParent)
-				{
-					<th class="width-20">Parent Name</th>
-				}
-				<th class="width-10">Active</th>
-				@if (Model.ShowSMSRelated)
-				{
-					<th class="width-10">SMS</th>
-					<th class="width-20">SMSCode</th>
-				}
-				<th></th>
-			</tr>
-		</thead>
+        <thead>
+            <tr>
+                <th class="width-20">Name</th>
+                @if (Model.ShowAlternateName)
+                {
+                    <th class="width-20">Alternate Name</th>
+                }
+                @if (Model.ShowParent)
+                {
+                    <th class="width-20">Parent Name</th>
+                }
+                <th class="width-10">Active</th>
+                @if (Model.ShowSMSRelated)
+                {
+                    <th class="width-10">SMS</th>
+                    <th class="width-20">SMSCode</th>
+                }
+                <th></th>
+            </tr>
+        </thead>
         <tbody>
-			@foreach (var item in Model.LookupItems)
-			{
-				<tr>
-					<td class="width-20">@item.Name</td>
-					@if (Model.ShowAlternateName)
-					{
-						<td class="width-20">@item.AlternateName</td>
-					}
-					@if (Model.ShowParent)
-					{
-						<td class="width-20">@item.ParentName</td>
-					}
-					<td class="width-10">
-						<input type="checkbox"@(item.Active ? "checked" : null) disabled="disabled" />
+            @foreach (var item in Model.LookupItems)
+            {
+                <tr>
+                    <td class="width-20">@item.Name</td>
+                    @if (Model.ShowAlternateName)
+                    {
+                        <td class="width-20">@item.AlternateName</td>
+                    }
+                    @if (Model.ShowParent)
+                    {
+                        <td class="width-20">@item.ParentName</td>
+                    }
+                    <td class="width-10">
+                        <input type="checkbox"@(item.Active ? "checked" : null) disabled="disabled" />
                     </td>
-					@if (Model.ShowSMSRelated)
-					{
-						<td class="width-10">
-							<input type="checkbox" disabled="disabled" @(item.Sms ? "checked" : null) />
+                    @if (Model.ShowSMSRelated)
+                    {
+                        <td class="width-10">
+                            <input type="checkbox" disabled="disabled" @(item.Sms ? "checked" : null) />
                         </td>
-						<td class="width-20">@item.Smscode</td>
-					}
-					<td>
-						<a asp-action="Edit" asp-route-lookupid="@Model.LookupId" asp-route-lookupItemId="@item.Id"
-							class="btn btn-primary">Edit</a>
-					</td>
-				</tr>
-			}
-			@{
-				int colspan = 3; // Name + Active + Edit button
-				if (Model.ShowAlternateName) colspan++;
-				if (Model.ShowParent) colspan++;
-				if (Model.ShowSMSRelated) colspan += 2;
-			}
-			<tr>
-				<td colspan="@colspan">
-					<div id="girdPagination" class="text-right">
-						@await Component.InvokeAsync("Pagination", Model.Pagination)
-					</div>
-				</td>
-			</tr>
+                        <td class="width-20">@item.Smscode</td>
+                    }
+                    <td>
+                        <a asp-action="Edit" asp-route-lookupid="@Model.LookupId" asp-route-lookupItemId="@item.Id"
+                           class="btn btn-primary">Edit</a>
+                    </td>
+                </tr>
+            }
+            @{
+                int colspan = 3; // Name + Active + Edit button
+                if (Model.ShowAlternateName) colspan++;
+                if (Model.ShowParent) colspan++;
+                if (Model.ShowSMSRelated) colspan += 2;
+            }
+            @if (Model.Pagination?.TotalPages > 1)
+            {
+                <tr>
+                    <td colspan="@colspan">
+                        <div id="girdPagination" class="text-right">
+                            @await Component.InvokeAsync("Pagination", Model.Pagination)
+                        </div>
+                    </td>
+                </tr>
+            }
         </tbody>
-	</table>
+    </table>
 
 }
 else
 {
-	<p>There are no entries recorded for this look-up list.</p>
+    <p>There are no entries recorded for this look-up list.</p>
 }
