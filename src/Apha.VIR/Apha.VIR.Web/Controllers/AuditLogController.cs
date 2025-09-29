@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Amazon.CloudWatchLogs.Model.Internal.MarshallTransformations;
 using Apha.VIR.Application.Interfaces;
+using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Models.AuditLog;
 using Apha.VIR.Web.Services;
 using Apha.VIR.Web.Utilities;
@@ -19,6 +21,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private const string keySearchCriteria = "AuditLogSearchCriteria";
+        private const string keySearchResult = "AuditLogSearchResult";
 
         public AuditLogController(IAuditLogService auditLogService, ICacheService cacheService, IMapper mapper)
         {
@@ -30,17 +33,26 @@ namespace Apha.VIR.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var viewModel = new AuditLogViewModel
+            AuditLogViewModel viewModel = new AuditLogViewModel();
+
+            var jsonData = _cacheService.GetSessionValue(keySearchResult);
+            if (!string.IsNullOrEmpty(jsonData))
             {
-                ShowErrorSummary = false,
-                ShowDefaultView = true
-            };
+                var data = JsonConvert.DeserializeObject<AuditLogViewModel>(jsonData);
+                if (data != null) viewModel = data;
+                _cacheService.RemoveSessionValue(keySearchResult);
+            }
+            else
+            {
+                viewModel.ShowErrorSummary = false;
+                viewModel.ShowDefaultView = true;
+            }
             return View("AuditLog", viewModel);
         }
 
-        [HttpPost("SearchAudit")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
+        public async Task<IActionResult> Index(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
         {
             var showerrorSummary = false;
             if (IsNewSearch)
@@ -82,13 +94,15 @@ namespace Apha.VIR.Web.Controllers
                     AVNumber = searchCriteria.AVNumber,
                     DateTimeFrom = searchCriteria.DateTimeFrom,
                     DateTimeTo = searchCriteria.DateTimeTo,
-                    UserId = searchCriteria.UserId,
+                    UserId = searchCriteria.UserId == "%" ? string.Empty : searchCriteria.UserId,
                     ShowErrorSummary = false,
                     IsNewSearch = IsNewSearch,
                     SubmissionLogs = reportData.ToList(),
                 };
 
-                return View("AuditLog", viewModel);
+                _cacheService.RemoveSessionValue(keySearchResult);
+                _cacheService.SetSessionValue(keySearchResult, JsonConvert.SerializeObject(viewModel));               
+                return RedirectToAction("Index");
             }
             else
             {
@@ -114,7 +128,9 @@ namespace Apha.VIR.Web.Controllers
                         IsolateLogs = reportData.ToList(),
                     };
 
-                    return View("AuditLog", viewModel);
+                    _cacheService.RemoveSessionValue(keySearchResult);
+                    _cacheService.SetSessionValue(keySearchResult, JsonConvert.SerializeObject(viewModel));
+                    return RedirectToAction("Index");
                 }
                 else
                 {

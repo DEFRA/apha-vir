@@ -52,19 +52,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
 
             // Act
             ValidateModel(searchCriteria, _controller);
-            var result = await _controller.SearchAudit(searchCriteria, true);
+            var result = await _controller.Index(searchCriteria, true);
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<AuditLogViewModel>(viewResult.Model);
-            Assert.Equal("AuditLog", viewResult.ViewName);
-            Assert.Equal(searchCriteria.AVNumber, model.AVNumber);
-            Assert.Equal(searchCriteria.DateTimeFrom, model.DateTimeFrom);
-            Assert.Equal(searchCriteria.DateTimeTo, model.DateTimeTo);
-            Assert.Equal(searchCriteria.UserId, model.UserId);
-            Assert.False(model.ShowErrorSummary);
-            Assert.True(model.IsNewSearch);
-            Assert.Equal(mappedLogs, model.SubmissionLogs);
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
         }
 
         [Fact]
@@ -75,7 +68,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             _controller.ModelState.AddModelError("AVNumber", "AVNumber is required");
 
             // Act
-            var result = await _controller.SearchAudit(searchCriteria, true);
+            var result = await _controller.Index(searchCriteria, true);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -109,19 +102,12 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             _mapper.Map<IEnumerable<AuditIsolateLogModel>>(Arg.Any<IEnumerable<object>>()).Returns(mappedLogs);
 
             // Act
-            var result = await _controller.SearchAudit(new AuditLogSearchModel(), false);
+            var result = await _controller.Index(new AuditLogSearchModel(), false);
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<AuditLogViewModel>(viewResult.Model);
-            Assert.Equal("AuditLog", viewResult.ViewName);
-            Assert.Equal(searchCriteria.AVNumber, model.AVNumber);
-            Assert.Equal(searchCriteria.DateTimeFrom, model.DateTimeFrom);
-            Assert.Equal(searchCriteria.DateTimeTo, model.DateTimeTo);
-            Assert.Equal(searchCriteria.UserId, model.UserId);
-            Assert.False(model.ShowErrorSummary);
-            Assert.False(model.IsNewSearch);
-            Assert.Equal(mappedLogs, model.IsolateLogs);
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
         }
 
         [Fact]
@@ -131,7 +117,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             _cacheService.SetSessionValue("AuditLogSearchCriteria", null!);
 
             // Act
-            var result = await _controller.SearchAudit(new AuditLogSearchModel(), false);
+            var result = await _controller.Index(new AuditLogSearchModel(), false);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
