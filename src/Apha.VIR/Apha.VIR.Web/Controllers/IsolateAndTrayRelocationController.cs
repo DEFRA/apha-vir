@@ -19,6 +19,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly IIsolateRelocateService _isolateRelocateService;
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
+        private const string isolateRelocateSessionModel = "isolateRelocateSessionModel";
 
         public IsolateAndTrayRelocationController(IIsolateRelocateService isolateRelocateService,
             ILookupService lookupService,
@@ -142,10 +143,10 @@ namespace Apha.VIR.Web.Controllers
             {
                 return BadRequest();
             }
-            if (_cacheService.GetSessionValue("isolateRelocateSessionModel") == null)
+            if (_cacheService.GetSessionValue(isolateRelocateSessionModel) == null)
             {
                 string jsonString = JsonConvert.SerializeObject(model);
-                _cacheService.SetSessionValue("isolateRelocateSessionModel", jsonString);
+                _cacheService.SetSessionValue(isolateRelocateSessionModel, jsonString);
             }
             var data = new IsolateRelocationViewModel();
             await LoadIsolateAndTrayData(data);
@@ -341,15 +342,15 @@ namespace Apha.VIR.Web.Controllers
 
         private IsolateRelocateViewModel? GetSessionRelocationData()
         {
-            var jsonData = _cacheService.GetSessionValue("isolateRelocateSessionModel");
+            var jsonData = _cacheService.GetSessionValue(isolateRelocateSessionModel);
             if (string.IsNullOrEmpty(jsonData)) return null;
 
-            _cacheService.RemoveSessionValue("isolateRelocateSessionModel");
+            _cacheService.RemoveSessionValue(isolateRelocateSessionModel);
             var sessionModel = JsonConvert.DeserializeObject<IsolateRelocateViewModel>(jsonData);
             return sessionModel;
         }
 
-        private void ApplySessionDataToModel(IsolateRelocateViewModel sessionData, IsolateRelocationViewModel model)
+        private static void ApplySessionDataToModel(IsolateRelocateViewModel sessionData, IsolateRelocationViewModel model)
         {
             var data = sessionData.IsolateRelocationViewModel;
             if (data == null) return;
