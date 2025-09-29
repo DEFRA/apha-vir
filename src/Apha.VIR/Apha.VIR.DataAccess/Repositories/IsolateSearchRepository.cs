@@ -263,8 +263,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     break;
             }
 
-            var numericCharacteristics = _context.Database
-                .SqlQueryRaw<IsolateCharacteristicsForSearch>(sqlQuery + whereClause)
+            var numericCharacteristics = SqlQueryRawFor<IsolateCharacteristicsForSearch>(sqlQuery + whereClause)
                 .ToList();
 
             return numericCharacteristics;

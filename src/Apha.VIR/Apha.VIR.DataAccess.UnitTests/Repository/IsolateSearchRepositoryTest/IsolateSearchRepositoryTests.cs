@@ -12,15 +12,27 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
     public class TestIsolateSearchRepository : IsolateSearchRepository
     {
         private readonly IQueryable<IsolateSearchResult> _searchResults;
+        private readonly IQueryable<IsolateCharacteristicsForSearch> _characteristics;
 
         public TestIsolateSearchRepository(
             VIRDbContext context,
-            IQueryable<IsolateSearchResult> searchResults)
+            IQueryable<IsolateSearchResult> searchResults,
+            IQueryable<IsolateCharacteristicsForSearch> characteristics)
             : base(context)
         {
             _searchResults = searchResults;
+             _characteristics = characteristics;
         }
         public IQueryable<IsolateSearchResult> GetTestQuery() => _searchResults;
+        protected override IQueryable<T> GetDbSetFor<T>()
+        {
+            if (typeof(T) == typeof(IsolateCharacteristicsForSearch))
+                return (IQueryable<T>)_characteristics;
+            if (typeof(T) == typeof(IsolateSearchResult))
+                return (IQueryable<T>)_searchResults;
+            throw new NotImplementedException();
+        }
+
 
         // Wrappers for private static methods
         public static IQueryable<IsolateSearchResult> PublicApplyBasicFilters(IQueryable<IsolateSearchResult> query, SearchCriteria? filter)
@@ -74,6 +86,50 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
                     System.Reflection.BindingFlags.Instance)!;
 
             return (IQueryable<IsolateSearchResult>)method.Invoke(this, new object[] { query, criteria })!;
+        }
+
+        public IQueryable<IsolateSearchResult> PublicApplyCharacteristicFilter(
+       IQueryable<IsolateSearchResult> query, CharacteristicCriteria characteristicItem)
+        {
+            var method = typeof(IsolateSearchRepository)
+                .GetMethod("ApplyCharacteristicFilter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+            return (IQueryable<IsolateSearchResult>)method.Invoke(this, new object[] { query, characteristicItem })!;
+        }
+        
+        public IQueryable<IsolateSearchResult> PublicApplyNumericCharacteristicFilter(
+    IQueryable<IsolateSearchResult> query,
+    CharacteristicCriteria characteristicItem)
+        {
+            if (characteristicItem.CharacteristicType != "Numeric")
+                return query;
+
+            var isolateIds = query.Select(i => i.IsolateId).ToList();
+
+            // Materialize before using TryParse
+            var numericMatches = _characteristics
+                .Where(c =>
+                    isolateIds.Contains(c.CharacteristicIsolateId) &&
+                    c.VirusCharacteristicId == characteristicItem.Characteristic)
+                .AsEnumerable(); // <-- Materialize here
+
+            if (double.TryParse(characteristicItem.CharacteristicValue1, out var compareValue))
+            {
+                switch (characteristicItem.Comparator)
+                {
+                    case ">":
+                        numericMatches = numericMatches.Where(c => double.TryParse(c.CharacteristicValue, out var val) && val > compareValue);
+                        break;
+                    case "<":
+                        numericMatches = numericMatches.Where(c => double.TryParse(c.CharacteristicValue, out var val) && val < compareValue);
+                        break;
+                    case "=":
+                        numericMatches = numericMatches.Where(c => double.TryParse(c.CharacteristicValue, out var val) && Math.Abs(val - compareValue) < 0.0001);
+                        break;
+                }
+            }
+
+            var matchingIds = numericMatches.Select(c => c.CharacteristicIsolateId).ToList();
+            return query.Where(i => matchingIds.Contains(i.IsolateId));
         }
 
     }
@@ -146,15 +202,21 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
         {
             // Arrange
             var data = new List<IsolateSearchResult>
-    {
-        new IsolateSearchResult { IsolateId = Guid.NewGuid(), Avnumber = "AV2" }
-    };
+            {
+                 new() { IsolateId = Guid.NewGuid(), Avnumber = "AV2" }
+            };
+
+            var characteristics = new List<IsolateCharacteristicsForSearch>().AsQueryable();
 
             var mockSet = CreateMockDbSet(data);
             var mockContext = new Mock<VIRDbContext>();
             mockContext.Setup(c => c.Set<IsolateSearchResult>()).Returns(mockSet.Object);
 
-            var repo = new TestIsolateSearchRepository(mockContext.Object, data.AsQueryable());
+            var repo = new TestIsolateSearchRepository(
+                mockContext.Object,
+                mockSet.Object,   
+                characteristics
+            );
 
             var criteria = GetDefaultCriteria();
 
@@ -182,8 +244,13 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid(), Avnumber = "AV3" }
             }.AsQueryable();
-            var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
-            var result = TestIsolateSearchRepository.PublicApplyBasicFilters(data, null); // Fixed by qualifying with the type name
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(
+                mockContext.Object,
+                data,
+                new List<IsolateCharacteristicsForSearch>().AsQueryable() 
+            );
+            var result = TestIsolateSearchRepository.PublicApplyBasicFilters(data, null); 
             Assert.Equal(data, result);
         }
 
@@ -194,7 +261,7 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid(), Avnumber = "AV4" }
             }.AsQueryable();
-            var result = TestIsolateSearchRepository.PublicApplyStringFilter(data, "", i => i.Avnumber); // Fixed by qualifying with the type name
+            var result = TestIsolateSearchRepository.PublicApplyStringFilter(data, "", i => i.Avnumber); 
             Assert.Equal(data, result);
         }
 
@@ -249,7 +316,14 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             {
                 new IsolateSearchResult { IsolateId = Guid.NewGuid() }
             }.AsQueryable();
-            var repo = new TestIsolateSearchRepository(new Mock<VIRDbContext>().Object, data);
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(
+                mockContext.Object,
+                data,
+                new List<IsolateCharacteristicsForSearch>().AsQueryable() 
+            );
+
             var result = TestIsolateSearchRepository.PublicApplySortingByProperty(data, "unknown", false);
             Assert.Equal(data, result);
         }
@@ -385,13 +459,16 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
     }.AsQueryable();
 
             var mockContext = new Mock<VIRDbContext>();
-            var repo = new TestIsolateSearchRepository(mockContext.Object, data);
-
+            var repo = new TestIsolateSearchRepository(
+     mockContext.Object,
+     data,
+     new List<IsolateCharacteristicsForSearch>().AsQueryable()
+ );
             var criteria = new List<CharacteristicCriteria>
     {
         new CharacteristicCriteria
         {
-            Characteristic = Guid.NewGuid(), // valid Guid
+            Characteristic = Guid.NewGuid(), 
             CharacteristicType = "Yes/No",
             CharacteristicValue1 = "Yes"
         }
@@ -402,8 +479,6 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
 
             // Assert
             Assert.NotNull(result);
-            // Since EF mocks won’t actually apply filters, 
-            // just assert that query is returned and same type.
             Assert.IsAssignableFrom<IQueryable<IsolateSearchResult>>(result);
         }
 
@@ -418,13 +493,16 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             }.AsQueryable();
 
             var mockContext = new Mock<VIRDbContext>();
-            var repo = new TestIsolateSearchRepository(mockContext.Object, data);
-
+            var repo = new TestIsolateSearchRepository(
+    mockContext.Object,
+    data,
+    new List<IsolateCharacteristicsForSearch>().AsQueryable()
+);
             var criteria = new List<CharacteristicCriteria>
             {
                 new CharacteristicCriteria
                 {
-                    Characteristic = Guid.Empty, // invalid Guid
+                    Characteristic = Guid.Empty,
                     CharacteristicType = "Text",
                     CharacteristicValue1 = "ABC"
                 }
@@ -434,7 +512,312 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.IsolateSearchRepositoryTest
             var result = repo.PublicApplyAllCharacteristicFilters(data, criteria);
 
             // Assert
-            Assert.Equal(data, result); // unchanged because Guid was invalid
+            Assert.Equal(data, result); 
+        }
+
+        [Fact]
+        public void ApplyCharacteristicFilter_NumericType_CallsNumeric()
+        {
+            // Arrange
+            var isolateId = Guid.NewGuid();
+            var numericId = Guid.NewGuid();
+
+            var data = new List<IsolateSearchResult>
+    {
+        new IsolateSearchResult { IsolateId = isolateId }
+    }.AsQueryable();
+
+            var fakeNumeric = new List<IsolateCharacteristicsForSearch>
+    {
+        new IsolateCharacteristicsForSearch
+        {
+            CharacteristicIsolateId = isolateId,
+            VirusCharacteristicId = numericId,
+            CharacteristicValue = "123"
+        }
+    }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+
+            var repo = new TestIsolateSearchRepository(
+                mockContext.Object,
+                data,
+                fakeNumeric
+            );
+
+            var criteria = new CharacteristicCriteria
+            {
+                Characteristic = numericId,
+                CharacteristicType = "Numeric",
+                Comparator = ">",
+                CharacteristicValue1 = "100"
+            };
+
+            // Act
+            var result = repo.PublicApplyNumericCharacteristicFilter(data, criteria);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result);
+            Assert.Equal(isolateId, result.First().IsolateId);
+        }
+
+
+        [Fact]
+        public void ApplyCharacteristicFilter_SingleListType_CallsSingleList()
+        {
+            var data = new List<IsolateSearchResult> { new IsolateSearchResult { IsolateId = Guid.NewGuid() } }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(
+     mockContext.Object,
+     data,
+     new List<IsolateCharacteristicsForSearch>().AsQueryable()
+ );
+            var criteria = new CharacteristicCriteria
+            {
+                Characteristic = Guid.NewGuid(),
+                CharacteristicType = "SingleList",
+                Comparator = "begins with",
+                CharacteristicValue1 = "A"
+            };
+            var result = repo.PublicApplyCharacteristicFilter(data, criteria);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void ApplyCharacteristicFilter_YesNoType_CallsYesNo()
+        {
+            var data = new List<IsolateSearchResult> { new IsolateSearchResult { IsolateId = Guid.NewGuid() } }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(
+    mockContext.Object,
+    data,
+    new List<IsolateCharacteristicsForSearch>().AsQueryable()
+);
+            var criteria = new CharacteristicCriteria
+            {
+                Characteristic = Guid.NewGuid(),
+                CharacteristicType = "Yes/No",
+                CharacteristicValue1 = "Yes"
+            };
+            var result = repo.PublicApplyCharacteristicFilter(data, criteria);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void ApplyCharacteristicFilter_TextType_CallsText()
+        {
+            var data = new List<IsolateSearchResult> { new IsolateSearchResult { IsolateId = Guid.NewGuid() } }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(
+    mockContext.Object,
+    data,
+    new List<IsolateCharacteristicsForSearch>().AsQueryable()
+);
+            var criteria = new CharacteristicCriteria
+            {
+                Characteristic = Guid.NewGuid(),
+                CharacteristicType = "Text",
+                Comparator = "contains",
+                CharacteristicValue1 = "foo"
+            };
+            var result = repo.PublicApplyCharacteristicFilter(data, criteria);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void ApplySingleListCharacteristicFilter_BeginsWith_NullOrEmptyValue_DoesNotFilter()
+        {
+            var isolateId = Guid.NewGuid();
+            var charId = Guid.NewGuid();
+            var data = new List<IsolateSearchResult>
+    {
+        new IsolateSearchResult { IsolateId = isolateId }
+    }.AsQueryable();
+
+            var characteristics = new List<IsolateCharacteristicsForSearch>
+    {
+        new IsolateCharacteristicsForSearch
+        {
+            CharacteristicIsolateId = isolateId,
+            VirusCharacteristicId = charId,
+            CharacteristicValue = "Apple"
+        }
+    }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(mockContext.Object, data, characteristics);
+
+            // Null value
+            var criteriaNull = new CharacteristicCriteria
+            {
+                Characteristic = charId,
+                CharacteristicType = "SingleList",
+                Comparator = "begins with",
+                CharacteristicValue1 = null
+            };
+            var resultNull = repo.PublicApplyCharacteristicFilter(data, criteriaNull);
+            Assert.NotNull(resultNull);
+
+            // Empty value
+            var criteriaEmpty = new CharacteristicCriteria
+            {
+                Characteristic = charId,
+                CharacteristicType = "SingleList",
+                Comparator = "begins with",
+                CharacteristicValue1 = ""
+            };
+            var resultEmpty = repo.PublicApplyCharacteristicFilter(data, criteriaEmpty);
+            Assert.NotNull(resultEmpty);
+        }
+
+
+        [Fact]
+        public void ApplySingleListCharacteristicFilter_NotEqualTo_FiltersCorrectly()
+        {
+            var isolateId = Guid.NewGuid();
+            var charId = Guid.NewGuid();
+            var data = new List<IsolateSearchResult>
+    {
+        new IsolateSearchResult { IsolateId = isolateId }
+    }.AsQueryable();
+
+            var characteristics = new List<IsolateCharacteristicsForSearch>
+    {
+        new IsolateCharacteristicsForSearch
+        {
+            CharacteristicIsolateId = isolateId,
+            VirusCharacteristicId = charId,
+            CharacteristicValue = "Banana"
+        }
+    }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(mockContext.Object, data, characteristics);
+
+            var criteria = new CharacteristicCriteria
+            {
+                Characteristic = charId,
+                CharacteristicType = "SingleList",
+                Comparator = "not equal to",
+                CharacteristicValue1 = "Apple"
+            };
+            var result = repo.PublicApplyCharacteristicFilter(data, criteria);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void ApplySingleListCharacteristicFilter_Default_NullOrEmptyValue_DoesNotFilter()
+        {
+            var isolateId = Guid.NewGuid();
+            var charId = Guid.NewGuid();
+            var data = new List<IsolateSearchResult>
+    {
+        new IsolateSearchResult { IsolateId = isolateId }
+    }.AsQueryable();
+
+            var characteristics = new List<IsolateCharacteristicsForSearch>
+    {
+        new IsolateCharacteristicsForSearch
+        {
+            CharacteristicIsolateId = isolateId,
+            VirusCharacteristicId = charId,
+            CharacteristicValue = "Apple"
+        }
+    }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(mockContext.Object, data, characteristics);
+
+            var criteria = new CharacteristicCriteria
+            {
+                Characteristic = charId,
+                CharacteristicType = "SingleList",
+                Comparator = "equals",
+                CharacteristicValue1 = null
+            };
+            var result = repo.PublicApplyCharacteristicFilter(data, criteria);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void ApplyTextCharacteristicFilter_Contains_NullOrEmptyValue_DoesNotFilter()
+        {
+            var isolateId = Guid.NewGuid();
+            var charId = Guid.NewGuid();
+            var data = new List<IsolateSearchResult>
+    {
+        new IsolateSearchResult { IsolateId = isolateId }
+    }.AsQueryable();
+
+            var characteristics = new List<IsolateCharacteristicsForSearch>
+    {
+        new IsolateCharacteristicsForSearch
+        {
+            CharacteristicIsolateId = isolateId,
+            VirusCharacteristicId = charId,
+            CharacteristicValue = "foo"
+        }
+    }.AsQueryable();
+
+            var mockContext = new Mock<VIRDbContext>();
+            var repo = new TestIsolateSearchRepository(mockContext.Object, data, characteristics);
+
+            // Null value
+            var criteriaNull = new CharacteristicCriteria
+            {
+                Characteristic = charId,
+                CharacteristicType = "Text",
+                Comparator = "contains",
+                CharacteristicValue1 = null
+            };
+            var resultNull = repo.PublicApplyCharacteristicFilter(data, criteriaNull);
+            Assert.NotNull(resultNull);
+
+            // Empty value
+            var criteriaEmpty = new CharacteristicCriteria
+            {
+                Characteristic = charId,
+                CharacteristicType = "Text",
+                Comparator = "contains",
+                CharacteristicValue1 = ""
+            };
+            var resultEmpty = repo.PublicApplyCharacteristicFilter(data, criteriaEmpty);
+            Assert.NotNull(resultEmpty);
+        }
+
+        [Theory]
+        [InlineData("avnumber")]
+        [InlineData("senderreferencenumber")]
+        [InlineData("sampletypename")]
+        [InlineData("familyname")]
+        [InlineData("typename")]
+        [InlineData("groupspeciesname")]
+        [InlineData("breedname")]
+        [InlineData("yearofisolation")]
+        [InlineData("receiveddate")]
+        [InlineData("countryoforiginname")]
+        [InlineData("materialtransferagreement")]
+        [InlineData("noofaliquots")]
+        [InlineData("freezername")]
+        [InlineData("trayname")]
+        [InlineData("well")]
+        public void ApplySortingByProperty_CoversAllProperties(string property)
+        {
+            var data = new List<IsolateSearchResult>
+    {
+        new IsolateSearchResult { Avnumber = "A", SenderReferenceNumber = "S1", SampleTypeName = "T1", FamilyName = "F1", TypeName = "Ty1", GroupSpeciesName = "G1", BreedName = "B1", YearOfIsolation = 2020, ReceivedDate = DateTime.UtcNow, CountryOfOriginName = "C1", MaterialTransferAgreement = true, NoOfAliquots = 1, FreezerName = "FZ1", TrayName = "TR1", Well = "W1" },
+        new IsolateSearchResult { Avnumber = "B", SenderReferenceNumber = "S2", SampleTypeName = "T2", FamilyName = "F2", TypeName = "Ty2", GroupSpeciesName = "G2", BreedName = "B2", YearOfIsolation = 2021, ReceivedDate = DateTime.UtcNow.AddDays(-1), CountryOfOriginName = "C2", MaterialTransferAgreement = false, NoOfAliquots = 2, FreezerName = "FZ2", TrayName = "TR2", Well = "W2" }
+    }.AsQueryable();
+
+            var resultAsc = TestIsolateSearchRepository.PublicApplySortingByProperty(data, property, false);
+            Assert.NotNull(resultAsc);
+
+            var resultDesc = TestIsolateSearchRepository.PublicApplySortingByProperty(data, property, true);
+            Assert.NotNull(resultDesc);
         }
     }
 }
