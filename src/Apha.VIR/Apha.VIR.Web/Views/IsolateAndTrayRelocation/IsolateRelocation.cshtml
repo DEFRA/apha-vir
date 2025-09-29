@@ -66,7 +66,7 @@
                     </select>
                 </div>
                 <div style="text-align: right; padding-right: 45px;padding-top: 10px;">
-                    <button type="button" id="saveButton" class="btn btn-link isolaterelocate-btn-link-custom">
+                    <button type="button" id="saveButton" class="btnLink">
                         Save
                     </button>
                 </div>
@@ -74,7 +74,7 @@
         </div>
         <div class="form-group row mb-0 mt-4 width-85PC">
             <div class="col-sm-3 offset-sm-5">
-                <button id="searchButton" class="btn  btn-link isolaterelocate-btn-link-custom">Search</button>
+                <button id="searchButton" class="btnLink">Search</button>
             </div>
         </div>
     </div>
@@ -96,8 +96,8 @@
     <div class="col-sm-12">
         <div class="col-sm-7">           
             <div style="text-align: right;margin-bottom: 5px;">
-                <button id="selectAllButton" class="btn btn-link isolaterelocate-btn-link-custom" style="margin-right:10px">Select All</button>
-                <button id="unselectAllButton" class="btn btn-link isolaterelocate-btn-link-custom">Unselect All</button>
+                <button id="selectAllButton" class="btnLink me-2" style="margin-right:10px">Select All</button>
+                <button id="unselectAllButton" class="btnLink">Unselect All</button>
             </div>
             <div id="isolatesGrid">
                 @await Html.PartialAsync("_SearchResults",
@@ -110,6 +110,12 @@
             <input type="hidden" name="Freezer" />
             <input type="hidden" name="Tray" />
             <input type="hidden" name="LastModified" />
+            <input type="hidden" name="AVNumber" />
+            <input type="hidden" name="Nomenclature" />
+            <input type="hidden" name="IsolateRelocationViewModel.MinAVNumber" />
+            <input type="hidden" name="IsolateRelocationViewModel.MaxAVNumber" />
+            <input type="hidden" name="IsolateRelocationViewModel.SelectedFreezer" />
+            <input type="hidden" name="IsolateRelocationViewModel.SelectedTray" />
        </form>
     </div>
 </div>
@@ -174,6 +180,12 @@
                 $('#editForm input[name="Freezer"]').val(button.data('freezer'));
                 $('#editForm input[name="Tray"]').val(button.data('tray'));
                 $('#editForm input[name="LastModified"]').val(button.data('lastmodified'));
+                $('#editForm input[name="AVNumber"]').val(button.data('avnumber'));
+                $('#editForm input[name="Nomenclature"]').val(button.data('nomenclature'));
+                $('#editForm input[name="IsolateRelocationViewModel.MinAVNumber"]').val($('#MinimumAVNumber').val());
+                $('#editForm input[name="IsolateRelocationViewModel.MaxAVNumber"]').val($('#MaximumAVNumber').val());
+                $('#editForm input[name="IsolateRelocationViewModel.SelectedFreezer"]').val($('#FreezerSearch').val() || null);
+                $('#editForm input[name="IsolateRelocationViewModel.SelectedTray"]').val( $('#TraySearch').val() || null);
                 $('#editForm').submit();
             });
         });
@@ -190,9 +202,10 @@
                         SelectedTray: $('#TraySearch').val() || null
                     }),
                     success: function (data) {
+                        debugger;
                        $('#isolatesGrid').html(data);
                         $('#validationPanel').hide();
-                        if ($.trim(data).length == 0) {
+                        if ($.trim(data).length == 0 || data.indexOf("There are no isolates matching the criteria specified") !== -1) {
                             $('#divNewFreezer').hide();
                             $('#divNewTray').hide();
                          } else {

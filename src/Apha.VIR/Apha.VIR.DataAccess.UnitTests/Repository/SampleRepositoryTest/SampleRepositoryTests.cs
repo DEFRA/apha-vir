@@ -2,6 +2,7 @@
 using Apha.VIR.DataAccess.Data;
 using Apha.VIR.DataAccess.Repositories;
 using Apha.VIR.DataAccess.UnitTests.Repository.Helpers;
+using Microsoft.Data.SqlClient;
 using Moq;
 
 namespace Apha.VIR.DataAccess.UnitTests.Repository.SampleRepositoryTest
@@ -14,6 +15,8 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SampleRepositoryTest
         public bool UpdateCalled { get; private set; }
         public object[]? LastAddParameters { get; private set; }
         public object[]? LastUpdateParameters { get; private set; }
+        public bool DeleteCalled { get; private set; }
+        public object[]? LastDeleteParameters { get; private set; }
 
         public TestSampleRepository(VIRDbContext context, IQueryable<Sample> samples, IQueryable<Submission> submissions)
             : base(context)
@@ -50,6 +53,12 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SampleRepositoryTest
             {
                 UpdateCalled = true;
                 LastUpdateParameters = parameters;
+                return Task.FromResult(1);
+            }
+            if (sql.Contains("spSampleDelete"))
+            {
+                DeleteCalled = true;
+                LastDeleteParameters = parameters;
                 return Task.FromResult(1);
             }
             throw new NotImplementedException($"No override for query {sql}");
@@ -192,6 +201,53 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SampleRepositoryTest
             Assert.True(repo.UpdateCalled);
             Assert.NotNull(repo.LastUpdateParameters);
             Assert.Contains(repo.LastUpdateParameters, p => p is Microsoft.Data.SqlClient.SqlParameter);
+        }
+        [Fact]
+        public async Task DeleteSampleAsync_CallsExecuteSqlAsync()
+        {
+            // Arrange
+            var repo = new TestSampleRepository(
+                new Mock<VIRDbContext>().Object,
+                new TestAsyncEnumerable<Sample>(Enumerable.Empty<Sample>()),
+                new TestAsyncEnumerable<Submission>(Enumerable.Empty<Submission>())
+            );
+
+            var sampleId = Guid.NewGuid();
+            var userId = "User1";
+            var lastModified = new byte[8];
+
+            // Act
+            await repo.DeleteSampleAsync(sampleId, userId, lastModified);
+
+            // Assert
+            Assert.True(repo.DeleteCalled);
+            Assert.NotNull(repo.LastDeleteParameters);
+            Assert.Equal(3, repo.LastDeleteParameters.Length);
+            Assert.Contains(repo.LastDeleteParameters, p => p is SqlParameter sqlParam && sqlParam.ParameterName == "@UserID" && (string)sqlParam.Value == userId);
+            Assert.Contains(repo.LastDeleteParameters, p => p is SqlParameter sqlParam && sqlParam.ParameterName == "@SampleId" && (Guid)sqlParam.Value == sampleId);
+            Assert.Contains(repo.LastDeleteParameters, p => p is SqlParameter sqlParam && sqlParam.ParameterName == "@LastModified" && (byte[])sqlParam.Value == lastModified);
+        }
+      
+      
+
+        [Fact]
+        public async Task DeleteSampleAsync_WithValidInput_DoesNotThrowException()
+        {
+            // Arrange
+            var repo = new TestSampleRepository(
+                new Mock<VIRDbContext>().Object,
+                new TestAsyncEnumerable<Sample>(Enumerable.Empty<Sample>()),
+                new TestAsyncEnumerable<Submission>(Enumerable.Empty<Submission>())
+            );
+
+            var sampleId = Guid.NewGuid();
+            var userId = "User1";
+            var lastModified = new byte[8];
+
+            // Act & Assert
+            var exception = await Record.ExceptionAsync(() =>
+                repo.DeleteSampleAsync(sampleId, userId, lastModified));
+            Assert.Null(exception);
         }
 
         [Fact]

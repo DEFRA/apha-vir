@@ -17,6 +17,7 @@ namespace Apha.VIR.Web.Models
         public string? Nomenclature { get; set; }
         public byte[]? LastModified { get; set; }
         public string UserID { get; set; } = string.Empty;
+        public IsolateRelocationViewModel? IsolateRelocationViewModel { get; set; }
     }
 
     public class IsolateRelocationViewModel
