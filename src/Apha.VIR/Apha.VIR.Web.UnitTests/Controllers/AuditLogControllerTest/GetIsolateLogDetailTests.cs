@@ -33,7 +33,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             _controller.ModelState.AddModelError("error", "some error");
 
             // Act
-            var result = await _controller.GetIsolateLogDetail(Guid.NewGuid(), "AV123");
+            var result = await _controller.IsolateLog(Guid.NewGuid(), "AV123");
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -56,7 +56,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             _mapper.Map<AuditIsolateLogDetailsViewModel>(serviceResult).Returns(mappedResult);
 
             // Act
-            var result = await _controller.GetIsolateLogDetail(logId, avNumber);
+            var result = await _controller.IsolateLog(logId, avNumber);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -76,7 +76,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             _auditLogService.GetIsolatLogDetailAsync(logId).Throws(new Exception("Service error"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _controller.GetIsolateLogDetail(logId, avNumber));
+            await Assert.ThrowsAsync<Exception>(() => _controller.IsolateLog(logId, avNumber));
         }
     }
 }

@@ -850,7 +850,8 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateAndTrayRelocationControllerT
             // Arrange
             var freezerId = Guid.NewGuid();
             var trayId = Guid.NewGuid();
-            var cachedModel = new IsolateRelocateViewModel { Freezer = freezerId, Tray = trayId };
+            var relocationModel = new IsolateRelocationViewModel { SelectedFreezer = freezerId, SelectedTray = trayId };
+            var cachedModel = new IsolateRelocateViewModel { Freezer = freezerId, Tray = trayId, IsolateRelocationViewModel = relocationModel };
             var jsonData = JsonConvert.SerializeObject(cachedModel);
             _cacheService.GetSessionValue("isolateRelocateSessionModel").Returns(jsonData);
 

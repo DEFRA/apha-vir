@@ -2,8 +2,17 @@
 using Apha.VIR.DataAccess.Data;
 using Apha.VIR.DataAccess.Repositories;
 using Apha.VIR.DataAccess.UnitTests.Repository.Helpers;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using NSubstitute;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
 {
@@ -347,7 +356,8 @@ namespace Apha.VIR.DataAccess.UnitTests.Repository.SubmissionRepositoryTest
             // Assert
             Assert.NotNull(result);
             Assert.Equal(emptyAVNumber, result.Avnumber);
-        } 
+        }
+
     }
 
 }

@@ -115,8 +115,13 @@ namespace Apha.VIR.Web.Controllers
 
                 for (int i = 0; i < properties.Count; i++)
                 {
+                    var type = Nullable.GetUnderlyingType(properties[i].PropertyType) ?? properties[i].PropertyType;                    
                     var displayAttr = properties[i].GetCustomAttribute<DisplayAttribute>();
                     worksheet.Cell(currentRow, i + 1).Value = displayAttr?.Name ?? properties[i].Name;
+                    if (type == typeof(DateTime))
+                    {
+                        worksheet.Cell(currentRow, i + 1).Style.DateFormat.Format = "dd/MM/yyyy";
+                    }                    
                 }
 
                 // Data
@@ -140,7 +145,14 @@ namespace Apha.VIR.Web.Controllers
                     for (int i = 0; i < properties.Count; i++)
                     {
                         var value = properties[i].GetValue(isolate);
-                        worksheet.Cell(currentRow, i + 1).Value = value?.ToString() ?? string.Empty;
+                        if(value is DateTime dt)
+                        {
+                            worksheet.Cell(currentRow, i + 1).Value = dt.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) ?? string.Empty;
+                        }
+                        else
+                        {
+                            worksheet.Cell(currentRow, i + 1).Value = value?.ToString() ?? string.Empty;
+                        }                        
                     }
                 }
 

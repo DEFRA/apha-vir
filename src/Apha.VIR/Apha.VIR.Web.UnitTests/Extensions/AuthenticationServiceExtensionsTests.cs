@@ -67,7 +67,7 @@ namespace Apha.VIR.Web.UnitTests.Extensions
                     .Invoke(null, new object[] { context })
             );
         }
-       
+
 
         [Fact]
         public void HandleTokenValidatedAsync_NoIdentity_ThrowsUnauthorizedAccessException()
@@ -79,7 +79,7 @@ namespace Apha.VIR.Web.UnitTests.Extensions
                 null!,
                 new AuthenticationProperties());
 
-            Assert.Throws<TargetParameterCountException>(() =>
+            Assert.Throws<TargetInvocationException>(() =>
                 typeof(AuthenticationExtension)
                     .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
                     .Invoke(null, new object[] { context })
@@ -99,7 +99,7 @@ namespace Apha.VIR.Web.UnitTests.Extensions
                 principal,
                 new AuthenticationProperties());
 
-            Assert.Throws<TargetParameterCountException>(() =>
+            Assert.Throws<TargetInvocationException>(() =>
                 typeof(AuthenticationExtension)
                     .GetMethod("HandleTokenValidatedAsync", BindingFlags.NonPublic | BindingFlags.Static)!
                     .Invoke(null, new object[] { context })

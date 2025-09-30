@@ -156,6 +156,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         {
             // Arrange
             var isolateGuid = Guid.NewGuid();
+            var avNumber = "AV000000-01";
             var dispatchConfirmationDTO = new IsolateFullDetailDto
             {
                 IsolateDetails = new IsolateInfoDto { NoOfAliquots = 5 },
@@ -173,7 +174,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             .Returns(mappedDispatchHistory);
 
             // Act
-            var result = await _controller.Confirmation(isolateGuid);
+            var result = await _controller.Confirmation(isolateGuid, avNumber, "Search");
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -193,7 +194,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
             var emptyGuid = Guid.Empty;
 
             // Act
-            var result = await _controller.Confirmation(emptyGuid);
+            var result = await _controller.Confirmation(emptyGuid, "AV000000-00", "Search");
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -205,10 +206,11 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
         {
             // Arrange
             var isolateGuid = Guid.NewGuid();
+            var avNumber = "AV000000-00";
             _controller.ModelState.AddModelError("Error", "Model error");
 
             // Act
-            var result = await _controller.Confirmation(isolateGuid);
+            var result = await _controller.Confirmation(isolateGuid, avNumber,"Search");
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -418,6 +420,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
                 ViabilityId = Guid.NewGuid(),
                 RecipientId = Guid.NewGuid(),
                 DispatchedById = Guid.NewGuid(),
+                DispatchedDate = DateTime.Now.AddDays(10),
                 ValidToIssue=false,
                 LastModified = new byte[] { 0x00, 0x01 }
             };
@@ -443,7 +446,7 @@ namespace Apha.VIR.Web.UnitTests.Controllers.IsolateDispatchControllerTest
           
             Assert.Same(model, viewResult.Model);
             Assert.False(_controller.ModelState.IsValid);
-            Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage == "Isolate cannot be dispatched as there are no aliquots available."));
+            Assert.Contains(_controller.ModelState.Values, v => v.Errors.Any(e => e.ErrorMessage == "Dispatched Date cannot be in the future."));
         }
 
         [Fact]
