@@ -11,8 +11,7 @@ using Newtonsoft.Json;
 
 namespace Apha.VIR.Web.Controllers
 {
-    [Authorize(Roles = AppRoleConstant.Administrator)]
-    [Route("AuditLog")]
+    [Authorize(Roles = AppRoleConstant.Administrator)]    
     public class AuditLogController : Controller
     {
         private readonly IAuditLogService _auditLogService;
@@ -36,10 +35,8 @@ namespace Apha.VIR.Web.Controllers
                 ShowDefaultView = true
             };
             return View("AuditLog", viewModel);
-        }
-
-        [HttpPost("SearchAudit")]
-        [ValidateAntiForgeryToken]
+        }        
+        
         public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
         {
             var showerrorSummary = false;
@@ -127,8 +124,8 @@ namespace Apha.VIR.Web.Controllers
             }
         }
 
-        [HttpGet("IsolateLog")]
-        public async Task<IActionResult> GetIsolateLogDetail(Guid logid, string AvNumber)
+        [HttpGet]
+        public async Task<IActionResult> IsolateLog(Guid logid, string AvNumber)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +145,7 @@ namespace Apha.VIR.Web.Controllers
             return View("IsolateAuditLogDetail", viewModel);
         }
 
-        [HttpPost("GetAuditLogs")]
+        [HttpPost]
         public async Task<IActionResult> GetAuditLogs(string requesttype)
         {
             switch (requesttype.ToLower())

@@ -95,13 +95,15 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
             var mockSystemInfo = new SystemInfo
             {
                 Id = Guid.NewGuid(),
-                Environment = "Integration"
+                Environment = "Integration",
+                Live = false,
             };
 
             var expectedDto = new SystemInfoDto
             {
                 Id = mockSystemInfo.Id,
-                Environment = mockSystemInfo.Environment
+                Environment = mockSystemInfo.Environment,
+                Live = mockSystemInfo.Live,
             };
 
             _mockRepository.GetLatestSysInfoAsync().Returns(mockSystemInfo);
@@ -111,7 +113,35 @@ namespace Apha.VIR.Application.UnitTests.Services.SystemInfoServiceTest
             var result = await _systemInfoService.GetEnvironmentName();
 
             // Assert
-            Assert.Equal("Integration", result);
+            Assert.Equal("Integration System Environment", result);
+        }
+
+        [Fact]
+        public async Task GetEnvironmentName_ReturnsEmptyEnvironmentString()
+        {
+            // Arrange
+            var mockSystemInfo = new SystemInfo
+            {
+                Id = Guid.NewGuid(),
+                Environment = "Integration",
+                Live = true,
+            };
+
+            var expectedDto = new SystemInfoDto
+            {
+                Id = mockSystemInfo.Id,
+                Environment = string.Empty,
+                Live = mockSystemInfo.Live,
+            };
+
+            _mockRepository.GetLatestSysInfoAsync().Returns(mockSystemInfo);
+            _mockMapper.Map<SystemInfoDto>(mockSystemInfo).Returns(expectedDto);
+
+            // Act
+            var result = await _systemInfoService.GetEnvironmentName();
+
+            // Assert
+            Assert.Equal(string.Empty, result);
         }
     }
 }

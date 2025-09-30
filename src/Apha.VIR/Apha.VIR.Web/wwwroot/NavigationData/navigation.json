@@ -285,7 +285,7 @@
                 "children": [
                     {
                         "title": "Log Isolate Details",
-                        "url": "/AuditLog/GetIsolateLogDetail",
+                        "url": "/AuditLog/IsolateLog",
                         "description": "Log Isolate Details",
                         "children": []
                     }
