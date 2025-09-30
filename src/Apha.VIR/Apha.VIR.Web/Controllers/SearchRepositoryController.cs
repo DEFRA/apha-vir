@@ -110,10 +110,12 @@ namespace Apha.VIR.Web.Controllers
             {
                 IsolateSearchResults = _mapper.Map<List<IsolateSearchResult>>(searchResults.data)
             };
-            if (AuthorisationUtil.CanDeleteItem(AppRoleConstant.IsolateManager))
+
+            if (AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
             {
                 searchModel.IsolateSearchGird.IsolateSearchResults.ForEach(s => s.IsDispatchEnabled = true);
             }
+
             criteria!.Pagination!.TotalCount = searchResults.TotalCount;
             searchModel.IsolateSearchGird.Pagination = criteria.Pagination;
             searchModel.IsFilterApplied = true;
@@ -213,6 +215,12 @@ namespace Apha.VIR.Web.Controllers
 
                 var searchResults = await _isolateSearchService.PerformSearchAsync(criteriaDto);
                 modelIsolateSearchGird.IsolateSearchResults = _mapper.Map<List<IsolateSearchResult>>(searchResults.data);
+
+                if (AuthorisationUtil.CanAddItem(AppRoleConstant.IsolateManager))
+                {
+                    modelIsolateSearchGird.IsolateSearchResults.ForEach(s => s.IsDispatchEnabled = true);
+                }
+
                 modelIsolateSearchGird.Pagination = new PaginationModel
                 {
                     PageNumber = criteriaDto.Page,
