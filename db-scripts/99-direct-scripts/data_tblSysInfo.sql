@@ -21,4 +21,4 @@ SELECT
     GETDATE() AS ReleaseDate,
     @Environment AS Environment,
     0 AS Live,
-    @Environment + ' Release' AS ReleaseNotes;
+    'VIR modernized to .Net Core, and hosted on AWS' AS ReleaseNotes;
