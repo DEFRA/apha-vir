@@ -111,7 +111,7 @@ namespace Apha.VIR.DataAccess.Repositories
                     }
                 }
             }
-            return TotalEntries > 0 ? true : false;
+            return TotalEntries > 0;
         }
 
         private static SqlParameter[] GetAddSqlParameters(VirusCharacteristic virusCharacteristic)

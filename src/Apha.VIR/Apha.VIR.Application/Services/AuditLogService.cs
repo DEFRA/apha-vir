@@ -54,7 +54,7 @@ namespace Apha.VIR.Application.Services
 
             var result = await _auditRepository.GetIsolatLogDetailAsync(logid);
 
-            return _mapper.Map<AuditIsolateLogDetailDto>(result.FirstOrDefault()); ;
+            return _mapper.Map<AuditIsolateLogDetailDto>(result.FirstOrDefault()); 
         }
 
         public async Task<IEnumerable<AuditIsolateLogDto>> GetIsolatLogsAsync(string avNumber,
@@ -65,7 +65,7 @@ namespace Apha.VIR.Application.Services
 
             var result = await _auditRepository.GetIsolatLogsAsync(avNumber, dateFrom, dateTo, userid);
 
-            return _mapper.Map<IEnumerable<AuditIsolateLogDto>>(result); ;
+            return _mapper.Map<IEnumerable<AuditIsolateLogDto>>(result); 
         }
 
         public async Task<IEnumerable<AuditSampleLogDto>> GetSamplLogsAsync(string avNumber,
