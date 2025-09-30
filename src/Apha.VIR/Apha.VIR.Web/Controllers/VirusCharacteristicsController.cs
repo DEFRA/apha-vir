@@ -13,7 +13,7 @@ namespace Apha.VIR.Web.Controllers
     {
         private readonly IVirusCharacteristicService _virusCharacteristicService;
         private readonly IMapper _mapper;
-
+        private const string accountParam = "Account";
         public VirusCharacteristicsController(IVirusCharacteristicService virusCharacteristicService, IMapper mapper)
         {
             _virusCharacteristicService = virusCharacteristicService;
@@ -25,7 +25,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), accountParam);
             }
             return View("VirusCharacteristicManagement");
         }
@@ -35,7 +35,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), accountParam);
             }
 
             if (!ModelState.IsValid)
@@ -64,7 +64,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), accountParam);
             }
 
             if (!ModelState.IsValid)
@@ -93,7 +93,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), accountParam);
             }
 
             if (!ModelState.IsValid)
@@ -172,7 +172,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!AuthorisationUtil.IsUserInAnyRole())
             {
-                return RedirectToAction(nameof(AccountController.AccessDenied), "Account");
+                return RedirectToAction(nameof(AccountController.AccessDenied), accountParam);
             }
 
             if (id == Guid.Empty || !ModelState.IsValid)

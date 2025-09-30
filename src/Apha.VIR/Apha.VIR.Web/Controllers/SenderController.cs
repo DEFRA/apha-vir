@@ -15,6 +15,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ISenderService _senderService;
         private readonly ILookupService _lookupService;
         private readonly IMapper _mapper;
+        private const string invalidParam = "Invalid parameters.";
 
         public SenderController(ISenderService senderService, ILookupService lookupService, IMapper mapper)
         {
@@ -28,7 +29,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid parameters.");
+                return BadRequest(invalidParam);
             }
 
             var pagedSenderDtos = await _senderService.GetAllSenderAsync(pageNo, pageSize);
@@ -53,7 +54,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid parameters.");
+                return BadRequest(invalidParam);
             }
 
             var pagedSenderDtos = await _senderService.GetAllSenderAsync(pageNo, pageSize);
@@ -79,7 +80,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Invalid parameters.");
+                ModelState.AddModelError("", invalidParam);
                 return BadRequest(ModelState);
             }
 
@@ -121,7 +122,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (senderId == Guid.Empty || !ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Invalid parameters.");
+                ModelState.AddModelError("", invalidParam);
                 return BadRequest(ModelState);
             }
 
