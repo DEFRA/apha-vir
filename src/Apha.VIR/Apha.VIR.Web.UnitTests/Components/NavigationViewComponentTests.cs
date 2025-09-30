@@ -14,7 +14,7 @@ namespace Apha.VIR.Web.UnitTests.Components
 {
     public class NavigationViewComponentTests
     { // Helper to create the component with injected dependencies and set the private _navItemsTask
-        private NavigationViewComponent CreateComponent(List<NavItem> navItems,
+        private static NavigationViewComponent CreateComponent(List<NavItem> navItems,
             DefaultHttpContext httpContext,
             out ICacheService cacheService,
             out IMapper mapper)
