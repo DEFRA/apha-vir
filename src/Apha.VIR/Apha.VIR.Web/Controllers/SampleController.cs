@@ -29,7 +29,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (string.IsNullOrEmpty(AVNumber))
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(sampleIndex, "Home");
             }
 
             if (!ModelState.IsValid)
@@ -60,7 +60,7 @@ namespace Apha.VIR.Web.Controllers
 
             var sample = _mapper.Map<SampleDto>(model);
             await _sampleService.AddSample(sample, model.AVNumber!, AuthorisationUtil.GetUserId());
-            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = model.AVNumber });
+            return RedirectToAction(sampleIndex, "SubmissionSamples", new { AVNumber = model.AVNumber });
         }
 
 
@@ -70,7 +70,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (string.IsNullOrEmpty(AVNumber))
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(sampleIndex, "Home");
             }
 
             if (!ModelState.IsValid)

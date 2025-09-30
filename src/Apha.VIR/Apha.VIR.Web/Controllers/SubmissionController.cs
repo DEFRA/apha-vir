@@ -16,6 +16,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ILookupService _lookupService;
         private readonly ISenderService _senderService;
         private readonly ISubmissionService _submissionService;
+        private const string indexParam = "Index";
 
         public SubmissionController(ILookupService lookupService,
             ISenderService senderService,
@@ -34,7 +35,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if(string.IsNullOrEmpty(AVNumber))
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(indexParam, "Home");
             }
 
             var submissionModel = new SubmissionCreateViewModel
@@ -70,7 +71,7 @@ namespace Apha.VIR.Web.Controllers
             var submissionDto = _mapper.Map<SubmissionDto>(submission);
             await _submissionService.AddSubmissionAsync(submissionDto, AuthorisationUtil.GetUserId());
 
-            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = submission.AVNumber });
+            return RedirectToAction(indexParam, "SubmissionSamples", new { AVNumber = submission.AVNumber });
         }
 
         [HttpGet]
@@ -79,7 +80,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (string.IsNullOrEmpty(AVNumber))
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(indexParam, "Home");
             }
 
             var isAvNumberPresent = await _submissionService.AVNumberExistsInVirAsync(AVNumber);
@@ -119,7 +120,7 @@ namespace Apha.VIR.Web.Controllers
             var submissionDto = _mapper.Map<SubmissionDto>(submission);
             await _submissionService.UpdateSubmissionAsync(submissionDto,AuthorisationUtil.GetUserId());
 
-            return RedirectToAction("Index", "SubmissionSamples", new { AVNumber = submission.AVNumber });
+            return RedirectToAction(indexParam, "SubmissionSamples", new { AVNumber = submission.AVNumber });
         }
 
         [HttpGet]
@@ -207,7 +208,7 @@ namespace Apha.VIR.Web.Controllers
             var isExistinVir = await _submissionService.AVNumberExistsInVirAsync(AVNumber);
             if (!isExistinVir)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(indexParam, "Home");
             }
 
             var viewModel = new SubmissionLetterViewModel
