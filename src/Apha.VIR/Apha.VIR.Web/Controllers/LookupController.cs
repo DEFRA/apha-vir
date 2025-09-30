@@ -18,6 +18,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ILookupService _lookupService;
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
+        private const string invalidParam = "Invalid parameters.";
 
         public LookupController(ILookupService lookupService, 
             ICacheService cacheService, 
@@ -43,7 +44,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (lookupid == Guid.Empty || !ModelState.IsValid)
             {
-                return BadRequest("Invalid parameters.");
+                return BadRequest(invalidParam);
             }
 
             var lookupResult = await _lookupService.GetLookupByIdAsync(lookupid);
@@ -60,7 +61,7 @@ namespace Apha.VIR.Web.Controllers
                 LookupItemResult = new LookupItemListViewModel
                 {
                     LookupId = lookup.Id,
-                    ShowParent = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
+                    ShowParent = !(lookup.Parent == Guid.Empty || lookup.Parent == null),
                     ShowAlternateName = lookup.AlternateName,
                     ShowSMSRelated = lookup.Smsrelated,
                     LookupItems = lookupItems.ToList(),
@@ -86,7 +87,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (lookupid == Guid.Empty || !ModelState.IsValid)
             {
-                return BadRequest("Invalid parameters.");
+                return BadRequest(invalidParam);
             }
 
             var lookupResult = await _lookupService.GetLookupByIdAsync(lookupid);
@@ -98,7 +99,7 @@ namespace Apha.VIR.Web.Controllers
             var LookupItemResult = new LookupItemListViewModel
             {
                 LookupId = lookup.Id,
-                ShowParent = lookup.Parent == Guid.Empty || lookup.Parent == null ? false : true,
+                ShowParent = !(lookup.Parent == Guid.Empty || lookup.Parent == null),
                 ShowAlternateName = lookup.AlternateName,
                 ShowSMSRelated = lookup.Smsrelated,
                 LookupItems = lookups.ToList(),
@@ -119,7 +120,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (lookupId == Guid.Empty || !ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Invalid parameters.");
+                ModelState.AddModelError("", invalidParam);
                 return BadRequest(ModelState);
             }
 
@@ -129,7 +130,7 @@ namespace Apha.VIR.Web.Controllers
             var viewModel = new LookupItemViewModel
             {
                 LookupId = lookup.Id,
-                ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue ? true : false,
+                ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue,
                 ShowAlternateName = lookup.AlternateName,
                 ShowSMSRelated = lookup.Smsrelated,
                 IsReadOnly = lookup.ReadOnly,
@@ -197,7 +198,7 @@ namespace Apha.VIR.Web.Controllers
         {
             if (lookupId == Guid.Empty || lookupItemId == Guid.Empty || !ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Invalid parameters.");
+                ModelState.AddModelError("", invalidParam);
                 return BadRequest(ModelState);
             }
 
@@ -210,7 +211,7 @@ namespace Apha.VIR.Web.Controllers
             var viewModel = new LookupItemViewModel
             {
                 LookupId = lookup.Id,
-                ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue ? true : false,
+                ShowParent = lookup.Parent != Guid.Empty && lookup.Parent.HasValue,
                 ShowAlternateName = lookup.AlternateName,
                 ShowSMSRelated = lookup.Smsrelated,
                 IsReadOnly = lookup.ReadOnly,

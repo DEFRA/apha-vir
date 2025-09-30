@@ -18,6 +18,7 @@ namespace Apha.VIR.Web.Controllers
         private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
         private const string keySearchCriteria = "AuditLogSearchCriteria";
+        private const string auditLog = "AuditLog";
 
         public AuditLogController(IAuditLogService auditLogService, ICacheService cacheService, IMapper mapper)
         {
@@ -34,7 +35,7 @@ namespace Apha.VIR.Web.Controllers
                 ShowErrorSummary = false,
                 ShowDefaultView = true
             };
-            return View("AuditLog", viewModel);
+            return View(auditLog, viewModel);
         }        
         
         public async Task<IActionResult> SearchAudit(AuditLogSearchModel searchCriteria, bool IsNewSearch = false)
@@ -60,7 +61,7 @@ namespace Apha.VIR.Web.Controllers
 
                     };
                     _cacheService.RemoveSessionValue(keySearchCriteria);
-                    return View("AuditLog", model);
+                    return View(auditLog, model);
                 }
 
                 FormateSearchCriteria(searchCriteria);
@@ -84,7 +85,7 @@ namespace Apha.VIR.Web.Controllers
                     SubmissionLogs = reportData.ToList(),
                 };
 
-                return View("AuditLog", viewModel);
+                return View(auditLog, viewModel);
             }
             else
             {
@@ -110,7 +111,7 @@ namespace Apha.VIR.Web.Controllers
                         IsolateLogs = reportData.ToList(),
                     };
 
-                    return View("AuditLog", viewModel);
+                    return View(auditLog, viewModel);
                 }
                 else
                 {
@@ -119,7 +120,7 @@ namespace Apha.VIR.Web.Controllers
                         ShowErrorSummary = false,
                         ShowDefaultView = true
                     };
-                    return View("AuditLog", viewModel);
+                    return View(auditLog, viewModel);
                 }
             }
         }
@@ -163,7 +164,7 @@ namespace Apha.VIR.Web.Controllers
                 case "viability":
                     return await GetViabilityAuditLogs();
                 default:
-                    return await GetSubmissionAuditLogs(); ;
+                    return await GetSubmissionAuditLogs(); 
             }
         }
 
@@ -308,7 +309,7 @@ namespace Apha.VIR.Web.Controllers
 
         private static void FormateSearchCriteria(AuditLogSearchModel searchCriteria)
         {
-            searchCriteria.AVNumber = AVNumberUtil.AVNumberFormatted(searchCriteria.AVNumber!); ;
+            searchCriteria.AVNumber = AVNumberUtil.AVNumberFormatted(searchCriteria.AVNumber!); 
 
             if (searchCriteria.DateTimeFrom == null)
             {
