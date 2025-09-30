@@ -28,6 +28,26 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
         }
 
         [Fact]
+        public async Task GetSampleAuditLogs_ValidJsonWithDefaultProperties_ReturnsPartialView()
+        {
+            var criteria = new AuditLogSearchModel(); // All properties default/null
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", JsonConvert.SerializeObject(criteria));
+
+            _auditLogService.GetSamplLogsAsync(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<string>())
+                .Returns(new[] { new AuditSampleLogDto() });
+
+            _mapper.Map<IEnumerable<AuditSampleLogModel>>(Arg.Any<object>())
+                .Returns(new[] { new AuditSampleLogModel() });
+
+            var result = await _controller.GetAuditLogs("sample");
+
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_SampleAuditLogResults", partial.ViewName);
+            Assert.IsAssignableFrom<List<AuditSampleLogModel>>(partial.Model);
+        }
+
+
+        [Fact]
         public async Task GetSampleAuditLogs_WithCriteria_ReturnsPartialView()
         {
             var criteria = new AuditLogSearchModel { AVNumber = "AV123", UserId = "test" };           

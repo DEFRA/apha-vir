@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Text.Json;
+using Apha.VIR.Web.Models;
 using Apha.VIR.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
@@ -14,6 +16,8 @@ namespace Apha.VIR.Web.UnitTests.Services
         private readonly ILogger<CacheService> _logger;
         private readonly CacheService _service;
         private readonly ISession _session;
+        // Simulated session storage
+        private readonly Dictionary<string, byte[]> _sessionStorage = new();
 
         public CacheServiceTests()
         {
@@ -22,6 +26,35 @@ namespace Apha.VIR.Web.UnitTests.Services
             _logger = Substitute.For<ILogger<CacheService>>();
             _service = new CacheService(_httpContextAccessor, _cache, _logger);
             _session = Substitute.For<ISession>();
+
+            // Simulated session storage behavior
+            _session.When(x => x.Set(Arg.Any<string>(), Arg.Any<byte[]>()))
+                .Do(call =>
+                {
+                    var key = call.Arg<string>();
+                    var value = call.Arg<byte[]>();
+                    _sessionStorage[key] = value;
+                });
+
+            _session.TryGetValue(Arg.Any<string>(), out Arg.Any<byte[]?>())
+                .Returns(call =>
+                {
+                    var key = call.Arg<string>();
+                    if (_sessionStorage.TryGetValue(key, out var value))
+                    {
+                        call[1] = value; // Set the out parameter
+                        return true;
+                    }
+                    call[1] = null;
+                    return false;
+                });
+
+            _session.When(x => x.Remove(Arg.Any<string>()))
+                .Do(call =>
+                {
+                    var key = call.Arg<string>();
+                    _sessionStorage.Remove(key);
+                });
 
             var context = Substitute.For<HttpContext>();
             context.Session.Returns(_session);
@@ -250,6 +283,144 @@ namespace Apha.VIR.Web.UnitTests.Services
             // Assert
             Assert.NotNull(capturedOptions);
             Assert.Equal(TimeSpan.FromMinutes(60), capturedOptions!.AbsoluteExpirationRelativeToNow);
+        }
+
+        [Fact]
+        public void AddOrUpdateBreadcrumb_AddsNewEntry_WhenUrlNotExists()
+        {
+            // Arrange
+            _service.RemoveSessionValue("BreadcrumbTrail");
+            var parameters = new Dictionary<string, string> { { "id", "1" } };
+
+            // Act
+            _service.AddOrUpdateBreadcrumb("/test", parameters);
+
+            // Assert
+            var json = _service.GetSessionValue("BreadcrumbTrail");
+            var list = JsonSerializer.Deserialize<List<BreadcrumbEntry>>(json!);
+            Assert.NotNull(list);
+            Assert.Single(list);
+            Assert.Equal("/test", list[0].Url);
+            Assert.Equal(parameters, list[0].Parameters);
+        }
+
+        [Fact]
+        public void AddOrUpdateBreadcrumb_UpdatesParameters_WhenUrlExists()
+        {
+            // Arrange
+            var initial = new List<BreadcrumbEntry>
+            {
+                new BreadcrumbEntry { Url = "/test", Parameters = new Dictionary<string, string> { { "old", "x" } } }
+            };
+            _service.SetSessionValue("BreadcrumbTrail", JsonSerializer.Serialize(initial));
+            var newParams = new Dictionary<string, string> { { "new", "y" } };
+
+            // Act
+            _service.AddOrUpdateBreadcrumb("/test", newParams);
+
+            // Assert
+            var json = _service.GetSessionValue("BreadcrumbTrail");
+            var list = JsonSerializer.Deserialize<List<BreadcrumbEntry>>(json!);
+            Assert.NotNull(list);
+            Assert.Single(list);
+            Assert.Equal(newParams, list[0].Parameters);
+        }
+
+        [Fact]
+        public void GetFullUrlFor_ReturnsNull_WhenEntryNotFound()
+        {
+            // Arrange
+            _service.RemoveSessionValue("BreadcrumbTrail");
+
+            // Act
+            var result = _service.GetFullUrlFor("/notfound");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void GetFullUrlFor_ReturnsUrl_WhenNoParameters()
+        {
+            // Arrange
+            var entries = new List<BreadcrumbEntry>
+            {
+                new BreadcrumbEntry { Url = "/simple", Parameters = null! }
+            };
+            _service.SetSessionValue("BreadcrumbTrail", JsonSerializer.Serialize(entries));
+
+            // Act
+            var result = _service.GetFullUrlFor("/simple");
+
+            // Assert
+            Assert.Equal("/simple", result);
+        }
+
+        [Fact]
+        public void GetFullUrlFor_ReturnsUrlWithQuery_WhenParametersExist()
+        {
+            // Arrange
+            var entries = new List<BreadcrumbEntry>
+            {
+                new BreadcrumbEntry
+                {
+                    Url = "/complex",
+                    Parameters = new Dictionary<string, string>
+                    {
+                        { "a", "b" },
+                        { "c", "d e" } // space will be URL-encoded
+                    }
+                }
+            };
+            _service.SetSessionValue("BreadcrumbTrail", JsonSerializer.Serialize(entries));
+
+            // Act
+            var result = _service.GetFullUrlFor("/complex");
+
+            // Assert
+            Assert.StartsWith("/complex?", result);
+            Assert.Contains("a=b", result);
+            Assert.Contains("c=d%20e", result); // Space encoded as %20
+        }
+
+        [Fact]
+        public void GetBreadcrumbs_ReturnsEmptyList_WhenSessionValueIsNullOrEmpty()
+        {
+            // Arrange
+            _service.RemoveSessionValue("BreadcrumbTrail");
+
+            // Act
+            var method = typeof(CacheService).GetMethod("GetBreadcrumbs", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var result = method!.Invoke(_service, null) as List<BreadcrumbEntry>;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result!);
+        }
+
+        [Fact]
+        public void GetBreadcrumbs_ReturnsDeserializedList_WhenSessionValueExists()
+        {
+            // Arrange
+            var entries = new List<BreadcrumbEntry>
+            {
+                new BreadcrumbEntry
+                {
+                    Url = "/x",
+                    Parameters = new Dictionary<string, string> { { "p", "q" } }
+                }
+            };
+            _service.SetSessionValue("BreadcrumbTrail", JsonSerializer.Serialize(entries));
+
+            // Act
+            var method = typeof(CacheService).GetMethod("GetBreadcrumbs", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var result = method!.Invoke(_service, null) as List<BreadcrumbEntry>;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result!);
+            Assert.Equal("/x", result![0].Url);
+            Assert.Equal("q", result[0].Parameters["p"]);
         }
     }
 }

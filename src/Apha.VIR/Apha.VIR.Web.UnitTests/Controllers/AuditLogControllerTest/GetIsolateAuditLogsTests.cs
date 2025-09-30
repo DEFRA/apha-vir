@@ -65,5 +65,25 @@ namespace Apha.VIR.Web.UnitTests.Controllers.AuditLogControllerTest
             Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
             Assert.IsType<List<AuditIsolateLogModel>>(partial.Model);
         }
+
+        [Fact]
+        public async Task GetIsolateAuditLogs_InvalidJsonCriteria_ReturnsEmptyModel()
+        {
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "not a json");
+            var result = await _controller.GetAuditLogs("isolate");
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
+            Assert.IsType<List<AuditIsolateLogModel>>(partial.Model);
+        }
+
+        [Fact]
+        public async Task GetIsolateAuditLogs_DeserializesToNull_ReturnsEmptyModel()
+        {
+            _cacheService.SetSessionValue("AuditLogSearchCriteria", "null");
+            var result = await _controller.GetAuditLogs("isolate");
+            var partial = Assert.IsType<PartialViewResult>(result);
+            Assert.Equal("_IsolateAuditLogResults", partial.ViewName);
+            Assert.IsType<List<AuditIsolateLogModel>>(partial.Model);
+        }
     }
 }
